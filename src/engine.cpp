@@ -47,6 +47,18 @@ bool Engine::isRunning()
     return m_Running;
 }
 
+void Engine::checkInputEvents()
+{
+    while (SDL_PollEvent(&m_WindowEvent))
+    {
+        if (m_WindowEvent.type == SDL_QUIT)
+        {
+            m_Running = false;
+            break;
+        }
+    }
+}
+
 void Engine::renderFrame()
 {
     m_Renderer->renderFrame();

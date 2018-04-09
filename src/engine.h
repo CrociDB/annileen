@@ -16,6 +16,7 @@ class Engine
 private:
     SDL_Window* m_Window;
     uint16_t m_Width, m_Height;
+    SDL_Event m_WindowEvent;
 
     Renderer* m_Renderer;
     bool m_Running;
@@ -30,6 +31,7 @@ public:
 
     bool isRunning();
 
+    void checkInputEvents();
     void renderFrame();
 
     Engine();
