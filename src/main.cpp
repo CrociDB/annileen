@@ -1,15 +1,13 @@
 #include <iostream>
-#include <SDL.h>
-
-#include "renderer.h"
+#include "engine.h"
 
 int main(int argc, char* argv[])
 {
-    Renderer* renderer = new Renderer();
-    renderer->init(800, 600);
+    Engine* engine = new Engine();
+    engine->init(800, 600);
 
     SDL_Event windowEvent;
-    while (true)
+    while (engine->isRunning())
     {
         if (SDL_PollEvent(&windowEvent))
         {
@@ -19,7 +17,7 @@ int main(int argc, char* argv[])
             }
         }
 
-        renderer->renderFrame();
+        engine->renderFrame();
     }
 
     return EXIT_SUCCESS;

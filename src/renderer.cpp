@@ -6,17 +6,10 @@ Renderer::Renderer()
 {
 }
 
-void Renderer::init(uint16_t width, uint16_t height)
+void Renderer::init(Engine* engine)
 {
-    SDL_Init(SDL_INIT_EVERYTHING);
-
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-
-    m_Window = SDL_CreateWindow("Clonecraft", 300, 300, width, height, SDL_WINDOW_OPENGL);
-    m_Context = SDL_GL_CreateContext(m_Window);
+    m_Engine = engine;
+    m_Context = SDL_GL_CreateContext(engine->getSDLWindow());
 
     glewExperimental = GL_TRUE;
 
@@ -25,7 +18,7 @@ void Renderer::init(uint16_t width, uint16_t height)
         std::cout << "Failet initializing GLEW" << std::endl;
     }
 
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, engine->getWidth(), engine->getHeight());
 }
 
 void Renderer::renderFrame()
@@ -34,17 +27,10 @@ void Renderer::renderFrame()
     glClear(GL_COLOR_BUFFER_BIT);
 
 
-    SDL_GL_SwapWindow(m_Window);
-}
-
-SDL_Window* Renderer::getSDLWindow()
-{
-    return m_Window;
+    SDL_GL_SwapWindow(m_Engine->getSDLWindow());
 }
 
 Renderer::~Renderer()
 {
     SDL_GL_DeleteContext(m_Context);
-    SDL_DestroyWindow(m_Window);
-    SDL_Quit();
 }
