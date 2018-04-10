@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
 
     // Triangle material
     Shader* shader = new Shader();
-    shader->load("../../shaders/vertex.vert", "../../fragment.frag");
+    shader->load("../../shaders/vertex.vert", "../../shaders/fragment.frag");
     Material* material = new Material();
     material->init(shader);
 
