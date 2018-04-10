@@ -42,6 +42,11 @@ uint16_t Engine::getHeight()
     return m_Height;
 }
 
+void Engine::setScene(Scene* scene)
+{
+    m_CurrentScene = scene;
+}
+
 bool Engine::isRunning()
 {
     return m_Running;
