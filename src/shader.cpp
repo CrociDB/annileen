@@ -25,10 +25,54 @@ std::string Shader::loadShaderCode(const char* filename)
     return shaderCode;
 }
 
+GLuint Shader::compileShader(std::string shaderCode, GLuint shaderType)
+{
+    GLuint shaderId = glCreateShader(shaderType);
+    const GLchar* code = shaderCode.c_str();
+    glShaderSource(shaderId, 1, &code, NULL);
+    glCompileShader(shaderId);
+
+    GLint success;
+    GLchar infoLog[512];
+
+    glGetShaderiv(shaderId, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(shaderId, 512, NULL, infoLog);
+        std::cout << "[ERROR][SHADER] " << infoLog << std::endl;
+    }
+
+    return shaderId;
+}
+
 void Shader::load(const char* vertexFilename, const char* fragmentFilename)
 {
     m_VertexCode = loadShaderCode(vertexFilename);
-    m_FragCode = loadShaderCode(fragmentFilename);
+    m_FragmentCode = loadShaderCode(fragmentFilename);
+
+    m_VertexShaderIndex = compileShader(m_VertexCode, GL_VERTEX_SHADER);
+    m_FragmentShaderIndex = compileShader(m_FragmentCode, GL_FRAGMENT_SHADER);
+
+    m_ShaderProgram = glCreateProgram();
+    glAttachShader(m_ShaderProgram, m_VertexShaderIndex);
+    glAttachShader(m_ShaderProgram, m_FragmentShaderIndex);
+}
+
+bool Shader::link()
+{
+    glLinkProgram(m_ShaderProgram);
+
+    GLint success;
+    GLchar infoLog[512];
+
+    glGetProgramiv(m_ShaderProgram, GL_LINK_STATUS, &success);
+    if (!success)
+    {
+        glGetProgramInfoLog(m_ShaderProgram, 512, NULL, infoLog);
+        std::cout << "[ERROR][PROGRAM] " << infoLog << std::endl;
+    }
+
+    return success;
 }
 
 Shader::Shader()
