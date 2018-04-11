@@ -68,6 +68,9 @@ bool Shader::load(const char* vertexFilename, const char* fragmentFilename)
         std::cout << "[ERROR][PROGRAM] " << infoLog << std::endl;
     }
 
+    glDeleteShader(m_VertexShaderIndex);
+    glDeleteShader(m_FragmentShaderIndex);
+
     return success;
 }
 
