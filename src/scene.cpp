@@ -2,6 +2,7 @@
 
 void Scene::addMesh(Mesh* mesh)
 {
+    mesh->genBuffers();
     m_Meshes.push_back(std::shared_ptr<Mesh>(mesh));
 }
 
