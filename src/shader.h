@@ -21,8 +21,8 @@ private:
     GLuint compileShader(std::string shaderCode, GLuint shaderType);
 
 public:
-    void load(const char* vertexFilename, const char* fragmentFilename);
-    bool link();
+    bool load(const char* vertexFilename, const char* fragmentFilename);
+    bool use();
 
     Shader();
     ~Shader();

@@ -45,7 +45,7 @@ GLuint Shader::compileShader(std::string shaderCode, GLuint shaderType)
     return shaderId;
 }
 
-void Shader::load(const char* vertexFilename, const char* fragmentFilename)
+bool Shader::load(const char* vertexFilename, const char* fragmentFilename)
 {
     m_VertexCode = loadShaderCode(vertexFilename);
     m_FragmentCode = loadShaderCode(fragmentFilename);
@@ -56,10 +56,6 @@ void Shader::load(const char* vertexFilename, const char* fragmentFilename)
     m_ShaderProgram = glCreateProgram();
     glAttachShader(m_ShaderProgram, m_VertexShaderIndex);
     glAttachShader(m_ShaderProgram, m_FragmentShaderIndex);
-}
-
-bool Shader::link()
-{
     glLinkProgram(m_ShaderProgram);
 
     GLint success;
@@ -73,6 +69,11 @@ bool Shader::link()
     }
 
     return success;
+}
+
+bool Shader::use()
+{
+    glUseProgram(m_ShaderProgram);
 }
 
 Shader::Shader()
