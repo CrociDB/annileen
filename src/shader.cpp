@@ -71,7 +71,7 @@ bool Shader::load(const char* vertexFilename, const char* fragmentFilename)
     return success;
 }
 
-bool Shader::use()
+void Shader::use()
 {
     glUseProgram(m_ShaderProgram);
 }

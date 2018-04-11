@@ -22,7 +22,7 @@ private:
 
 public:
     bool load(const char* vertexFilename, const char* fragmentFilename);
-    bool use();
+    void use();
 
     Shader();
     ~Shader();
