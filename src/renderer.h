@@ -12,7 +12,9 @@ private:
 public:
     void init(Engine* engine);
 
-    void renderFrame();
+    void clear();
+    void swapBuffer();
+    void renderMesh(Mesh* mesh);
 
     Renderer();
     ~Renderer();

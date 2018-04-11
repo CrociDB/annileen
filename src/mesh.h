@@ -10,12 +10,19 @@ class Mesh
 {
 private:
     int m_VerticesCount;
-    float* m_Vertices;
+    GLfloat* m_Vertices;
     std::shared_ptr<Material> m_Material;
+
+    GLuint m_VertexArrayObject;
+    GLuint m_VertexBufferObject;
 
 public:
     void init(float* vertices, int verticesCount);
     void setMaterial(Material* material);
+    Material* getMaterial();
+
+    void genBuffers();
+    void bindAndDraw();
 
     Mesh();
     ~Mesh();

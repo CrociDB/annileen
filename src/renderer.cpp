@@ -21,13 +21,23 @@ void Renderer::init(Engine* engine)
     glViewport(0, 0, engine->getWidth(), engine->getHeight());
 }
 
-void Renderer::renderFrame()
+void Renderer::clear()
 {
     glClearColor(0.28f, 0.28f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+}
 
-
+void Renderer::swapBuffer()
+{
     SDL_GL_SwapWindow(m_Engine->getSDLWindow());
+}
+
+void Renderer::renderMesh(Mesh* mesh)
+{
+    auto material = mesh->getMaterial();
+    material->getShader()->use();
+
+    mesh->bindAndDraw();
 }
 
 Renderer::~Renderer()

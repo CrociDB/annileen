@@ -66,7 +66,18 @@ void Engine::checkInputEvents()
 
 void Engine::renderFrame()
 {
-    m_Renderer->renderFrame();
+    m_Renderer->clear();
+
+    // Render objects seen in scene
+    if (m_CurrentScene != NULL)
+    {
+        for (auto& mesh : m_CurrentScene->getMeshList())
+        {
+            m_Renderer->renderMesh(mesh.get());
+        }
+    }
+
+    m_Renderer->swapBuffer();
 }
 
 Engine::Engine()

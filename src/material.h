@@ -14,6 +14,8 @@ private:
 public:
     void init(Shader* shader);
 
+    Shader* getShader();
+
     Material();
     ~Material();
 };
