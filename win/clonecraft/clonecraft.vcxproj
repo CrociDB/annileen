@@ -140,6 +140,7 @@
     <ClInclude Include="..\..\src\renderer.h" />
     <ClInclude Include="..\..\src\scene.h" />
     <ClInclude Include="..\..\src\shader.h" />
+    <ClInclude Include="..\..\src\util.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\shaders\fragment.frag">
