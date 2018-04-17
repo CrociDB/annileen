@@ -1,23 +1,25 @@
 #include "mesh.h"
 
-void Mesh::init(float* vertices, int verticesCount)
+void Mesh::init(const float* vertexData, int vertexSize, uint8_t vertexAttr)
 {
-    m_Vertices = new GLfloat[verticesCount];
-    m_VerticesCount = verticesCount;
-    for (int i = 0; i < m_VerticesCount; i++)
-    {
-        m_Vertices[i] = vertices[i];
-    }
-}
+    m_VertexData = new GLfloat[vertexSize];
+    m_VertexSize = vertexSize;
+    m_VertexAttr = vertexAttr;
 
-void Mesh::setVertexColors(float* vertexColor)
-{
-    m_AttrVertexColor = true;
-    m_VertexColors = new GLfloat[m_VerticesCount];
-    for (int i = 0; i < m_VerticesCount; i++)
+    for (int i = 0; i < m_VertexSize; i++)
     {
-        m_VertexColors[i] = vertexColor[i];
+        m_VertexData[i] = vertexData[i];
     }
+
+    m_VertexAttrCount = 1
+        + (m_VertexAttr & VERTEX_COLOR)
+        + ((m_VertexAttr & VERTEX_UV) >> 1)
+        + ((m_VertexAttr & VERTEX_NORMAL) >> 2);
+
+    m_VertexStride = 3 * sizeof(GLfloat)
+        + ((m_VertexAttr & VERTEX_COLOR) * 3 * sizeof(GLfloat))
+        + (((m_VertexAttr & VERTEX_UV) >> 1) * 2 * sizeof(GLfloat))
+        + (((m_VertexAttr & VERTEX_NORMAL) >> 2) * 3 * sizeof(GLfloat));
 }
 
 void Mesh::setMaterial(Material* material)
@@ -30,31 +32,6 @@ Material* Mesh::getMaterial()
     return m_Material.get();
 }
 
-int Mesh::bufferAllData()
-{
-    int params = 1 + m_AttrVertexColor;
-    int elem = m_VerticesCount * params;
-    GLfloat* data = new GLfloat[elem];
-
-    int c = 0;
-    int i, j;
-    for (i = 0; i < m_VerticesCount; i++)
-    {
-        data[c++] = m_Vertices[i];
-
-        if ((i+1) % 3 == 0)
-        {
-            // Color
-            if (m_AttrVertexColor)
-                for (j = 0; j < 3; j++) data[c++] = m_VertexColors[(i-2) + j];
-        }
-    }
-
-    glBufferData(GL_ARRAY_BUFFER, c * sizeof(GLfloat), data, GL_STATIC_DRAW);
-
-    return params * 3;
-}
-
 void Mesh::genBuffers()
 {
     glGenVertexArrays(1, &m_VertexArrayObject);
@@ -62,15 +39,25 @@ void Mesh::genBuffers()
 
     glBindVertexArray(m_VertexArrayObject);
     glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferObject);
-    int p = bufferAllData();
+    glBufferData(GL_ARRAY_BUFFER, m_VertexSize * sizeof(GLfloat), m_VertexData, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, p * sizeof(GLfloat), (GLvoid *)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, m_VertexStride, (GLvoid *)0);
     glEnableVertexAttribArray(0);
+
+    int offset = 3;
     
-    if (m_AttrVertexColor)
+    if (m_VertexAttr & VERTEX_COLOR)
     {
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, p * sizeof(GLfloat), (GLvoid *)(3 * sizeof(GLfloat)));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, m_VertexStride, (GLvoid *)(offset * sizeof(GLfloat)));
         glEnableVertexAttribArray(1);
+        offset += 3;
+    }
+
+    if (m_VertexAttr & VERTEX_UV)
+    {
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, m_VertexStride, (GLvoid *)(offset * sizeof(GLfloat)));
+        glEnableVertexAttribArray(2);
+        offset += 2;
     }
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -86,7 +73,6 @@ void Mesh::bindAndDraw()
 
 Mesh::Mesh()
 {
-    m_AttrVertexColor = false;
 }
 
 

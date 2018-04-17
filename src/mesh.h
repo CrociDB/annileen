@@ -6,24 +6,27 @@
 
 #include "material.h"
 
+// Mesh data
+#define VERTEX_COLOR    0b00000001
+#define VERTEX_UV       0b00000010
+#define VERTEX_NORMAL   0b00000100
+
 class Mesh
 {
 private:
-    int m_VerticesCount;
-    GLfloat* m_Vertices;
-    GLfloat* m_VertexColors;
+    uint64_t m_VertexSize;
+    GLfloat* m_VertexData;
     std::shared_ptr<Material> m_Material;
 
     GLuint m_VertexArrayObject;
     GLuint m_VertexBufferObject;
 
-    bool m_AttrVertexColor;
-
-    int bufferAllData();
+    uint8_t m_VertexAttr;
+    uint8_t m_VertexAttrCount;
+    uint16_t m_VertexStride;
 
 public:
-    void init(float* vertices, int verticesCount);
-    void setVertexColors(float* vertexColor);
+    void init(const float* vertexData, int verticesCount, uint8_t vertexAttr);
     void setMaterial(Material* material);
     Material* getMaterial();
 

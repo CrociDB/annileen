@@ -10,20 +10,13 @@ int main(int argc, char* argv[])
     // Create triangle
     Mesh* triangle = new Mesh();
 
-    float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f, 0.5f, 0.0f
+    float vertexData[] = {
+        -0.5f, -0.5f, 0.0f,         1.0f, 0.0f, 0.0f,       1.0f, 0.0f, 
+        0.5f, -0.5f, 0.0f,          0.0f, 1.0f, 0.0f,       1.0f, 0.0f,
+        0.0f, 0.5f, 0.0f,           0.0f, 0.0f, 1.0f,       1.0f, 0.0f
     };
 
-    float colors[] = {
-        1.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 1.0f
-    };
-
-    triangle->init(vertices, 9);
-    triangle->setVertexColors(colors);
+    triangle->init(vertexData, sizeof(vertexData) / sizeof(float), VERTEX_COLOR | VERTEX_UV);
 
     // Triangle material
     Shader* shader = new Shader();
