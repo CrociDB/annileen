@@ -7,6 +7,8 @@
 #include <GL/glew.h>
 #include <SDL_opengl.h>
 
+#include <glm.hpp>
+
 class Shader
 {
 private:
@@ -23,6 +25,13 @@ private:
 public:
     bool load(const char* vertexFilename, const char* fragmentFilename);
     void use();
+    
+    void setBool(const std::string& name, bool value);
+    void setInt(const std::string& name, int value);
+    void setFloat(const std::string& name, float value);
+    void setVec2(const std::string& name, const glm::vec2& value);
+    void setVec3(const std::string& name, const glm::vec3& value);
+    void setVec4(const std::string& name, const glm::vec4& value);
 
     Shader();
     ~Shader();
