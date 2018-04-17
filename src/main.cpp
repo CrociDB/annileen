@@ -8,15 +8,25 @@ int main(int argc, char* argv[])
     engine->init(800, 600);
 
     // Create triangle
-    Mesh* triangle = new Mesh();
+    Mesh* mesh = new Mesh();
 
-    float vertexData[] = {
-        -0.5f, -0.5f, 0.0f,         1.0f, 0.0f, 0.0f,       1.0f, 0.0f, 
-        0.5f, -0.5f, 0.0f,          0.0f, 1.0f, 0.0f,       1.0f, 0.0f,
-        0.0f, 0.5f, 0.0f,           0.0f, 0.0f, 1.0f,       1.0f, 0.0f
+    const float vertexData[] = {
+        0.5f, 0.5f, 0.0f,           1.0f, 0.0f, 0.0f,       1.0f, 1.0f, 
+        0.5f, -0.5f, 0.0f,          1.0f, 1.0f, 1.0f,       1.0f, 0.0f,
+        -0.5f, -0.5f, 0.0f,         1.0f, 0.0f, 1.0f,       0.0f, 0.0f,
+        -0.5f, 0.5f, 0.0f,          0.0f, 1.0f, 0.0f,       0.0f, 1.0f
     };
 
-    triangle->init(vertexData, sizeof(vertexData) / sizeof(float), VERTEX_COLOR | VERTEX_UV);
+    const uint32_t indices[] = {
+        0, 1, 3,
+        1, 2, 3
+    };
+
+    mesh->init(vertexData, 
+                sizeof(vertexData) / sizeof(float), 
+                VERTEX_COLOR | VERTEX_UV,
+                indices, 
+                sizeof(indices) / sizeof(float));
 
     // Triangle material
     Shader* shader = new Shader();
@@ -24,11 +34,11 @@ int main(int argc, char* argv[])
     Material* material = new Material();
     material->init(shader);
 
-    triangle->setMaterial(material);
+    mesh->setMaterial(material);
 
     // Create scene
     Scene* scene = new Scene();
-    scene->addMesh(triangle);
+    scene->addMesh(mesh);
 
     engine->setScene(scene);
 

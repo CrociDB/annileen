@@ -1,14 +1,23 @@
 #include "mesh.h"
 
-void Mesh::init(const float* vertexData, int vertexSize, uint8_t vertexAttr)
+void Mesh::init(const float* vertexData, uint32_t verticesCount, uint8_t vertexAttr, const uint32_t* indices, uint32_t indicesCount)
 {
-    m_VertexData = new GLfloat[vertexSize];
-    m_VertexSize = vertexSize;
     m_VertexAttr = vertexAttr;
 
-    for (int i = 0; i < m_VertexSize; i++)
+    m_VertexData = new GLfloat[verticesCount];
+    m_VertexCount = verticesCount;
+
+    for (int i = 0; i < m_VertexCount; i++)
     {
         m_VertexData[i] = vertexData[i];
+    }
+
+    m_VertexIndices = new GLuint[indicesCount];
+    m_VertexIndicesCount = indicesCount;
+
+    for (int i = 0; i < m_VertexIndicesCount; i++)
+    {
+        m_VertexIndices[i] = indices[i];
     }
 
     m_VertexAttrCount = 1
@@ -36,26 +45,30 @@ void Mesh::genBuffers()
 {
     glGenVertexArrays(1, &m_VertexArrayObject);
     glGenBuffers(1, &m_VertexBufferObject);
+    glGenBuffers(1, &m_ElementBufferObject);
 
     glBindVertexArray(m_VertexArrayObject);
     glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferObject);
-    glBufferData(GL_ARRAY_BUFFER, m_VertexSize * sizeof(GLfloat), m_VertexData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, m_VertexCount * sizeof(GLfloat), m_VertexData, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, m_VertexStride, (GLvoid *)0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ElementBufferObject);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_VertexIndicesCount * sizeof(GLuint), m_VertexIndices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, m_VertexStride, (GLvoid*)0);
     glEnableVertexAttribArray(0);
 
     int offset = 3;
     
     if (m_VertexAttr & VERTEX_COLOR)
     {
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, m_VertexStride, (GLvoid *)(offset * sizeof(GLfloat)));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, m_VertexStride, (GLvoid*)(offset * sizeof(GLfloat)));
         glEnableVertexAttribArray(1);
         offset += 3;
     }
 
     if (m_VertexAttr & VERTEX_UV)
     {
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, m_VertexStride, (GLvoid *)(offset * sizeof(GLfloat)));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, m_VertexStride, (GLvoid*)(offset * sizeof(GLfloat)));
         glEnableVertexAttribArray(2);
         offset += 2;
     }
@@ -67,7 +80,7 @@ void Mesh::genBuffers()
 void Mesh::bindAndDraw()
 {
     glBindVertexArray(m_VertexArrayObject);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawElements(GL_TRIANGLES, m_VertexIndicesCount, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 
