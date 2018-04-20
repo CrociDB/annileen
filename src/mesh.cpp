@@ -88,9 +88,9 @@ Mesh::Mesh()
 {
 }
 
-
 Mesh::~Mesh()
 {
     glDeleteVertexArrays(1, &m_VertexArrayObject);
     glDeleteBuffers(1, &m_VertexBufferObject);
+    glDeleteBuffers(1, &m_ElementBufferObject);
 }
