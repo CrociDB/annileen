@@ -84,11 +84,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>${ProjectDir}\..\soil2\include\;${ProjectDir}\..\glew\include\;${ProjectDir}\..\sdl\include;${ProjectDir}\..\glm\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>${ProjectDir}\..\glew\include\;${ProjectDir}\..\sdl_image\include;${ProjectDir}\..\sdl\include;${ProjectDir}\..\glm\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>${ProjectDir}/../soil2/lib;${ProjectDir}/../sdl/lib/x64;${ProjectDir}/../glew/lib/Release/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;glew32s.lib;soil2-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>${ProjectDir}/../sdl_image/lib/x64;${ProjectDir}/../sdl/lib/x64;${ProjectDir}/../glew/lib/Release/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;glew32s.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -131,6 +131,7 @@
     <ClCompile Include="..\..\src\renderer.cpp" />
     <ClCompile Include="..\..\src\scene.cpp" />
     <ClCompile Include="..\..\src\shader.cpp" />
+    <ClCompile Include="..\..\src\texture.cpp" />
     <ClCompile Include="..\..\src\triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -140,6 +141,7 @@
     <ClInclude Include="..\..\src\renderer.h" />
     <ClInclude Include="..\..\src\scene.h" />
     <ClInclude Include="..\..\src\shader.h" />
+    <ClInclude Include="..\..\src\texture.h" />
     <ClInclude Include="..\..\src\util.h" />
   </ItemGroup>
   <ItemGroup>
