@@ -2,7 +2,7 @@
 #define _TEXTURE_H_
 
 #include <iostream>
-#include <string>>
+#include <string>
 
 #include <GL/glew.h>
 #include <SDL.h>
