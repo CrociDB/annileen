@@ -7,9 +7,9 @@
 #include "material.h"
 
 // Mesh data
-#define VERTEX_COLOR    0b00000001
-#define VERTEX_UV       0b00000010
-#define VERTEX_NORMAL   0b00000100
+#define VERTEX_COLOR    1
+#define VERTEX_UV       1 << 1
+#define VERTEX_NORMAL   1 << 2
 
 class Mesh
 {
