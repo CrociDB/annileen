@@ -39,6 +39,7 @@ void Renderer::renderMesh(Mesh* mesh)
 {
     auto material = mesh->getMaterial();
     material->getShader()->use();
+    material->useTextures();
 
     mesh->bindAndDraw();
 }

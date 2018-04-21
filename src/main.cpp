@@ -34,6 +34,8 @@ int main(int argc, char* argv[])
 
     Material* material = new Material();
     material->init(shader);
+    material->addTexture("mainTex", Texture("../../assets/texture.png"));
+    material->loadTextures();
 
     mesh->setMaterial(material);
 
