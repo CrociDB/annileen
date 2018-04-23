@@ -28,8 +28,8 @@ public:
 
     Renderer* getRenderer();
     SDL_Window* getSDLWindow();
-    uint16_t getWidth();
-    uint16_t getHeight();
+    uint16_t getWidth() const;
+    uint16_t getHeight() const;
 
     void setScene(Scene* scene);
 

@@ -32,12 +32,12 @@ SDL_Window* Engine::getSDLWindow()
     return m_Window;
 }
 
-uint16_t Engine::getWidth()
+uint16_t Engine::getWidth() const
 {
     return m_Width;
 }
 
-uint16_t Engine::getHeight()
+uint16_t Engine::getHeight() const
 {
     return m_Height;
 }

@@ -2,6 +2,50 @@
 #include "engine.h"
 #include "util.h"
 
+float cube[] = {
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+    0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+    0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+    0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+    0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+    0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+    0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+    0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+};
+
 int main(int argc, char* argv[])
 {
     Engine* engine = new Engine();
@@ -9,26 +53,11 @@ int main(int argc, char* argv[])
 
     // Create triangle
     Mesh* mesh = new Mesh();
+    mesh->init(cube, 
+                sizeof(cube) / sizeof(float), 
+                VERTEX_UV);
 
-    const float vertexData[] = {
-        0.5f, 0.5f, 0.0f,           1.0f, 0.0f, 0.0f,       1.0f, 1.0f, 
-        0.5f, -0.5f, 0.0f,          1.0f, 1.0f, 1.0f,       1.0f, 0.0f,
-        -0.5f, -0.5f, 0.0f,         1.0f, 0.0f, 1.0f,       0.0f, 0.0f,
-        -0.5f, 0.5f, 0.0f,          0.0f, 1.0f, 0.0f,       0.0f, 1.0f
-    };
-
-    const uint32_t indices[] = {
-        0, 1, 3,
-        1, 2, 3
-    };
-
-    mesh->init(vertexData, 
-                sizeof(vertexData) / sizeof(float), 
-                VERTEX_COLOR | VERTEX_UV,
-                indices, 
-                sizeof(indices) / sizeof(float));
-
-    // Triangle material
+    // Mesh material
     Shader* shader = new Shader();
     shader->load("../../shaders/vertex.vert", "../../shaders/fragment.frag");
 
