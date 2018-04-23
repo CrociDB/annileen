@@ -20,6 +20,7 @@ void Renderer::init(Engine* engine)
 
     glViewport(0, 0, engine->getWidth(), engine->getHeight());
 
+    glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
@@ -27,7 +28,7 @@ void Renderer::init(Engine* engine)
 void Renderer::clear()
 {
     glClearColor(0.28f, 0.28f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Renderer::swapBuffer()
@@ -42,7 +43,7 @@ void Renderer::renderMesh(Mesh* mesh)
     material->useTextures();
 
     glm::mat4 transform = mesh->getUpdatedTransformMatrix();
-    material->getShader()->setMat4("transform", transform);
+    material->getShader()->setMat4("model", transform);
 
     mesh->bindAndDraw();
 }

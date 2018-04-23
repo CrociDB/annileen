@@ -7,11 +7,14 @@ in vec2 uv;
 out vec3 frag_color;
 out vec2 frag_uv;
 
-uniform mat4 transform;
+// transformation matrices
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 
 void main()
 {
-   gl_Position = transform * vec4(position, 1.0);
+   gl_Position = model * vec4(position, 1.0);
    frag_color = color;
    frag_uv = vec2(uv.x, 1.0 - uv.y);
 }
