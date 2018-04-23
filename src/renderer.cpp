@@ -41,6 +41,9 @@ void Renderer::renderMesh(Mesh* mesh)
     material->getShader()->use();
     material->useTextures();
 
+    glm::mat4 transform = mesh->getUpdatedTransformMatrix();
+    material->getShader()->setMat4("transform", transform);
+
     mesh->bindAndDraw();
 }
 

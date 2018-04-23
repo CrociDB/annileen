@@ -4,6 +4,9 @@
 #include <iostream>
 #include <memory>
 
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+
 #include "material.h"
 
 // Mesh data
@@ -28,12 +31,19 @@ private:
     uint8_t m_VertexAttrCount;
     uint16_t m_VertexStride;
 
+    glm::mat4 transform;
+
 public:
+    glm::vec3 scale;
+    glm::vec3 position;
+    glm::quat rotation;
+
     void init(const float* vertexData, uint32_t verticesCount, uint8_t vertexAttr, const uint32_t* indices, uint32_t indicesCount);
     void setMaterial(Material* material);
     Material* getMaterial();
 
     void genBuffers();
+    glm::mat4 getUpdatedTransformMatrix();
     void bindAndDraw();
 
     Mesh();

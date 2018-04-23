@@ -77,6 +77,14 @@ void Mesh::genBuffers()
     glBindVertexArray(0);
 }
 
+glm::mat4 Mesh::getUpdatedTransformMatrix()
+{
+    transform = glm::mat4(1.0f);
+    transform = glm::scale(transform, scale);
+    transform = glm::translate(transform, position);
+    return transform;
+}
+
 void Mesh::bindAndDraw()
 {
     glBindVertexArray(m_VertexArrayObject);
@@ -86,6 +94,8 @@ void Mesh::bindAndDraw()
 
 Mesh::Mesh()
 {
+    scale = glm::vec3(1.0f, 1.0f, 1.0f);
+    position = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 Mesh::~Mesh()
