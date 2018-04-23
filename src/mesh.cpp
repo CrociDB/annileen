@@ -12,12 +12,16 @@ void Mesh::init(const float* vertexData, uint32_t verticesCount, uint8_t vertexA
         m_VertexData[i] = vertexData[i];
     }
 
-    m_VertexIndices = new GLuint[indicesCount];
-    m_VertexIndicesCount = indicesCount;
-
-    for (int i = 0; i < m_VertexIndicesCount; i++)
+    m_UseVertexIndices = indicesCount > 0;
+    if (m_UseVertexIndices)
     {
-        m_VertexIndices[i] = indices[i];
+        m_VertexIndices = new GLuint[indicesCount];
+        m_VertexIndicesCount = indicesCount;
+
+        for (int i = 0; i < m_VertexIndicesCount; i++)
+        {
+            m_VertexIndices[i] = indices[i];
+        }
     }
 
     m_VertexAttrCount = 1
@@ -29,6 +33,11 @@ void Mesh::init(const float* vertexData, uint32_t verticesCount, uint8_t vertexA
         + ((m_VertexAttr & VERTEX_COLOR) * 3 * sizeof(GLfloat))
         + (((m_VertexAttr & VERTEX_UV) >> 1) * 2 * sizeof(GLfloat))
         + (((m_VertexAttr & VERTEX_NORMAL) >> 2) * 3 * sizeof(GLfloat));
+}
+
+void Mesh::init(const float* vertexData, uint32_t verticesCount, uint8_t vertexAttr)
+{
+    init(vertexData, verticesCount, vertexAttr, NULL, 0);
 }
 
 void Mesh::setMaterial(Material* material)
@@ -45,14 +54,17 @@ void Mesh::genBuffers()
 {
     glGenVertexArrays(1, &m_VertexArrayObject);
     glGenBuffers(1, &m_VertexBufferObject);
-    glGenBuffers(1, &m_ElementBufferObject);
 
     glBindVertexArray(m_VertexArrayObject);
     glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferObject);
     glBufferData(GL_ARRAY_BUFFER, m_VertexCount * sizeof(GLfloat), m_VertexData, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ElementBufferObject);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_VertexIndicesCount * sizeof(GLuint), m_VertexIndices, GL_STATIC_DRAW);
+    if (m_UseVertexIndices)
+    {
+        glGenBuffers(1, &m_ElementBufferObject);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ElementBufferObject);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_VertexIndicesCount * sizeof(GLuint), m_VertexIndices, GL_STATIC_DRAW);
+    }
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, m_VertexStride, (GLvoid*)0);
     glEnableVertexAttribArray(0);
@@ -88,7 +100,16 @@ glm::mat4 Mesh::getUpdatedTransformMatrix()
 void Mesh::bindAndDraw()
 {
     glBindVertexArray(m_VertexArrayObject);
-    glDrawElements(GL_TRIANGLES, m_VertexIndicesCount, GL_UNSIGNED_INT, 0);
+
+    if (m_UseVertexIndices)
+    {
+        glDrawElements(GL_TRIANGLES, m_VertexIndicesCount, GL_UNSIGNED_INT, 0);
+    }
+    else
+    {
+        glDrawArrays(GL_TRIANGLES, 0, m_VertexCount);
+    }
+
     glBindVertexArray(0);
 }
 
@@ -102,5 +123,6 @@ Mesh::~Mesh()
 {
     glDeleteVertexArrays(1, &m_VertexArrayObject);
     glDeleteBuffers(1, &m_VertexBufferObject);
-    glDeleteBuffers(1, &m_ElementBufferObject);
+    if (m_UseVertexIndices)
+        glDeleteBuffers(1, &m_ElementBufferObject);
 }

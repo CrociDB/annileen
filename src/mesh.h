@@ -21,6 +21,7 @@ private:
     uint32_t m_VertexIndicesCount;
     GLfloat* m_VertexData;
     GLuint* m_VertexIndices;
+    bool m_UseVertexIndices;
     std::shared_ptr<Material> m_Material;
 
     GLuint m_VertexArrayObject;
@@ -39,6 +40,7 @@ public:
     glm::quat rotation;
 
     void init(const float* vertexData, uint32_t verticesCount, uint8_t vertexAttr, const uint32_t* indices, uint32_t indicesCount);
+    void init(const float* vertexData, uint32_t verticesCount, uint8_t vertexAttr);
     void setMaterial(Material* material);
     Material* getMaterial();
 
