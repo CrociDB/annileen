@@ -16,8 +16,9 @@ public:
 
     void Rotate(glm::vec3 axis);
     void Rotate(float angle, glm::vec3 axis);
-    glm::quat FromEuler(glm::vec3 euler);
+    void Rotate(glm::quat quat);
 
+    void setEulerAngles(const glm::vec3& euler);
     glm::vec3 getEuler();
 
     glm::vec3 getForward();
