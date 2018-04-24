@@ -13,7 +13,7 @@ void Renderer::initMatrices()
 
     m_ProjectionMatrix = glm::mat4(1.0f);
     m_ProjectionMatrix = glm::perspective(
-        glm::radians(45.0f),
+        glm::radians(60.0f),
         (float)m_Engine->getWidth() / (float)m_Engine->getHeight(),
         0.1f,
         100.0f);

@@ -48,7 +48,7 @@ float cube[] = {
 
 int main(int argc, char* argv[])
 {
-    Engine* engine = new Engine();
+    Engine* engine = Engine::getInstance();
     engine->init(800, 600);
 
     // Create triangle
@@ -74,10 +74,30 @@ int main(int argc, char* argv[])
 
     engine->setScene(scene);
 
-
     while (engine->isRunning())
     {
         engine->checkInputEvents();
+
+		if (engine->getInput()->getKeyDown(SDLK_LEFT) || engine->getInput()->getKeyDown(SDLK_a))
+		{
+			mesh->position += glm::vec3(-0.003f, 0.0, 0.0);
+		}
+
+		if (engine->getInput()->getKeyDown(SDLK_RIGHT) || engine->getInput()->getKeyDown(SDLK_d))
+		{
+			mesh->position += glm::vec3(0.003f, 0.0, 0.0);
+		}
+
+		if (engine->getInput()->getKeyDown(SDLK_UP) || engine->getInput()->getKeyDown(SDLK_w))
+		{
+			mesh->position += glm::vec3(0.0, 0.0, -0.003f);
+		}
+
+		if (engine->getInput()->getKeyDown(SDLK_DOWN) || engine->getInput()->getKeyDown(SDLK_s))
+		{
+			mesh->position += glm::vec3(0.0, 0.0, 0.003f);
+		}
+
         engine->renderFrame();
     }
 

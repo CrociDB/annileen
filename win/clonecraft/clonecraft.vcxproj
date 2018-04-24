@@ -125,6 +125,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\engine.cpp" />
+    <ClCompile Include="..\..\src\input.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\material.cpp" />
     <ClCompile Include="..\..\src\mesh.cpp" />
@@ -136,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\engine.h" />
+    <ClInclude Include="..\..\src\input.h" />
     <ClInclude Include="..\..\src\material.h" />
     <ClInclude Include="..\..\src\mesh.h" />
     <ClInclude Include="..\..\src\renderer.h" />

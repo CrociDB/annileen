@@ -8,6 +8,7 @@
 #include <glm.hpp>
 
 #include "scene.h"
+#include "input.h"
 
 class Renderer;
 
@@ -18,15 +19,18 @@ private:
     uint16_t m_Width, m_Height;
     SDL_Event m_WindowEvent;
 
+	Input* m_Input;
     Renderer* m_Renderer;
     bool m_Running;
 
     Scene* m_CurrentScene = NULL;
 
+    Engine();
 public:
     void init(uint16_t width, uint16_t height);
 
-    Renderer* getRenderer();
+	Input* getInput();
+	Renderer* getRenderer();
     SDL_Window* getSDLWindow();
     uint16_t getWidth() const;
     uint16_t getHeight() const;
@@ -38,7 +42,7 @@ public:
     void checkInputEvents();
     void renderFrame();
 
-    Engine();
+	static Engine* getInstance();
     ~Engine();
 };
 

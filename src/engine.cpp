@@ -16,10 +16,17 @@ void Engine::init(uint16_t width, uint16_t height)
 
     m_Window = SDL_CreateWindow("Clonecraft", 300, 300, width, height, SDL_WINDOW_OPENGL);
     
+	m_Input = new Input();
+
     m_Renderer = new Renderer();
     m_Renderer->init(this);
 
     m_Running = true;
+}
+
+Input* Engine::getInput()
+{
+	return m_Input;
 }
 
 Renderer* Engine::getRenderer()
@@ -61,6 +68,14 @@ void Engine::checkInputEvents()
             m_Running = false;
             break;
         }
+		else if (m_WindowEvent.type == SDL_KEYDOWN)
+		{
+			m_Input->_setKeyDown(m_WindowEvent.key.keysym.sym, true);
+		}
+		else if (m_WindowEvent.type == SDL_KEYUP)
+		{
+			m_Input->_setKeyDown(m_WindowEvent.key.keysym.sym, false);
+		}
     }
 }
 
@@ -82,6 +97,18 @@ void Engine::renderFrame()
 
 Engine::Engine()
 {
+}
+
+Engine* Engine::getInstance()
+{
+	static Engine* instance = nullptr;
+
+	if (instance == nullptr)
+	{
+		instance = new Engine();
+	}
+
+	return instance;
 }
 
 Engine::~Engine()
