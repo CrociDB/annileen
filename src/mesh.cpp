@@ -7,7 +7,7 @@ void Mesh::init(const float* vertexData, uint32_t verticesCount, uint8_t vertexA
     m_VertexData = new GLfloat[verticesCount];
     m_VertexCount = verticesCount;
 
-    for (int i = 0; i < m_VertexCount; i++)
+    for (unsigned int i = 0; i < m_VertexCount; i++)
     {
         m_VertexData[i] = vertexData[i];
     }
@@ -18,7 +18,7 @@ void Mesh::init(const float* vertexData, uint32_t verticesCount, uint8_t vertexA
         m_VertexIndices = new GLuint[indicesCount];
         m_VertexIndicesCount = indicesCount;
 
-        for (int i = 0; i < m_VertexIndicesCount; i++)
+        for (unsigned int i = 0; i < m_VertexIndicesCount; i++)
         {
             m_VertexIndices[i] = indices[i];
         }
