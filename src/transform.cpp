@@ -14,17 +14,24 @@ glm::mat4 Transform::getModelMatrix()
     return matrix;
 }
 
-void Transform::Rotate(glm::vec3 axis)
+void Transform::translate(const glm::vec3& pos, bool local)
+{
+    if (local)
+    {
+        position += rotation * pos;
+    }
+    else
+    {
+        position += pos;
+    }
+}
+
+void Transform::rotate(const glm::vec3& axis)
 {
     setEulerAngles(axis + getEuler());
 }
 
-void Transform::Rotate(float angle, glm::vec3 axis)
-{
-    setEulerAngles((angle * axis) + getEuler());
-}
-
-void Transform::Rotate(glm::quat quat)
+void Transform::rotate(const glm::quat& quat)
 {
     rotation = rotation * quat;
 }
@@ -34,22 +41,22 @@ void Transform::setEulerAngles(const glm::vec3& euler)
     rotation = glm::quat(glm::radians(euler));
 }
 
-glm::vec3 Transform::getEuler()
+glm::vec3 Transform::getEuler() const
 {
     return glm::degrees(glm::eulerAngles(rotation));
 }
 
-glm::vec3 Transform::getForward()
+glm::vec3 Transform::getForward() const
 {
     return rotation * glm::vec3(0.0f, 0.0f, 1.0f);
 }
 
-glm::vec3 Transform::getRight()
+glm::vec3 Transform::getRight() const
 {
     return rotation * glm::vec3(1.0f, 0.0f, 0.0f);
 }
 
-glm::vec3 Transform::getUp()
+glm::vec3 Transform::getUp() const
 {
     return rotation * glm::vec3(0.0f, 1.0f, 0.0f);
 }

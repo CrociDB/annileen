@@ -2,7 +2,7 @@
 #include "engine.h"
 #include "util.h"
 
-float cube[] = {
+float vdata_cube[] = {
     -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
@@ -46,17 +46,34 @@ float cube[] = {
     -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 };
 
+float vdata_floor[] = {
+    -0.5f,  0.0f, -0.5f,  0.0f, 0.5f,
+     0.5f,  0.0f, -0.5f,  0.33, 0.5f,
+     0.5f,  0.0f,  0.5f,  0.33, 0.0f,
+     0.5f,  0.0f,  0.5f,  0.33, 0.0f,
+    -0.5f,  0.0f,  0.5f,  0.0f, 0.0f,
+    -0.5f,  0.0f, -0.5f,  0.0f, 0.5f
+};
+
+
 int main(int argc, char* argv[])
 {
     Engine* engine = Engine::getInstance();
     engine->init(800, 600);
 
     // Create triangle
-    Mesh* mesh = new Mesh();
-    mesh->init(cube, 
-                sizeof(cube) / sizeof(float), 
+    Mesh* cube = new Mesh();
+    cube->init(vdata_cube, 
+                sizeof(vdata_cube) / sizeof(float), 
                 VERTEX_UV);
-    mesh->transform.position += glm::vec3(0.0f, 0.0f, -3.0f);
+    cube->transform.translate(glm::vec3(0.0f, 0.0f, -3.0f));
+
+    Mesh* floor = new Mesh();
+    floor->init(vdata_floor,
+        sizeof(vdata_floor) / sizeof(float),
+        VERTEX_UV);
+    floor->transform.translate(glm::vec3(0.0f, -1.0f, -3.0f));
+    floor->transform.scale *= 30.0f;
 
     // Mesh material
     Shader* shader = new Shader();
@@ -67,11 +84,14 @@ int main(int argc, char* argv[])
     material->addTexture("mainTex", Texture("../../assets/texture.png"));
     material->loadTextures();
 
-    mesh->setMaterial(material);
+    cube->setMaterial(material);
+    floor->setMaterial(material);
 
     // Create scene
     Scene* scene = new Scene();
-    scene->addMesh(mesh);
+    scene->addMesh(cube);
+    scene->addMesh(floor);
+
     Camera* camera = scene->getCamera();
 
     engine->setScene(scene);
@@ -82,45 +102,39 @@ int main(int argc, char* argv[])
 
         //mesh->transform.rotation = mesh->transform.FromEuler(glm::vec3(0.0, 0.3f * SDL_GetTicks(), 0.0));
 
-		if (engine->getInput()->getKeyDown(SDLK_LEFT) || engine->getInput()->getKeyDown(SDLK_a))
-		{
-            //camera->transform.position += glm::vec3(-0.3f, 0.0f, 0.0f);
-            camera->transform.Rotate(glm::vec3(0.0f, 3.0f, 0.0f));
-        
-            //mesh->transform.Rotate(glm::vec3(0.0, 1.3f, 0.0));
-		}
-
-		if (engine->getInput()->getKeyDown(SDLK_RIGHT) || engine->getInput()->getKeyDown(SDLK_d))
-		{
-            //camera->transform.position += glm::vec3(0.3f, 0.0f, 0.0f);
-            camera->transform.Rotate(glm::vec3(0.0f, -3.0f, 0.0f));
-            //mesh->transform.Rotate(glm::vec3(0.0, -1.3f, 0.0));
-		}
-
-		if (engine->getInput()->getKeyDown(SDLK_UP) || engine->getInput()->getKeyDown(SDLK_w))
-		{
-            camera->transform.Rotate(glm::vec3(3.0f, 0.0f, 0.0));
-            //camera->transform.position += glm::vec3(0.0f, 0.3f, 0.0f);
-		}
-
-		if (engine->getInput()->getKeyDown(SDLK_DOWN) || engine->getInput()->getKeyDown(SDLK_s))
-		{
-            camera->transform.Rotate(glm::vec3(-3.0f, 0.0f, 0.0));
-            //mesh->transform.Rotate(glm::vec3(-1.3f, 0.0f, 0.0));
-            //camera->transform.position += glm::vec3(0.0f, -0.3f, 0.0f);
-		}
-
-        if (engine->getInput()->getKeyDown(SDLK_q))
+        if (engine->getInput()->getKeyDown(SDLK_s))
         {
-            //mesh->transform.Rotate(glm::vec3(-1.3f, 0.0f, 0.0));
-            mesh->transform.scale += glm::vec3(0.0f, -0.05, 0.0f);
+            camera->transform.translate(glm::vec3(0.0f, 0.0f, 0.3f));
+        }
+        if (engine->getInput()->getKeyDown(SDLK_w))
+        {
+            camera->transform.translate(glm::vec3(0.0f , 0.0f, -0.3f));
+        }
+        if (engine->getInput()->getKeyDown(SDLK_a))
+        {
+            camera->transform.translate(glm::vec3(-0.3f, 0.0f, 0.0f));
+        }
+        if (engine->getInput()->getKeyDown(SDLK_d))
+        {
+            camera->transform.translate(glm::vec3(0.3f, 0.0f, 0.0f));
         }
 
-        if (engine->getInput()->getKeyDown(SDLK_e))
-        {
-            //mesh->transform.Rotate(glm::vec3(-1.3f, 0.0f, 0.0));
-            mesh->transform.scale += glm::vec3(0.0f, 0.05, 0.0f);
-        }
+		if (engine->getInput()->getKeyDown(SDLK_LEFT))
+		{
+            camera->transform.rotate(glm::vec3(0.0f, 3.0f, 0.0f));
+		}
+		if (engine->getInput()->getKeyDown(SDLK_RIGHT))
+		{
+            camera->transform.rotate(glm::vec3(0.0f, -3.0f, 0.0f));
+		}
+		if (engine->getInput()->getKeyDown(SDLK_UP))
+		{
+            camera->transform.rotate(glm::vec3(3.0f, 0.0f, 0.0));
+		}
+		if (engine->getInput()->getKeyDown(SDLK_DOWN))
+		{
+            camera->transform.rotate(glm::vec3(-3.0f, 0.0f, 0.0));
+		}
 
         engine->renderFrame();
     }

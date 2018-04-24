@@ -13,17 +13,18 @@ public:
     glm::quat rotation;
 
     glm::mat4 getModelMatrix();
+    
+    void translate(const glm::vec3& pos, bool local = true);
 
-    void Rotate(glm::vec3 axis);
-    void Rotate(float angle, glm::vec3 axis);
-    void Rotate(glm::quat quat);
+    void rotate(const glm::vec3& axis);
+    void rotate(const glm::quat& quat);
 
     void setEulerAngles(const glm::vec3& euler);
-    glm::vec3 getEuler();
+    glm::vec3 getEuler() const;
 
-    glm::vec3 getForward();
-    glm::vec3 getRight();
-    glm::vec3 getUp();
+    glm::vec3 getForward() const;
+    glm::vec3 getRight() const;
+    glm::vec3 getUp() const;
 
     Transform();
     ~Transform();
