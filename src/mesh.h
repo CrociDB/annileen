@@ -8,6 +8,7 @@
 #include <gtc/matrix_transform.hpp>
 
 #include "material.h"
+#include "transform.h"
 
 // Mesh data
 #define VERTEX_COLOR    1
@@ -32,12 +33,8 @@ private:
     uint8_t m_VertexAttrCount;
     uint16_t m_VertexStride;
 
-    glm::mat4 transform;
-
 public:
-    glm::vec3 scale;
-    glm::vec3 position;
-    glm::quat rotation;
+    Transform transform;
 
     void init(const float* vertexData, uint32_t verticesCount, uint8_t vertexAttr, const uint32_t* indices, uint32_t indicesCount);
     void init(const float* vertexData, uint32_t verticesCount, uint8_t vertexAttr);
@@ -45,7 +42,6 @@ public:
     Material* getMaterial();
 
     void genBuffers();
-    glm::mat4 getUpdatedTransformMatrix();
     void bindAndDraw();
 
     Mesh();

@@ -9,7 +9,7 @@ Renderer::Renderer()
 void Renderer::initMatrices()
 {
     m_ViewMatrix = glm::mat4(1.0f);
-    m_ViewMatrix = glm::translate(m_ViewMatrix, glm::vec3(0.0f, 0.0f, -3.0f));
+    m_ViewMatrix = glm::translate(m_ViewMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
 
     m_ProjectionMatrix = glm::mat4(1.0f);
     m_ProjectionMatrix = glm::perspective(
@@ -57,8 +57,8 @@ void Renderer::renderMesh(Mesh* mesh)
     material->getShader()->use();
     material->useTextures();
 
-    glm::mat4 transform = mesh->getUpdatedTransformMatrix();
-    transform = glm::rotate(transform, 0.001f * SDL_GetTicks(), glm::vec3(1.0f, 1.0f, 0.0f));
+    glm::mat4 transform = mesh->transform.getModelMatrix();
+    //transform = glm::rotate(transform, 0.001f * SDL_GetTicks(), glm::vec3(1.0f, 1.0f, 0.0f));
 
     material->getShader()->setMat4("model", transform);
     material->getShader()->setMat4("view", m_ViewMatrix);

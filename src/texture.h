@@ -18,7 +18,7 @@ private:
 public:
 	bool load();
 
-    GLuint getId() const;
+    GLuint getId() const;       
 
 	Texture(const std::string& filename);
 	~Texture();
