@@ -5,9 +5,9 @@
 void Camera::updateMatrices()
 {
     m_ViewMatrix = glm::mat4(1.0f);
-    m_ViewMatrix = glm::translate(m_ViewMatrix, -transform.position);
-    glm::mat4 rot = glm::mat4_cast(transform.rotation);
-    m_ViewMatrix *= rot;
+    glm::mat4 translate = glm::translate(m_ViewMatrix, -transform.position);
+    glm::mat4 rotate = glm::transpose(glm::mat4_cast(transform.rotation));
+    m_ViewMatrix = rotate * translate;
 
     m_ProjectionMatrix = glm::mat4(1.0f);
     m_ProjectionMatrix = glm::perspective(

@@ -80,27 +80,32 @@ int main(int argc, char* argv[])
     {
         engine->checkInputEvents();
 
-        mesh->transform.rotation = mesh->transform.FromEuler(glm::vec3(0.0, 0.3f * SDL_GetTicks(), 0.0));
+        //mesh->transform.rotation = mesh->transform.FromEuler(glm::vec3(0.0, 0.3f * SDL_GetTicks(), 0.0));
 
 		if (engine->getInput()->getKeyDown(SDLK_LEFT) || engine->getInput()->getKeyDown(SDLK_a))
 		{
             //camera->transform.position += glm::vec3(-0.3f, 0.0f, 0.0f);
             camera->transform.Rotate(glm::vec3(0.0f, 10.0f, 0.0f));
+        
+            //mesh->transform.Rotate(glm::vec3(0.0, 1.3f, 0.0));
 		}
 
 		if (engine->getInput()->getKeyDown(SDLK_RIGHT) || engine->getInput()->getKeyDown(SDLK_d))
 		{
             //camera->transform.position += glm::vec3(0.3f, 0.0f, 0.0f);
             camera->transform.Rotate(glm::vec3(0.0f, -10.0f, 0.0f));
+            //mesh->transform.Rotate(glm::vec3(0.0, -1.3f, 0.0));
 		}
 
 		if (engine->getInput()->getKeyDown(SDLK_UP) || engine->getInput()->getKeyDown(SDLK_w))
 		{
+            //mesh->transform.Rotate(glm::vec3(1.3f, 0.0f, 0.0));
             //camera->transform.position += glm::vec3(0.0f, 0.3f, 0.0f);
 		}
 
 		if (engine->getInput()->getKeyDown(SDLK_DOWN) || engine->getInput()->getKeyDown(SDLK_s))
 		{
+            //mesh->transform.Rotate(glm::vec3(-1.3f, 0.0f, 0.0));
             //camera->transform.position += glm::vec3(0.0f, -0.3f, 0.0f);
 		}
 
