@@ -13,17 +13,13 @@ private:
     Engine* m_Engine;
     SDL_GLContext m_Context;
 
-    glm::mat4 m_ViewMatrix;
-    glm::mat4 m_ProjectionMatrix;
-
-    void initMatrices();
-
 public:
     void init(Engine* engine);
 
     void clear();
+    void initFrame(Scene* scene);
     void swapBuffer();
-    void renderMesh(Mesh* mesh);
+    void renderMesh(Camera* camera, Mesh* mesh);
 
     Renderer();
     ~Renderer();

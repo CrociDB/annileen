@@ -86,9 +86,10 @@ void Engine::renderFrame()
     // Render objects seen in scene
     if (m_CurrentScene != NULL)
     {
+        m_Renderer->initFrame(m_CurrentScene);
         for (auto& mesh : m_CurrentScene->getMeshList())
         {
-            m_Renderer->renderMesh(mesh.get());
+            m_Renderer->renderMesh(m_CurrentScene->getCamera(), mesh.get());
         }
     }
 

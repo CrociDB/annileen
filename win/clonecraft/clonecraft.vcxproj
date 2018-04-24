@@ -124,6 +124,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\camera.cpp" />
     <ClCompile Include="..\..\src\engine.cpp" />
     <ClCompile Include="..\..\src\input.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
@@ -137,6 +138,7 @@
     <ClCompile Include="..\..\src\triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\camera.h" />
     <ClInclude Include="..\..\src\engine.h" />
     <ClInclude Include="..\..\src\input.h" />
     <ClInclude Include="..\..\src\material.h" />
