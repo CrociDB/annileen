@@ -100,7 +100,11 @@ int main(int argc, char* argv[])
     {
         engine->checkInputEvents();
 
-        //mesh->transform.rotation = mesh->transform.FromEuler(glm::vec3(0.0, 0.3f * SDL_GetTicks(), 0.0));
+        cube->transform.rotate(glm::vec3(0.0f, 1.3f, 0.0f));
+        //cube->transform.rotation = glm::quat(glm::radians(glm::vec3(0.0f, 90.1f, 0.0f)));
+        std::cout << cube->transform.getEuler().x << ", " 
+                  << cube->transform.getEuler().y << ", " 
+                  << cube->transform.getEuler().z << std::endl;
 
         if (engine->getInput()->getKeyDown(SDLK_s))
         {

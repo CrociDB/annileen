@@ -28,7 +28,7 @@ void Transform::translate(const glm::vec3& pos, bool local)
 
 void Transform::rotate(const glm::vec3& axis)
 {
-    setEulerAngles(axis + getEuler());
+    rotate(glm::quat(glm::radians(axis)));
 }
 
 void Transform::rotate(const glm::quat& quat)
@@ -65,7 +65,7 @@ Transform::Transform()
 {
     scale = glm::vec3(1.0f, 1.0f, 1.0f);
     position = glm::vec3(0.0f, 0.0f, 0.0f);
-    rotation = glm::quat();
+    rotation = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
 }
 
 
