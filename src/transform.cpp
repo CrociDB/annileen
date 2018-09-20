@@ -33,7 +33,22 @@ void Transform::rotate(const glm::vec3& axis)
 
 void Transform::rotate(const glm::quat& quat)
 {
-    rotation = rotation * quat;
+	rotation *= quat;
+}
+
+void Transform::rotateYaw(float angle)
+{
+	rotate(angle * getRight());
+}
+
+void Transform::rotatePitch(float angle)
+{
+	rotate(angle * getUp());
+}
+
+void Transform::rotateRoll(float angle)
+{
+	rotate(angle * getForward());
 }
 
 void Transform::setEulerAngles(const glm::vec3& euler)

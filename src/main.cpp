@@ -100,7 +100,7 @@ int main(int argc, char* argv[])
     {
         engine->checkInputEvents();
 
-        cube->transform.rotate(glm::vec3(0.0f, 1.3f, 0.0f));
+        cube->transform.rotate(glm::vec3(0.0f, 0.3f, 0.0f));
         //cube->transform.rotation = glm::quat(glm::radians(glm::vec3(0.0f, 90.1f, 0.0f)));
         std::cout << cube->transform.getEuler().x << ", " 
                   << cube->transform.getEuler().y << ", " 
@@ -108,36 +108,40 @@ int main(int argc, char* argv[])
 
         if (engine->getInput()->getKeyDown(SDLK_s))
         {
-            camera->transform.translate(glm::vec3(0.0f, 0.0f, 0.3f));
+            camera->transform.translate(glm::vec3(0.0f, 0.0f, 0.05f));
         }
         if (engine->getInput()->getKeyDown(SDLK_w))
         {
-            camera->transform.translate(glm::vec3(0.0f , 0.0f, -0.3f));
+            camera->transform.translate(glm::vec3(0.0f , 0.0f, -0.05f));
         }
         if (engine->getInput()->getKeyDown(SDLK_a))
         {
-            camera->transform.translate(glm::vec3(-0.3f, 0.0f, 0.0f));
+            camera->transform.translate(glm::vec3(-0.05f, 0.0f, 0.0f));
         }
         if (engine->getInput()->getKeyDown(SDLK_d))
         {
-            camera->transform.translate(glm::vec3(0.3f, 0.0f, 0.0f));
+            camera->transform.translate(glm::vec3(0.05f, 0.0f, 0.0f));
         }
 
 		if (engine->getInput()->getKeyDown(SDLK_LEFT))
 		{
-            camera->transform.rotate(glm::vec3(0.0f, 3.0f, 0.0f));
+            camera->transform.rotate(glm::vec3(0.0f, 0.5f, 0.0f));
+			//camera->transform.rotatePitch(.5f);
 		}
 		if (engine->getInput()->getKeyDown(SDLK_RIGHT))
 		{
-            camera->transform.rotate(glm::vec3(0.0f, -3.0f, 0.0f));
+            camera->transform.rotate(glm::vec3(0.0f, -0.5f, 0.0f));
+			//camera->transform.rotatePitch(-.5f);
 		}
 		if (engine->getInput()->getKeyDown(SDLK_UP))
 		{
-            camera->transform.rotate(glm::vec3(3.0f, 0.0f, 0.0));
+            //camera->transform.rotate(glm::vec3(0.5, 0.0f, 0.0));
+			camera->transform.rotateYaw(.5f);
 		}
 		if (engine->getInput()->getKeyDown(SDLK_DOWN))
 		{
-            camera->transform.rotate(glm::vec3(-3.0f, 0.0f, 0.0));
+            //camera->transform.rotate(glm::vec3(-0.5f, 0.0f, 0.0));
+			camera->transform.rotateYaw(-.5f);
 		}
 
         engine->renderFrame();

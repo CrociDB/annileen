@@ -19,6 +19,10 @@ public:
     void rotate(const glm::vec3& axis);
     void rotate(const glm::quat& quat);
 
+	void rotateYaw(float angle);
+	void rotatePitch(float angle);
+	void rotateRoll(float angle);
+
     void setEulerAngles(const glm::vec3& euler);
     glm::vec3 getEuler() const;
 
