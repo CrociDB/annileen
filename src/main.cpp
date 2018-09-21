@@ -102,9 +102,9 @@ int main(int argc, char* argv[])
 
         cube->transform.rotate(glm::vec3(0.0f, 0.3f, 0.0f));
         //cube->transform.rotation = glm::quat(glm::radians(glm::vec3(0.0f, 90.1f, 0.0f)));
-        std::cout << cube->transform.getEuler().x << ", " 
-                  << cube->transform.getEuler().y << ", " 
-                  << cube->transform.getEuler().z << std::endl;
+        //std::cout << camera->transform.getEuler().x << ", "
+        //          << camera->transform.getEuler().y << ", "
+        //          << camera->transform.getEuler().z << std::endl;
 
         if (engine->getInput()->getKeyDown(SDLK_s))
         {
@@ -143,6 +143,11 @@ int main(int argc, char* argv[])
             //camera->transform.rotate(glm::vec3(-0.5f, 0.0f, 0.0));
 			camera->transform.rotateYaw(-.5f);
 		}
+
+        if (engine->getInput()->getKeyDown(SDLK_SPACE))
+        {
+            camera->transform.lookAt(cube->transform);
+        }
 
         engine->renderFrame();
     }

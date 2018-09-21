@@ -1,7 +1,5 @@
 #include "transform.h"
 
-
-
 glm::mat4 Transform::getModelMatrix()
 {
     glm::mat4 matrix(1.0f);
@@ -75,6 +73,27 @@ glm::vec3 Transform::getUp() const
 {
     return rotation * glm::vec3(0.0f, 1.0f, 0.0f);
 }
+
+
+void Transform::setForward(glm::vec3 forward)
+{
+
+}
+
+void Transform::lookAt(Transform transform)
+{
+    lookAt(transform.position);
+}
+
+void Transform::lookAt(glm::vec3 pos)
+{
+    glm::vec3 direction = glm::normalize(position - pos);
+    float dot = glm::dot(glm::vec3(0.0f, 0.0f, 1.0f), direction);
+    float angle = (float)acos(dot);
+    glm::vec3 rotationAxis = glm::normalize(glm::cross(glm::vec3(0.0f, 0.0f, 1.0f), direction));
+    rotation = glm::normalize(glm::quat(rotationAxis * angle));
+}
+
 
 Transform::Transform()
 {

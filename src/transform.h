@@ -30,6 +30,11 @@ public:
     glm::vec3 getRight() const;
     glm::vec3 getUp() const;
 
+    void setForward(glm::vec3 forward);
+
+    void lookAt(Transform transform);
+    void lookAt(glm::vec3 pos);
+
     Transform();
     ~Transform();
 };

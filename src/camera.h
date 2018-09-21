@@ -14,6 +14,8 @@ private:
     glm::mat4 m_ProjectionMatrix;
     glm::mat4 m_ViewProjectionMatrix;
 
+    glm::vec3 m_CameraTarget;
+
 public:
     Transform transform;
     float fieldOfView;
