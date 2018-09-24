@@ -16,6 +16,7 @@ void Engine::init(uint16_t width, uint16_t height)
 
     m_Window = SDL_CreateWindow("Clonecraft", 300, 300, width, height, SDL_WINDOW_OPENGL);
     
+    SDL_SetRelativeMouseMode((SDL_bool)true);
 	m_Input = new Input();
 
     m_Renderer = new Renderer();

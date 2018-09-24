@@ -153,12 +153,9 @@ int main(int argc, char* argv[])
             camera->transform.lookAt(cube->transform);
         }
 
-        //if (engine->getInput()->getMouseButtonDown(0))
         {
             // Camera mouse control
             auto mouseDelta = engine->getInput()->getMouseDelta();
-
-            std::cout << mouseDelta.x << ", " << mouseDelta.y << std::endl;
 
             yaw += mouseDelta.x * sensitivity;
             pitch += -mouseDelta.y * sensitivity;
