@@ -61,6 +61,7 @@ bool Engine::isRunning()
 
 void Engine::checkInputEvents()
 {
+    m_Input->_flushEvents();
     while (SDL_PollEvent(&m_WindowEvent))
     {
         if (m_WindowEvent.type == SDL_QUIT)
@@ -79,7 +80,7 @@ void Engine::checkInputEvents()
         else if (m_WindowEvent.type == SDL_MOUSEMOTION)
         {
             m_Input->_setMousePosition(m_WindowEvent.motion.x, m_WindowEvent.motion.y);
-            m_Input->_setMouseDelta(m_WindowEvent.motion.x, m_WindowEvent.motion.y);
+            m_Input->_setMouseDelta(m_WindowEvent.motion.xrel, m_WindowEvent.motion.yrel);
         }
         else if (m_WindowEvent.type == SDL_MOUSEBUTTONDOWN)
         {

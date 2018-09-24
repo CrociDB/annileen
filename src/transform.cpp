@@ -77,7 +77,7 @@ glm::vec3 Transform::getUp() const
 
 void Transform::setForward(glm::vec3 forward)
 {
-
+    lookAt(position + forward);
 }
 
 void Transform::lookAt(Transform transform)

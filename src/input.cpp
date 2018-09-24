@@ -78,7 +78,7 @@ glm::vec2 Input::getMouseDelta()
 
 void Input::_flushEvents()
 {
-	for (int i = 0; i < 3; i++) m_MouseButtons[i] = false;
+	m_MouseDelta.x = m_MouseDelta.y = 0.0f;
 }
 
 void Input::_setKeyDown(SDL_Keycode keycode, bool pressed)
@@ -109,7 +109,7 @@ void Input::_setMouseButton(int button, bool status)
 Input::Input()
 {
 	initKeymap();
-	_flushEvents();
+	for (int i = 0; i < 3; i++) m_MouseButtons[i] = false;
 }
 
 Input::~Input()

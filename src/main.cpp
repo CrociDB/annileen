@@ -55,6 +55,7 @@ float vdata_floor[] = {
     -0.5f,  0.0f, -0.5f,  0.0f, 0.5f
 };
 
+void controlCamera(Input* input, Camera* camera);
 
 int main(int argc, char* argv[])
 {
@@ -95,6 +96,9 @@ int main(int argc, char* argv[])
     Camera* camera = scene->getCamera();
 
     engine->setScene(scene);
+
+    float sensitivity = 0.25f;
+    float pitch = 0.0f, yaw = 0.0f;
 
     while (engine->isRunning())
     {
@@ -149,14 +153,33 @@ int main(int argc, char* argv[])
             camera->transform.lookAt(cube->transform);
         }
 
-        if (engine->getInput()->getMouseButtonDown(0))
+        //if (engine->getInput()->getMouseButtonDown(0))
         {
-            auto mousepos = engine->getInput()->getMousePosition();
-            std::cout << mousepos.x << ", " << mousepos.y << std::endl;
+            // Camera mouse control
+            auto mouseDelta = engine->getInput()->getMouseDelta();
+
+            std::cout << mouseDelta.x << ", " << mouseDelta.y << std::endl;
+
+            yaw += mouseDelta.x * sensitivity;
+            pitch += -mouseDelta.y * sensitivity;
+            pitch = glm::clamp(pitch, -89.0f, 89.0f);
+            glm::vec3 cameraForward {
+                cos(glm::radians(pitch)) * cos(glm::radians(yaw)),
+                sin(glm::radians(pitch)),
+                cos(glm::radians(pitch)) * sin(glm::radians(yaw))
+            };
+            camera->transform.setForward(glm::normalize(cameraForward));
         }
+
 
         engine->renderFrame();
     }
 
     return EXIT_SUCCESS;
+}
+
+void controlCamera(Input *input, Camera* camera)
+{
+    float sensivity = 0.05f;
+
 }
