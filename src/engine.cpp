@@ -76,6 +76,19 @@ void Engine::checkInputEvents()
 		{
 			m_Input->_setKeyDown(m_WindowEvent.key.keysym.sym, false);
 		}
+        else if (m_WindowEvent.type == SDL_MOUSEMOTION)
+        {
+            m_Input->_setMousePosition(m_WindowEvent.motion.x, m_WindowEvent.motion.y);
+            m_Input->_setMouseDelta(m_WindowEvent.motion.x, m_WindowEvent.motion.y);
+        }
+        else if (m_WindowEvent.type == SDL_MOUSEBUTTONDOWN)
+        {
+            m_Input->_setMouseButton(m_WindowEvent.button.button, true);
+        }
+        else if (m_WindowEvent.type == SDL_MOUSEBUTTONUP)
+        {
+            m_Input->_setMouseButton(m_WindowEvent.button.button, false);
+        }
     }
 }
 

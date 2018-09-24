@@ -60,14 +60,56 @@ bool Input::getKeyDown(SDL_Keycode keycode)
 	return m_Keymap[keycode];
 }
 
+bool Input::getMouseButtonDown(int button)
+{
+	button = glm::clamp(button, 0, 3);
+	return m_MouseButtons[button];
+}
+
+glm::vec2 Input::getMousePosition()
+{
+	return m_MousePosition;
+}
+
+glm::vec2 Input::getMouseDelta()
+{
+	return m_MouseDelta;
+}
+
+void Input::_flushEvents()
+{
+	for (int i = 0; i < 3; i++) m_MouseButtons[i] = false;
+}
+
 void Input::_setKeyDown(SDL_Keycode keycode, bool pressed)
 {
 	m_Keymap.insert_or_assign(keycode, pressed);
 }
 
+void Input::_setMousePosition(int x, int y)
+{
+	m_MousePosition.x = x;
+	m_MousePosition.y = y;
+}
+
+void Input::_setMouseDelta(int x, int y)
+{
+	m_MouseDelta.x = x;
+	m_MouseDelta.y = y;
+}
+
+void Input::_setMouseButton(int button, bool status)
+{
+	if (button >= 1 && button <= 3)
+	{
+		m_MouseButtons[button - 1] = status;
+	}
+}
+
 Input::Input()
 {
 	initKeymap();
+	_flushEvents();
 }
 
 Input::~Input()

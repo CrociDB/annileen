@@ -149,6 +149,12 @@ int main(int argc, char* argv[])
             camera->transform.lookAt(cube->transform);
         }
 
+        if (engine->getInput()->getMouseButtonDown(0))
+        {
+            auto mousepos = engine->getInput()->getMousePosition();
+            std::cout << mousepos.x << ", " << mousepos.y << std::endl;
+        }
+
         engine->renderFrame();
     }
 
