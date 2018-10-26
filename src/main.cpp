@@ -153,6 +153,11 @@ int main(int argc, char* argv[])
             camera->transform.lookAt(cube->transform);
         }
 
+        if (engine->getInput()->getKeyDown(SDLK_ESCAPE))
+        {
+            engine->terminate();
+        }
+
         {
             // Camera mouse control
             auto mouseDelta = engine->getInput()->getMouseDelta();

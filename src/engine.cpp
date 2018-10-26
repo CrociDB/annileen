@@ -60,6 +60,11 @@ bool Engine::isRunning()
     return m_Running;
 }
 
+void Engine::terminate()
+{
+    m_Running = false;
+}
+
 void Engine::checkInputEvents()
 {
     m_Input->_flushEvents();

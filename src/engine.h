@@ -38,6 +38,7 @@ public:
     void setScene(Scene* scene);
 
     bool isRunning();
+    void terminate();
 
     void checkInputEvents();
     void renderFrame();
