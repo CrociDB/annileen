@@ -55,7 +55,7 @@ float vdata_floor[] = {
     -0.5f,  0.0f, -0.5f,  0.0f, 0.5f
 };
 
-void controlCamera(Input* input, Camera* camera);
+void debug_vec3(const glm::vec3& vec);
 
 int main(int argc, char* argv[])
 {
@@ -106,9 +106,6 @@ int main(int argc, char* argv[])
 
         cube->transform.rotate(glm::vec3(0.0f, 0.3f, 0.0f));
         //cube->transform.rotation = glm::quat(glm::radians(glm::vec3(0.0f, 90.1f, 0.0f)));
-        //std::cout << camera->transform.getEuler().x << ", "
-        //          << camera->transform.getEuler().y << ", "
-        //          << camera->transform.getEuler().z << std::endl;
 
         if (engine->getInput()->getKeyDown(SDLK_s))
         {
@@ -127,15 +124,12 @@ int main(int argc, char* argv[])
             camera->transform.translate(-0.05f * camera->getRight());
         }
 
-        if (engine->getInput()->getKeyDown(SDLK_SPACE))
-        {
-            camera->transform.lookAt(cube->transform);
-        }
-
         if (engine->getInput()->getKeyDown(SDLK_ESCAPE))
         {
             engine->terminate();
         }
+
+        debug_vec3(camera->getForward());
 
         {
             // Camera mouse control
@@ -159,8 +153,9 @@ int main(int argc, char* argv[])
     return EXIT_SUCCESS;
 }
 
-void controlCamera(Input *input, Camera* camera)
+void debug_vec3(const glm::vec3& vec)
 {
-    float sensivity = 0.05f;
-
+    std::cout << vec.x << ", "
+              << vec.y << ", "
+              << vec.z << std::endl;
 }
