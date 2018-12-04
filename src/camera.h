@@ -8,6 +8,12 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/quaternion.hpp>
 
+enum CameraClearType
+{
+    CameraClearColor,
+    CameraClearSkybox
+};
+
 class Camera
 {
 private:
@@ -22,6 +28,10 @@ public:
     float fieldOfView;
     float nearClip;
     float farClip;
+
+    // Clear types
+    CameraClearType clearType;
+    glm::vec3 clearColor;
 
     void updateMatrices();
 

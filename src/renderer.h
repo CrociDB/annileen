@@ -16,7 +16,7 @@ private:
 public:
     void init(Engine* engine);
 
-    void clear();
+    void clear(const glm::vec3& color) const;
     void initFrame(Scene* scene);
     void swapBuffer();
     void renderMesh(Camera* camera, Mesh* mesh);

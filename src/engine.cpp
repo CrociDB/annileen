@@ -101,7 +101,12 @@ void Engine::checkInputEvents()
 
 void Engine::renderFrame()
 {
-    m_Renderer->clear();
+    auto camera = m_CurrentScene->getCamera();
+
+    if (camera->clearType == CameraClearColor)
+    {
+        m_Renderer->clear(camera->clearColor);
+    }
 
     // Render objects seen in scene
     if (m_CurrentScene != NULL)
@@ -109,7 +114,7 @@ void Engine::renderFrame()
         m_Renderer->initFrame(m_CurrentScene);
         for (auto& mesh : m_CurrentScene->getMeshList())
         {
-            m_Renderer->renderMesh(m_CurrentScene->getCamera(), mesh.get());
+            m_Renderer->renderMesh(camera, mesh.get());
         }
     }
 

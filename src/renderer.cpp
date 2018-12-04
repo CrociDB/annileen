@@ -25,9 +25,9 @@ void Renderer::init(Engine* engine)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void Renderer::clear()
+void Renderer::clear(const glm::vec3& color) const
 {
-    glClearColor(0.28f, 0.28f, 0.3f, 1.0f);
+    glClearColor(color.x, color.y, color.z, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 

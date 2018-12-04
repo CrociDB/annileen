@@ -94,6 +94,8 @@ int main(int argc, char* argv[])
     scene->addMesh(floor);
 
     Camera* camera = scene->getCamera();
+    camera->clearType = CameraClearColor;
+    camera->clearColor = glm::vec3(0.0f, 0.3f, 0.5f);
 
     engine->setScene(scene);
 
