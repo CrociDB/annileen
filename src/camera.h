@@ -6,6 +6,7 @@
 #include <glm.hpp>
 #include <gtc/type_ptr.hpp>
 #include <gtc/matrix_transform.hpp>
+#include <gtc/quaternion.hpp>
 
 class Camera
 {
@@ -24,10 +25,15 @@ public:
 
     void updateMatrices();
 
+    void setForward(const glm::vec3& forward);
+
+    glm::vec3 getForward() const;
+    glm::vec3 getRight() const;
+    glm::vec3 getUp() const;
+
     glm::mat4 getViewMatrix();
     glm::mat4 getProjectionMatrix();
     glm::mat4 getViewProjectionMatrix();
-
 
     Camera(float fov, float near, float far);
     ~Camera();

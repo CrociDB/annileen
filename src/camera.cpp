@@ -6,7 +6,13 @@ void Camera::updateMatrices()
 {
     m_ViewMatrix = glm::mat4(1.0f);
     glm::mat4 translate = glm::translate(m_ViewMatrix, -transform.position);
-    glm::mat4 rotate = glm::transpose(glm::mat4_cast(transform.rotation));
+
+    //glm::mat4 rotate = glm::transpose(transform.getRotationMatrix());
+    glm::mat4 rotate = glm::lookAt(
+        transform.position,
+        transform.position + m_CameraTarget,
+        getUp());
+
     m_ViewMatrix = rotate * translate;
 
     m_ProjectionMatrix = glm::mat4(1.0f);
@@ -17,6 +23,26 @@ void Camera::updateMatrices()
         farClip);
 
     m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+}
+
+void Camera::setForward(const glm::vec3 & forward)
+{
+    m_CameraTarget = forward;
+}
+
+glm::vec3 Camera::getForward() const
+{
+    return m_CameraTarget;
+}
+
+glm::vec3 Camera::getRight() const
+{
+    return glm::normalize(glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), m_CameraTarget));
+}
+
+glm::vec3 Camera::getUp() const
+{
+    return glm::normalize(glm::cross(m_CameraTarget, getRight()));
 }
 
 glm::mat4 Camera::getViewMatrix()
