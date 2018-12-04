@@ -20,7 +20,7 @@ bool Texture::load()
         mode, GL_UNSIGNED_BYTE, m_Surface->pixels);
     glGenerateMipmap(GL_TEXTURE_2D);
 
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_2D, m_TextureId);
     return true;
 }
 
