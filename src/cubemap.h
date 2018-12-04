@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _CUBEMAP_H_
+#define _CUBEMAP_H_
 
 #include <iostream>
 #include <string>
@@ -20,3 +21,4 @@ public:
     ~Cubemap();
 };
 
+#endif
