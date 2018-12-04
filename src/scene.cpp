@@ -1,5 +1,15 @@
 #include "scene.h"
 
+void Scene::setCubemap(Cubemap* cubemap)
+{
+    m_Cubemap = cubemap;
+}
+
+Cubemap* Scene::getCubemap() const
+{
+    return m_Cubemap;
+}
+
 void Scene::addMesh(Mesh* mesh)
 {
     mesh->genBuffers();
