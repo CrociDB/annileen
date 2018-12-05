@@ -2,6 +2,7 @@
 #define _RENDERER_H_
 
 #include "engine.h"
+#include "skybox.h"
 
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
@@ -19,6 +20,7 @@ public:
     void clear(const glm::vec3& color) const;
     void initFrame(Scene* scene);
     void swapBuffer();
+    void renderSkybox(Camera* camera, Skybox* skybox);
     void renderMesh(Camera* camera, Mesh* mesh);
 
     Renderer();

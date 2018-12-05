@@ -54,6 +54,9 @@
     <ClCompile Include="..\..\src\cubemap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\renderer.h">
@@ -92,6 +95,9 @@
     <ClInclude Include="..\..\src\cubemap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\skybox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\shaders\fragment.frag">
@@ -100,5 +106,13 @@
     <FxCompile Include="..\..\shaders\vertex.vert">
       <Filter>Resource Files</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\shaders\skybox.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\shaders\skybox.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

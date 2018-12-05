@@ -12,7 +12,12 @@ Shader* Material::getShader()
 
 void Material::addTexture(const char* name, Texture texture)
 {
-	m_Textures.insert(std::pair<std::string, Texture>(std::string(name), texture));
+    m_Textures.insert(std::pair<std::string, Texture>(std::string(name), texture));
+}
+
+void Material::addCubemap(const char* name, Cubemap* cubemap)
+{
+    m_Cubemaps.insert(std::pair<std::string, Cubemap*>(std::string(name), cubemap));
 }
 
 void Material::loadTextures()
@@ -21,6 +26,11 @@ void Material::loadTextures()
 	{
 		tex.second.load();
 	}
+
+    for (auto& cube : m_Cubemaps)
+    {
+        cube.second->load();
+    }
 }
 
 void Material::useTextures()
@@ -31,6 +41,14 @@ void Material::useTextures()
         glActiveTexture(GL_TEXTURE0 + texCount);
         glBindTexture(GL_TEXTURE_2D, tex.second.getId());
         m_Shader->setInt(tex.first, texCount);
+        texCount++;
+    }
+
+    for (auto& cube : m_Cubemaps)
+    {
+        glActiveTexture(GL_TEXTURE0 + texCount);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cube.second->getId());
+        m_Shader->setInt(cube.first, texCount);
         texCount++;
     }
 }

@@ -103,9 +103,11 @@ void Engine::renderFrame()
 {
     auto camera = m_CurrentScene->getCamera();
 
-    if (camera->clearType == CameraClearColor)
+    m_Renderer->clear(camera->clearColor);
+
+    if (camera->clearType == CameraClearSkybox)
     {
-        m_Renderer->clear(camera->clearColor);
+        m_Renderer->renderSkybox(camera, m_CurrentScene->getSkybox());
     }
 
     // Render objects seen in scene

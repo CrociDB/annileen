@@ -5,16 +5,20 @@
 #include <string>
 #include <vector>
 
+#include <GL/glew.h>
+
 class Cubemap
 {
 private:
     std::vector<std::string> m_Faces;
-    unsigned int m_TextureId;
+    GLuint m_TextureId;
 
     void unloadTextures();
 
 public:
-    void loadTextures();
+    GLuint getId() const;
+
+    void load();
     void bindTextures();
 
     Cubemap(const std::vector<std::string>& faces);

@@ -93,19 +93,17 @@ int main(int argc, char* argv[])
     scene->addMesh(cube);
     scene->addMesh(floor);
 
-    Cubemap* cubemap = new Cubemap(std::vector<std::string> {
-            "../../assets/skybox/stormydays_rt.png",
+    scene->setCubemap(new Cubemap(std::vector<std::string> {
+        "../../assets/skybox/stormydays_rt.png",
             "../../assets/skybox/stormydays_lf.png",
             "../../assets/skybox/stormydays_up.png",
             "../../assets/skybox/stormydays_dn.png",
             "../../assets/skybox/stormydays_ft.png",
             "../../assets/skybox/stormydays_bk.png",
-    });
-    cubemap->loadTextures();
-    scene->setCubemap(cubemap);
+    }));
 
     Camera* camera = scene->getCamera();
-    camera->clearType = CameraClearColor;
+    camera->clearType = CameraClearSkybox;
     camera->clearColor = glm::vec3(0.0f, 0.3f, 0.5f);
 
     engine->setScene(scene);

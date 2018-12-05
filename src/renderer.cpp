@@ -41,6 +41,22 @@ void Renderer::swapBuffer()
     SDL_GL_SwapWindow(m_Engine->getSDLWindow());
 }
 
+void Renderer::renderSkybox(Camera* camera, Skybox* skybox)
+{
+    glDepthMask(GL_FALSE);
+    auto material = skybox->getMesh()->getMaterial();
+    material->getShader()->use();
+    material->useTextures();
+
+    glm::mat4 view = glm::mat4(glm::mat3(camera->getViewMatrix()));
+
+    material->getShader()->setMat4("view", view);
+    material->getShader()->setMat4("projection", camera->getProjectionMatrix());
+
+    skybox->getMesh()->bindAndDraw();
+    glDepthMask(GL_TRUE);
+}
+
 void Renderer::renderMesh(Camera* camera, Mesh* mesh)
 {
     auto material = mesh->getMaterial();

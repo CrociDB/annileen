@@ -8,7 +8,12 @@ void Cubemap::unloadTextures()
 {
 }
 
-void Cubemap::loadTextures()
+GLuint Cubemap::getId() const
+{
+    return m_TextureId;
+}
+
+void Cubemap::load()
 {
     glGenTextures(1, &m_TextureId);
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_TextureId);
