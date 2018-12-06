@@ -94,12 +94,12 @@ int main(int argc, char* argv[])
     scene->addMesh(floor);
 
     scene->setCubemap(new Cubemap(std::vector<std::string> {
-        "../../assets/skybox/stormydays_rt.png",
-            "../../assets/skybox/stormydays_lf.png",
-            "../../assets/skybox/stormydays_up.png",
-            "../../assets/skybox/stormydays_dn.png",
             "../../assets/skybox/stormydays_ft.png",
             "../../assets/skybox/stormydays_bk.png",
+            "../../assets/skybox/stormydays_up.png",
+            "../../assets/skybox/stormydays_dn.png",
+            "../../assets/skybox/stormydays_rt.png",
+            "../../assets/skybox/stormydays_lf.png",
     }));
 
     Camera* camera = scene->getCamera();
@@ -139,8 +139,6 @@ int main(int argc, char* argv[])
         {
             engine->terminate();
         }
-
-        debug_vec3(camera->getForward());
 
         {
             // Camera mouse control

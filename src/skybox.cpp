@@ -10,6 +10,7 @@ void Skybox::createMesh()
     Material* material = new Material();
     material->init(shader);
     material->addCubemap("skybox", m_Cubemap);
+    material->loadTextures();
 
     m_Mesh = new Mesh();
     m_Mesh->init(skyboxVertices, sizeof(skyboxVertices) / sizeof(float), 0);
