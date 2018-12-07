@@ -29,10 +29,10 @@ void Mesh::init(const float* vertexData, uint32_t verticesCount, uint8_t vertexA
         + ((m_VertexAttr & VERTEX_UV) >> 1)
         + ((m_VertexAttr & VERTEX_NORMAL) >> 2);
 
-    m_VertexStride = 3 * sizeof(GLfloat)
-        + ((m_VertexAttr & VERTEX_COLOR) * 3 * sizeof(GLfloat))
-        + (((m_VertexAttr & VERTEX_UV) >> 1) * 2 * sizeof(GLfloat))
-        + (((m_VertexAttr & VERTEX_NORMAL) >> 2) * 3 * sizeof(GLfloat));
+    m_VertexStride = sizeof(GLfloat) * (3
+        + ((m_VertexAttr & VERTEX_COLOR) * 3)
+        + (((m_VertexAttr & VERTEX_UV) >> 1) * 2)
+        + (((m_VertexAttr & VERTEX_NORMAL) >> 2) * 3));
 
     m_VertexCount = m_DataSize / (m_VertexStride / sizeof(GLfloat));
 }
