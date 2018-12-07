@@ -46,7 +46,7 @@ float* Chunk::generateMeshData(int* meshSize)
                     data[data_i++] = cube_vertices[jv + 2]  + (float)z;
 
                     // UVs
-                    data[data_i++] = (cube_uvs[ju] / 4) + (0.333 * 1);
+                    data[data_i++] = (cube_uvs[ju] / 4) + (0.333333 * 1);
                     data[data_i++] = (cube_uvs[ju + 1] / 2) + (0.5 * 0);
                 }
 
