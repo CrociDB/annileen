@@ -157,7 +157,7 @@ int main(int argc, char* argv[])
             camera->setForward(glm::normalize(cameraForward));
         }
 
-
+        SDL_Delay(12);
         engine->renderFrame();
     }
 

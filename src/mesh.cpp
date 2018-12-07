@@ -5,9 +5,9 @@ void Mesh::init(const float* vertexData, uint32_t verticesCount, uint8_t vertexA
     m_VertexAttr = vertexAttr;
 
     m_VertexData = new GLfloat[verticesCount];
-    m_VertexCount = verticesCount;
+    m_DataSize = verticesCount;
 
-    for (unsigned int i = 0; i < m_VertexCount; i++)
+    for (unsigned int i = 0; i < m_DataSize; i++)
     {
         m_VertexData[i] = vertexData[i];
     }
@@ -33,6 +33,8 @@ void Mesh::init(const float* vertexData, uint32_t verticesCount, uint8_t vertexA
         + ((m_VertexAttr & VERTEX_COLOR) * 3 * sizeof(GLfloat))
         + (((m_VertexAttr & VERTEX_UV) >> 1) * 2 * sizeof(GLfloat))
         + (((m_VertexAttr & VERTEX_NORMAL) >> 2) * 3 * sizeof(GLfloat));
+
+    m_VertexCount = m_DataSize / (m_VertexStride / sizeof(GLfloat));
 }
 
 void Mesh::init(const float* vertexData, uint32_t verticesCount, uint8_t vertexAttr)
@@ -57,7 +59,7 @@ void Mesh::genBuffers()
 
     glBindVertexArray(m_VertexArrayObject);
     glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferObject);
-    glBufferData(GL_ARRAY_BUFFER, m_VertexCount * sizeof(GLfloat), m_VertexData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, m_DataSize * sizeof(GLfloat), m_VertexData, GL_STATIC_DRAW);
 
     if (m_UseVertexIndices)
     {

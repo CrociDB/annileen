@@ -21,6 +21,7 @@ private:
     uint32_t m_VertexCount;
     uint32_t m_VertexIndicesCount;
     GLfloat* m_VertexData;
+    size_t m_DataSize;
     GLuint* m_VertexIndices;
     bool m_UseVertexIndices;
     Material* m_Material;
