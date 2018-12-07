@@ -1,5 +1,7 @@
 #include "chunk.h"
 
+#define GRID_AT(X, Y, Z)        Z + Y * m_Width + X * m_Height * m_Depth
+
 void Chunk::generateMesh()
 {
     if (m_Mesh != nullptr)
@@ -33,7 +35,7 @@ float* Chunk::generateMeshData(int* meshSize)
         {
             for (int z = 0; z < m_Depth; z++)
             {
-                int i = z + y * m_Width + x * m_Height * m_Depth;
+                int i = GRID_AT(x, y, z);
 
                 for (int j = 0; j < vertices / 3; j++)
                 {
