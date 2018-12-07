@@ -23,7 +23,7 @@ private:
     GLfloat* m_VertexData;
     GLuint* m_VertexIndices;
     bool m_UseVertexIndices;
-    std::shared_ptr<Material> m_Material;
+    Material* m_Material;
 
     GLuint m_VertexArrayObject;
     GLuint m_VertexBufferObject;

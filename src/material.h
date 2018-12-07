@@ -12,7 +12,7 @@
 class Material
 {
 private:
-    std::shared_ptr<Shader> m_Shader;
+    Shader* m_Shader;
     std::map<std::string, Texture> m_Textures;
     std::map<std::string, Cubemap*> m_Cubemaps;
 

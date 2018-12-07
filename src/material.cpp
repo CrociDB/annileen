@@ -2,12 +2,12 @@
 
 void Material::init(Shader* shader)
 {
-    m_Shader = std::shared_ptr<Shader>(shader);
+    m_Shader = shader;
 }
 
 Shader* Material::getShader()
 {
-    return m_Shader.get();
+    return m_Shader;
 }
 
 void Material::addTexture(const char* name, Texture texture)

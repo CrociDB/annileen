@@ -42,12 +42,12 @@ void Mesh::init(const float* vertexData, uint32_t verticesCount, uint8_t vertexA
 
 void Mesh::setMaterial(Material* material)
 {
-    m_Material = std::shared_ptr<Material>(material);
+    m_Material = material;
 }
 
 Material* Mesh::getMaterial()
 {
-    return m_Material.get();
+    return m_Material;
 }
 
 void Mesh::genBuffers()

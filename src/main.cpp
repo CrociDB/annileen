@@ -1,5 +1,6 @@
 #include <iostream>
 #include "engine.h"
+#include "gamescene.h"
 #include "util.h"
 
 float vdata_cube[] = {
@@ -60,7 +61,7 @@ void debug_vec3(const glm::vec3& vec);
 int main(int argc, char* argv[])
 {
     Engine* engine = Engine::getInstance();
-    engine->init(800, 600);
+    engine->init(1024, 600);
 
     // Create triangle
     Mesh* cube = new Mesh();
@@ -89,9 +90,10 @@ int main(int argc, char* argv[])
     floor->setMaterial(material);
 
     // Create scene
-    Scene* scene = new Scene();
-    scene->addMesh(cube);
-    scene->addMesh(floor);
+    GameScene* scene = new GameScene();
+    /*scene->addMesh(cube);
+    scene->addMesh(floor);*/
+    scene->buildMap();
 
     scene->setCubemap(new Cubemap(std::vector<std::string> {
             "../../assets/skybox/stormydays_ft.png",

@@ -116,7 +116,7 @@ void Engine::renderFrame()
         m_Renderer->initFrame(m_CurrentScene);
         for (auto& mesh : m_CurrentScene->getMeshList())
         {
-            m_Renderer->renderMesh(camera, mesh.get());
+            m_Renderer->renderMesh(camera, mesh);
         }
     }
 

@@ -12,8 +12,8 @@
 
 class Scene
 {
-private:
-    std::list<std::shared_ptr<Mesh>> m_Meshes;
+protected:
+    std::list<Mesh*> m_Meshes;
     Camera* m_Camera;
     Cubemap* m_Cubemap;
     Skybox* m_Skybox;
@@ -22,12 +22,14 @@ private:
 
 public:
     void addMesh(Mesh* mesh);
+    void removeMesh(Mesh* mesh);
+
     void setCubemap(Cubemap* cubemap);
 
     Cubemap* getCubemap() const;
     Skybox* getSkybox() const;
 
-    std::list<std::shared_ptr<Mesh>>& getMeshList();
+    virtual std::list<Mesh*>& getMeshList();
     Camera* getCamera();
 
     Scene();
