@@ -12,6 +12,14 @@
 
 class Renderer;
 
+struct Time
+{
+    float deltaTime;
+    float unscaledDeltaTime;
+    float time;
+    float timeScale;
+};
+
 class Engine
 {
 private:
@@ -22,6 +30,9 @@ private:
 	Input* m_Input;
     Renderer* m_Renderer;
     bool m_Running;
+    
+    Time m_Time;
+    uint8_t m_TargetFPS;
 
     Scene* m_CurrentScene = NULL;
 
@@ -35,9 +46,13 @@ public:
     uint16_t getWidth() const;
     uint16_t getHeight() const;
 
+    void setFPSLock(uint8_t fps);
+    int getFPS() const;
+    Time getTime();
+
     void setScene(Scene* scene);
 
-    bool isRunning();
+    bool run();
     void terminate();
 
     void checkInputEvents();

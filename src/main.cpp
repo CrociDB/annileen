@@ -110,31 +110,33 @@ int main(int argc, char* argv[])
 
     engine->setScene(scene);
 
-    float sensitivity = 0.25f;
+    float movementSpeed = 2.5f;
+    float sensitivity = 18.0f;
     float pitch = 0.0f, yaw = 0.0f;
 
-    while (engine->isRunning())
+    while (engine->run())
     {
+        auto dt = engine->getTime().deltaTime;
+
         engine->checkInputEvents();
 
         cube->transform.rotate(glm::vec3(0.0f, 0.3f, 0.0f));
-        //cube->transform.rotation = glm::quat(glm::radians(glm::vec3(0.0f, 90.1f, 0.0f)));
 
         if (engine->getInput()->getKeyDown(SDLK_s))
         {
-            camera->transform.translate(-0.05f * camera->getForward());
+            camera->transform.translate(dt * -movementSpeed * camera->getForward());
         }
         if (engine->getInput()->getKeyDown(SDLK_w))
         {
-            camera->transform.translate(0.05f * camera->getForward());
+            camera->transform.translate(dt * movementSpeed * camera->getForward());
         }
         if (engine->getInput()->getKeyDown(SDLK_a)) 
         {
-            camera->transform.translate(0.05f * camera->getRight());
+            camera->transform.translate(dt * movementSpeed * camera->getRight());
         }
         if (engine->getInput()->getKeyDown(SDLK_d))
         {
-            camera->transform.translate(-0.05f * camera->getRight());
+            camera->transform.translate(dt * -movementSpeed * camera->getRight());
         }
 
         if (engine->getInput()->getKeyDown(SDLK_ESCAPE))
@@ -146,8 +148,8 @@ int main(int argc, char* argv[])
             // Camera mouse control
             auto mouseDelta = engine->getInput()->getMouseDelta();
 
-            yaw += mouseDelta.x * sensitivity;
-            pitch += -mouseDelta.y * sensitivity;
+            yaw += mouseDelta.x * sensitivity * dt;
+            pitch += -mouseDelta.y * sensitivity * dt;
             pitch = glm::clamp(pitch, -89.0f, 89.0f);
             glm::vec3 cameraForward{
                 cos(glm::radians(pitch)) * cos(glm::radians(yaw)),
@@ -157,7 +159,8 @@ int main(int argc, char* argv[])
             camera->setForward(glm::normalize(cameraForward));
         }
 
-        SDL_Delay(12);
+        //SDL_Delay(12);
+        std::cout << engine->getFPS() << std::endl;
         engine->renderFrame();
     }
 

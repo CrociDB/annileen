@@ -22,6 +22,9 @@ void Engine::init(uint16_t width, uint16_t height)
     m_Renderer = new Renderer();
     m_Renderer->init(this);
 
+    m_TargetFPS = 60; 
+    m_Time.timeScale = 1.0f;
+
     m_Running = true;
 }
 
@@ -50,13 +53,49 @@ uint16_t Engine::getHeight() const
     return m_Height;
 }
 
+
+void Engine::setFPSLock(uint8_t fps)
+{
+    m_TargetFPS = fps;
+}
+
+int Engine::getFPS() const
+{
+    return 1.0f / m_Time.deltaTime;
+}
+
+Time Engine::getTime()
+{
+    return m_Time;
+}
+
+
 void Engine::setScene(Scene* scene)
 {
     m_CurrentScene = scene;
 }
 
-bool Engine::isRunning()
+bool Engine::run()
 {
+    float time = (float)SDL_GetTicks() / 1000.0;
+    m_Time.unscaledDeltaTime = time - m_Time.time;
+    m_Time.deltaTime = m_Time.unscaledDeltaTime * m_Time.timeScale;
+    m_Time.time = (float)SDL_GetTicks() / 1000.0;
+
+    if (m_TargetFPS > 0)
+    {
+        float timePerFrame = 1.0f / (float)m_TargetFPS;
+        float remainingTime = timePerFrame - m_Time.unscaledDeltaTime;
+        if (remainingTime > 0)
+        {
+            SDL_Delay((int)(remainingTime * 1000.0f));
+
+            m_Time.unscaledDeltaTime += remainingTime;
+            m_Time.deltaTime = m_Time.unscaledDeltaTime * m_Time.timeScale;
+            m_Time.time += remainingTime;
+        }
+    }
+
     return m_Running;
 }
 
