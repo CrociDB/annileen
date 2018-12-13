@@ -1,6 +1,6 @@
 #include "chunk.h"
 
-#define GRID_AT(X, Y, Z)        Z + Y * m_Width + X * m_Height * m_Depth
+#define GRID_AT(X, Y, Z)        Z + Y * CHUNK_WIDTH + X * CHUNK_HEIGHT * CHUNK_DEPTH
 
 void Chunk::generateMesh()
 {
@@ -17,23 +17,26 @@ void Chunk::generateMesh()
     float* meshData = generateMeshData(&meshSize);
 
     m_Mesh->init(meshData, meshSize, VERTEX_UV);
+    m_Mesh->transform.position = glm::vec3(
+        m_WorldX * CHUNK_WIDTH,
+        0,
+        m_WorldZ * CHUNK_DEPTH);
 }
 
 float* Chunk::generateMeshData(int* meshSize)
 {
-    int voxels = m_Width * m_Depth * m_Height;
     int vertices = sizeof(DATA_CUBE_VERTICES) / sizeof(float);
     int uvs = sizeof(DATA_CUBE_NORMALIZED_UVS) / sizeof(float);
-    int data_size = voxels * (vertices + uvs);
+    int data_size = CHUNK_TOTAL_VOXELS * (vertices + uvs);
 
     float* data = new float[data_size];
     int data_i = 0;
 
-    for (int x = 0; x < m_Width; x++)
+    for (int x = 0; x < CHUNK_WIDTH; x++)
     {
-        for (int y = 0; y < m_Height; y++)
+        for (int y = 0; y < CHUNK_HEIGHT; y++)
         {
-            for (int z = 0; z < m_Depth; z++)
+            for (int z = 0; z < CHUNK_DEPTH; z++)
             {
                 int i = GRID_AT(x, y, z);
 
@@ -80,7 +83,7 @@ float* Chunk::generateMeshData(int* meshSize)
 
 bool Chunk::gridEmpty(int x, int y, int z)
 {
-    if (x >= m_Width || y >= m_Height || z >= m_Depth ||
+    if (x >= CHUNK_DEPTH || y >= CHUNK_DEPTH || z >= CHUNK_DEPTH ||
         x < 0 || y < 0 || z < 0)
     {
         return true;
@@ -93,28 +96,31 @@ bool Chunk::gridEmpty(int x, int y, int z)
 
 void Chunk::generateGrid()
 {
-    m_Noise = new siv::PerlinNoise(time(NULL));
     srand(time(NULL));
 
-    int total = m_Width * m_Depth * m_Height;
+    m_Grid = new BlockType[CHUNK_TOTAL_VOXELS];
 
-    m_Grid = new BlockType[total];
-
-    for (int i = 0; i < total; i++)
+    for (int i = 0; i < CHUNK_TOTAL_VOXELS; i++)
     {
         m_Grid[i] = BlockEmpty;
     }
 
-    for (int x = 0; x < m_Width; x++)
+    for (int x = 0; x < CHUNK_WIDTH; x++)
     {
-        for (int z = 0; z < m_Depth; z++)
+        for (int z = 0; z < CHUNK_DEPTH; z++)
         {
-            float noise = m_Noise->octaveNoise0_1((float)x / (float)m_Width, (float)z / (float)m_Depth, 8);
-            int y = (int)(noise * m_Height);
+            float noise = m_Noise->octaveNoise0_1(
+                (m_WorldX + (float)x) / (CHUNK_WIDTH),
+                (m_WorldZ + (float)z) / (CHUNK_HEIGHT),
+                12);
 
-            int i = GRID_AT(x, y, z);
-            
-            m_Grid[i] = (BlockType)(0);
+            int sy = (int)(noise * CHUNK_HEIGHT);
+
+            for (int y = sy; y >= 0; y--)
+            {
+                int i = GRID_AT(x, y, z);
+                m_Grid[i] = (BlockType)(rand() % 3);
+            }
         }
     }
 
@@ -126,11 +132,10 @@ Mesh* Chunk::getMesh()
     return m_Mesh;
 }
 
-Chunk::Chunk(int w, int h, int d)
+Chunk::Chunk(int wx, int wz)
 {
-    m_Width = w;
-    m_Height = h;
-    m_Depth = d;
+    m_WorldX = wx;
+    m_WorldZ = wz;
 }
 
 Chunk::~Chunk()

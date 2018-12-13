@@ -3,12 +3,16 @@
 
 #include <cstdlib>
 #include <ctime>
-
 #include <PerlinNoise.hpp>
 
 #include "material.h"
 #include "mesh.h"
 #include "data.h"
+
+#define CHUNK_WIDTH             16
+#define CHUNK_HEIGHT            16
+#define CHUNK_DEPTH             16
+#define CHUNK_TOTAL_VOXELS      CHUNK_WIDTH * CHUNK_HEIGHT * CHUNK_DEPTH
 
 enum BlockType
 {
@@ -21,10 +25,9 @@ enum BlockType
 class Chunk
 {
 private:
-    int m_Width;
-    int m_Height;
-    int m_Depth;
-
+    int m_WorldX;
+    int m_WorldZ;
+    
     siv::PerlinNoise* m_Noise;
 
     BlockType* m_Grid;
@@ -38,13 +41,15 @@ private:
     bool gridEmpty(int x, int y, int z);
 
 public:
+    void setNoise(siv::PerlinNoise* noise) { m_Noise = noise; };
     void setMaterial(Material* material) { m_Material = material; }
 
     void generateGrid();
 
+    
     Mesh* getMesh();
 
-    Chunk(int w, int h, int d);
+    Chunk(int wx, int wz);
     ~Chunk();
 };
 

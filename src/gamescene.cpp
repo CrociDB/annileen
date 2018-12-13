@@ -9,12 +9,20 @@ void GameScene::buildMap()
     m_BlockMaterial->init(shader);
     m_BlockMaterial->addTexture("mainTex", Texture("../../assets/texture.png"));
 
-    Chunk* testChunk = new Chunk(16, 16, 16);
-    testChunk->setMaterial(m_BlockMaterial);
-    testChunk->generateGrid();
-    m_Chunks.push_back(testChunk);
+    m_Noise = new siv::PerlinNoise(time(NULL));
 
-    addMesh(testChunk->getMesh());
+    for (int x = 0; x < 5; x++)
+    {
+        for (int z = 0; z < 5; z++)
+        {
+            Chunk* chunk = new Chunk(x, z);
+            chunk->setMaterial(m_BlockMaterial);
+            chunk->setNoise(m_Noise);
+            chunk->generateGrid();
+            m_Chunks.push_back(chunk);
+            addMesh(chunk->getMesh());
+        }
+    }
 }
 
 GameScene::GameScene()
