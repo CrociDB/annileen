@@ -1,101 +1,17 @@
 #ifndef _CHUNK_H_
 #define _CHUNK_H_
 
+#include <cstdlib>
+#include <ctime>
+
 #include "material.h"
 #include "mesh.h"
-
-static float cube_vertices[] = {
-     -0.5f, -0.5f, -0.5f,
-     0.5f, -0.5f, -0.5f, 
-     0.5f,  0.5f, -0.5f, 
-     0.5f,  0.5f, -0.5f, 
-     -0.5f,  0.5f, -0.5f,
-     -0.5f, -0.5f, -0.5f,
-
-     -0.5f, -0.5f,  0.5f,
-     0.5f, -0.5f,  0.5f, 
-     0.5f,  0.5f,  0.5f, 
-     0.5f,  0.5f,  0.5f, 
-     -0.5f,  0.5f,  0.5f,
-     -0.5f, -0.5f,  0.5f,
-
-     -0.5f,  0.5f,  0.5f,
-     -0.5f,  0.5f, -0.5f,
-     -0.5f, -0.5f, -0.5f,
-     -0.5f, -0.5f, -0.5f,
-     -0.5f, -0.5f,  0.5f,
-     -0.5f,  0.5f,  0.5f,
-
-     0.5f,  0.5f,  0.5f, 
-     0.5f,  0.5f, -0.5f, 
-     0.5f, -0.5f, -0.5f, 
-     0.5f, -0.5f, -0.5f, 
-     0.5f, -0.5f,  0.5f, 
-     0.5f,  0.5f,  0.5f, 
-
-     -0.5f, -0.5f, -0.5f,
-     0.5f, -0.5f, -0.5f, 
-     0.5f, -0.5f,  0.5f, 
-     0.5f, -0.5f,  0.5f, 
-     -0.5f, -0.5f,  0.5f,
-     -0.5f, -0.5f, -0.5f,
-
-     -0.5f,  0.5f, -0.5f,
-     0.5f,  0.5f, -0.5f, 
-     0.5f,  0.5f,  0.5f, 
-     0.5f,  0.5f,  0.5f, 
-     -0.5f,  0.5f,  0.5f,
-     -0.5f,  0.5f, -0.5f,
-};
-
-static float cube_uvs[] = {
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-    1.0f, 1.0f,
-    1.0f, 1.0f,
-    0.0f, 1.0f,
-    0.0f, 0.0f,
-
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-    1.0f, 1.0f,
-    1.0f, 1.0f,
-    0.0f, 1.0f,
-    0.0f, 0.0f,
-
-    1.0f, 0.0f,
-    1.0f, 1.0f,
-    0.0f, 1.0f,
-    0.0f, 1.0f,
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-
-    1.0f, 0.0f,
-    1.0f, 1.0f,
-    0.0f, 1.0f,
-    0.0f, 1.0f,
-    0.0f, 0.0f,
-    1.0f, 0.0f,
-
-    0.0f, 1.0f,
-    1.0f, 1.0f,
-    1.0f, 0.0f,
-    1.0f, 0.0f,
-    0.0f, 0.0f,
-    0.0f, 1.0f,
-
-    0.0f, 1.0f,
-    1.0f, 1.0f,
-    1.0f, 0.0f,
-    1.0f, 0.0f,
-    0.0f, 0.0f,
-    0.0f, 1.0f
-};
+#include "data.h"
 
 enum BlockType
 {
-    BlockEmpty,
-    BlockDirt,
+    BlockEmpty = -1,
+    BlockDirt = 0,
     BlockGrass,
     BlockSand
 };
@@ -114,6 +30,8 @@ private:
 
     void generateMesh();
     float* generateMeshData(int* meshSize);
+
+    bool gridEmpty(int x, int y, int z);
 
 public:
     void setMaterial(Material* material) { m_Material = material; }

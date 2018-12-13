@@ -145,6 +145,7 @@
     <ClInclude Include="..\..\src\camera.h" />
     <ClInclude Include="..\..\src\chunk.h" />
     <ClInclude Include="..\..\src\cubemap.h" />
+    <ClInclude Include="..\..\src\data.h" />
     <ClInclude Include="..\..\src\engine.h" />
     <ClInclude Include="..\..\src\gamescene.h" />
     <ClInclude Include="..\..\src\input.h" />

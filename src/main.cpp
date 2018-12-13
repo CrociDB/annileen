@@ -64,11 +64,20 @@ int main(int argc, char* argv[])
     engine->init(1024, 600);
 
     // Create triangle
-    Mesh* cube = new Mesh();
-    cube->init(vdata_cube,
+    Mesh* cubeX = new Mesh();
+    cubeX->init(vdata_cube,
         sizeof(vdata_cube) / sizeof(float),
         VERTEX_UV);
-    cube->transform.translate(glm::vec3(0.0f, 0.0f, -3.0f));
+    cubeX->transform.translate(glm::vec3(5.0f, 0.0f, 0.0f));
+
+    Mesh* cubeZ = new Mesh();
+    cubeZ->init(vdata_cube,
+        sizeof(vdata_cube) / sizeof(float),
+        VERTEX_UV);
+    cubeZ->transform.translate(glm::vec3(0.0f, 0.0f, 5.0f));
+    cubeZ->transform.scale = glm::vec3(.5f);
+
+
 
     Mesh* floor = new Mesh();
     floor->init(vdata_floor,
@@ -86,13 +95,15 @@ int main(int argc, char* argv[])
     material->addTexture("mainTex", Texture("../../assets/texture.png"));
     material->loadTextures();
 
-    cube->setMaterial(material);
+    cubeX->setMaterial(material);
+    cubeZ->setMaterial(material);
     floor->setMaterial(material);
 
     // Create scene
     GameScene* scene = new GameScene();
-    /*scene->addMesh(cube);
-    scene->addMesh(floor);*/
+    /*scene->addMesh(cubeX);
+    scene->addMesh(cubeZ);*/
+    //scene->addMesh(floor);
     scene->buildMap();
 
     scene->setCubemap(new Cubemap(std::vector<std::string> {
@@ -120,7 +131,7 @@ int main(int argc, char* argv[])
 
         engine->checkInputEvents();
 
-        cube->transform.rotate(glm::vec3(0.0f, 0.3f, 0.0f));
+        cubeZ->transform.rotate(glm::vec3(0.0f, 0.3f, 0.0f));
 
         if (engine->getInput()->getKeyDown(SDLK_s))
         {

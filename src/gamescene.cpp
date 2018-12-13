@@ -9,7 +9,7 @@ void GameScene::buildMap()
     m_BlockMaterial->init(shader);
     m_BlockMaterial->addTexture("mainTex", Texture("../../assets/texture.png"));
 
-    Chunk* testChunk = new Chunk(16, 6, 16);
+    Chunk* testChunk = new Chunk(16, 16, 16);
     testChunk->setMaterial(m_BlockMaterial);
     testChunk->generateGrid();
     m_Chunks.push_back(testChunk);
