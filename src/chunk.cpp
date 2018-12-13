@@ -93,14 +93,29 @@ bool Chunk::gridEmpty(int x, int y, int z)
 
 void Chunk::generateGrid()
 {
+    m_Noise = new siv::PerlinNoise(time(NULL));
     srand(time(NULL));
 
     int total = m_Width * m_Depth * m_Height;
 
     m_Grid = new BlockType[total];
+
     for (int i = 0; i < total; i++)
     {
-        m_Grid[i] = (BlockType)((rand() % 4) - 1);
+        m_Grid[i] = BlockEmpty;
+    }
+
+    for (int x = 0; x < m_Width; x++)
+    {
+        for (int z = 0; z < m_Depth; z++)
+        {
+            float noise = m_Noise->octaveNoise0_1((float)x / (float)m_Width, (float)z / (float)m_Depth, 8);
+            int y = (int)(noise * m_Height);
+
+            int i = GRID_AT(x, y, z);
+            
+            m_Grid[i] = (BlockType)(0);
+        }
     }
 
     generateMesh();

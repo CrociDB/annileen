@@ -84,7 +84,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>${ProjectDir}\..\glew\include\;${ProjectDir}\..\sdl_image\include;${ProjectDir}\..\sdl\include;${ProjectDir}\..\glm\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>${ProjectDir}\..\glew\include\;${ProjectDir}\..\sdl_image\include;${ProjectDir}\..\sdl\include;${ProjectDir}\..\glm\;${ProjectDir}\..\PerlinNoise;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>${ProjectDir}/../sdl_image/lib/x64;${ProjectDir}/../sdl/lib/x64;${ProjectDir}/../glew/lib/Release/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

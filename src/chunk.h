@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <ctime>
 
+#include <PerlinNoise.hpp>
+
 #include "material.h"
 #include "mesh.h"
 #include "data.h"
@@ -22,6 +24,8 @@ private:
     int m_Width;
     int m_Height;
     int m_Depth;
+
+    siv::PerlinNoise* m_Noise;
 
     BlockType* m_Grid;
 
