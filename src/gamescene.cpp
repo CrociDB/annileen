@@ -8,6 +8,7 @@ void GameScene::buildMap()
     m_BlockMaterial = new Material();
     m_BlockMaterial->init(shader);
     m_BlockMaterial->addTexture("mainTex", Texture("../../assets/texture.png"));
+    m_BlockMaterial->loadTextures();
 
     m_Noise = new siv::PerlinNoise(time(NULL));
 
