@@ -11,15 +11,15 @@ void GameScene::buildMap()
     m_BlockMaterial->loadTextures();
 
     fog.color = glm::vec3(0.823f, 0.705f, 0.513f);
-    fog.distance = 50.0f;
+    fog.distance = 80.0f;
     fog.enabled = 1.0f;
-    fog.power = 1.6f;
+    fog.power = 1.2f;
 
     m_Noise = new siv::PerlinNoise(time(NULL));
 
-    for (int x = 0; x < 10; x++)
+    for (int x = 0; x < 15; x++)
     {
-        for (int z = 0; z < 10; z++)
+        for (int z = 0; z < 15; z++)
         {
             Chunk* chunk = new Chunk(x, z);
             chunk->setMaterial(m_BlockMaterial);

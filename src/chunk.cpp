@@ -115,9 +115,9 @@ void Chunk::generateGrid()
         for (int z = 0; z < CHUNK_DEPTH; z++)
         {
             float noise = m_Noise->octaveNoise0_1(
-                (m_WorldX + (float)x) / (CHUNK_WIDTH),
-                (m_WorldZ + (float)z) / (CHUNK_HEIGHT),
-                12);
+                (float)((m_WorldX * CHUNK_WIDTH) + (float)x) / (float)(CHUNK_WIDTH * CHUNK_PERIOD),
+                (float)((m_WorldZ * CHUNK_DEPTH) + (float)z) / (float)(CHUNK_DEPTH * CHUNK_PERIOD),
+                CHUNK_OCTAVE);
 
             int sy = (int)(noise * CHUNK_HEIGHT);
 

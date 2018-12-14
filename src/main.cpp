@@ -36,10 +36,12 @@ int main(int argc, char* argv[])
     Camera* camera = scene->getCamera();
     camera->clearType = CameraClearSkybox;
     camera->clearColor = glm::vec3(0.0f, 0.3f, 0.5f);
+    camera->transform.position = glm::vec3(90.0f, 45.0f, 90.0f);
 
     engine->setScene(scene);
 
-    float movementSpeed = 2.5f;
+    float speed = 3.0f;
+    float movementSpeed = 2.8f;
     float sensitivity = 18.0f;
     float pitch = 0.0f, yaw = 0.0f;
 
@@ -48,6 +50,8 @@ int main(int argc, char* argv[])
         auto dt = engine->getTime().deltaTime;
 
         engine->checkInputEvents();
+
+        movementSpeed = engine->getInput()->getKeyDown(SDLK_LSHIFT) ? 3.0 * speed : speed;
 
         if (engine->getInput()->getKeyDown(SDLK_s))
         {
@@ -64,6 +68,14 @@ int main(int argc, char* argv[])
         if (engine->getInput()->getKeyDown(SDLK_d))
         {
             camera->transform.translate(dt * -movementSpeed * camera->getRight());
+        }
+        if (engine->getInput()->getKeyDown(SDLK_q))
+        {
+            camera->transform.translate(dt * -movementSpeed * glm::vec3(0.0f, 1.0f, 0.0f));
+        }
+        if (engine->getInput()->getKeyDown(SDLK_e))
+        {
+            camera->transform.translate(dt * movementSpeed * glm::vec3(0.0f, 1.0f, 0.0f));
         }
 
         if (engine->getInput()->getKeyDown(SDLK_ESCAPE))

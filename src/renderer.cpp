@@ -71,7 +71,7 @@ void Renderer::renderMesh(Scene* scene, Mesh* mesh)
     material->getShader()->setVec3("view_position", camera->transform.position);
 
     material->getShader()->setVec3("fog_color", scene->fog.color);
-    material->getShader()->setFloat("fog_distance", scene->fog.distance);
+    material->getShader()->setFloat("fog_dist", scene->fog.distance);
     material->getShader()->setFloat("fog_pow", scene->fog.power);
     material->getShader()->setFloat("fog_enabled", scene->fog.enabled);
 

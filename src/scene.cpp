@@ -56,7 +56,7 @@ Camera* Scene::getCamera()
 
 Scene::Scene()
 {
-    m_Camera = new Camera(60.0f, 0.1f, 100.0f);
+    m_Camera = new Camera(60.0f, 0.1f, 200.0f);
 }
 
 Scene::~Scene()
