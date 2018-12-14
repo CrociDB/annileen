@@ -21,7 +21,7 @@ public:
     void initFrame(Scene* scene);
     void swapBuffer();
     void renderSkybox(Camera* camera, Skybox* skybox);
-    void renderMesh(Camera* camera, Mesh* mesh);
+    void renderMesh(Scene* scene, Mesh* mesh);
 
     Renderer();
     ~Renderer();

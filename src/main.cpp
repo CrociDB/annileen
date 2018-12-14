@@ -3,59 +3,6 @@
 #include "gamescene.h"
 #include "util.h"
 
-float vdata_cube[] = {
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-    0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-    0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-    0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-    0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-    0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-    0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-    0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-    0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-};
-
-float vdata_floor[] = {
-    -0.5f,  0.0f, -0.5f,  0.0f, 0.5f,
-     0.5f,  0.0f, -0.5f,  0.33, 0.5f,
-     0.5f,  0.0f,  0.5f,  0.33, 0.0f,
-     0.5f,  0.0f,  0.5f,  0.33, 0.0f,
-    -0.5f,  0.0f,  0.5f,  0.0f, 0.0f,
-    -0.5f,  0.0f, -0.5f,  0.0f, 0.5f
-};
-
 void debug_vec3(const glm::vec3& vec);
 
 int main(int argc, char* argv[])
@@ -63,44 +10,15 @@ int main(int argc, char* argv[])
     Engine* engine = Engine::getInstance();
     engine->init(1024, 600);
 
-    // Create triangle
-    Mesh* cubeX = new Mesh();
-    cubeX->init(vdata_cube,
-        sizeof(vdata_cube) / sizeof(float),
-        VERTEX_UV);
-    cubeX->transform.translate(glm::vec3(5.0f, 0.0f, 0.0f));
-
-    Mesh* cubeZ = new Mesh();
-    cubeZ->init(vdata_cube,
-        sizeof(vdata_cube) / sizeof(float),
-        VERTEX_UV);
-    cubeZ->transform.translate(glm::vec3(0.0f, 0.0f, 5.0f));
-    cubeZ->transform.scale = glm::vec3(.5f);
-
-
-
-    Mesh* floor = new Mesh();
-    floor->init(vdata_floor,
-        sizeof(vdata_floor) / sizeof(float),
-        VERTEX_UV);
-    floor->transform.translate(glm::vec3(0.0f, -1.0f, -3.0f));
-    floor->transform.scale *= 30.0f;
-
-    // Mesh material
-    Shader* shader = new Shader();
-    shader->load("../../shaders/vertex.vert", "../../shaders/fragment.frag");
-
-    Material* material = new Material();
-    material->init(shader);
-    material->addTexture("mainTex", Texture("../../assets/texture.png"));
-    material->loadTextures();
-
-    cubeX->setMaterial(material);
-    cubeZ->setMaterial(material);
-    floor->setMaterial(material);
+    Light* light = new Light();
+    light->color = glm::vec3(1.0f, 1.0f, .8f);
+    light->type = LightDirectional;
+    light->intensity = 1.0f;
+    light->transform.rotate(glm::vec3(-40.0f, 0.0f, 0.0f));
 
     // Create scene
     GameScene* scene = new GameScene();
+    scene->addLight(light);
     /*scene->addMesh(cubeX);
     scene->addMesh(cubeZ);*/
     //scene->addMesh(floor);
@@ -130,8 +48,6 @@ int main(int argc, char* argv[])
         auto dt = engine->getTime().deltaTime;
 
         engine->checkInputEvents();
-
-        cubeZ->transform.rotate(glm::vec3(0.0f, 0.3f, 0.0f));
 
         if (engine->getInput()->getKeyDown(SDLK_s))
         {
@@ -171,7 +87,9 @@ int main(int argc, char* argv[])
         }
 
         //SDL_Delay(12);
-        std::cout << engine->getFPS() << std::endl;
+        //std::cout << engine->getFPS() << std::endl;
+
+        debug_vec3(camera->transform.position);
         engine->renderFrame();
     }
 

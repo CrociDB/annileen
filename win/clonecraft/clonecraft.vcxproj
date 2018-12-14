@@ -149,6 +149,7 @@
     <ClInclude Include="..\..\src\engine.h" />
     <ClInclude Include="..\..\src\gamescene.h" />
     <ClInclude Include="..\..\src\input.h" />
+    <ClInclude Include="..\..\src\light.h" />
     <ClInclude Include="..\..\src\material.h" />
     <ClInclude Include="..\..\src\mesh.h" />
     <ClInclude Include="..\..\src\renderer.h" />
@@ -160,14 +161,14 @@
     <ClInclude Include="..\..\src\util.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\..\shaders\fragment.frag">
+    <FxCompile Include="..\..\shaders\unlit.frag">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="..\..\shaders\vertex.vert">
+    <FxCompile Include="..\..\shaders\unlit.vert">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
@@ -178,6 +179,8 @@
   <ItemGroup>
     <None Include="..\..\shaders\skybox.frag" />
     <None Include="..\..\shaders\skybox.vert" />
+    <None Include="..\..\shaders\standard.frag" />
+    <None Include="..\..\shaders\standard.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -113,12 +113,15 @@
     <ClInclude Include="..\..\src\data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\..\shaders\fragment.frag">
+    <FxCompile Include="..\..\shaders\unlit.frag">
       <Filter>Resource Files</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\shaders\vertex.vert">
+    <FxCompile Include="..\..\shaders\unlit.vert">
       <Filter>Resource Files</Filter>
     </FxCompile>
   </ItemGroup>
@@ -127,6 +130,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\..\shaders\skybox.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\shaders\standard.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\shaders\standard.vert">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

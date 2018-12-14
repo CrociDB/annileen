@@ -87,6 +87,13 @@ void Mesh::genBuffers()
         offset += 2;
     }
 
+    if (m_VertexAttr & VERTEX_NORMAL)
+    {
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, m_VertexStride, (GLvoid*)(offset * sizeof(GLfloat)));
+        glEnableVertexAttribArray(3);
+        offset += 3;
+    }
+
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }

@@ -9,11 +9,13 @@
 #include "camera.h"
 #include "cubemap.h"
 #include "skybox.h"
+#include "light.h"
 
 class Scene
 {
 protected:
     std::list<Mesh*> m_Meshes;
+    std::list<Light*> m_Lights;
     Camera* m_Camera;
     Cubemap* m_Cubemap;
     Skybox* m_Skybox;
@@ -24,12 +26,15 @@ public:
     void addMesh(Mesh* mesh);
     void removeMesh(Mesh* mesh);
 
+    void addLight(Light* light);
+
     void setCubemap(Cubemap* cubemap);
 
     Cubemap* getCubemap() const;
     Skybox* getSkybox() const;
 
-    virtual std::list<Mesh*>& getMeshList();
+    std::list<Mesh*>& getMeshList();
+    std::list<Light*>& getLightList();
     Camera* getCamera();
 
     Scene();

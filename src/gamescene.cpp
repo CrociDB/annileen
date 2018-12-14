@@ -3,7 +3,7 @@
 void GameScene::buildMap()
 {
     Shader* shader = new Shader();
-    shader->load("../../shaders/vertex.vert", "../../shaders/fragment.frag");
+    shader->load("../../shaders/standard.vert", "../../shaders/standard.frag");
 
     m_BlockMaterial = new Material();
     m_BlockMaterial->init(shader);
@@ -12,9 +12,9 @@ void GameScene::buildMap()
 
     m_Noise = new siv::PerlinNoise(time(NULL));
 
-    for (int x = 0; x < 5; x++)
+    for (int x = 0; x < 6; x++)
     {
-        for (int z = 0; z < 5; z++)
+        for (int z = 0; z < 6; z++)
         {
             Chunk* chunk = new Chunk(x, z);
             chunk->setMaterial(m_BlockMaterial);

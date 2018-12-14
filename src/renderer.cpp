@@ -57,14 +57,30 @@ void Renderer::renderSkybox(Camera* camera, Skybox* skybox)
     glDepthMask(GL_TRUE);
 }
 
-void Renderer::renderMesh(Camera* camera, Mesh* mesh)
+void Renderer::renderMesh(Scene* scene, Mesh* mesh)
 {
+    Camera* camera = scene->getCamera();
+
     auto material = mesh->getMaterial();
     material->getShader()->use();
     material->useTextures();
 
     glm::mat4 transform = mesh->transform.getModelMatrix();
 
+    // Lights
+    material->getShader()->setVec3("view_position", camera->transform.position);
+
+    for (auto const& light : scene->getLightList())
+    {
+        if (light->type == LightDirectional)
+        {
+            material->getShader()->setVec3("light_direction", light->transform.getForward());
+            material->getShader()->setVec3("light_color", light->color);
+            material->getShader()->setFloat("light_intensity", light->intensity);
+        }
+    }
+
+    // Matrixes
     material->getShader()->setMat4("model", transform);
     material->getShader()->setMat4("view", camera->getViewMatrix());
     material->getShader()->setMat4("projection", camera->getProjectionMatrix());

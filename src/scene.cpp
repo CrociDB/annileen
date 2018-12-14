@@ -34,9 +34,19 @@ void Scene::removeMesh(Mesh* mesh)
     m_Meshes.remove(mesh);
 }
 
+void Scene::addLight(Light* light)
+{
+    m_Lights.push_back(light);
+}
+
 std::list<Mesh*>& Scene::getMeshList()
 {
     return m_Meshes;
+}
+
+std::list<Light*>& Scene::getLightList()
+{
+    return m_Lights;
 }
 
 Camera* Scene::getCamera()

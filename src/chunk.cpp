@@ -16,7 +16,7 @@ void Chunk::generateMesh()
     int meshSize;
     float* meshData = generateMeshData(&meshSize);
 
-    m_Mesh->init(meshData, meshSize, VERTEX_UV);
+    m_Mesh->init(meshData, meshSize, VERTEX_UV | VERTEX_NORMAL);
     m_Mesh->transform.position = glm::vec3(
         m_WorldX * CHUNK_WIDTH,
         0,
@@ -69,6 +69,11 @@ float* Chunk::generateMeshData(int* meshSize)
                             // UVs
                             data[data_i++] = (DATA_CUBE_NORMALIZED_UVS[f][ju] / DATA_CUBE_TEX_SIZE[0]) + uvx;
                             data[data_i++] = (DATA_CUBE_NORMALIZED_UVS[f][ju + 1] / DATA_CUBE_TEX_SIZE[1]) + uvy;
+
+                            // Normals
+                            data[data_i++] = DATA_CUBE_NORMALS[f][jv];
+                            data[data_i++] = DATA_CUBE_NORMALS[f][jv + 1];
+                            data[data_i++] = DATA_CUBE_NORMALS[f][jv + 2];
                         }
                     }
                 }
@@ -119,7 +124,8 @@ void Chunk::generateGrid()
             for (int y = sy; y >= 0; y--)
             {
                 int i = GRID_AT(x, y, z);
-                m_Grid[i] = (BlockType)(rand() % 3);
+                //m_Grid[i] = (BlockType)(rand() % 3);
+                m_Grid[i] = BlockSand;
             }
         }
     }
