@@ -11,6 +11,14 @@
 #include "skybox.h"
 #include "light.h"
 
+struct Fog
+{
+    glm::vec3 color;
+    float distance;
+    float power;
+    bool enabled;
+};
+
 class Scene
 {
 protected:
@@ -23,6 +31,8 @@ protected:
     void createSkybox();
 
 public:
+    Fog fog;
+
     void addMesh(Mesh* mesh);
     void removeMesh(Mesh* mesh);
 

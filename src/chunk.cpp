@@ -125,7 +125,7 @@ void Chunk::generateGrid()
             {
                 int i = GRID_AT(x, y, z);
                 //m_Grid[i] = (BlockType)(rand() % 3);
-                m_Grid[i] = BlockSand;
+                m_Grid[i] = BlockDirt;
             }
         }
     }

@@ -67,8 +67,14 @@ void Renderer::renderMesh(Scene* scene, Mesh* mesh)
 
     glm::mat4 transform = mesh->transform.getModelMatrix();
 
-    // Lights
+    // Lighting
     material->getShader()->setVec3("view_position", camera->transform.position);
+
+    material->getShader()->setVec3("fog_color", scene->fog.color);
+    material->getShader()->setFloat("fog_distance", scene->fog.distance);
+    material->getShader()->setFloat("fog_pow", scene->fog.power);
+    material->getShader()->setFloat("fog_enabled", scene->fog.enabled);
+
 
     for (auto const& light : scene->getLightList())
     {

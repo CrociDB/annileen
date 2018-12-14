@@ -13,6 +13,15 @@ uniform vec3 light_direction;
 uniform vec3 light_color;
 uniform float light_intensity;
 
+uniform float light_specular_strength = 0.4f;
+uniform float light_specular_power = 16;
+
+// fog
+uniform vec3 fog_color = vec3(.3, .3, .3);
+uniform float fog_dist = 30.0;
+uniform float fog_pow = 2.0;
+uniform float fog_enabled = 1.0;
+
 uniform vec3 view_position;
 
 void main()
@@ -27,9 +36,10 @@ void main()
    vec3 viewDir = normalize(viewDist);
    vec3 reflectDir = reflect(-light_direction, frag_normal);
 
-   float specularStrength = 0.4f;
-   float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16);
-   vec3 specular = specularStrength * spec * light_color;
+   float spec = pow(max(dot(viewDir, reflectDir), 0.0), light_specular_power);
+   vec3 specular = light_specular_strength * spec * light_color;
 
-   color = vec4((ambient + diffuse + specular) * tex.xyz, 1.0);
+   vec3 finalColor = (ambient + diffuse + specular) * tex.xyz;
+
+   color = vec4(mix(finalColor, fog_color, clamp(pow(length(viewDist) / fog_dist, fog_pow), 0.0, 1.0) * fog_enabled), 1.0);
 }
