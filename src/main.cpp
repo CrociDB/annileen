@@ -101,7 +101,6 @@ int main(int argc, char* argv[])
         //SDL_Delay(12);
         //std::cout << engine->getFPS() << std::endl;
 
-        debug_vec3(camera->transform.position);
         engine->renderFrame();
     }
 

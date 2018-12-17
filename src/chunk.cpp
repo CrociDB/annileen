@@ -27,7 +27,8 @@ float* Chunk::generateMeshData(int* meshSize)
 {
     int vertices = sizeof(DATA_CUBE_VERTICES) / sizeof(float);
     int uvs = sizeof(DATA_CUBE_NORMALIZED_UVS) / sizeof(float);
-    int data_size = CHUNK_TOTAL_VOXELS * (vertices + uvs);
+    int normals = sizeof(DATA_CUBE_NORMALS) / sizeof(float);
+    int data_size = CHUNK_TOTAL_VOXELS * (vertices + uvs + normals);
 
     float* data = new float[data_size];
     int data_i = 0;
@@ -82,7 +83,7 @@ float* Chunk::generateMeshData(int* meshSize)
         }
     }
 
-    (*meshSize) = data_size;
+    (*meshSize) = (data_i + 1);
     return data;
 }
 
