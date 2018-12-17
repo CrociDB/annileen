@@ -89,7 +89,7 @@ float* Chunk::generateMeshData(int* meshSize)
 
 bool Chunk::gridEmpty(int x, int y, int z)
 {
-    if (x >= CHUNK_DEPTH || y >= CHUNK_DEPTH || z >= CHUNK_DEPTH ||
+    if (x >= CHUNK_WIDTH || y >= CHUNK_HEIGHT || z >= CHUNK_DEPTH ||
         x < 0 || y < 0 || z < 0)
     {
         return true;
