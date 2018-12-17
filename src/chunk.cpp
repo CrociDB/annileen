@@ -21,6 +21,8 @@ void Chunk::generateMesh()
         m_WorldX * CHUNK_WIDTH,
         0,
         m_WorldZ * CHUNK_DEPTH);
+
+    delete meshData;
 }
 
 float* Chunk::generateMeshData(int* meshSize)
