@@ -29,12 +29,12 @@ protected:
     Skybox* m_Skybox;
 
     void createSkybox();
-
 public:
     Fog fog;
 
     void addMesh(Mesh* mesh);
     void removeMesh(Mesh* mesh);
+    void clearMeshList();
 
     void addLight(Light* light);
 

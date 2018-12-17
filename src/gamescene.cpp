@@ -16,16 +16,41 @@ void GameScene::buildMap()
     fog.power = 1.2f;
 
     m_Noise = new siv::PerlinNoise(time(NULL));
+}
 
-    for (int x = 0; x < 15; x++)
+void GameScene::createChunkAt(int x, int z)
+{
+    Chunk* chunk = new Chunk(x, z);
+    chunk->setMaterial(m_BlockMaterial);
+    chunk->setNoise(m_Noise);
+    chunk->generateGrid();
+    int i = GAME_CHUNK_GRID_AT(x, z);
+    m_AvailableChunks.insert(std::pair<int, Chunk*>(i, chunk));
+}
+
+void GameScene::update()
+{
+    // know exactly what chunks to generate and render
+    // TODO: the render/occlusion part will have to be moved over to a better place later
+    clearMeshList();
+
+    auto cameraPos = getCamera()->transform.position;
+    int cx = static_cast<int>(cameraPos.x / CHUNK_WIDTH);
+    int cz = static_cast<int>(cameraPos.z / CHUNK_DEPTH);
+
+    for (int x = cx - GAME_CHUNK_RADIUS; x < cx + GAME_CHUNK_RADIUS; x++)
     {
-        for (int z = 0; z < 15; z++)
+        for (int z = cz - GAME_CHUNK_RADIUS; z < cz + GAME_CHUNK_RADIUS; z++)
         {
-            Chunk* chunk = new Chunk(x, z);
-            chunk->setMaterial(m_BlockMaterial);
-            chunk->setNoise(m_Noise);
-            chunk->generateGrid();
-            m_Chunks.push_back(chunk);
+            int i = GAME_CHUNK_GRID_AT(x, z);
+
+            if (m_AvailableChunks.count(i) == 0)
+            {
+                createChunkAt(x, z);
+
+            }
+
+            auto chunk = m_AvailableChunks.at(i);
             addMesh(chunk->getMesh());
         }
     }

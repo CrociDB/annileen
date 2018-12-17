@@ -34,6 +34,11 @@ void Scene::removeMesh(Mesh* mesh)
     m_Meshes.remove(mesh);
 }
 
+void Scene::clearMeshList()
+{
+    m_Meshes.clear();
+}
+
 void Scene::addLight(Light* light)
 {
     m_Lights.push_back(light);

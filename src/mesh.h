@@ -18,6 +18,7 @@
 class Mesh
 {
 private:
+    bool m_BuffersGenerated;
     uint32_t m_VertexCount;
     uint32_t m_VertexIndicesCount;
     GLfloat* m_VertexData;

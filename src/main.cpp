@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
     Camera* camera = scene->getCamera();
     camera->clearType = CameraClearSkybox;
     camera->clearColor = glm::vec3(0.0f, 0.3f, 0.5f);
-    camera->transform.position = glm::vec3(90.0f, 45.0f, 90.0f);
+    camera->transform.position = glm::vec3(0.0f, 45.0f, 0.0f);
 
     engine->setScene(scene);
 
@@ -48,10 +48,10 @@ int main(int argc, char* argv[])
     while (engine->run())
     {
         auto dt = engine->getTime().deltaTime;
-
         engine->checkInputEvents();
+        scene->update();
 
-        movementSpeed = engine->getInput()->getKeyDown(SDLK_LSHIFT) ? 3.0 * speed : speed;
+        movementSpeed = engine->getInput()->getKeyDown(SDLK_LSHIFT) ? 5.0 * speed : speed;
 
         if (engine->getInput()->getKeyDown(SDLK_s))
         {

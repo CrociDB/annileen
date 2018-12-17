@@ -35,6 +35,8 @@ void Mesh::init(const float* vertexData, uint32_t verticesCount, uint8_t vertexA
         + (((m_VertexAttr & VERTEX_NORMAL) >> 2) * 3));
 
     m_VertexCount = m_DataSize / (m_VertexStride / sizeof(GLfloat));
+
+    m_BuffersGenerated = false;
 }
 
 void Mesh::init(const float* vertexData, uint32_t verticesCount, uint8_t vertexAttr)
@@ -54,6 +56,11 @@ Material* Mesh::getMaterial()
 
 void Mesh::genBuffers()
 {
+    if (m_BuffersGenerated)
+    {
+        return;
+    }
+
     glGenVertexArrays(1, &m_VertexArrayObject);
     glGenBuffers(1, &m_VertexBufferObject);
 
@@ -96,6 +103,8 @@ void Mesh::genBuffers()
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+
+    m_BuffersGenerated = true;
 }
 
 void Mesh::bindAndDraw()
