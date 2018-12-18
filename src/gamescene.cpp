@@ -50,6 +50,7 @@ void GameScene::removeFarthestChunk()
     if (k)
     {
         auto chunk = m_AvailableChunks.at(ikill);
+        removeMesh(chunk->getMesh());
         m_AvailableChunks.erase(ikill);
         delete chunk;
     }
