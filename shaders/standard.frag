@@ -42,4 +42,5 @@ void main()
    vec3 finalColor = (ambient + diffuse + specular) * tex.xyz;
 
    color = vec4(mix(finalColor, fog_color, clamp(pow(length(viewDist) / fog_dist, fog_pow), 0.0, 1.0) * fog_enabled), 1.0);
+//   color = vec4(tex.xyz * vec3(.5) +  (0.3 * frag_normal), 1.0);
 }

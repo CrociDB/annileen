@@ -144,11 +144,6 @@ void Engine::renderFrame()
 
     m_Renderer->clear(camera->clearColor);
 
-    if (camera->clearType == CameraClearSkybox)
-    {
-        m_Renderer->renderSkybox(camera, m_CurrentScene->getSkybox());
-    }
-
     // Render objects seen in scene
     if (m_CurrentScene != NULL)
     {
@@ -157,6 +152,11 @@ void Engine::renderFrame()
         {
             m_Renderer->renderMesh(m_CurrentScene, mesh);
         }
+    }
+
+    if (camera->clearType == CameraClearSkybox)
+    {
+        m_Renderer->renderSkybox(camera, m_CurrentScene->getSkybox());
     }
 
     m_Renderer->swapBuffer();

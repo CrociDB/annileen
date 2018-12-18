@@ -44,6 +44,7 @@ void Renderer::swapBuffer()
 void Renderer::renderSkybox(Camera* camera, Skybox* skybox)
 {
     glDepthMask(GL_FALSE);
+    glDepthFunc(GL_LEQUAL);
     auto material = skybox->getMesh()->getMaterial();
     material->getShader()->use();
     material->useTextures();
@@ -59,6 +60,10 @@ void Renderer::renderSkybox(Camera* camera, Skybox* skybox)
 
 void Renderer::renderMesh(Scene* scene, Mesh* mesh)
 {
+    glDepthFunc(GL_LESS);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+
     Camera* camera = scene->getCamera();
 
     auto material = mesh->getMaterial();
@@ -92,6 +97,7 @@ void Renderer::renderMesh(Scene* scene, Mesh* mesh)
     material->getShader()->setMat4("projection", camera->getProjectionMatrix());
 
     mesh->bindAndDraw();
+    glDisable(GL_CULL_FACE);
 }
 
 Renderer::~Renderer()
