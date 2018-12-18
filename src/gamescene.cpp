@@ -28,6 +28,33 @@ void GameScene::createChunkAt(int x, int z)
     m_AvailableChunks.insert(std::pair<int, Chunk*>(i, chunk));
 }
 
+void GameScene::removeFarthestChunk()
+{
+    auto cameraPos = getCamera()->transform.position;
+
+    bool k = false;
+    int ikill;
+    float dist = 0.0f;
+
+    for (const auto& c : m_AvailableChunks)
+    {
+        auto d = glm::abs(glm::length(cameraPos - c.second->getMesh()->transform.position));
+        if (dist < d)
+        {
+            k = true;
+            dist = d;
+            ikill = c.first;
+        }
+    }
+
+    if (k)
+    {
+        auto chunk = m_AvailableChunks.at(ikill);
+        m_AvailableChunks.erase(ikill);
+        delete chunk;
+    }
+}
+
 void GameScene::update()
 {
     // know exactly what chunks to generate and render
@@ -48,10 +75,18 @@ void GameScene::update()
             {
                 createChunkAt(x, z);
 
+                if (m_AvailableChunks.size() >= GAME_CHUNK_MAX)
+                {
+                    // TODO: need to fix this removing routine
+                    removeFarthestChunk();
+                }
             }
 
-            auto chunk = m_AvailableChunks.at(i);
-            addMesh(chunk->getMesh());
+            if (m_AvailableChunks.count(i) > 0)
+            {
+                auto chunk = m_AvailableChunks.at(i);
+                addMesh(chunk->getMesh());
+            }
         }
     }
 }

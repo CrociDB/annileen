@@ -10,9 +10,9 @@
 #include "scene.h"
 #include "chunk.h"
 
-#define GAME_CHUNK_RADIUS           4
-#define GAME_CHUNK_MAX              GAME_CHUNK_RADIUS * GAME_CHUNK_RADIUS * 4 * 2
-#define GAME_CHUNK_GRID_AT(X, Y)    X + 100 * Y
+#define GAME_CHUNK_RADIUS           3
+#define GAME_CHUNK_MAX              (GAME_CHUNK_RADIUS * GAME_CHUNK_RADIUS * 4) + (GAME_CHUNK_RADIUS * 10)
+#define GAME_CHUNK_GRID_AT(X, Y)    X + 100000 * Y
 
 class GameScene : public Scene
 {
@@ -24,6 +24,7 @@ private:
     siv::PerlinNoise* m_Noise;
 
     void createChunkAt(int x, int z);
+    void removeFarthestChunk();
 public:
     void buildMap();
 
