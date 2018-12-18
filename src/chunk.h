@@ -13,7 +13,7 @@
 #define CHUNK_HEIGHT            56
 #define CHUNK_DEPTH             16
 #define CHUNK_TOTAL_VOXELS      CHUNK_WIDTH * CHUNK_HEIGHT * CHUNK_DEPTH
-#define CHUNK_PERIOD            4
+#define CHUNK_PERIOD            6
 #define CHUNK_OCTAVE            35.8f
 
 enum BlockType
