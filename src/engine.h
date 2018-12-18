@@ -46,7 +46,9 @@ public:
     uint16_t getWidth() const;
     uint16_t getHeight() const;
 
+    void setWindowTitle(std::string title);
     void setFPSLock(uint8_t fps);
+
     int getFPS() const;
     Time getTime();
 

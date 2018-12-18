@@ -54,6 +54,11 @@ uint16_t Engine::getHeight() const
 }
 
 
+void Engine::setWindowTitle(std::string title)
+{
+    SDL_SetWindowTitle(m_Window, title.c_str());
+}
+
 void Engine::setFPSLock(uint8_t fps)
 {
     m_TargetFPS = fps;
@@ -94,6 +99,15 @@ bool Engine::run()
             m_Time.deltaTime = m_Time.unscaledDeltaTime * m_Time.timeScale;
             m_Time.time += remainingTime;
         }
+    }
+
+    static float fpsCount = 0.0;
+    fpsCount += m_Time.deltaTime;
+    if (fpsCount >= 0.3f)
+    {
+        fpsCount = 0;
+        std::string title = "Clonecraft - FPS: " + std::to_string(getFPS());
+        setWindowTitle(title);
     }
 
     return m_Running;
