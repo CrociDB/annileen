@@ -122,16 +122,26 @@ void Chunk::generateGrid()
                 (float)((m_WorldZ * CHUNK_DEPTH) + (float)z) / (float)(CHUNK_DEPTH * CHUNK_PERIOD),
                 CHUNK_OCTAVE);
 
-            int sy = (int)(noise * CHUNK_HEIGHT);
+            int base = (int)(.1f * CHUNK_HEIGHT);
+            int sy = (int)(noise * (CHUNK_HEIGHT - base)) + base;
 
-            int i = GRID_AT(x, sy, z);
-            m_Grid[i] = BlockGrass;
-            for (int y = sy - 1; y >= 0; y--)
+            if (sy < (.35f * CHUNK_HEIGHT))
             {
-                int i = GRID_AT(x, y, z);
-                //m_Grid[i] = (BlockType)(rand() % 3);
-                m_Grid[i] = BlockDirt;
-                
+                for (int y = sy - 1; y >= 0; y--)
+                {
+                    int i = GRID_AT(x, y, z);
+                    m_Grid[i] = BlockSand;
+                }
+            }
+            else
+            {
+                int i = GRID_AT(x, sy, z);
+                m_Grid[i] = BlockGrass;
+                for (int y = sy - 1; y >= 0; y--)
+                {
+                    int i = GRID_AT(x, y, z);
+                    m_Grid[i] = BlockDirt;
+                }
             }
         }
     }

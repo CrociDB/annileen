@@ -10,7 +10,7 @@
 #include "scene.h"
 #include "chunk.h"
 
-#define GAME_CHUNK_RADIUS           2
+#define GAME_CHUNK_RADIUS           5
 #define GAME_CHUNK_MAX              (GAME_CHUNK_RADIUS * GAME_CHUNK_RADIUS * 4) + (GAME_CHUNK_RADIUS * 10)
 #define GAME_CHUNK_GRID_AT(X, Y)    X + 100000 * Y
 
