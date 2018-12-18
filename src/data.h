@@ -2,10 +2,12 @@
 #define _DATA_H_
 
 const int DATA_CUBE_TEX_SIZE[] = { 3, 2 };
-const int DATA_CUBE_TILE[3][2] = {
-    { 0, 0 },
-    { 1, 1 },
-    { 1, 0 }
+
+// Tile per face per coordinates
+const int DATA_CUBE_TILE[3][6][2] = {
+    { { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }},
+    { { 0, 1 }, { 0, 1 }, { 0, 1 }, { 0, 1 }, { 0, 0 }, { 1, 1 }},
+    { { 1, 0 }, { 1, 0 }, { 1, 0 }, { 1, 0 }, { 1, 0 }, { 1, 0 }}
 };
 
 const int DATA_CUBE_VALIDATIONS[6][3] = {
@@ -69,36 +71,36 @@ const float DATA_CUBE_VERTICES[6][18] = {
 
 const float DATA_CUBE_NORMALIZED_UVS[6][12] = {
     // Back
-    { 0.0f, 0.0f,
-    1.0f, 0.0f,
-    1.0f, 1.0f,
-    1.0f, 1.0f,
+    { 1.0f, 1.0f,
     0.0f, 1.0f,
-    0.0f, 0.0f },
+    0.0f, 0.0f,
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    1.0f, 1.0f },
 
     // Front
-    { 0.0f, 0.0f,
+    { 1.0f, 1.0f,
+    0.0f, 1.0f,
+    0.0f, 0.0f,
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    1.0f, 1.0f },
+
+    // Right
+   { 0.0f, 0.0f,
     1.0f, 0.0f,
     1.0f, 1.0f,
     1.0f, 1.0f,
     0.0f, 1.0f,
     0.0f, 0.0f },
 
-    // Right
-    { 1.0f, 0.0f,
-    1.0f, 1.0f,
-    0.0f, 1.0f,
-    0.0f, 1.0f,
-    0.0f, 0.0f,
-    1.0f, 0.0f },
-
     // Left
-    { 1.0f, 0.0f,
+    { 0.0f, 0.0f,
+    1.0f, 0.0f,
+    1.0f, 1.0f,
     1.0f, 1.0f,
     0.0f, 1.0f,
-    0.0f, 1.0f,
-    0.0f, 0.0f,
-    1.0f, 0.0f },
+    0.0f, 0.0f },
 
     // Bottom
     { 0.0f, 1.0f,

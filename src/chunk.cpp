@@ -66,8 +66,8 @@ float* Chunk::generateMeshData(int* meshSize)
                             data[data_i++] = DATA_CUBE_VERTICES[f][jv + 1] + (float)y;
                             data[data_i++] = DATA_CUBE_VERTICES[f][jv + 2] + (float)z;
 
-                            float uvx = (1.0f / (float)DATA_CUBE_TEX_SIZE[0]) * (float)DATA_CUBE_TILE[m_Grid[i]][0];
-                            float uvy = (1.0f / (float)DATA_CUBE_TEX_SIZE[1]) * (float)DATA_CUBE_TILE[m_Grid[i]][1];
+                            float uvx = (1.0f / (float)DATA_CUBE_TEX_SIZE[0]) * (float)DATA_CUBE_TILE[m_Grid[i]][f][0];
+                            float uvy = (1.0f / (float)DATA_CUBE_TEX_SIZE[1]) * (float)DATA_CUBE_TILE[m_Grid[i]][f][1];
 
                             // UVs
                             data[data_i++] = (DATA_CUBE_NORMALIZED_UVS[f][ju] / DATA_CUBE_TEX_SIZE[0]) + uvx;
@@ -124,11 +124,14 @@ void Chunk::generateGrid()
 
             int sy = (int)(noise * CHUNK_HEIGHT);
 
-            for (int y = sy; y >= 0; y--)
+            int i = GRID_AT(x, sy, z);
+            m_Grid[i] = BlockGrass;
+            for (int y = sy - 1; y >= 0; y--)
             {
                 int i = GRID_AT(x, y, z);
                 //m_Grid[i] = (BlockType)(rand() % 3);
                 m_Grid[i] = BlockDirt;
+                
             }
         }
     }
