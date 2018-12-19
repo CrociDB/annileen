@@ -118,14 +118,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\..\shaders\unlit.frag">
-      <Filter>Resource Files</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\shaders\unlit.vert">
-      <Filter>Resource Files</Filter>
-    </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\..\shaders\skybox.frag">
       <Filter>Resource Files</Filter>
     </None>
@@ -136,6 +128,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="..\..\shaders\standard.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\shaders\unlit.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\shaders\unlit.frag">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
