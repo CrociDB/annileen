@@ -127,7 +127,7 @@ void Chunk::generateGrid()
 
             if (sy < (.35f * CHUNK_HEIGHT))
             {
-                for (int y = sy - 1; y >= 0; y--)
+                for (int y = sy; y >= 0; y--)
                 {
                     int i = GRID_AT(x, y, z);
                     m_Grid[i] = BlockSand;
