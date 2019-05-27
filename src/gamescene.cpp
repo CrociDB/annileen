@@ -24,8 +24,7 @@ void GameScene::createChunkAt(int x, int z)
     chunk->setMaterial(m_BlockMaterial);
     chunk->setNoise(m_Noise);
     chunk->generateGrid();
-    int i = GAME_CHUNK_GRID_AT(x, z);
-    m_AvailableChunks.insert(std::pair<int, Chunk*>(i, chunk));
+	m_AvailableChunks.insert(std::pair<uint64_t, Chunk*>((uint32_t)x | (((uint64_t)z) << 32), chunk));
 }
 
 void GameScene::removeFarthestChunk()
@@ -33,7 +32,7 @@ void GameScene::removeFarthestChunk()
     auto cameraPos = getCamera()->transform.position;
 
     bool k = false;
-    int ikill;
+    uint64_t ikill;
     float dist = 0.0f;
 
     for (const auto& c : m_AvailableChunks)
@@ -66,26 +65,34 @@ void GameScene::update()
     int cx = static_cast<int>(cameraPos.x / CHUNK_WIDTH);
     int cz = static_cast<int>(cameraPos.z / CHUNK_DEPTH);
 
+	// Create chunk from list
+	if (m_ChunksToCreate.size() > 0)
+	{
+		auto chunk_addr = m_ChunksToCreate.front();
+		createChunkAt((int32_t)(chunk_addr & 0xFFFFFFFF), (int32_t)(((int64_t)(chunk_addr) >> 32) & 0xFFFFFFFF));
+		m_ChunksToCreate.pop_front();
+	}
+
+	// Destroy chunk if needed
+    if (m_AvailableChunks.size() >= GAME_CHUNK_MAX)
+    {
+        // TODO: need to fix this removing routine
+        removeFarthestChunk();
+    }
+
     for (int x = cx - GAME_CHUNK_RADIUS; x < cx + GAME_CHUNK_RADIUS; x++)
     {
         for (int z = cz - GAME_CHUNK_RADIUS; z < cz + GAME_CHUNK_RADIUS; z++)
         {
-            int i = GAME_CHUNK_GRID_AT(x, z);
-
-            if (m_AvailableChunks.count(i) == 0)
+			uint64_t ca = (uint32_t)x | (((uint64_t)z) << 32);
+            if (m_AvailableChunks.count(ca) == 0 && std::find(m_ChunksToCreate.begin(), m_ChunksToCreate.end(), ca) == m_ChunksToCreate.end())
             {
-                createChunkAt(x, z);
-
-                if (m_AvailableChunks.size() >= GAME_CHUNK_MAX)
-                {
-                    // TODO: need to fix this removing routine
-                    removeFarthestChunk();
-                }
+				m_ChunksToCreate.push_back(ca);
             }
 
-            if (m_AvailableChunks.count(i) > 0)
+            if (m_AvailableChunks.count(ca) > 0)
             {
-                auto chunk = m_AvailableChunks.at(i);
+                auto chunk = m_AvailableChunks.at(ca);
                 addMesh(chunk->getMesh());
             }
         }
