@@ -10,7 +10,7 @@
 #include "data.h"
 
 #define CHUNK_WIDTH             16
-#define CHUNK_HEIGHT            56
+#define CHUNK_HEIGHT            120
 #define CHUNK_DEPTH             16
 #define CHUNK_TOTAL_VOXELS      CHUNK_WIDTH * CHUNK_HEIGHT * CHUNK_DEPTH
 #define CHUNK_PERIOD            6
@@ -21,7 +21,8 @@ enum BlockType
     BlockEmpty = -1,
     BlockDirt = 0,
     BlockGrass,
-    BlockSand
+    BlockSand,
+	BlockStone
 };
 
 class Chunk

@@ -117,30 +117,52 @@ void Chunk::generateGrid()
     {
         for (int z = 0; z < CHUNK_DEPTH; z++)
         {
-            float noise = m_Noise->octaveNoise0_1(
-                (float)((m_WorldX * CHUNK_WIDTH) + (float)x) / (float)(CHUNK_WIDTH * CHUNK_PERIOD),
-                (float)((m_WorldZ * CHUNK_DEPTH) + (float)z) / (float)(CHUNK_DEPTH * CHUNK_PERIOD),
-                CHUNK_OCTAVE);
+			float noise0 = m_Noise->octaveNoise0_1(
+				(float)((m_WorldX * CHUNK_WIDTH) + (float)x) / (float)(CHUNK_WIDTH * CHUNK_PERIOD) * 0.3,
+				(float)((m_WorldZ * CHUNK_DEPTH) + (float)z) / (float)(CHUNK_DEPTH * CHUNK_PERIOD) * 0.3,
+				1) * .8f + .2f;
 
-            int base = (int)(.1f * CHUNK_HEIGHT);
+            float noise = m_Noise->octaveNoise0_1(
+                (float)((m_WorldX * CHUNK_WIDTH) + (float)x) / (float)(CHUNK_WIDTH * CHUNK_PERIOD) * 1.0,
+                (float)((m_WorldZ * CHUNK_DEPTH) + (float)z) / (float)(CHUNK_DEPTH * CHUNK_PERIOD) * 1.0,
+                5);
+
+			noise *= noise0;
+
+            int base = (int)(.3f * CHUNK_HEIGHT);
             int sy = (int)(noise * (CHUNK_HEIGHT - base)) + base;
 
-            if (sy < (.35f * CHUNK_HEIGHT))
+            if (sy < (.48f * CHUNK_HEIGHT))
             {
                 for (int y = sy; y >= 0; y--)
                 {
                     int i = GRID_AT(x, y, z);
-                    m_Grid[i] = BlockSand;
+					if (y < sy - 7)
+						m_Grid[i] = BlockStone;
+					else
+						m_Grid[i] = BlockSand;
                 }
             }
+			else if (sy > (.78f * CHUNK_HEIGHT))
+			{
+				for (int y = sy; y >= 0; y--)
+				{
+					int i = GRID_AT(x, y, z);
+					m_Grid[i] = BlockStone;
+				}
+			}
             else
             {
                 int i = GRID_AT(x, sy, z);
-                m_Grid[i] = BlockGrass;
+				m_Grid[i] = BlockGrass;
+
                 for (int y = sy - 1; y >= 0; y--)
                 {
                     int i = GRID_AT(x, y, z);
-                    m_Grid[i] = BlockDirt;
+					if (y < sy - 7)
+						m_Grid[i] = BlockStone;
+					else
+						m_Grid[i] = BlockDirt;
                 }
             }
         }

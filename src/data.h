@@ -1,13 +1,14 @@
 #ifndef _DATA_H_
 #define _DATA_H_
 
-const int DATA_CUBE_TEX_SIZE[] = { 3, 2 };
+const int DATA_CUBE_TEX_SIZE[] = { 5, 2 };
 
 // Tile per face per coordinates
-const int DATA_CUBE_TILE[3][6][2] = {
+const int DATA_CUBE_TILE[4][6][2] = {
     { { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }},
     { { 0, 1 }, { 0, 1 }, { 0, 1 }, { 0, 1 }, { 0, 0 }, { 1, 1 }},
-    { { 1, 0 }, { 1, 0 }, { 1, 0 }, { 1, 0 }, { 1, 0 }, { 1, 0 }}
+	{ { 1, 0 }, { 1, 0 }, { 1, 0 }, { 1, 0 }, { 1, 0 }, { 1, 0 }},
+	{ { 2, 0 }, { 2, 0 }, { 2, 0 }, { 2, 0 }, { 2, 0 }, { 2, 0 }}
 };
 
 const int DATA_CUBE_VALIDATIONS[6][3] = {

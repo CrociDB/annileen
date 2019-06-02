@@ -11,7 +11,7 @@
 #include "scene.h"
 #include "chunk.h"
 
-#define GAME_CHUNK_RADIUS           7
+#define GAME_CHUNK_RADIUS           8
 #define GAME_CHUNK_MAX              (GAME_CHUNK_RADIUS * GAME_CHUNK_RADIUS * 4) + (GAME_CHUNK_RADIUS * 10)
 
 class GameScene : public Scene

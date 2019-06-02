@@ -7,13 +7,13 @@ void GameScene::buildMap()
 
     m_BlockMaterial = new Material();
     m_BlockMaterial->init(shader);
-    m_BlockMaterial->addTexture("mainTex", Texture("../../assets/texture.png"));
+    m_BlockMaterial->addTexture("mainTex", Texture("../../assets/blocks.png"));
     m_BlockMaterial->loadTextures();
 
     fog.color = glm::vec3(0.823f, 0.705f, 0.513f);
-    fog.distance = 80.0f;
+    fog.distance = 150.0f;
     fog.enabled = 1.0f;
-    fog.power = 1.2f;
+    fog.power = 1.3f;
 
     m_Noise = new siv::PerlinNoise(time(NULL));
 }

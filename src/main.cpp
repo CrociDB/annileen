@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
     Camera* camera = scene->getCamera();
     camera->clearType = CameraClearSkybox;
     camera->clearColor = glm::vec3(0.0f, 0.3f, 0.5f);
-    camera->transform.position = glm::vec3(0.0f, 45.0f, 0.0f);
+    camera->transform.position = glm::vec3(0.0f, 85.0f, 0.0f);
 
     engine->setScene(scene);
 
