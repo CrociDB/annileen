@@ -11,19 +11,11 @@ int main(int argc, char* argv[])
     Engine* engine = Engine::getInstance();
     engine->init(1280, 720);
 
-    Light* light = new Light();
-    light->color = glm::vec3(1.0f, 1.0f, .8f);
-    light->type = LightDirectional;
-    light->intensity = 0.8f;
-    light->transform.rotate(glm::vec3(-40.0f, 0.0f, 0.0f));
-
     // Voxel game scene
     //GameScene* scene = new GameScene();
 
     // Graphics GYM scene
     GymScene* scene = new GymScene();
-
-    scene->addLight(light);
 
     scene->setCubemap(new Cubemap(std::vector<std::string> {
             "../../assets/skybox/stormydays_ft.png",
@@ -99,9 +91,6 @@ int main(int argc, char* argv[])
             };
             camera->setForward(glm::normalize(cameraForward));
         }
-
-        //SDL_Delay(12);
-        //std::cout << engine->getFPS() << std::endl;
 
         engine->renderFrame();
     }

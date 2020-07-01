@@ -26,6 +26,14 @@ void GymScene::start()
     }
 
     getCamera()->transform.position = glm::vec3(-3.0f, 0.0f, -2.0f);
+
+    Light* light = new Light();
+    light->color = glm::vec3(0.5f, 0.6f, 1.0f);
+    light->type = LightDirectional;
+    light->intensity = 0.6f;
+    light->transform.rotate(glm::vec3(-40.0f, 0.0f, 0.0f));
+
+    this->addLight(light);
 }
 
 void GymScene::update()
