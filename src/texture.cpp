@@ -14,8 +14,12 @@ bool Texture::load()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    auto mode = m_Surface->format->BytesPerPixel == 4 ? GL_RGBA : GL_RGB;
-
+    auto mode = GL_RGB;
+    if (m_Surface->format->BytesPerPixel == 4)
+        mode == GL_RGBA;
+    else if (m_Surface->format->BytesPerPixel == 1)
+        mode == GL_R;
+    
     glTexImage2D(GL_TEXTURE_2D, 0, mode, m_Surface->w, m_Surface->h, 0,
         mode, GL_UNSIGNED_BYTE, m_Surface->pixels);
     glGenerateMipmap(GL_TEXTURE_2D);
