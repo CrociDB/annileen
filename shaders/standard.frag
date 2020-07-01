@@ -27,20 +27,22 @@ uniform vec3 view_position;
 
 void main()
 {
-   vec4 tex = texture(mainTex, frag_uv);
-   vec3 ambient = 0.4f * vec3(1.0);
+	vec3 normal = normalize(frag_normal);
 
-   float diff = max(dot(normalize(frag_normal), light_direction), 0.0);
-   vec3 diffuse = diff * light_color * light_intensity;
+	vec4 tex = texture(mainTex, frag_uv);
+	vec3 ambient = 0.4f * vec3(1.0);
 
-   vec3 viewDist = (view_position - frag_position);
-   vec3 viewDir = normalize(viewDist);
-   vec3 reflectDir = reflect(-light_direction, normalize(frag_normal));
+	float diff = max(dot(normal, light_direction), 0.0);
+	vec3 diffuse = diff * light_color * light_intensity;
 
-   float spec = pow(max(dot(viewDir, reflectDir), 0.0), light_specular_power);
-   vec3 specular = light_specular_strength * spec * light_color;
+	vec3 viewDist = (view_position - frag_position);
+	vec3 viewDir = normalize(viewDist);
+	vec3 reflectDir = reflect(-light_direction, normal);
 
-   vec3 finalColor = (ambient + diffuse + specular) * tex.xyz;
+	float spec = pow(max(dot(viewDir, reflectDir), 0.0), light_specular_power);
+	vec3 specular = light_specular_strength * spec * light_color;
 
-   color = vec4(mix(finalColor, fog_color, clamp(pow(length(viewDist) / fog_dist, fog_pow), 0.0, 1.0) * fog_enabled), 1.0);
+	vec3 finalColor = ambient * tex.xyz + diffuse * tex.xyz + specular;
+
+	color = vec4(mix(finalColor, fog_color, clamp(pow(length(viewDist) / fog_dist, fog_pow), 0.0, 1.0) * fog_enabled), 1.0);
 }

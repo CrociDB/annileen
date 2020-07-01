@@ -19,7 +19,7 @@ void GymScene::start()
         if (m != nullptr)
         {
             m->transform.position = glm::vec3(0.0, 0.0, 0.0);
-            m->transform.scale = glm::vec3(0.05, 0.05, 0.05);
+            m->transform.scale = glm::vec3(0.03, 0.03, 0.03);
             m->setMaterial(meshMaterial);
             this->addMesh(m);
         }
@@ -31,7 +31,7 @@ void GymScene::start()
     light->color = glm::vec3(0.5f, 0.6f, 1.0f);
     light->type = LightDirectional;
     light->intensity = 0.6f;
-    light->transform.rotate(glm::vec3(-40.0f, 0.0f, 0.0f));
+    light->transform.rotate(glm::vec3(0.0f, 90.0f, 0.0f));
 
     this->addLight(light);
 }
