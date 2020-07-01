@@ -38,8 +38,8 @@ private:
 public:
     Transform transform;
 
-    void init(const float* vertexData, uint32_t verticesCount, uint8_t vertexAttr, const uint32_t* indices, uint32_t indicesCount);
-    void init(const float* vertexData, uint32_t verticesCount, uint8_t vertexAttr);
+    void init(const float* vertexData, uint32_t vertexDataSize, uint8_t vertexAttr, const uint32_t* indices, uint32_t indicesCount);
+    void init(const float* vertexData, uint32_t vertexDataSize, uint8_t vertexAttr);
     void setMaterial(Material* material);
     Material* getMaterial();
 

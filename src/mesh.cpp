@@ -1,11 +1,11 @@
 #include "mesh.h"
 
-void Mesh::init(const float* vertexData, uint32_t verticesCount, uint8_t vertexAttr, const uint32_t* indices, uint32_t indicesCount)
+void Mesh::init(const float* vertexData, uint32_t vertexDataSize, uint8_t vertexAttr, const uint32_t* indices, uint32_t indicesCount)
 {
     m_VertexAttr = vertexAttr;
 
-    m_VertexData = new GLfloat[verticesCount];
-    m_DataSize = verticesCount;
+    m_VertexData = new GLfloat[vertexDataSize];
+    m_DataSize = vertexDataSize;
 
     for (unsigned int i = 0; i < m_DataSize; i++)
     {
@@ -39,9 +39,9 @@ void Mesh::init(const float* vertexData, uint32_t verticesCount, uint8_t vertexA
     m_BuffersGenerated = false;
 }
 
-void Mesh::init(const float* vertexData, uint32_t verticesCount, uint8_t vertexAttr)
+void Mesh::init(const float* vertexData, uint32_t vertexDataSize, uint8_t vertexAttr)
 {
-    init(vertexData, verticesCount, vertexAttr, NULL, 0);
+    init(vertexData, vertexDataSize, vertexAttr, NULL, 0);
 }
 
 void Mesh::setMaterial(Material* material)
