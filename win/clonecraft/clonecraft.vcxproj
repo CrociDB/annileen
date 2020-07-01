@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{5AA97537-E2C0-4978-B207-B8B58B79CADA}</ProjectGuid>
     <RootNamespace>clonecraft</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -47,7 +47,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -84,11 +84,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>${ProjectDir}\..\glew\include\;${ProjectDir}\..\sdl_image\include;${ProjectDir}\..\sdl\include;${ProjectDir}\..\glm\;${ProjectDir}\..\PerlinNoise;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>${ProjectDir}\..\assimp\include\;${ProjectDir}\..\glew\include\;${ProjectDir}\..\sdl_image\include;${ProjectDir}\..\sdl\include;${ProjectDir}\..\glm\;${ProjectDir}\..\PerlinNoise;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>${ProjectDir}/../sdl_image/lib/x64;${ProjectDir}/../sdl/lib/x64;${ProjectDir}/../glew/lib/Release/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;glew32s.lib;SDL2_image.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>${ProjectDir}/../sdl_image/lib/x64;${ProjectDir}/../sdl/lib/x64;${ProjectDir}/../assimp/lib/Release;${ProjectDir}/../glew/lib/Release/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;glew32s.lib;SDL2_image.lib;zlib.lib;assimp-vc142-mt.lib</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -114,13 +115,13 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>${ProjectDir}\..\glew\include\;${ProjectDir}\..\sdl_image\include;${ProjectDir}\..\sdl\include;${ProjectDir}\..\glm\;${ProjectDir}\..\PerlinNoise;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>${ProjectDir}\..\assimp\include\;${ProjectDir}\..\glew\include\;${ProjectDir}\..\sdl_image\include;${ProjectDir}\..\sdl\include;${ProjectDir}\..\glm\;${ProjectDir}\..\PerlinNoise;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>${ProjectDir}/../sdl_image/lib/x64;${ProjectDir}/../sdl/lib/x64;${ProjectDir}/../glew/lib/Release/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;glew32s.lib;SDL2_image.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>${ProjectDir}/../sdl_image/lib/x64;${ProjectDir}/../sdl/lib/x64;${ProjectDir}/../assimp/lib/Release;${ProjectDir}/../glew/lib/Release/x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;SDL2.lib;SDL2main.lib;glew32s.lib;SDL2_image.lib;zlib.lib;assimp-vc142-mt.lib</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -130,10 +131,13 @@
     <ClCompile Include="..\..\src\cubemap.cpp" />
     <ClCompile Include="..\..\src\engine.cpp" />
     <ClCompile Include="..\..\src\gamescene.cpp" />
+    <ClCompile Include="..\..\src\gymscene.cpp" />
     <ClCompile Include="..\..\src\input.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\material.cpp" />
     <ClCompile Include="..\..\src\mesh.cpp" />
+    <ClCompile Include="..\..\src\modelloader.cpp" />
+    <ClCompile Include="..\..\src\rawmesh.cpp" />
     <ClCompile Include="..\..\src\renderer.cpp" />
     <ClCompile Include="..\..\src\scene.cpp" />
     <ClCompile Include="..\..\src\shader.cpp" />
@@ -149,10 +153,13 @@
     <ClInclude Include="..\..\src\data.h" />
     <ClInclude Include="..\..\src\engine.h" />
     <ClInclude Include="..\..\src\gamescene.h" />
+    <ClInclude Include="..\..\src\gymscene.h" />
     <ClInclude Include="..\..\src\input.h" />
     <ClInclude Include="..\..\src\light.h" />
     <ClInclude Include="..\..\src\material.h" />
     <ClInclude Include="..\..\src\mesh.h" />
+    <ClInclude Include="..\..\src\modelloader.h" />
+    <ClInclude Include="..\..\src\rawmesh.h" />
     <ClInclude Include="..\..\src\renderer.h" />
     <ClInclude Include="..\..\src\scene.h" />
     <ClInclude Include="..\..\src\shader.h" />

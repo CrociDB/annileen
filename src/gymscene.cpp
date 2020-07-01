@@ -1,0 +1,41 @@
+#include "gymscene.h"
+
+#include "modelloader.h"
+
+void GymScene::start()
+{
+    Shader* shader = new Shader();
+    shader->load("../../shaders/standard.vert", "../../shaders/standard.frag");
+
+    Material* meshMaterial = new Material();
+    meshMaterial->init(shader);
+    meshMaterial->addTexture("mainTex", Texture("../../assets/textures/statue.png"));
+    meshMaterial->loadTextures();
+
+    ModelLoader loader;
+    auto statueMeshes = loader.loadMesh("../../assets/models/statue.obj");
+    for (auto& m : statueMeshes)
+    {
+        if (m != nullptr)
+        {
+            m->transform.position = glm::vec3(0.0, 0.0, 0.0);
+            m->transform.scale = glm::vec3(0.05, 0.05, 0.05);
+            m->setMaterial(meshMaterial);
+            this->addMesh(m);
+        }
+    }
+
+    getCamera()->transform.position = glm::vec3(-3.0f, 0.0f, -2.0f);
+}
+
+void GymScene::update()
+{
+}
+
+GymScene::GymScene()
+{
+}
+
+GymScene::~GymScene()
+{
+}
