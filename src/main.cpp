@@ -17,9 +17,10 @@ int main(int argc, char* argv[])
     light->intensity = 0.8f;
     light->transform.rotate(glm::vec3(-40.0f, 0.0f, 0.0f));
 
-    // Create scene
+    // Voxel game scene
     //GameScene* scene = new GameScene();
 
+    // Graphics GYM scene
     GymScene* scene = new GymScene();
 
     scene->addLight(light);
