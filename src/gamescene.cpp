@@ -55,6 +55,12 @@ void GameScene::removeFarthestChunk()
     }
 }
 
+void GameScene::start()
+{
+    buildMap();
+    getCamera()->transform.position = glm::vec3(0.0f, 85.0f, 0.0f);
+}
+
 void GameScene::update()
 {
     // know exactly what chunks to generate and render

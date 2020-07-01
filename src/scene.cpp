@@ -23,6 +23,14 @@ void Scene::createSkybox()
     m_Skybox->createMesh();
 }
 
+void Scene::start()
+{
+}
+
+void Scene::update()
+{
+}
+
 void Scene::addMesh(Mesh* mesh)
 {
     mesh->genBuffers();

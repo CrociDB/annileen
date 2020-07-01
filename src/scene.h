@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "mesh.h"
+#include "rawmesh.h"
 #include "camera.h"
 #include "cubemap.h"
 #include "skybox.h"
@@ -31,6 +32,9 @@ protected:
     void createSkybox();
 public:
     Fog fog;
+
+    virtual void start();
+    virtual void update();
 
     void addMesh(Mesh* mesh);
     void removeMesh(Mesh* mesh);

@@ -29,7 +29,8 @@ private:
 public:
     void buildMap();
 
-    void update();
+    void start() override;
+    void update() override;
 
     GameScene();
     ~GameScene();
