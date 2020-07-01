@@ -8,6 +8,7 @@ layout (location = 3) in vec3 normal;
 out vec3 frag_position;
 out vec2 frag_uv;
 out vec3 frag_normal;
+out vec3 frag_color;
 
 // transformation matrices
 uniform mat4 model;
@@ -19,6 +20,7 @@ void main()
    frag_position = vec3(model * vec4(position, 1.0));
    frag_uv = uv;
    frag_normal = mat3(transpose(inverse(model))) * normal;
+   frag_color = color;
 
    gl_Position = projection * view * model * vec4(position, 1.0);
 }
