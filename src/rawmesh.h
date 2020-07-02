@@ -20,6 +20,9 @@ struct RawVertex
 
 class RawMesh
 {
+private:
+	void generateNormals();
+
 public:
 	std::vector<RawVertex> m_Vertices;
 	std::vector<uint32_t> m_Indices;

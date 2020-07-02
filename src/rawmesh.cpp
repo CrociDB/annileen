@@ -1,7 +1,29 @@
 #include "rawmesh.h"
 
+void RawMesh::generateNormals()
+{
+	for (uint32_t i = 0; i < m_Indices.size() - 2; i+=3)
+	{
+		glm::vec3 p1 = m_Vertices[m_Indices[i]].m_Position;
+		glm::vec3 p2 = m_Vertices[m_Indices[i+1]].m_Position;
+		glm::vec3 p3 = m_Vertices[m_Indices[i+2]].m_Position;
+
+		glm::vec3 n = glm::normalize(glm::cross(glm::normalize(p2 - p1), glm::normalize(p3 - p1)));
+
+		m_Vertices[m_Indices[i]].m_Normal = n;
+		m_Vertices[m_Indices[i+1]].m_Normal = n;
+		m_Vertices[m_Indices[i+2]].m_Normal = n;
+
+		m_Vertices[m_Indices[i]].m_HasNormal = true;
+		m_Vertices[m_Indices[i+1]].m_HasNormal = true;
+		m_Vertices[m_Indices[i+2]].m_HasNormal = true;
+	}
+}
+
 Mesh* RawMesh::getMesh()
 {
+	generateNormals();
+
 	Mesh* mesh = new Mesh();
 
 	bool vertexColor = false;
