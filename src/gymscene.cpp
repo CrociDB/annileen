@@ -13,12 +13,12 @@ void GymScene::start()
     meshMaterial->loadTextures();
 
     ModelLoader loader;
-    for (auto& m : loader.loadMesh("../../assets/models/dragon.obj"))
+    for (auto& m : loader.loadMesh("../../assets/models/sponza.obj"))
     {
         if (m != nullptr)
         {
             m->transform.position = glm::vec3(0.0, 0.0, 0.0);
-            m->transform.scale = glm::vec3(0.8, 0.8, 0.8);
+            m->transform.scale = glm::vec3(1.0, 1.0, 1.0);
             m->setMaterial(meshMaterial);
             this->addMesh(m);
         }
@@ -28,7 +28,7 @@ void GymScene::start()
     {
         if (m != nullptr)
         {
-            m->transform.position = glm::vec3(1.2, -0.2, 0.0);
+            m->transform.position = glm::vec3(1.2, 0.8, 0.0);
             m->transform.scale = glm::vec3(0.5, 0.5, 0.5); 
             m->setMaterial(meshMaterial);
             this->addMesh(m);
@@ -39,14 +39,25 @@ void GymScene::start()
     {
         if (m != nullptr)
         {
-            m->transform.position = glm::vec3(0.3, 0.0, 1.4);
+            m->transform.position = glm::vec3(0.3, 1.0, 1.4);
             m->transform.scale = glm::vec3(1.8, 1.8, 1.8);
             m->setMaterial(meshMaterial);
             this->addMesh(m);
         }
     }
 
-    getCamera()->transform.position = glm::vec3(-3.0f, 0.0f, -1.0f);
+    for (auto & m : loader.loadMesh("../../assets/models/dragon.obj"))
+    {
+        if (m != nullptr)
+        {
+            m->transform.position = glm::vec3(0.0, 1.0, 0.0);
+            m->transform.scale = glm::vec3(0.8, 0.8, 0.8);
+            m->setMaterial(meshMaterial);
+            this->addMesh(m);
+        }
+    }
+
+    getCamera()->transform.position = glm::vec3(-3.0f, 2.0f, -1.0f);
 
     Light* light = new Light();
     light->color = glm::vec3(0.5f, 0.6f, 1.0f);

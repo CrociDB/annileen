@@ -9,7 +9,7 @@ void debug_vec3(const glm::vec3& vec);
 int main(int argc, char* argv[])
 {
     Engine* engine = Engine::getInstance();
-    engine->init(1280, 720);
+    engine->init(1920, 1080);
 
     // Voxel game scene
     //GameScene* scene = new GameScene();

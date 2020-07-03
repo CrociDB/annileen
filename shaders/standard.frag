@@ -27,9 +27,10 @@ uniform vec3 view_position;
 
 void main()
 {
-	vec3 normal = normalize(frag_normal);
+	vec3 normal = frag_normal;
+	normal = normalize(normal);
 
-	vec4 tex = texture(mainTex, frag_uv);
+	vec4 tex = vec4(.5, .5, .5, .5);//texture(mainTex, frag_uv);
 	vec3 ambient = 0.4f * vec3(1.0);
 
 	float diff = max(dot(normal, light_direction), 0.0);
@@ -45,4 +46,5 @@ void main()
 	vec3 finalColor = ambient * tex.xyz + diffuse * tex.xyz + specular;
 
 	color = vec4(mix(finalColor, fog_color, clamp(pow(length(viewDist) / fog_dist, fog_pow), 0.0, 1.0) * fog_enabled), 1.0);
+	//color = vec4(normal,1);
 }
