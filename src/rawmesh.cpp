@@ -30,7 +30,7 @@ Mesh* RawMesh::getMesh()
 	bool vertexNormal = m_Vertices[0].m_HasNormal;
 	bool vertexUV = m_Vertices[0].m_HasUV;
 
-	uint8_t vertexAttr = (vertexColor) | (vertexNormal << 2) | (vertexUV << 1);
+	uint8_t vertexAttr = (vertexColor) | (vertexUV << 1) | (vertexNormal << 2);
 
 	std::vector<float> vertexData;
 
@@ -40,18 +40,19 @@ Mesh* RawMesh::getMesh()
 		vertexData.push_back(v.m_Position.y);
 		vertexData.push_back(v.m_Position.z);
 
-		if (vertexNormal)
-		{
-			vertexData.push_back(v.m_Normal.x);
-			vertexData.push_back(v.m_Normal.y);
-			vertexData.push_back(v.m_Normal.z);
-		}
-
 		if (vertexUV)
 		{
 			vertexData.push_back(v.m_UV.x);
 			vertexData.push_back(v.m_UV.y);
 		}
+
+		if (vertexNormal)
+		{
+			vertexData.push_back((float)v.m_Normal.x);
+			vertexData.push_back((float)v.m_Normal.y);
+			vertexData.push_back((float)v.m_Normal.z);
+		}
+
 	}
 
 	mesh->init(vertexData.data(), vertexData.size(), vertexAttr, m_Indices.data(), m_Indices.size());

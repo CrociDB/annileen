@@ -55,6 +55,17 @@ Mesh* ModelLoader::convertMesh(aiMesh* mesh, const aiScene* scene)
 		v.m_Position.y = mesh->mVertices[i].y;
 		v.m_Position.z = mesh->mVertices[i].z;
 
+		if (mesh->mTextureCoords[0])
+		{
+			v.m_UV.x = mesh->mTextureCoords[0][i].x;
+			v.m_UV.y = mesh->mTextureCoords[0][i].y;
+			v.m_HasUV = true;
+		}
+		else
+		{
+			v.m_HasUV = false;
+		}
+
 		if (mesh->mNormals)
 		{
 			v.m_Normal.x = mesh->mNormals[i].x;
@@ -65,17 +76,6 @@ Mesh* ModelLoader::convertMesh(aiMesh* mesh, const aiScene* scene)
 		else
 		{
 			v.m_HasNormal = false;
-		}
-
-		if (mesh->mTextureCoords[0])
-		{
-			v.m_UV.x = mesh->mTextureCoords[0][i].x;
-			v.m_UV.y = mesh->mTextureCoords[0][i].y;
-			v.m_HasUV = true;
-		}
-		else
-		{
-			v.m_HasUV = false;
 		}
 
 		rawMesh.m_Vertices.push_back(v);
