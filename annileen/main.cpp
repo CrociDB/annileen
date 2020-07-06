@@ -11,6 +11,7 @@ int main(int argc, char* argv[])
         engine->checkInputEvents();
 
         // everything goes here.
+        bgfx::setDebug(BGFX_DEBUG_STATS);
 
         engine->renderFrame();
     }
