@@ -55,6 +55,7 @@ project "annileen"
 	files
 	{
 		path.join(ANNILEEN_DIR, "*"),
+		path.join(ANNILEEN_DIR, "engine/*"),
 	}
 	includedirs
 	{
