@@ -1,0 +1,18 @@
+[submodule "bgfx"]
+	path = bgfx
+	url = git@github.com:bkaradzic/bgfx.git
+[submodule "bimg"]
+	path = bimg
+	url = git@github.com:bkaradzic/bimg.git
+[submodule "bx"]
+	path = bx
+	url = git@github.com:bkaradzic/bx.git
+[submodule "glfw"]
+	path = glfw
+	url = git@github.com:glfw/glfw.git
+[submodule "glm"]
+	path = glm
+	url = git@github.com:g-truc/glm.git
+[submodule "PerlinNoise"]
+	path = PerlinNoise
+	url = git@github.com:Reputeless/PerlinNoise.git
