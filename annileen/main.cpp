@@ -9,6 +9,10 @@ int main(int argc, char* argv[])
     while (engine->run())
     {
         engine->checkInputEvents();
+
+        // everything goes here.
+
+        engine->renderFrame();
     }
 
     return 0;

@@ -22,6 +22,7 @@
 //#include "input.h"
 
 class Renderer;
+class Scene;
 
 struct Time
 {
@@ -44,7 +45,7 @@ private:
     Time m_Time;
     uint8_t m_TargetFPS;
 
-    //Scene* m_CurrentScene = NULL;
+    Scene* m_CurrentScene = nullptr;
 
     Engine();
 public:
@@ -62,7 +63,7 @@ public:
     int getFPS() const;
     Time getTime();
 
-    //void setScene(Scene* scene);
+    void setScene(Scene* scene);
 
     bool run();
     void terminate();
@@ -73,5 +74,10 @@ public:
 	static Engine* getInstance();
     ~Engine();
 };
+
+inline uint32_t convert_color_vec3_uint32(glm::vec3 col) 
+{
+    return ((uint32_t)(col.x * 0xFF) << 24) + ((uint32_t)(col.y * 0xFF) << 16) + ((uint32_t)(col.z * 0xFF) << 8) + 0xFF;
+}
 
 #endif

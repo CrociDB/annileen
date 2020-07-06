@@ -1,5 +1,5 @@
 #include "engine.h"
-//#include "renderer.h"
+#include "renderer.h"
 
 #include <sstream>
 
@@ -49,8 +49,8 @@ uint32_t Engine::init(uint16_t width, uint16_t height)
 
 	//m_Input = new Input();
 
-    /*m_Renderer = new Renderer();
-    m_Renderer->init(this);*/
+    m_Renderer = new Renderer();
+    m_Renderer->init(this);
 
     m_TargetFPS = 60; 
     m_Time.timeScale = 1.0f;
@@ -107,10 +107,10 @@ Time Engine::getTime()
 }
 
 
-//void Engine::setScene(Scene* scene)
-//{
-//    m_CurrentScene = scene;
-//}
+void Engine::setScene(Scene* scene)
+{
+    m_CurrentScene = scene;
+}
 
 bool Engine::run()
 {
@@ -148,7 +148,7 @@ void Engine::checkInputEvents()
     if (m_Width != oldWidth || m_Height != oldHeight)
     {
         bgfx::reset((uint32_t)m_Width, (uint32_t)m_Height, BGFX_RESET_VSYNC);
-        // Set view rect again
+        m_Renderer->clear();
     }
 
     /*m_Input->_flushEvents();
@@ -191,13 +191,13 @@ void Engine::renderFrame()
 
     //// Render objects seen in scene
     //if (m_CurrentScene != NULL)
-    //{
-    //    m_Renderer->initFrame(m_CurrentScene);
-    //    for (auto& mesh : m_CurrentScene->getMeshList())
-    //    {
-    //        m_Renderer->renderMesh(m_CurrentScene, mesh);
-    //    }
-    //}
+    {
+        m_Renderer->initFrame(m_CurrentScene);
+     /*   for (auto& mesh : m_CurrentScene->getMeshList())
+        {
+            m_Renderer->renderMesh(m_CurrentScene, mesh);
+        }*/
+    }
 
     //if (camera->clearType == CameraClearSkybox)
     //{
@@ -205,6 +205,8 @@ void Engine::renderFrame()
     //}
 
     //m_Renderer->swapBuffer();
+
+    bgfx::frame();
 }
 
 Engine::Engine()
