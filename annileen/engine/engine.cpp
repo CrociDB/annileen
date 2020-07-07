@@ -32,6 +32,7 @@ uint32_t Engine::init(uint16_t width, uint16_t height)
     bgfx::renderFrame();
 
     bgfx::Init init;
+    init.type = bgfx::RendererType::Count;
 #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
     init.platformData.ndt = glfwGetX11Display();
     init.platformData.nwh = (void*)(uintptr_t)glfwGetX11Window(m_Window);
