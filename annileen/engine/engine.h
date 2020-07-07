@@ -18,11 +18,10 @@
 
 #include <glm.hpp>
 
-//#include "scene.h"
+#include "scene.h"
 //#include "input.h"
 
 class Renderer;
-class Scene;
 
 struct Time
 {

@@ -6,6 +6,9 @@ int main(int argc, char* argv[])
     Engine* engine = Engine::getInstance();
     engine->init(1920, 1080);
 
+    Scene* scene = new Scene();
+    engine->setScene(scene);
+
     while (engine->run())
     {
         engine->checkInputEvents();

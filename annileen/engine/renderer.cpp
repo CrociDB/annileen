@@ -26,7 +26,7 @@ void Renderer::clear() const
 
 void Renderer::initFrame(Scene* scene)
 {
-    //scene->getCamera()->updateMatrices();
+    scene->getCamera()->updateMatrices();
     bgfx::touch(m_ViewId);
 }
 
