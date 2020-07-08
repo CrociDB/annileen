@@ -16,3 +16,6 @@
 [submodule "PerlinNoise"]
 	path = PerlinNoise
 	url = https://github.com/Reputeless/PerlinNoise.git
+[submodule "toml11"]
+	path = toml11
+	url = https://github.com/ToruNiina/toml11.git
