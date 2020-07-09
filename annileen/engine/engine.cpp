@@ -3,6 +3,8 @@
 
 #include <sstream>
 
+using namespace annileen;
+
 // Initialize static variables
 bool Engine::m_Running = true;
 
@@ -169,7 +171,7 @@ int Engine::getFPS() const
     return 1.0f / m_Time.deltaTime;
 }
 
-Time Engine::getTime()
+annileen::Time Engine::getTime()
 {
     return m_Time;
 }

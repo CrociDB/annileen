@@ -1,5 +1,7 @@
 #include "transform.h"
 
+using namespace annileen;
+
 glm::mat4 Transform::getModelMatrix()
 {
     glm::mat4 matrix(1.0f);

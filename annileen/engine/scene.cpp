@@ -1,5 +1,7 @@
 #include "scene.h"
 
+using namespace annileen;
+
 //void Scene::setCubemap(Cubemap* cubemap)
 //{
 //    m_Cubemap = cubemap;

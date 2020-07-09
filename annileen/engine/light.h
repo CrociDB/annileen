@@ -5,18 +5,21 @@
 
 #include "transform.h"
 
-enum LightType
+namespace annileen
 {
-    LightDirectional
-};
+    enum LightType
+    {
+        LightDirectional
+    };
 
-class Light
-{
-public:
-    Transform transform;
-    glm::vec3 color;
-    LightType type;
-    float intensity;
-};
+    class Light
+    {
+    public:
+        Transform transform;
+        glm::vec3 color;
+        LightType type;
+        float intensity;
+    };
+}
 
 #endif

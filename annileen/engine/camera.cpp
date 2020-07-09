@@ -1,6 +1,7 @@
 #include "camera.h"
 #include "engine.h"
 
+using namespace annileen;
 
 void Camera::updateMatrices()
 {
