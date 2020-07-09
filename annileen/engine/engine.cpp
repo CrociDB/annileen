@@ -3,22 +3,84 @@
 
 #include <sstream>
 
-static void glfw_errorCallback(int error, const char* description)
+// Initialize static variables
+bool Engine::m_Running = true;
+
+void Engine::glfw_errorCallback(int error, const char* description)
 {
     fprintf(stderr, "GLFW error %d: %s\n", error, description);
 }
 
-static void glfw_keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void Engine::glfw_keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    
+    if (action == GLFW_PRESS)
+    {
+        if (key == GLFW_KEY_ESCAPE)
+        {
+            m_Running = false;
+        }
+
+        //m_Input->_setKeyDown(m_WindowEvent.key.keysym.sym, true);
+    }
+    else if (action == GLFW_RELEASE)
+    {
+        //m_Input->_setKeyDown(m_WindowEvent.key.keysym.sym, false);
+    }
 }
+
+void Engine::glfw_mouseCursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
+{
+    //m_Input->_setMousePosition(m_WindowEvent.motion.x, m_WindowEvent.motion.y);
+    //m_Input->_setMouseDelta(m_WindowEvent.motion.xrel, m_WindowEvent.motion.yrel);
+}
+
+void Engine::glfw_mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+{
+    if (action == GLFW_PRESS)
+    {
+        //m_Input->_setMouseButton(m_WindowEvent.button.button, true);
+    } 
+    else if (action == GLFW_RELEASE)
+    {
+        //m_Input->_setMouseButton(m_WindowEvent.button.button, false);
+    }
+}
+
+void Engine::glfw_mouseCursorEnterCallback(GLFWwindow* window, int entered)
+{
+    if (entered)
+    {
+        // The cursor entered the content area of the window
+    }
+    else
+    {
+        // The cursor left the content area of the window
+    }
+}
+
+void Engine::glfw_mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+{
+}
+
+void Engine::glfw_joystickCallback(int jid, int event)
+{
+    if (event == GLFW_CONNECTED)
+    {
+        // The joystick was connected
+    }
+    else if (event == GLFW_DISCONNECTED)
+    {
+        // The joystick was disconnected
+    }
+}
+
 
 uint32_t Engine::init(uint16_t width, uint16_t height)
 {
     m_Width = width;
     m_Height = height;
 
-    glfwSetErrorCallback(glfw_errorCallback);
+    glfwSetErrorCallback(&Engine::glfw_errorCallback);
     if (!glfwInit())
         return 1;
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -28,6 +90,11 @@ uint32_t Engine::init(uint16_t width, uint16_t height)
         return 1;
 
     glfwSetKeyCallback(m_Window, glfw_keyCallback);
+    glfwSetMouseButtonCallback(m_Window, glfw_mouseButtonCallback);
+    glfwSetCursorPosCallback(m_Window, glfw_mouseCursorPositionCallback);
+    //glfwSetCursorEnterCallback(m_Window, glfw_mouseCursorEnterCallback);
+    //glfwSetScrollCallback(m_Window, glfw_mouseScrollCallback);
+    //glfwSetJoystickCallback(glwf_joystickCallback);
 
     bgfx::renderFrame();
 
@@ -130,7 +197,7 @@ bool Engine::run()
         setWindowTitle(ss.str());
     }
 
-    m_Running = m_Running || !glfwWindowShouldClose(m_Window);
+    m_Running = m_Running && !glfwWindowShouldClose(m_Window);
     return m_Running;
 }
 
@@ -151,37 +218,6 @@ void Engine::checkInputEvents()
         bgfx::reset((uint32_t)m_Width, (uint32_t)m_Height, BGFX_RESET_VSYNC);
         m_Renderer->clear();
     }
-
-    /*m_Input->_flushEvents();
-    while (SDL_PollEvent(&m_WindowEvent))
-    {
-        if (m_WindowEvent.type == SDL_QUIT)
-        {
-            m_Running = false;
-            break;
-        }
-		else if (m_WindowEvent.type == SDL_KEYDOWN)
-		{
-			m_Input->_setKeyDown(m_WindowEvent.key.keysym.sym, true);
-		}
-		else if (m_WindowEvent.type == SDL_KEYUP)
-		{
-			m_Input->_setKeyDown(m_WindowEvent.key.keysym.sym, false);
-		}
-        else if (m_WindowEvent.type == SDL_MOUSEMOTION)
-        {
-            m_Input->_setMousePosition(m_WindowEvent.motion.x, m_WindowEvent.motion.y);
-            m_Input->_setMouseDelta(m_WindowEvent.motion.xrel, m_WindowEvent.motion.yrel);
-        }
-        else if (m_WindowEvent.type == SDL_MOUSEBUTTONDOWN)
-        {
-            m_Input->_setMouseButton(m_WindowEvent.button.button, true);
-        }
-        else if (m_WindowEvent.type == SDL_MOUSEBUTTONUP)
-        {
-            m_Input->_setMouseButton(m_WindowEvent.button.button, false);
-        }
-    }*/
 }
 
 void Engine::renderFrame()

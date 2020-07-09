@@ -39,7 +39,7 @@ private:
 
 	//Input* m_Input;
     Renderer* m_Renderer;
-    bool m_Running;
+    static bool m_Running;
     
     Time m_Time;
     uint8_t m_TargetFPS;
@@ -47,6 +47,16 @@ private:
     Scene* m_CurrentScene = nullptr;
 
     Engine();
+
+    // GLFW Callbacks
+    static void glfw_errorCallback(int error, const char* description);    
+    static void glfw_keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);    
+    static void glfw_mouseCursorPositionCallback(GLFWwindow* window, double xpos, double ypos);    
+    static void glfw_mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+    static void glfw_mouseCursorEnterCallback(GLFWwindow* window, int entered);
+    static void glfw_mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+    static void glfw_joystickCallback(int jid, int event);
+
 public:
     uint32_t init(uint16_t width, uint16_t height);
 
