@@ -9,6 +9,7 @@ local BX_DIR = "bx"
 local GLFW_DIR = "glfw"
 local GLM_DIR = "glm"
 local PERLINNOISE_DIR = "PerlinNoise"
+local TOML11_DIR = "toml11"
 
 solution "annileen-engine"
 	location(BUILD_DIR)
@@ -63,6 +64,7 @@ project "annileen"
 		path.join(BX_DIR, "include"),
 		path.join(GLFW_DIR, "include"),
 		path.join(GLM_DIR, "glm"),
+		TOML11_DIR,
 		PERLINNOISE_DIR
 	}
 	links { "bgfx", "bimg", "bx", "glfw" }
