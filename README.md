@@ -20,15 +20,112 @@ _dM_     _dMM_MM_  _MM_MM_  _MM_MM__MM_ YMMMM9   YMMMM9 _MM_  _MM_
 This is a toy engine initially created for study purposes. It's still on an early stage of development, but already supports:
  - Minecraft-style voxels
 
-[More info](https://twitter.com/CrociDB/status/1075890855217688578)
+## Dependencies
 
+ - premake5
+ - python3
 
 ## Build
 
+First of all, update all submodules and download Python dependencies:
+
+```
+git submodule update
+python -m pip -r tools/requirements.txt
+```
+
+### Windows
+
+Generate the Visual Studio solution:
+
+```
+premake5 vs2019
+```
+
+Open the solution located at `.\build\vs2019\annileen-engine.sln` and build.
+
+Now, generate the assets:
+
+```
+python tools/asset_tools.py
+```
+
+Now you can run the projects on Visual Studio.
+
 ### Linux
 
-```shell
-$ sudo apt-get install cmake libglew-dev libsdl2-dev libsdl2-image-dev
-$ cmake .
-$ make
+```
+premake5 gmake
+make
+python tools/asset_tools.py
+```
+
+### Mac OS
+
+Still in development.
+
+
+## Asset Tools
+
+In order to build all the assets available at the `./assets` folder, run:
+
+```
+python tools/asset_tools.py
+```
+
+It will generate a `build_assets` folder in the project root and will also create a `assets.toml` with a description of all the assets and their types.
+
+All the other the specific tools will accept an asset name, no need to include the full path of the file, it will find the asset within the `asset` folder and build it to its corresponding built folder, but **note**: it will not update the `assets.toml` descriptor file. 
+
+### Shader Tool
+
+```
+python tools/shader.py
+```
+```
+usage: shader.py [-h] [-s [SHADER [SHADER ...]]] [-a]
+
+Annileen Shader Tools
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -s [SHADER [SHADER ...]], --shader [SHADER [SHADER ...]]
+                        compiles the shader specified
+  -a, --all             compiles all the available shaders
+```
+
+### Mesh Tool
+
+```
+python tools/mesh.py
+```
+```
+usage: mesh.py [-h] [-m [MESH [MESH ...]]] [-a] [-v VIEW]
+
+Annileen Mesh Tools
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -m [MESH [MESH ...]], --mesh [MESH [MESH ...]]
+                        compiles the mesh specified
+  -a, --all             compiles all the available meshes
+  -v VIEW, --view VIEW  view the specified mesh
+```
+
+### Texture Tool
+
+```
+python tools/texture.py
+```
+```
+usage: texture.py [-h] [-t [TEXTURE [TEXTURE ...]]] [-a] [-v VIEW]
+
+Annileen Texture Tools
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -t [TEXTURE [TEXTURE ...]], --texture [TEXTURE [TEXTURE ...]]
+                        compiles the texture specified
+  -a, --all             compiles all the available textures
+  -v VIEW, --view VIEW  view the specified mesh
 ```
