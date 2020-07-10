@@ -25,10 +25,12 @@ build_dir = "build_assets"
 descriptor_file = "assets.toml"
 
 def save_descriptor(descriptor):
-    print(descriptor)
-    f = open(os.path.join('.', build_dir, descriptor_file), "w")
+    descriptor_path = os.path.join('.', build_dir, descriptor_file)
+    f = open(descriptor_path, "w")
     toml.dump(descriptor, f)
     f.close()
+    return descriptor_path
+    
 
 def get_platform():
     if sys.platform.startswith('win32'):

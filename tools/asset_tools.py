@@ -14,7 +14,8 @@ def build_assets():
     build_textures()
     build_meshes()
 
-    tools.save_descriptor(asset_descriptor)
+    descriptor_path = tools.save_descriptor(asset_descriptor)
+    print(f'\n{tools.bcolors.OKBLUE}ASSET DESCRIPTOR WRITTEN AT: {tools.bcolors.ENDC}{tools.bcolors.BOLD}{descriptor_path}{tools.bcolors.ENDC}') 
 
 def build_shaders():
     print(f'{tools.bcolors.OKBLUE}COMPILING SHADERS{tools.bcolors.ENDC}')
