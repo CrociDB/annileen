@@ -21,62 +21,75 @@
 #include "scene.h"
 //#include "input.h"
 
-class Renderer;
-
-struct Time
+namespace annileen
 {
-    float deltaTime;
-    float unscaledDeltaTime;
-    double time;
-    float timeScale;
-};
+    class Renderer;
 
-class Engine
-{
-private:
-    GLFWwindow* m_Window;
-    uint16_t m_Width, m_Height;
+    struct Time
+    {
+        float deltaTime;
+        float unscaledDeltaTime;
+        double time;
+        float timeScale;
+    };
 
-	//Input* m_Input;
-    Renderer* m_Renderer;
-    bool m_Running;
-    
-    Time m_Time;
-    uint8_t m_TargetFPS;
+    class Engine
+    {
+    private:
+        GLFWwindow* m_Window;
+        uint16_t m_Width, m_Height;
 
-    Scene* m_CurrentScene = nullptr;
+        //Input* m_Input;
+        Renderer* m_Renderer;
+        static bool m_Running;
+        
+        Time m_Time;
+        uint8_t m_TargetFPS;
 
-    Engine();
-public:
-    uint32_t init(uint16_t width, uint16_t height);
+        Scene* m_CurrentScene = nullptr;
 
-	//Input* getInput();
-	Renderer* getRenderer();
-    GLFWwindow* getGLFWWindow();
-    uint16_t getWidth() const;
-    uint16_t getHeight() const;
+        Engine();
 
-    void setWindowTitle(std::string title);
-    void setFPSLock(uint8_t fps);
+        // GLFW Callbacks
+        static void glfw_errorCallback(int error, const char* description);    
+        static void glfw_keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);    
+        static void glfw_mouseCursorPositionCallback(GLFWwindow* window, double xpos, double ypos);    
+        static void glfw_mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+        static void glfw_mouseCursorEnterCallback(GLFWwindow* window, int entered);
+        static void glfw_mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+        static void glfw_joystickCallback(int jid, int event);
 
-    int getFPS() const;
-    Time getTime();
+    public:
+        uint32_t init(uint16_t width, uint16_t height);
 
-    void setScene(Scene* scene);
+        //Input* getInput();
+        Renderer* getRenderer();
+        GLFWwindow* getGLFWWindow();
+        uint16_t getWidth() const;
+        uint16_t getHeight() const;
 
-    bool run();
-    void terminate();
+        void setWindowTitle(std::string title);
+        void setFPSLock(uint8_t fps);
 
-    void checkInputEvents();
-    void renderFrame();
+        int getFPS() const;
+        Time getTime();
 
-	static Engine* getInstance();
-    ~Engine();
-};
+        void setScene(Scene* scene);
 
-inline uint32_t convert_color_vec3_uint32(glm::vec3 col) 
-{
-    return ((uint32_t)(col.x * 0xFF) << 24) + ((uint32_t)(col.y * 0xFF) << 16) + ((uint32_t)(col.z * 0xFF) << 8) + 0xFF;
+        bool run();
+        void terminate();
+
+        void checkInputEvents();
+        void renderFrame();
+
+        static Engine* getInstance();
+        ~Engine();
+    };
+
+    inline uint32_t convert_color_vec3_uint32(glm::vec3 col) 
+    {
+        return ((uint32_t)(col.x * 0xFF) << 24) + ((uint32_t)(col.y * 0xFF) << 16) + ((uint32_t)(col.z * 0xFF) << 8) + 0xFF;
+    }
 }
 
 #endif

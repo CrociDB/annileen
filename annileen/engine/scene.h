@@ -12,47 +12,50 @@
 //#include "skybox.h"
 #include "light.h"
 
-struct Fog
+namespace annileen
 {
-    glm::vec3 color;
-    float distance;
-    float power;
-    bool enabled;
-};
+    struct Fog
+    {
+        glm::vec3 color;
+        float distance;
+        float power;
+        bool enabled;
+    };
 
-class Scene
-{
-protected:
-    //std::list<Mesh*> m_Meshes;
-    std::list<Light*> m_Lights;
-    Camera* m_Camera;
-    /*Cubemap* m_Cubemap;
-    Skybox* m_Skybox;*/
+    class Scene
+    {
+    protected:
+        //std::list<Mesh*> m_Meshes;
+        std::list<Light*> m_Lights;
+        Camera* m_Camera;
+        /*Cubemap* m_Cubemap;
+        Skybox* m_Skybox;*/
 
-    void createSkybox();
-public:
-    Fog fog;
+        void createSkybox();
+    public:
+        Fog fog;
 
-    virtual void start();
-    virtual void update();
+        virtual void start();
+        virtual void update();
 
-    /*void addMesh(Mesh* mesh);
-    void removeMesh(Mesh* mesh);*/
-    void clearMeshList();
+        /*void addMesh(Mesh* mesh);
+        void removeMesh(Mesh* mesh);*/
+        void clearMeshList();
 
-    void addLight(Light* light);
+        void addLight(Light* light);
 
-    //void setCubemap(Cubemap* cubemap);
+        //void setCubemap(Cubemap* cubemap);
 
-    /*Cubemap* getCubemap() const;
-    Skybox* getSkybox() const;
+        /*Cubemap* getCubemap() const;
+        Skybox* getSkybox() const;
 
-    std::list<Mesh*>& getMeshList();*/
-    std::list<Light*>& getLightList();
-    Camera* getCamera();
+        std::list<Mesh*>& getMeshList();*/
+        std::list<Light*>& getLightList();
+        Camera* getCamera();
 
-    Scene();
-    ~Scene();
-};
+        Scene();
+        ~Scene();
+    };
+}
 
 #endif

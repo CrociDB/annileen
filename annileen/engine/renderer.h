@@ -8,26 +8,29 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
-class Scene;
-
-class Renderer
+namespace annileen
 {
-private:
-    Engine* m_Engine;
+    class Scene;
 
-    const bgfx::ViewId m_ViewId = 0;
+    class Renderer
+    {
+    private:
+        Engine* m_Engine;
 
-public:
-    void init(Engine* engine);
+        const bgfx::ViewId m_ViewId = 0;
 
-    void clear(const glm::vec3& color) const;
-    void clear() const;
-    void initFrame(Scene* scene);
-    //void renderSkybox(Camera* camera, Skybox* skybox);
-    //void renderMesh(Scene* scene, Mesh* mesh);
+    public:
+        void init(Engine* engine);
 
-    Renderer();
-    ~Renderer();
-};
+        void clear(const glm::vec3& color) const;
+        void clear() const;
+        void initFrame(Scene* scene);
+        //void renderSkybox(Camera* camera, Skybox* skybox);
+        //void renderMesh(Scene* scene, Mesh* mesh);
+
+        Renderer();
+        ~Renderer();
+    };
+}
 
 #endif
