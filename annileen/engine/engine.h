@@ -36,7 +36,7 @@ namespace annileen
     {
     private:
         GLFWwindow* m_Window;
-        uint16_t m_Width, m_Height;
+        int m_Width, m_Height;
 
         std::shared_ptr<Input> m_Input;
 

@@ -15,6 +15,11 @@ int main(int argc, char* argv[])
     {
         engine->checkInputEvents();
 
+        if (engine->getInput()->getKeyDown(GLFW_KEY_ESCAPE))
+        {
+            engine->terminate();
+        }
+
         // everything goes here.
         bgfx::setDebug(BGFX_DEBUG_STATS);
 

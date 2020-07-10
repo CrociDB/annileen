@@ -58,7 +58,7 @@ void Input::initKeymap()
 
 bool Input::getKeyDown(int keycode)
 {
-	return m_Keymap[keycode];
+	return this->m_Keymap[keycode];
 }
 
 bool Input::getMouseButtonDown(int button)

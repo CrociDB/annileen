@@ -17,11 +17,6 @@ void Engine::glfw_keyCallback(GLFWwindow* window, int key, int scancode, int act
 {
     if (action == GLFW_PRESS)
     {
-        if (key == GLFW_KEY_ESCAPE)
-        {
-            m_Running = false;
-        }
-
         getInstance()->getInput()->_setKeyDown(key, true);
     }
     else if (action == GLFW_RELEASE)
@@ -209,13 +204,13 @@ void Engine::terminate()
 void Engine::checkInputEvents()
 {
     glfwPollEvents();
-    uint16_t oldWidth = m_Width;
-    uint16_t oldHeight = m_Height;
-    glfwGetWindowSize(m_Window, (int*)&m_Width, (int*)&m_Height);
+    int oldWidth = m_Width;
+    int oldHeight = m_Height;
+    glfwGetWindowSize(m_Window, &m_Width, &m_Height);
 
     if (m_Width != oldWidth || m_Height != oldHeight)
     {
-        bgfx::reset((uint32_t)m_Width, (uint32_t)m_Height, BGFX_RESET_VSYNC);
+        bgfx::reset(m_Width, m_Height, BGFX_RESET_VSYNC);
         m_Renderer->clear();
     }
 }
