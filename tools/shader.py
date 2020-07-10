@@ -3,17 +3,17 @@ import argparse
 import glob
 import ntpath
 
-import asset_tools
-from asset_tools import bcolors
+import tools
+from tools import bcolors
 
-shader_path = os.path.join(os. getcwd(), asset_tools.root_dir, asset_tools.dirs['shaders'])
-shader_build_path = os.path.join(os. getcwd(), asset_tools.build_dir, asset_tools.dirs['shaders'])
+shader_path = os.path.join(os.getcwd(), tools.root_dir, tools.dirs['shaders'])
+shader_build_path = os.path.join(os.getcwd(), tools.build_dir, tools.dirs['shaders'])
 
 varying_def = "varying.def.sc"
 default_varying_def = os.path.join(shader_path, "varying.def.sc")
 
 tools_dir = os.path.dirname(os.path.realpath(__file__))
-bgfx_tools_dir = os.path.join(tools_dir, 'bgfx-tools', asset_tools.get_platform())
+bgfx_tools_dir = os.path.join(tools_dir, 'bgfx-tools', tools.get_platform())
 bgfx_shaderc = os.path.join(bgfx_tools_dir, 'shaderc')
 bgfx_source_folder = os.path.join(os. getcwd(), 'bgfx', 'src')
 
@@ -32,7 +32,7 @@ def build_shader(shaderfile, dest, options):
         output_file,
         bgfx_source_folder,
         varying_def_path,
-        asset_tools.get_platform(),
+        tools.get_platform(),
         shadertype
     )
 

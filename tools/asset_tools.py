@@ -2,60 +2,51 @@ import os
 import shutil
 import sys
 
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    SUCCESS = '\033[92m'
-    WARNING = '\033[93m'
-    ERROR = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
-dirs = {
-    "shaders": "shaders",
-    "textures": "textures",
-    "models": "models",
-}
-
-root_dir = "assets"
-build_dir = "build_assets"
+import tools
+import shader
 
 asset_data = {}
 
 def build_assets():
+    build_shaders()
+    build_textures()
+    build_meshes()
+
+def build_shaders():
+    print(f'{tools.bcolors.OKBLUE}COMPILING SHADERS{tools.bcolors.ENDC}')
+    shader.build_all()
+
+def build_textures():
+    print(f'{tools.bcolors.OKBLUE}COMPILING TEXTURES{tools.bcolors.ENDC}')
+    pass
+
+def build_meshes():
+    print(f'{tools.bcolors.OKBLUE}COMPILING MESHES{tools.bcolors.ENDC}')
     pass
 
 def ensure_build_dir():
-    build_assets = os.path.join('.', build_dir)
-    origin_assets = os.path.join('.', root_dir)
+    build_assets = os.path.join(os.getcwd(), tools.build_dir)
+    origin_assets = os.path.join(os.getcwd(), tools.root_dir)
 
     if not os.path.isdir(build_assets):
-        print(' - Creating build asset dir at: %s' % build_assets)
+        print(f'{tools.bcolors.OKBLUE}CREATING ASSET DIR AT {tools.bcolors.BOLD} {build_assets}{tools.bcolors.ENDC}')
         os.mkdir(build_assets)
 
-    for d in dirs:
-        complete_dir = os.path.join(build_assets, dirs[d])
+    for d in tools.dirs:
+        complete_dir = os.path.join(build_assets, tools.dirs[d])
         if not os.path.isdir(complete_dir):
-            print(' - Creating %s dir' % d)
+            print(f' - Creating {d} dir: {tools.bcolors.UNDERLINE}{complete_dir}{tools.bcolors.ENDC}')
             os.mkdir(complete_dir)
 
+
 def check_required_dir():
-    root = os.path.join('.', root_dir)
-    for d in dirs:
-        complete_dir = os.path.join(root, dirs[d])
+    root = os.path.join(os.getcwd(), tools.root_dir)
+    for d in tools.dirs:
+        complete_dir = os.path.join(root, tools.dirs[d])
         if not os.path.isdir(complete_dir):
-            print('ERROR: "%s" does not exist.' % complete_dir)
+            print(f'{tools.bcolors.ERROR}[ERROR]{tools.bcolors.ENDC} "{complete_dir}" does not exist.')
             return False
     return True
-
-def get_platform():
-    if sys.platform.startswith('win32'):
-        return "windows"
-    elif sys.platform.startswith('linux'):
-        return "linux"
-    elif sys.platform.startswith('darwin'):
-        return "osx"
 
 if __name__ == '__main__':
     if check_required_dir():
