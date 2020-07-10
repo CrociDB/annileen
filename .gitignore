@@ -1,3 +1,2 @@
-build/
-build-assets/
-*.exe
+build*
+premake5.exe
