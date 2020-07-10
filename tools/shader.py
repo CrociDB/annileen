@@ -2,6 +2,7 @@ import os
 import argparse
 import glob
 import ntpath
+from functools import reduce
 
 import tools
 from tools import bcolors
@@ -41,7 +42,7 @@ def build_shader(shaderfile, dest, options):
         success = True
         print(f" {bcolors.SUCCESS}- Shader compiled: {output_file}{bcolors.ENDC}")
 
-    return success, output_file
+    return success, tools.path_leaf(shaderfile), output_file
 
 
 def _build_shader(shadername, options):
@@ -53,12 +54,12 @@ def _build_shader(shadername, options):
 
 
 def build_all():
-    shaders = glob.glob(os.path.join(shader_path, "*.vs")) + glob.glob(os.path.join(shader_path, "*.fs"))
+    shaders = reduce(lambda x, y : x + y, [glob.glob(os.path.join(shader_path, "**", "*." + filetype), recursive=True) for filetype in tools.shader_types])
     return [build_shader(shaderfile, shader_build_path, "") for shaderfile in shaders]
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=f'{bcolors.SUCCESS}Annileen Shader Tools{bcolors.ENDC}')
-    parser.add_argument('-s', '--shader', nargs=1, help='compiles the shader specified')
+    parser.add_argument('-s', '--shader', nargs='*', help='compiles the shader specified')
     parser.add_argument('-a', '--all', action='store_true', help='compiles all the available shaders')
     args = parser.parse_args()
 
