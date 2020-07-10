@@ -30,7 +30,7 @@ def build_texture(texturefile, dest, options):
         success = True
         print(f" {bcolors.SUCCESS}- Texture compiled: {output_file}{bcolors.ENDC}")
 
-    return success, output_file
+    return success, tools.path_leaf(texturefile), output_file
 
 
 def _build_texture(meshname, options):

@@ -42,7 +42,7 @@ def build_shader(shaderfile, dest, options):
         success = True
         print(f" {bcolors.SUCCESS}- Shader compiled: {output_file}{bcolors.ENDC}")
 
-    return success, output_file
+    return success, tools.path_leaf(shaderfile), output_file
 
 
 def _build_shader(shadername, options):

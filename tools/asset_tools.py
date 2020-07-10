@@ -23,19 +23,19 @@ def build_shaders():
     print(f'{tools.bcolors.OKBLUE}COMPILING SHADERS{tools.bcolors.ENDC}')
     for s in shader.build_all():
         if s[0]:
-            asset_descriptor['asset'][tools.path_leaf(s[1])] = {'path': s[1].replace(os.getcwd(), "."), 'type': 'shader'}
+            asset_descriptor['asset'][s[1].lower()] = {'path': s[2].replace(os.getcwd(), "."), 'type': 'shader'}
 
 def build_textures():
     print(f'{tools.bcolors.OKBLUE}COMPILING TEXTURES{tools.bcolors.ENDC}')
     for t in texture.build_all():
         if t[0]:
-            asset_descriptor['asset'][tools.path_leaf(t[1])] = {'path': t[1].replace(os.getcwd(), "."), 'type': 'texture'}
+            asset_descriptor['asset'][t[1].lower()] = {'path': t[2].replace(os.getcwd(), "."), 'type': 'texture'}
 
 def build_meshes():
     print(f'{tools.bcolors.OKBLUE}COMPILING MESHES{tools.bcolors.ENDC}')
     for m in mesh.build_all():
         if m[0]:
-            asset_descriptor['asset'][tools.path_leaf(m[1])] = {'path': m[1].replace(os.getcwd(), "."), 'type': 'mesh'}
+            asset_descriptor['asset'][m[1].lower()] = {'path': m[2].replace(os.getcwd(), "."), 'type': 'mesh'}
 
 def ensure_build_dir():
     build_assets = os.path.join(os.getcwd(), tools.build_dir)

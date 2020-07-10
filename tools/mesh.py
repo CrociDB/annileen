@@ -30,7 +30,7 @@ def build_mesh(meshfile, dest, options):
         success = True
         print(f" {bcolors.SUCCESS}- Mesh compiled: {output_file}{bcolors.ENDC}")
 
-    return success, output_file
+    return success, tools.path_leaf(meshfile), output_file
 
 
 def _build_mesh(meshname, options):
