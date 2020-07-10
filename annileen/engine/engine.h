@@ -1,5 +1,4 @@
-#ifndef _ENGINE_H_
-#define _ENGINE_H_
+#pragma once
 
 #include <iostream>
 
@@ -19,7 +18,7 @@
 #include <glm.hpp>
 
 #include "scene.h"
-//#include "input.h"
+#include "input.h"
 
 namespace annileen
 {
@@ -39,7 +38,8 @@ namespace annileen
         GLFWwindow* m_Window;
         uint16_t m_Width, m_Height;
 
-        //Input* m_Input;
+        std::shared_ptr<Input> m_Input;
+
         Renderer* m_Renderer;
         static bool m_Running;
         
@@ -62,7 +62,7 @@ namespace annileen
     public:
         uint32_t init(uint16_t width, uint16_t height);
 
-        //Input* getInput();
+        std::shared_ptr<Input> getInput(); 
         Renderer* getRenderer();
         GLFWwindow* getGLFWWindow();
         uint16_t getWidth() const;
@@ -91,5 +91,3 @@ namespace annileen
         return ((uint32_t)(col.x * 0xFF) << 24) + ((uint32_t)(col.y * 0xFF) << 16) + ((uint32_t)(col.z * 0xFF) << 8) + 0xFF;
     }
 }
-
-#endif

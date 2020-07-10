@@ -22,29 +22,29 @@ void Engine::glfw_keyCallback(GLFWwindow* window, int key, int scancode, int act
             m_Running = false;
         }
 
-        //m_Input->_setKeyDown(m_WindowEvent.key.keysym.sym, true);
+        getInstance()->getInput()->_setKeyDown(key, true);
     }
     else if (action == GLFW_RELEASE)
     {
-        //m_Input->_setKeyDown(m_WindowEvent.key.keysym.sym, false);
+        getInstance()->getInput()->_setKeyDown(key, false);
     }
 }
 
 void Engine::glfw_mouseCursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
 {
-    //m_Input->_setMousePosition(m_WindowEvent.motion.x, m_WindowEvent.motion.y);
-    //m_Input->_setMouseDelta(m_WindowEvent.motion.xrel, m_WindowEvent.motion.yrel);
+    getInstance()->getInput()->_setMousePosition(xpos, ypos);
+    //getInstance()->m_Input->_setMouseDelta(m_WindowEvent.motion.xrel, m_WindowEvent.motion.yrel);
 }
 
 void Engine::glfw_mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
     if (action == GLFW_PRESS)
     {
-        //m_Input->_setMouseButton(m_WindowEvent.button.button, true);
+        getInstance()->getInput()->_setMouseButton(button, true);
     } 
     else if (action == GLFW_RELEASE)
     {
-        //m_Input->_setMouseButton(m_WindowEvent.button.button, false);
+        getInstance()->getInput()->_setMouseButton(button, false);
     }
 }
 
@@ -117,8 +117,6 @@ uint32_t Engine::init(uint16_t width, uint16_t height)
     if (!bgfx::init(init))
         return 1;
 
-	//m_Input = new Input();
-
     m_Renderer = new Renderer();
     m_Renderer->init(this);
 
@@ -130,10 +128,10 @@ uint32_t Engine::init(uint16_t width, uint16_t height)
     return 0;
 }
 
-//Input* Engine::getInput()
-//{
-//	return m_Input;
-//}
+std::shared_ptr<Input> Engine::getInput()
+{
+	return m_Input;
+}
 
 Renderer* Engine::getRenderer()
 {
@@ -250,6 +248,7 @@ void Engine::renderFrame()
 
 Engine::Engine()
 {
+    m_Input = std::make_shared<Input>();
 }
 
 Engine* Engine::getInstance()
