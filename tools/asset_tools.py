@@ -5,16 +5,22 @@ import sys
 import tools
 import shader
 
-asset_data = {}
+asset_descriptor = {
+    'asset': {}
+}
 
 def build_assets():
     build_shaders()
     build_textures()
     build_meshes()
 
+    tools.save_descriptor(asset_descriptor)
+
 def build_shaders():
     print(f'{tools.bcolors.OKBLUE}COMPILING SHADERS{tools.bcolors.ENDC}')
-    shader.build_all()
+    for s in shader.build_all():
+        if s[0]:
+            asset_descriptor['asset'][tools.path_leaf(s[1])] = {'path': s[1].replace(os.getcwd(), "."), 'type': 'shader'}
 
 def build_textures():
     print(f'{tools.bcolors.OKBLUE}COMPILING TEXTURES{tools.bcolors.ENDC}')

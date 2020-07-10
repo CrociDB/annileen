@@ -19,7 +19,7 @@ bgfx_source_folder = os.path.join(os. getcwd(), 'bgfx', 'src')
 
 def build_shader(shaderfile, dest, options):
     print(f" - Compiling {bcolors.UNDERLINE}'{shaderfile}'{bcolors.ENDC}")
-    output_file = os.path.join(dest, _path_leaf(shaderfile))
+    output_file = os.path.join(dest, tools.path_leaf(shaderfile))
 
     shadertype = "vertex" if shaderfile.split('.')[1] == 'vs' else "fragment"
 
@@ -54,12 +54,7 @@ def _build_shader(shadername, options):
 
 def build_all():
     shaders = glob.glob(os.path.join(shader_path, "*.vs")) + glob.glob(os.path.join(shader_path, "*.fs"))
-    for shaderfile in shaders:
-        build_shader(shaderfile, shader_build_path, "")
-
-def _path_leaf(path):
-    head, tail = ntpath.split(path)
-    return tail or ntpath.basename(head)
+    return [build_shader(shaderfile, shader_build_path, "") for shaderfile in shaders]
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=f'{bcolors.SUCCESS}Annileen Shader Tools{bcolors.ENDC}')
