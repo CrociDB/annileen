@@ -2,6 +2,7 @@ import os
 import argparse
 import glob
 import ntpath
+from functools import reduce
 
 import tools
 from tools import bcolors
@@ -40,7 +41,7 @@ def _build_mesh(meshname, options):
         print(f"{bcolors.ERROR}[ERROR]{bcolors.ENDC} File '{meshname}' not found.")
 
 def build_all():
-    meshes = glob.glob(os.path.join(models_path, "*.obj")) + glob.glob(os.path.join(models_path, "*.gltf")) + glob.glob(os.path.join(models_path, "*.glb"))
+    meshes = reduce(lambda x, y : x + y, [glob.glob(os.path.join(models_path, "**", "*." + filetype), recursive=True) for filetype in tools.mesh_types])
     return [build_mesh(meshfile, models_build_path, "") for meshfile in meshes]
 
 def view_mesh(meshname):
@@ -57,7 +58,7 @@ def view_mesh(meshname):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=f'{bcolors.SUCCESS}Annileen Mesh Tools{bcolors.ENDC}')
-    parser.add_argument('-m', '--mesh', nargs=1, help='compiles the mesh specified')
+    parser.add_argument('-m', '--mesh', nargs='*', help='compiles the mesh specified')
     parser.add_argument('-a', '--all', action='store_true', help='compiles all the available meshes')
     parser.add_argument('-v', '--view', nargs=1, help='view the specified mesh')
     args = parser.parse_args()

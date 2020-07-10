@@ -24,6 +24,10 @@ root_dir = "assets"
 build_dir = "build_assets"
 descriptor_file = "assets.toml"
 
+shader_types = ["vs", "fs"]
+mesh_types = ["obj", "gltf", "glb"]
+texture_types = ["bmp", "dds", "exr", "gif", "jpg", "hdr", "ktx", "png", "psd", "pvr", "tga"]
+
 def save_descriptor(descriptor):
     descriptor_path = os.path.join('.', build_dir, descriptor_file)
     f = open(descriptor_path, "w")
