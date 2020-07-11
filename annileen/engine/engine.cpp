@@ -72,7 +72,7 @@ void Engine::glfw_joystickCallback(int jid, int event)
 }
 
 
-uint32_t Engine::init(uint16_t width, uint16_t height)
+int Engine::init(int width, int height, std::string assetfile)
 {
     m_Width = width;
     m_Height = height;
@@ -106,8 +106,8 @@ uint32_t Engine::init(uint16_t width, uint16_t height)
     init.platformData.nwh = glfwGetWin32Window(m_Window);
 #endif
 
-    init.resolution.width = (uint32_t)m_Width;
-    init.resolution.height = (uint32_t)m_Height;
+    init.resolution.width = m_Width;
+    init.resolution.height = m_Height;
     init.resolution.reset = BGFX_RESET_VSYNC;
     if (!bgfx::init(init))
         return 1;
@@ -120,12 +120,19 @@ uint32_t Engine::init(uint16_t width, uint16_t height)
 
     m_Running = true;
 
+    m_AssetManager = std::make_shared<AssetManager>(assetfile);
+
     return 0;
 }
 
 std::shared_ptr<Input> Engine::getInput()
 {
 	return m_Input;
+}
+
+AssetManager* annileen::Engine::getAssetManager()
+{
+    return m_AssetManager.get();
 }
 
 Renderer* Engine::getRenderer()

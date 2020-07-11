@@ -50,7 +50,7 @@ end
 project "annileen"
 	kind "ConsoleApp"
 	language "C++"
-	cppdialect "C++14"
+	cppdialect "C++17"
 	exceptionhandling "Off"
 	rtti "Off"
 	files

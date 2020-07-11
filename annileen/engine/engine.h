@@ -19,6 +19,7 @@
 
 #include "scene.h"
 #include "input.h"
+#include "assetmanager.h"
 
 namespace annileen
 {
@@ -39,6 +40,7 @@ namespace annileen
         int m_Width, m_Height;
 
         std::shared_ptr<Input> m_Input;
+        std::shared_ptr<AssetManager> m_AssetManager;
 
         Renderer* m_Renderer;
         static bool m_Running;
@@ -60,9 +62,10 @@ namespace annileen
         static void glfw_joystickCallback(int jid, int event);
 
     public:
-        uint32_t init(uint16_t width, uint16_t height);
+        int init(int width, int height, std::string assetfile);
 
         std::shared_ptr<Input> getInput(); 
+        AssetManager* getAssetManager();
         Renderer* getRenderer();
         GLFWwindow* getGLFWWindow();
         uint16_t getWidth() const;

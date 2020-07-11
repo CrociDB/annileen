@@ -6,7 +6,7 @@ using namespace annileen;
 int main(int argc, char* argv[])
 {
     Engine* engine = Engine::getInstance();
-    engine->init(1920, 1080);
+    engine->init(1920, 1080, "./../../build_assets/assets.toml");
 
     Scene* scene = new Scene();
     engine->setScene(scene);
