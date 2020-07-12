@@ -31,7 +31,7 @@ First of all, update all submodules and download Python dependencies:
 
 ```
 git submodule update
-python -m pip -r tools/requirements.txt
+python -m pip install -r tools/requirements.txt
 ```
 
 ### Windows
