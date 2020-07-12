@@ -51,7 +51,7 @@ project "annileen"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
-	exceptionhandling "Off"
+	exceptionhandling "On"
 	rtti "Off"
 	files
 	{
