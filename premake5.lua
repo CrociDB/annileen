@@ -67,6 +67,7 @@ project "annileen"
 		TOML11_DIR,
 		PERLINNOISE_DIR
 	}
+	debugdir "."
 	links { "bgfx", "bimg", "bx", "glfw" }
 	filter "system:windows"
 		links { "gdi32", "kernel32", "psapi" }
