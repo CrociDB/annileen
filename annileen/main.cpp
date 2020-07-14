@@ -11,6 +11,8 @@ int main(int argc, char* argv[])
     Scene* scene = new Scene();
     engine->setScene(scene);
 
+    annileen::Shader* testShader = Engine::getInstance()->getAssetManager()->loadShader("unlit.vs", "unlit.fs");
+
     while (engine->run())
     {
         engine->checkInputEvents();

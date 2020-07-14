@@ -4,40 +4,34 @@
 #include <map>
 #include <vector>
 
+#include <bgfx/bgfx.h>
 #include <toml.hpp>
+
+#include "asset.h"
+#include "shader.h"
+
+class Shader;
 
 namespace annileen
 {
-	enum class AssetType
-	{
-		Undefined,
-		Shader,
-		Texture,
-		Model
-	};
-
-	struct AssetTableEntry
-	{
-		std::string m_Filepath;
-		AssetType m_Type;
-		bool m_Loaded;
-
-		void* m_Data;
-		int m_DataSize;
-	};
-
 	class AssetManager
 	{
 	private:
 		std::map<std::string, AssetTableEntry> m_Assets;
 
-		void loadAssetTable(std::string assetfile);
-		AssetType getType(std::string typetext);
+		void loadAssetTable(const std::string& assetfile);
+		AssetType getType(const std::string& typetext);
+		AssetTableEntry* getAssetEntry(const std::string& assetname);
 
 		void unloadAssets();
 
+		const bgfx::Memory* loadBinaryFile(const std::string& filename);
+
 	public:
-		AssetManager(std::string assetfile);
+		AssetManager(const std::string& assetfile);
 		~AssetManager();
+
+		// Load functions
+		Shader* loadShader(const std::string& vertex, const std::string& fragment);
 	};
 }
