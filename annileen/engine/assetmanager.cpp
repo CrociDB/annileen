@@ -67,10 +67,11 @@ namespace annileen
 		assert(file.is_open() && "Error loading asset file.");
 
 		file.seekg(0, std::ios::end);
-
 		size_t size = file.tellg();
+		file.seekg(0, std::ios::beg);
+
 		const bgfx::Memory* mem = bgfx::alloc(size + 1);
-		file.read(reinterpret_cast<char*>(mem->data), size);
+		file.read((char*)mem->data, size);
 		file.close();
 
 		mem->data[mem->size - 1] = '\0'; // Necessary?
