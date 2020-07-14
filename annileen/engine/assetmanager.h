@@ -6,35 +6,38 @@
 
 #include <toml.hpp>
 
-enum class AssetType
+namespace annileen
 {
-	Undefined,
-	Shader,
-	Texture,
-	Model
-};
+	enum class AssetType
+	{
+		Undefined,
+		Shader,
+		Texture,
+		Model
+	};
 
-struct AssetTableEntry
-{
-	std::string m_Filepath;
-	AssetType m_Type;
-	bool m_Loaded;
+	struct AssetTableEntry
+	{
+		std::string m_Filepath;
+		AssetType m_Type;
+		bool m_Loaded;
 
-	void* m_Data;
-	int m_DataSize;
-};
+		void* m_Data;
+		int m_DataSize;
+	};
 
-class AssetManager
-{
-private:
-	std::map<std::string, AssetTableEntry> m_Assets;
+	class AssetManager
+	{
+	private:
+		std::map<std::string, AssetTableEntry> m_Assets;
 
-	void loadAssetTable(std::string assetfile);
-	AssetType getType(std::string typetext);
+		void loadAssetTable(std::string assetfile);
+		AssetType getType(std::string typetext);
 
-	void unloadAssets();
+		void unloadAssets();
 
-public:
-	AssetManager(std::string assetfile);
-	~AssetManager();
-};
+	public:
+		AssetManager(std::string assetfile);
+		~AssetManager();
+	};
+}

@@ -1,5 +1,7 @@
 #include "assetmanager.h"
 
+using namespace annileen;
+
 AssetManager::AssetManager(std::string assetfile)
 {
 	try
