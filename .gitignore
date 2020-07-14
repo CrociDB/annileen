@@ -1,3 +1,4 @@
 build*
+.vs
 premake5.exe
 tools/__pycache__
