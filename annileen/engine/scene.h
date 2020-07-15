@@ -5,7 +5,7 @@
 #include <list>
 #include <memory>
 
-//#include "mesh.h"
+#include "scenenode.h"
 //#include "rawmesh.h"
 #include "camera.h"
 //#include "cubemap.h"
@@ -24,10 +24,13 @@ namespace annileen
 
     class Scene
     {
-    protected:
-        //std::list<Mesh*> m_Meshes;
+    private:
+        std::list<SceneNode*> m_Nodes;
+        SceneNode* m_Root;
         std::list<Light*> m_Lights;
         Camera* m_Camera;
+
+    protected:
         /*Cubemap* m_Cubemap;
         Skybox* m_Skybox;*/
 
@@ -35,21 +38,23 @@ namespace annileen
     public:
         Fog fog;
 
-        virtual void start();
-        virtual void update();
+        virtual void start() {};
+        virtual void update() {};
+
+        SceneNode* getRoot();
+        SceneNode* createNode();
 
         /*void addMesh(Mesh* mesh);
         void removeMesh(Mesh* mesh);*/
-        void clearMeshList();
 
         void addLight(Light* light);
 
         //void setCubemap(Cubemap* cubemap);
 
         /*Cubemap* getCubemap() const;
-        Skybox* getSkybox() const;
+        Skybox* getSkybox() const;*/
 
-        std::list<Mesh*>& getMeshList();*/
+        std::list<SceneNode*>& getMeshList();
         std::list<Light*>& getLightList();
         Camera* getCamera();
 
