@@ -13,21 +13,18 @@ namespace annileen
     class Mesh
     {
     private:
-        bool m_Loaded;
-
         bgfx::VertexBufferHandle m_VertexBufferHandle;
         bgfx::IndexBufferHandle m_IndexBufferHandle;
 
-        uint16_t m_VertexDataSize;
-        uint8_t* m_VertexData;
+        const bgfx::Memory* m_VertexData;
+        const bgfx::Memory* m_IndexData;
 
-        uint16_t m_IndicesDataSize;
-        uint8_t* m_IndicesData;
+        size_t m_IndexCount;
 
         bgfx::VertexLayout m_VertexLayout;
 
     public:
-        void init(uint8_t* vertexData, uint16_t vertexDataSize, bgfx::VertexLayout vertexLayout, uint8_t* indices, uint16_t indicesCount);
+        void init(const bgfx::Memory* vertexData, bgfx::VertexLayout vertexLayout, const bgfx::Memory* indexData, uint16_t indexCount);
         //void init(RawMesh* rawMesh, bgfx::VertexLayout m_VertexLayout);
 
         void unload();
