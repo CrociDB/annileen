@@ -2,6 +2,7 @@
 #define _TRANSFORM_H_
 
 #include <glm.hpp>
+#include <gtc/type_ptr.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtc/quaternion.hpp>
 
@@ -15,6 +16,7 @@ namespace annileen
         glm::quat rotation;
 
         glm::mat4 getModelMatrix();
+        float* getModelMatrixFloatArray();
         
         void translate(const glm::vec3& pos, bool local = true);
 

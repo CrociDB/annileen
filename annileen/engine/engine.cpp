@@ -224,18 +224,21 @@ void Engine::checkInputEvents()
 
 void Engine::renderFrame()
 {
-    //auto camera = m_CurrentScene->getCamera();
+    auto camera = m_CurrentScene->getCamera();
+    bgfx::setViewTransform(0, camera->getViewMatrixFloatArray(), camera->getProjectionMatrixFloatArray());
+    bgfx::setViewRect(0, 0, 0, uint16_t(m_Width), uint16_t(m_Height));
+    bgfx::touch(0);
 
-    //m_Renderer->clear(camera->clearColor);
 
-    //// Render objects seen in scene
-    //if (m_CurrentScene != NULL)
+    if (m_CurrentScene != nullptr)
     {
         m_Renderer->initFrame(m_CurrentScene);
-     /*   for (auto& mesh : m_CurrentScene->getMeshList())
+
+        for (auto sceneNode : m_CurrentScene->getNodeList())
         {
-            m_Renderer->renderMesh(m_CurrentScene, mesh);
-        }*/
+            if (!sceneNode->hasModel()) continue;
+            m_Renderer->renderSceneNode(m_CurrentScene, sceneNode);
+        }
     }
 
     //if (camera->clearType == CameraClearSkybox)

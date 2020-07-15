@@ -55,10 +55,10 @@ namespace annileen
         m_Lights.push_back(light);
     }
 
-    //std::list<Mesh*>& Scene::getMeshList()
-    //{
-    //    return m_Meshes;
-    //}
+    std::list<SceneNode*>& Scene::getNodeList()
+    {
+        return m_Nodes;
+    }
 
     std::list<Light*>& Scene::getLightList()
     {

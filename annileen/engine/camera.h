@@ -47,7 +47,11 @@ namespace annileen
         glm::mat4 getProjectionMatrix();
         glm::mat4 getViewProjectionMatrix();
 
-        Camera(float fov, float near, float far);
+        float* getViewMatrixFloatArray();
+        float* getProjectionMatrixFloatArray();
+        float* getViewProjectionMatrixFloatArray();
+
+        Camera(float fov, float nearc, float farc);
         ~Camera();
     };
 }

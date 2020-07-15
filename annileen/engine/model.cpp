@@ -15,7 +15,7 @@ namespace annileen
 
 	std::shared_ptr<Material> Model::getMaterial()
 	{
-		return std::shared_ptr<Material>();
+		return m_Material;
 	}
 
 	Model::Model() : m_Mesh(nullptr)

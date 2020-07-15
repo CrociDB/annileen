@@ -54,7 +54,7 @@ namespace annileen
         /*Cubemap* getCubemap() const;
         Skybox* getSkybox() const;*/
 
-        std::list<SceneNode*>& getMeshList();
+        std::list<SceneNode*>& getNodeList();
         std::list<Light*>& getLightList();
         Camera* getCamera();
 

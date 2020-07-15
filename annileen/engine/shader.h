@@ -20,6 +20,8 @@ namespace annileen
     public:
         void init(bgfx::ProgramHandle handle);
         void use();
+
+        bgfx::ProgramHandle getProgram() { return m_ProgramHandle; }
     
         void setBool(const std::string& name, bool value);
         void setInt(const std::string& name, int value);

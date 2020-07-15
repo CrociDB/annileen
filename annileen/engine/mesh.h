@@ -27,6 +27,9 @@ namespace annileen
         void init(const bgfx::Memory* vertexData, bgfx::VertexLayout vertexLayout, const bgfx::Memory* indexData, uint16_t indexCount);
         //void init(RawMesh* rawMesh, bgfx::VertexLayout m_VertexLayout);
 
+        bgfx::VertexBufferHandle getVertexBuffer() { return m_VertexBufferHandle; }
+        bgfx::IndexBufferHandle getIndexBuffer() { return m_IndexBufferHandle; }
+
         void unload();
 
         Mesh();

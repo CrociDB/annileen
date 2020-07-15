@@ -45,7 +45,7 @@ namespace annileen
 
 	SceneNode::SceneNode() : m_Parent(nullptr)
 	{
-		
+		m_Model.reset();
 	}
 
 	SceneNode::~SceneNode()
