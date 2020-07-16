@@ -52,7 +52,7 @@ project "annileen"
 	language "C++"
 	cppdialect "C++17"
 	exceptionhandling "On"
-	rtti "Off"
+	rtti "On"
 	files
 	{
 		path.join(ANNILEEN_DIR, "*"),
