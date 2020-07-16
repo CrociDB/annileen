@@ -18,7 +18,7 @@ bgfx_tools_dir = os.path.join(tools_dir, 'bgfx-tools', tools.get_platform())
 bgfx_shaderc = os.path.join(bgfx_tools_dir, 'shaderc')
 bgfx_source_folder = os.path.join(os. getcwd(), 'bgfx', 'src')
 
-def build_shader(shaderfile, dest, options):
+def build_shader(shaderfile, dest, options, platform, model):
     print(f" - Compiling {bcolors.UNDERLINE}'{shaderfile}'{bcolors.ENDC}")
     output_file = os.path.join(dest, tools.path_leaf(shaderfile))
 
@@ -27,13 +27,17 @@ def build_shader(shaderfile, dest, options):
     current_path_varying = os.path.join(ntpath.split(shaderfile)[0], varying_def)
     varying_def_path = current_path_varying if os.path.isfile(current_path_varying) else default_varying_def
 
-    command = "%s -f %s -o %s -i %s --varyingdef %s --platform %s --type %s" % (
+    platform = tools.get_platform() if platform == 'auto' else platform
+    model = '' if model == 'auto' else f'--profile {model}'
+
+    command = "%s -f %s -o %s -i %s --varyingdef %s --platform %s %s --type %s" % (
         bgfx_shaderc,
         shaderfile,
         output_file,
         bgfx_source_folder,
         varying_def_path,
-        tools.get_platform(),
+        platform,
+        model,
         shadertype
     )
 
@@ -45,27 +49,29 @@ def build_shader(shaderfile, dest, options):
     return success, tools.path_leaf(shaderfile), output_file
 
 
-def _build_shader(shadername, options):
+def _build_shader(shadername, options, platform, model):
     filepath = glob.glob(os.path.join(shader_path, shadername), recursive=True)
     if filepath != None and len(filepath) == 1:
-        build_shader(filepath[0], shader_build_path, options)
+        build_shader(filepath[0], shader_build_path, options, platform, model)
     else:
         print(f"{bcolors.ERROR}[ERROR]{bcolors.ENDC} File '{shadername}' not found.")
 
 
-def build_all():
+def build_all(platform, model):
     shaders = reduce(lambda x, y : x + y, [glob.glob(os.path.join(shader_path, "**", "*." + filetype), recursive=True) for filetype in tools.shader_types])
-    return [build_shader(shaderfile, shader_build_path, "") for shaderfile in shaders]
+    return [build_shader(shaderfile, shader_build_path, "", platform, model) for shaderfile in shaders]
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=f'{bcolors.SUCCESS}Annileen Shader Tools{bcolors.ENDC}')
     parser.add_argument('-s', '--shader', nargs='*', help='compiles the shader specified')
     parser.add_argument('-a', '--all', action='store_true', help='compiles all the available shaders')
+    parser.add_argument('-p', '--platform', help='compiles the mesh specified', choices=tools.available_platforms, default='auto')
+    parser.add_argument('-m', '--model', help='shader model', choices=tools.available_shader_models, default='auto')
     args = parser.parse_args()
 
     if args.all:
-        build_all()
+        build_all(args.platform, args.model)
     elif args.shader != None:
-        _build_shader(args.shader[0], " ".join(args.shader[1:]))
+        _build_shader(args.shader[0], " ".join(args.shader[1:]), args.platform, args.model)
     else:
         parser.print_help()

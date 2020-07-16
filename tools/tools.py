@@ -20,6 +20,28 @@ dirs = {
     "models": "models",
 }
 
+available_platforms = [
+    'auto',
+    'android',
+    'asm.js',
+    'ios',
+    'linux',
+    'orbis',
+    'osx',
+    'windows',
+]
+
+available_shader_models = [
+    'auto',
+    's_3',
+    's_4',
+    's_4_0_level',
+    's_5',
+    'metal',
+    'pssl',
+    'spirv',
+]
+
 root_dir = "assets"
 build_dir = "build_assets"
 descriptor_file = "assets.toml"
