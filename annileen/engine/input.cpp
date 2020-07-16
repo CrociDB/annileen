@@ -77,7 +77,7 @@ glm::vec2 Input::getMouseDelta()
 	return m_MouseDelta;
 }
 
-void Input::_flushEvents()
+void Input::flushEvents()
 {
 	m_MouseDelta.x = m_MouseDelta.y = 0.0f;
 }
@@ -89,6 +89,8 @@ void Input::_setKeyDown(int keycode, bool pressed)
 
 void Input::_setMousePosition(float x, float y)
 {
+	m_MouseDelta.x = x - m_MousePosition.x;
+	m_MouseDelta.y = y - m_MousePosition.y;
 	m_MousePosition.x = x;
 	m_MousePosition.y = y;
 }

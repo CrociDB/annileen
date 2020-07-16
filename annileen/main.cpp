@@ -110,23 +110,20 @@ int main(int argc, char* argv[])
             camera->transform.translate(dt * movementSpeed * glm::vec3(0.0f, 1.0f, 0.0f));
         }
 
-        //{
-        //    // Camera mouse control
-        //    auto mouseDelta = engine->getInput()->getMouseDelta();
+        {
+           // Camera mouse control
+           auto mouseDelta = engine->getInput()->getMouseDelta();
 
-        //    yaw += mouseDelta.x * sensitivity * dt;
-        //    pitch += -mouseDelta.y * sensitivity * dt;
-        //    pitch = glm::clamp(pitch, -89.0f, 89.0f);
-        //    glm::vec3 cameraForward{
-        //        cos(glm::radians(pitch)) * cos(glm::radians(yaw)),
-        //        sin(glm::radians(pitch)),
-        //        cos(glm::radians(pitch)) * sin(glm::radians(yaw))
-        //    };
-        //    camera->setForward(glm::normalize(cameraForward));
-        //}
-
-        glm::vec3 cameraForward(0.0, 0.0, 1.0);
-        camera->setForward(cameraForward);
+           yaw += mouseDelta.x * sensitivity * dt;
+           pitch += -mouseDelta.y * sensitivity * dt;
+           pitch = glm::clamp(pitch, -89.0f, 89.0f);
+           glm::vec3 cameraForward{
+               cos(glm::radians(pitch)) * cos(glm::radians(yaw)),
+               sin(glm::radians(pitch)),
+               cos(glm::radians(pitch)) * sin(glm::radians(yaw))
+           };
+           camera->setForward(glm::normalize(cameraForward));
+        }
 
         if (engine->getInput()->getKeyDown(GLFW_KEY_ESCAPE))
         {

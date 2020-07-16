@@ -28,7 +28,6 @@ void Engine::glfw_keyCallback(GLFWwindow* window, int key, int scancode, int act
 void Engine::glfw_mouseCursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
 {
     getInstance()->getInput()->_setMousePosition(xpos, ypos);
-    //getInstance()->m_Input->_setMouseDelta(m_WindowEvent.motion.xrel, m_WindowEvent.motion.yrel);
 }
 
 void Engine::glfw_mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
@@ -93,10 +92,12 @@ int Engine::init(int width, int height, std::string assetfile)
     //glfwSetScrollCallback(m_Window, glfw_mouseScrollCallback);
     //glfwSetJoystickCallback(glwf_joystickCallback);
 
+    glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     bgfx::renderFrame();
 
     bgfx::Init init;
-    init.type = bgfx::RendererType::OpenGL;
+    init.type = bgfx::RendererType::Vulkan;
 #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
     init.platformData.ndt = glfwGetX11Display();
     init.platformData.nwh = (void*)(uintptr_t)glfwGetX11Window(m_Window);
@@ -210,6 +211,7 @@ void Engine::terminate()
 
 void Engine::checkInputEvents()
 {
+    m_Input->flushEvents();
     glfwPollEvents();
     int oldWidth = m_Width;
     int oldHeight = m_Height;

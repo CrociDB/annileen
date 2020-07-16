@@ -23,7 +23,7 @@ namespace annileen
 		glm::vec2 getMousePosition();
 		glm::vec2 getMouseDelta();
 
-		void _flushEvents();
+		void flushEvents();
 
 		void _setKeyDown(int keycode, bool pressed);
 
