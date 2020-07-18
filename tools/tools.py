@@ -33,10 +33,10 @@ available_platforms = [
 
 available_shader_models = [
     'auto',
-    's_3',
-    's_4',
+    's_3_0',
+    's_4_0',
     's_4_0_level',
-    's_5',
+    's_5_0',
     'metal',
     'pssl',
     'spirv',
