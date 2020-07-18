@@ -113,7 +113,6 @@ Input::Input()
 {
 	initKeymap();
 	for (int i = 0; i < 3; i++) m_MouseButtons[i] = false;
-
 }
 
 Input::~Input()

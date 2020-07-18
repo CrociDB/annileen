@@ -97,7 +97,7 @@ int Engine::init(int width, int height, std::string assetfile)
     bgfx::renderFrame();
 
     bgfx::Init init;
-    init.type = bgfx::RendererType::Vulkan;
+    init.type = bgfx::RendererType::OpenGL;
 #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
     init.platformData.ndt = glfwGetX11Display();
     init.platformData.nwh = (void*)(uintptr_t)glfwGetX11Window(m_Window);
@@ -120,6 +120,7 @@ int Engine::init(int width, int height, std::string assetfile)
     m_Time.timeScale = 1.0f;
 
     m_Running = true;
+    m_Time.deltaTime = m_Time.unscaledDeltaTime = m_Time.time = 0;
 
     m_AssetManager = std::make_shared<AssetManager>(assetfile);
 
