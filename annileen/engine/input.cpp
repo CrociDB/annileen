@@ -10,6 +10,8 @@ void Input::initKeymap()
 		{ GLFW_KEY_BACKSPACE, false },
 		{ GLFW_KEY_TAB, false },
 		{ GLFW_KEY_SPACE, false },
+		{ GLFW_KEY_LEFT_SHIFT , false },
+		{ GLFW_KEY_RIGHT_SHIFT , false },
 
 		{ GLFW_KEY_0, false },
 		{ GLFW_KEY_1, false },

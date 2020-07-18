@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
         engine->checkInputEvents();
         scene->update();
 
-        //movementSpeed = engine->getInput()->getKeyDown(SDLK_LSHIFT) ? 5.0 * speed : speed;
+        movementSpeed = engine->getInput()->getKeyDown(GLFW_KEY_LEFT_SHIFT) ? 5.0 * speed : speed;
 
         if (engine->getInput()->getKeyDown(GLFW_KEY_S))
         {
