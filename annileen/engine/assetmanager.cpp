@@ -63,7 +63,8 @@ namespace annileen
 
 	const bgfx::Memory* AssetManager::loadBinaryFile(const std::string& filename)
 	{
-		std::ifstream file{ filename.c_str() };
+		std::ifstream file;
+		file.open(filename.c_str(), std::ios::binary);
 		assert(file.is_open() && "Error loading asset file.");
 
 		file.seekg(0, std::ios::end);
@@ -74,7 +75,7 @@ namespace annileen
 		file.read((char*)mem->data, size);
 		file.close();
 
-		mem->data[mem->size - 1] = '\0'; // Necessary?
+		mem->data[mem->size - 1] = '\0';
 		return mem;
 	}
 
