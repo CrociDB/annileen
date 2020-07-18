@@ -113,6 +113,9 @@ Input::Input()
 {
 	initKeymap();
 	for (int i = 0; i < 3; i++) m_MouseButtons[i] = false;
+
+	m_MousePosition.x = m_MousePosition.y = 0;
+	m_MouseDelta.x = m_MouseDelta.y = 0;
 }
 
 Input::~Input()

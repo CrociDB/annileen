@@ -118,12 +118,13 @@ int main(int argc, char* argv[])
            pitch += -mouseDelta.y * sensitivity * dt;
            pitch = glm::clamp(pitch, -89.0f, 89.0f);
            glm::vec3 cameraForward{
-               cos(glm::radians(pitch)) * cos(glm::radians(yaw)),
-               sin(glm::radians(pitch)),
-               cos(glm::radians(pitch)) * sin(glm::radians(yaw))
+               glm::cos(glm::radians(pitch)) * glm::cos(glm::radians(yaw)),
+               glm::sin(glm::radians(pitch)),
+               glm::cos(glm::radians(pitch)) * glm::sin(glm::radians(yaw))
            };
            camera->setForward(glm::normalize(cameraForward));
         }
+
 
         if (engine->getInput()->getKeyDown(GLFW_KEY_ESCAPE))
         {
