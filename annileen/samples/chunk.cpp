@@ -139,7 +139,7 @@ void Chunk::generateGrid()
     {
         for (int z = 0; z < CHUNK_DEPTH; z++)
         {
-			/*float noise0 = m_Noise->accumulatedOctaveNoise2D_0_1(
+			float noise0 = m_Noise->accumulatedOctaveNoise2D_0_1(
 				(float)((m_WorldX * CHUNK_WIDTH) + (float)x) / (float)(CHUNK_WIDTH * CHUNK_PERIOD) * 0.3,
 				(float)((m_WorldZ * CHUNK_DEPTH) + (float)z) / (float)(CHUNK_DEPTH * CHUNK_PERIOD) * 0.3,
 				1) * .8f + .2f;
@@ -147,10 +147,10 @@ void Chunk::generateGrid()
             float noise = m_Noise->accumulatedOctaveNoise2D_0_1(
                 (float)((m_WorldX * CHUNK_WIDTH) + (float)x) / (float)(CHUNK_WIDTH * CHUNK_PERIOD) * 1.0,
                 (float)((m_WorldZ * CHUNK_DEPTH) + (float)z) / (float)(CHUNK_DEPTH * CHUNK_PERIOD) * 1.0,
-                5);*/
+                5);
 
-            float noise0 = 0;
-            float noise = 0;
+            /*float noise0 = 0;
+            float noise = 0;*/
 
 			noise *= noise0;
 

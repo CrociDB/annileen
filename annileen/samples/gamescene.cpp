@@ -78,7 +78,7 @@ void GameScene::start()
 {
     buildMap();
     
-    getCamera()->transform.position = glm::vec3(0.0f, 20.0f, 0.0f);
+    getCamera()->transform.position = glm::vec3(0.0f, 40.0f, 0.0f);
 
     Light* light = new Light();
     light->color = glm::vec3(1.0f, 1.0f, .8f);
