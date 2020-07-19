@@ -85,6 +85,7 @@ namespace annileen
         bool run();
         void terminate();
 
+        void setMouseCapture(bool value);
         void checkInputEvents();
         void renderFrame();
 

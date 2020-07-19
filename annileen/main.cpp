@@ -77,52 +77,56 @@ int main(int argc, char* argv[])
     auto camera = scene->getCamera();
     camera->transform.translate(glm::vec3(0.0, 0.0, -2.0));
 
+    bool cameraActive = false;
+    uint8_t debugActive = 0;
+
     while (engine->run())
     {
         auto dt = engine->getTime().deltaTime;
         engine->checkInputEvents();
         scene->update();
 
-        movementSpeed = engine->getInput()->getKeyDown(GLFW_KEY_LEFT_SHIFT) ? 5.0 * speed : speed;
+        movementSpeed = engine->getInput()->getKey(GLFW_KEY_LEFT_SHIFT) ? 5.0 * speed : speed;
 
-        if (engine->getInput()->getKeyDown(GLFW_KEY_S))
+        if (engine->getInput()->getKey(GLFW_KEY_S))
         {
             camera->transform.translate(dt * -movementSpeed * camera->getForward());
         }
-        if (engine->getInput()->getKeyDown(GLFW_KEY_W))
+        if (engine->getInput()->getKey(GLFW_KEY_W))
         {
             camera->transform.translate(dt * movementSpeed * camera->getForward());
         }
-        if (engine->getInput()->getKeyDown(GLFW_KEY_A))
+        if (engine->getInput()->getKey(GLFW_KEY_A))
         {
             camera->transform.translate(dt * movementSpeed * camera->getRight());
         }
-        if (engine->getInput()->getKeyDown(GLFW_KEY_D))
+        if (engine->getInput()->getKey(GLFW_KEY_D))
         {
             camera->transform.translate(dt * -movementSpeed * camera->getRight());
         }
-        if (engine->getInput()->getKeyDown(GLFW_KEY_Q))
+        if (engine->getInput()->getKey(GLFW_KEY_Q))
         {
             camera->transform.translate(dt * -movementSpeed * glm::vec3(0.0f, 1.0f, 0.0f));
         }
-        if (engine->getInput()->getKeyDown(GLFW_KEY_E))
+        if (engine->getInput()->getKey(GLFW_KEY_E))
         {
             camera->transform.translate(dt * movementSpeed * glm::vec3(0.0f, 1.0f, 0.0f));
         }
 
+        if (cameraActive)
         {
-           // Camera mouse control
-           auto mouseDelta = engine->getInput()->getMouseDelta();
+            // Camera mouse control
+            auto mouseDelta = engine->getInput()->getMouseDelta();
 
-           yaw += mouseDelta.x * sensitivity * dt;
-           pitch += -mouseDelta.y * sensitivity * dt;
-           pitch = glm::clamp(pitch, -89.0f, 89.0f);
-           glm::vec3 cameraForward{
-               glm::cos(glm::radians(pitch)) * glm::cos(glm::radians(yaw)),
-               glm::sin(glm::radians(pitch)),
-               glm::cos(glm::radians(pitch)) * glm::sin(glm::radians(yaw))
-           };
-           camera->setForward(glm::normalize(cameraForward));
+            yaw += mouseDelta.x * sensitivity * dt;
+            pitch += -mouseDelta.y * sensitivity * dt;
+            pitch = glm::clamp(pitch, -89.0f, 89.0f);
+            glm::vec3 cameraForward{
+            glm::cos(glm::radians(pitch)) * glm::cos(glm::radians(yaw)),
+            glm::sin(glm::radians(pitch)),
+            glm::cos(glm::radians(pitch)) * glm::sin(glm::radians(yaw))
+            };
+            camera->setForward(glm::normalize(cameraForward));
         }
 
 
@@ -131,7 +135,38 @@ int main(int argc, char* argv[])
             engine->terminate();
         }
 
-       // bgfx::setDebug(BGFX_DEBUG_STATS);
+        if (engine->getInput()->getKeyDown(GLFW_KEY_F1))
+        {
+            debugActive = (debugActive+1) % 6;
+            switch (debugActive)
+            {
+            case 1:
+                bgfx::setDebug(BGFX_DEBUG_STATS);
+                break;
+            case 2:
+                bgfx::setDebug(BGFX_DEBUG_PROFILER);
+                break;
+            case 3:
+                bgfx::setDebug(BGFX_DEBUG_IFH);
+                break;
+            case 4:
+                bgfx::setDebug(BGFX_DEBUG_TEXT);
+                break;
+            case 5:
+                bgfx::setDebug(BGFX_DEBUG_WIREFRAME);
+                break;
+            case 0:
+            default:
+                bgfx::setDebug(BGFX_DEBUG_NONE);
+                break;
+            }
+        }
+
+        if (engine->getInput()->getKeyDown(GLFW_KEY_F2))
+        {
+            cameraActive = !cameraActive;
+            engine->setMouseCapture(cameraActive);
+        }
 
         engine->renderFrame();
     }

@@ -92,8 +92,6 @@ int Engine::init(int width, int height, std::string assetfile)
     //glfwSetScrollCallback(m_Window, glfw_mouseScrollCallback);
     //glfwSetJoystickCallback(glwf_joystickCallback);
 
-    glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
     bgfx::renderFrame();
 
     bgfx::Init init;
@@ -211,6 +209,14 @@ bool Engine::run()
 void Engine::terminate()
 {
     m_Running = false;
+}
+
+void Engine::setMouseCapture(bool value)
+{
+    if (value)
+        glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    else
+        glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
 void Engine::checkInputEvents()
