@@ -7,10 +7,16 @@
 
 namespace annileen
 {
+	struct KeyData
+	{
+		bool m_KeyValue;
+		bool m_LastKeyValue;
+	};
+
 	class Input
 	{
 	private:
-		std::map<int, bool> m_Keymap;
+		std::map<int, KeyData> m_Keymap;
 		glm::vec2 m_MousePosition;
 		glm::vec2 m_MouseDelta;
 		bool m_MouseButtons[3];
@@ -18,7 +24,9 @@ namespace annileen
 		void initKeymap();
 
 	public:
+		bool getKey(int keycode);
 		bool getKeyDown(int keycode);
+		bool getKeyUp(int keycode);
 		bool getMouseButtonDown(int button);
 		glm::vec2 getMousePosition();
 		glm::vec2 getMouseDelta();
