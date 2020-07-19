@@ -28,9 +28,9 @@ def build_shader(shaderfile, dest, options, platform, model):
     varying_def_path = current_path_varying if os.path.isfile(current_path_varying) else default_varying_def
 
     platform = tools.get_platform() if platform == 'auto' else platform
-    model = '' if model == 'auto' else f'--profile {model}'
     if model.find('s_') > -1:
-        model = ('p' if shadertype == 'fragment' else 'f') + model
+        model = ('p' if shadertype == 'fragment' else 'v') + model
+    model = '' if model == 'auto' else f'--profile {model}'
 
     command = "%s -f %s -o %s -i %s --varyingdef %s --platform %s %s --type %s" % (
         bgfx_shaderc,
@@ -42,6 +42,8 @@ def build_shader(shaderfile, dest, options, platform, model):
         model,
         shadertype
     )
+
+    print(command)
 
     success = False
     if not os.system(command):
