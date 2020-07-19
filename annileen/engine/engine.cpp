@@ -253,7 +253,7 @@ namespace annileen
 
             for (auto sceneNode : m_CurrentScene->getNodeList())
             {
-                if (!sceneNode->hasModel()) continue;
+                if (!sceneNode->hasModel() || !sceneNode->getAcive()) continue;
                 m_Renderer->renderSceneNode(m_CurrentScene, sceneNode);
             }
         }

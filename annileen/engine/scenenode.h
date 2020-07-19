@@ -20,10 +20,16 @@ namespace annileen
 
 		std::shared_ptr<Model> m_Model;
 
+		bool m_Active;
+
 	public:
 		void setParentScene(Scene* scene);
 		void setParent(SceneNode* node);
 		SceneNode* getParent();
+		std::vector<SceneNode*> getChildren();
+
+		void setAcive(bool active) { m_Active = active; }
+		bool getAcive() { return m_Active; }
 
 		Transform& getTransform();
 

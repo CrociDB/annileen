@@ -43,6 +43,7 @@ namespace annileen
 
         SceneNode* getRoot();
         SceneNode* createNode();
+        void removeNode(SceneNode* node);
 
         /*void addMesh(Mesh* mesh);
         void removeMesh(Mesh* mesh);*/
@@ -54,6 +55,7 @@ namespace annileen
         /*Cubemap* getCubemap() const;
         Skybox* getSkybox() const;*/
 
+        void clearNodeList();
         std::list<SceneNode*>& getNodeList();
         std::list<Light*>& getLightList();
         Camera* getCamera();

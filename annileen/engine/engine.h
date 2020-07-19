@@ -81,6 +81,7 @@ namespace annileen
         Time getTime();
 
         void setScene(Scene* scene);
+        Scene* getScene() { return m_CurrentScene; }
 
         bool run();
         void terminate();

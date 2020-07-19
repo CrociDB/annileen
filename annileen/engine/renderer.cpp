@@ -33,18 +33,11 @@ namespace annileen
 
     void Renderer::renderSceneNode(Scene* scene, SceneNode* node)
     {
-        uint64_t state = BGFX_STATE_WRITE_RGB
-            | BGFX_STATE_WRITE_A
-            | BGFX_STATE_WRITE_Z
-            | BGFX_STATE_DEPTH_TEST_LESS
-            | BGFX_STATE_CULL_CCW
-            | BGFX_STATE_MSAA
-            | UINT64_C(0);
-
         bgfx::setTransform(glm::value_ptr(node->getTransform().getModelMatrix()));
         bgfx::setVertexBuffer(0, node->getModel()->getMesh()->getVertexBuffer());
-        bgfx::setIndexBuffer(node->getModel()->getMesh()->getIndexBuffer());
-        bgfx::setState(state);
+        if (node->getModel()->getMesh()->hasIndices()) 
+            bgfx::setIndexBuffer(node->getModel()->getMesh()->getIndexBuffer());
+        bgfx::setState(node->getModel()->getState());
 
         bgfx::submit(0, node->getModel()->getMaterial()->getShader()->getProgram());
     }

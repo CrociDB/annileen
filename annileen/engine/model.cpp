@@ -6,6 +6,14 @@ namespace annileen
 	{
 		m_Mesh = mesh;
 		m_Material = material;
+
+		uint64_t state = BGFX_STATE_WRITE_RGB
+			| BGFX_STATE_WRITE_A
+			| BGFX_STATE_WRITE_Z
+			| BGFX_STATE_DEPTH_TEST_LESS
+			| BGFX_STATE_CULL_CCW
+			| BGFX_STATE_MSAA
+			| UINT64_C(0);
 	}
 
 	Mesh* Model::getMesh()

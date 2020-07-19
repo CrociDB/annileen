@@ -46,13 +46,30 @@ namespace annileen
     {
         SceneNode* node = new SceneNode();
         m_Nodes.push_back(node);
+        node->setParentScene(this);
         node->setParent(m_Root);
         return node;
+    }
+
+    void Scene::removeNode(SceneNode* node)
+    {
+        m_Nodes.remove(node);
+        delete node;
     }
 
     void Scene::addLight(Light* light)
     {
         m_Lights.push_back(light);
+    }
+
+    void Scene::clearNodeList()
+    {
+        /*for (auto node : m_Root->getChildren())
+        {
+            delete node;
+        }*/
+
+        m_Nodes.clear();
     }
 
     std::list<SceneNode*>& Scene::getNodeList()

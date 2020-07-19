@@ -23,6 +23,11 @@ namespace annileen
 		return m_Parent;
 	}
 
+	std::vector<SceneNode*> SceneNode::getChildren()
+	{
+		return m_Children;
+	}
+
 	Transform& SceneNode::getTransform()
 	{
 		return m_Transform;
@@ -43,16 +48,16 @@ namespace annileen
 		return m_Model;
 	}
 
-	SceneNode::SceneNode() : m_Parent(nullptr)
+	SceneNode::SceneNode() : m_Parent(nullptr), m_Active(true)
 	{
 		m_Model.reset();
 	}
 
 	SceneNode::~SceneNode()
 	{
-		for (auto children : m_Children)
+		/*for (auto children : m_Children)
 		{
 			delete children;
-		}
+		}*/
 	}
 }

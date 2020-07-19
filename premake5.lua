@@ -57,10 +57,12 @@ project "annileen"
 	{
 		path.join(ANNILEEN_DIR, "*"),
 		path.join(ANNILEEN_DIR, "engine/*"),
+		path.join(ANNILEEN_DIR, "samples/*"),
 		path.join(ANNILEEN_DIR, "engine/imgui-utils/*"),
 	}
 	includedirs
 	{
+		ANNILEEN_DIR,
 		path.join(BGFX_DIR, "include"),
 		path.join(BX_DIR, "include"),
 		path.join(GLFW_DIR, "include"),
@@ -240,5 +242,20 @@ project "imgui"
 		path.join(BGFX_DIR, "3rdparty/"),	
 		path.join(BX_DIR, "3rdparty"),
 		path.join(BX_DIR, "include")
+	}
+	setBxCompat()
+
+project "PerlinNoise"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+	defines "__STDC_FORMAT_MACROS"
+	files
+	{
+		path.join(PERLINNOISE_DIR, "*"),
+	}
+	includedirs
+	{
+		path.join(PERLINNOISE_DIR, "*"),
 	}
 	setBxCompat()

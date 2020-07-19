@@ -23,9 +23,13 @@ namespace annileen
 
         bgfx::VertexLayout m_VertexLayout;
 
+        bool m_HasIndices;
+
     public:
         void init(const bgfx::Memory* vertexData, bgfx::VertexLayout vertexLayout, const bgfx::Memory* indexData, uint16_t indexCount);
-        //void init(RawMesh* rawMesh, bgfx::VertexLayout m_VertexLayout);
+        void init(const bgfx::Memory* vertexData, bgfx::VertexLayout vertexLayout);
+
+        bool hasIndices() { return m_HasIndices; }
 
         bgfx::VertexBufferHandle getVertexBuffer() { return m_VertexBufferHandle; }
         bgfx::IndexBufferHandle getIndexBuffer() { return m_IndexBufferHandle; }

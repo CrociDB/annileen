@@ -1,6 +1,8 @@
 #include <iostream>
 #include "engine/engine.h"
 
+#include "samples/gamescene.h"
+
 using namespace annileen;
 
 // Example cube
@@ -42,10 +44,11 @@ int main(int argc, char* argv[])
     Engine* engine = Engine::getInstance();
     engine->init(1920, 1080, "build_assets/assets.toml");
 
-    Scene* scene = new Scene();
+    GameScene* scene = new GameScene();
     engine->setScene(scene);
 
-    annileen::Shader* shader = Engine::getInstance()->getAssetManager()->loadShader("unlit.vs", "unlit.fs");
+
+    /*annileen::Shader* shader = Engine::getInstance()->getAssetManager()->loadShader("unlit.vs", "unlit.fs");
     std::shared_ptr<Material> material = std::make_shared<Material>();
     material->init(shader);
 
@@ -67,7 +70,7 @@ int main(int argc, char* argv[])
     SceneNode* node = scene->createNode();
     node->setModel(model);
     node->getTransform().translate(glm::vec3(0.0, 0.0, 2.0));
-    node->getTransform().rotate(glm::vec3(0.0, 45.0, 0.0));
+    node->getTransform().rotate(glm::vec3(0.0, 45.0, 0.0));*/
 
     float speed = 3.0f;
     float movementSpeed = 2.8f;
@@ -79,6 +82,8 @@ int main(int argc, char* argv[])
 
     bool cameraActive = false;
     uint8_t debugActive = 0;
+
+    scene->start();
 
     while (engine->run())
     {
