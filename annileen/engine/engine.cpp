@@ -116,6 +116,9 @@ int Engine::init(int width, int height, std::string assetfile)
     m_Renderer = new Renderer();
     m_Renderer->init(this);
 
+    m_Gui = std::make_shared<Gui>();
+    m_Gui->init();
+
     m_TargetFPS = 60; 
     m_Time.timeScale = 1.0f;
 
@@ -227,6 +230,11 @@ void Engine::checkInputEvents()
 
 void Engine::renderFrame()
 {
+    m_Gui->beginFrame(m_Width, m_Height);
+    // Draw some gui
+    m_Gui->drawSomeGUI();
+    m_Gui->endFrame();
+
     auto camera = m_CurrentScene->getCamera();
     bgfx::setViewTransform(0, camera->getViewMatrixFloatArray(), camera->getProjectionMatrixFloatArray());
     bgfx::setViewRect(0, 0, 0, uint16_t(m_Width), uint16_t(m_Height));
@@ -273,6 +281,7 @@ Engine* Engine::getInstance()
 
 Engine::~Engine()
 {
+    m_Gui->destroy();
     bgfx::shutdown();
     glfwTerminate();
 }

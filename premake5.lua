@@ -57,6 +57,7 @@ project "annileen"
 	{
 		path.join(ANNILEEN_DIR, "*"),
 		path.join(ANNILEEN_DIR, "engine/*"),
+		path.join(ANNILEEN_DIR, "engine/imgui-utils/*"),
 	}
 	includedirs
 	{
@@ -70,7 +71,7 @@ project "annileen"
 		PERLINNOISE_DIR
 	}
 	debugdir "."
-	links { "bgfx", "bimg", "bx", "glfw" }
+	links { "bgfx", "bimg", "bx", "glfw", "imgui" }
 	filter "system:windows"
 		links { "gdi32", "kernel32", "psapi" }
 	filter "system:linux"
@@ -224,3 +225,20 @@ project "glfw"
 
 	filter "action:vs*"
 		defines "_CRT_SECURE_NO_WARNINGS"
+
+project "imgui"
+	kind "StaticLib"
+	language "C++"
+	defines "__STDC_FORMAT_MACROS"
+	files
+	{
+		path.join(BGFX_DIR, "3rdparty/dear-imgui/*"),
+		path.join(BGFX_DIR, "3rdparty/dear-imgui/widgets/*"),		
+	}
+	includedirs
+	{
+		path.join(BGFX_DIR, "3rdparty/"),	
+		path.join(BX_DIR, "3rdparty"),
+		path.join(BX_DIR, "include")
+	}
+	setBxCompat()

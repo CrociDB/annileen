@@ -20,6 +20,7 @@
 #include "scene.h"
 #include "input.h"
 #include "assetmanager.h"
+#include "gui.h"
 
 namespace annileen
 {
@@ -45,6 +46,8 @@ namespace annileen
         Renderer* m_Renderer;
         static bool m_Running;
         
+        std::shared_ptr<Gui> m_Gui;
+
         Time m_Time;
         uint8_t m_TargetFPS;
 

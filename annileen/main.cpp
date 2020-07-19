@@ -131,7 +131,7 @@ int main(int argc, char* argv[])
             engine->terminate();
         }
 
-        bgfx::setDebug(BGFX_DEBUG_STATS);
+       // bgfx::setDebug(BGFX_DEBUG_STATS);
 
         engine->renderFrame();
     }
