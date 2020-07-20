@@ -71,33 +71,33 @@ namespace annileen
 		};
 	}
 
-	bool Input::getKey(int keycode)
+	bool Input::getKey(int keycode) const
 	{
-		return this->m_Keymap[keycode].m_KeyValue;
+		return this->m_Keymap.at(keycode).m_KeyValue;
 	}
 
-	bool Input::getKeyDown(int keycode)
+	bool Input::getKeyDown(int keycode) const
 	{
-		return this->m_Keymap[keycode].m_KeyValue && !this->m_Keymap[keycode].m_LastKeyValue;
+		return this->m_Keymap.at(keycode).m_KeyValue && !this->m_Keymap.at(keycode).m_LastKeyValue;
 	}
 
-	bool Input::getKeyUp(int keycode)
+	bool Input::getKeyUp(int keycode) const
 	{
-		return !this->m_Keymap[keycode].m_KeyValue && this->m_Keymap[keycode].m_LastKeyValue;
+		return !this->m_Keymap.at(keycode).m_KeyValue && this->m_Keymap.at(keycode).m_LastKeyValue;
 	}
 
-	bool Input::getMouseButtonDown(int button)
+	bool Input::getMouseButtonDown(int button) const
 	{
 		button = glm::clamp(button, 0, 3);
 		return m_MouseButtons[button];
 	}
 
-	glm::vec2 Input::getMousePosition()
+	glm::vec2 Input::getMousePosition() const
 	{
 		return m_MousePosition;
 	}
 
-	glm::vec2 Input::getMouseDelta()
+	glm::vec2 Input::getMouseDelta() const
 	{
 		return m_MouseDelta;
 	}
@@ -133,10 +133,21 @@ namespace annileen
 
 	void Input::_setMouseButton(int button, bool status)
 	{
-		if (button >= 1 && button <= 3)
+		if (button >= 0 && button <= 3)
 		{
-			m_MouseButtons[button - 1] = status;
+			m_MouseButtons[button] = status;
 		}
+	}
+
+	glm::vec2 Input::getMouseScroll() const
+	{
+		return m_MouseScroll;
+	}
+
+	void Input::_setMouseScroll(float x, float y)
+	{
+		m_MouseScroll.x = x;
+		m_MouseScroll.y = y;
 	}
 
 	Input::Input()

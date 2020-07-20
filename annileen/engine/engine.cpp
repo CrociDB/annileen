@@ -236,9 +236,13 @@ namespace annileen
 
     void Engine::renderFrame()
     {
-        m_Gui->beginFrame(m_Width, m_Height);
-        // Draw some gui
-        m_Gui->drawSomeGUI();
+
+        uint8_t mouseButton = (m_Input->getMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)  ? IMGUI_MBUT_LEFT : 0)
+                           | (m_Input->getMouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT) ? IMGUI_MBUT_RIGHT : 0)
+                         | (m_Input->getMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE) ? IMGUI_MBUT_MIDDLE : 0);
+
+        m_Gui->beginFrame(m_Input->getMousePosition(), mouseButton, m_Input->getMouseScroll().y,  m_Width, m_Height);
+        m_Gui->drawEditorGUI();
         m_Gui->endFrame();
 
         auto camera = m_CurrentScene->getCamera();

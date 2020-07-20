@@ -12,12 +12,12 @@ void Gui::destroy()
 	imguiDestroy();
 }
 
-void Gui::beginFrame(uint32_t width, uint32_t height)
+void Gui::beginFrame(glm::vec2 mousePos, uint8_t mouseButton, int32_t mouseScroll, uint32_t width, uint32_t height)
 {
-	imguiBeginFrame(0,0,0,0, width, height);
+	imguiBeginFrame(mousePos.x, mousePos.y, mouseButton, mouseScroll, width, height);
 }
 
-void Gui::drawSomeGUI()
+void Gui::drawEditorGUI()
 {
 	char temp[1024] = "Some GUI is being drawn!";
 
