@@ -17,9 +17,39 @@ void Gui::beginFrame(glm::vec2 mousePos, uint8_t mouseButton, int32_t mouseScrol
 	imguiBeginFrame(mousePos.x, mousePos.y, mouseButton, mouseScroll, width, height);
 }
 
+void annileen::Gui::drawMainWindowToolbar()
+{
+	if (ImGui::BeginMainMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("New Scene", "CTRL+N", false, false)) {}
+			ImGui::Separator();
+			if (ImGui::MenuItem("Open Scene", "CTRL+O", false, false)) {}  // Disabled item
+			if (ImGui::MenuItem("Save Scene", "CTRL+S", false, false)) {}  // Disabled item
+			ImGui::Separator();
+			if (ImGui::MenuItem("Exit", 0, false, false)) {}			
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Edit"))
+		{
+			if (ImGui::MenuItem("Undo", "CTRL+Z", false, false)) {}
+			if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item			
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Tools"))
+		{
+			if (ImGui::MenuItem("Generate Assets", 0, false, false)) {}
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMainMenuBar();
+	}
+}
+
 void Gui::drawEditorGeneralInfoWindow()
 {
-	char temp[1024] = "Some GUI is being drawn!";
+	char temp[1024] = "Editor";
 
 	ImGui::SetNextWindowPos(
 		ImVec2(10.0f, 50.0f)
@@ -32,38 +62,32 @@ void Gui::drawEditorGeneralInfoWindow()
 
 	ImGui::Begin(temp);
 
-	ImGui::TextWrapped("Testing Text Wrapped");
+	//ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(3.0f, 3.0f));
+	//if (ImGui::Button(ICON_FA_REPEAT " Restart"))
+	//{
+	//}
+	//
+	//ImGui::SameLine();
+	//if (ImGui::Button(ICON_KI_PREVIOUS " Prev"))
+	//{
+	//}
 
-	ImGui::Separator();
+	//ImGui::SameLine();
+	//if (ImGui::Button(ICON_KI_NEXT " Next"))
+	//{
+	//}
+	//
+	//ImGui::SameLine();
+	//if (ImGui::Button(ICON_KI_EXIT " Exit"))
+	//{
+	//}
 
-	ImGui::TextWrapped("Now some buttons");
+	//ImGui::SameLine();
+	//if (ImGui::Button(ICON_FA_BAR_CHART))
+	//{
+	//}
 
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(3.0f, 3.0f));
-	if (ImGui::Button(ICON_FA_REPEAT " Restart"))
-	{
-	}
-	
-	ImGui::SameLine();
-	if (ImGui::Button(ICON_KI_PREVIOUS " Prev"))
-	{
-	}
-
-	ImGui::SameLine();
-	if (ImGui::Button(ICON_KI_NEXT " Next"))
-	{
-	}
-	
-	ImGui::SameLine();
-	if (ImGui::Button(ICON_KI_EXIT " Exit"))
-	{
-	}
-
-	ImGui::SameLine();
-	if (ImGui::Button(ICON_FA_BAR_CHART))
-	{
-	}
-
-	ImGui::PopStyleVar();
+	//ImGui::PopStyleVar();
 
 	ImGui::End();
 }
@@ -73,7 +97,7 @@ void Gui::drawEditorSceneTreeWindow(const std::list<SceneNode*> sceneNodeList) c
 	char temp[] = "SceneTree";
 
 	ImGui::SetNextWindowPos(
-		ImVec2(10.0f, 350.0f)
+		ImVec2(10.0f, 270.0f)
 		, ImGuiCond_FirstUseEver
 	);
 	ImGui::SetNextWindowSize(
@@ -90,6 +114,30 @@ void Gui::drawEditorSceneTreeWindow(const std::list<SceneNode*> sceneNodeList) c
 		_drawTree(sceneNode);
 	}
 
+	ImGui::End();
+}
+
+void annileen::Gui::drawSelectedNodePropertiesWindow()
+{
+	char temp[] = "SceneNode Properties";
+
+	ImGui::SetNextWindowPos(
+		ImVec2(10.0f, 690.0f)
+		, ImGuiCond_FirstUseEver
+	);
+	ImGui::SetNextWindowSize(
+		ImVec2(300.0f, 120.0f)
+		, ImGuiCond_FirstUseEver
+	);
+
+	ImGui::Begin(temp);
+
+	float position[3] = { 0,0,0 };
+	ImGui::DragFloat3("Position", position);
+	float rotation[3] = { 0,0,0 };
+	ImGui::DragFloat3("Rotation", rotation);
+	float scale[3] = { 0,0,0 };
+	ImGui::DragFloat3("Scale", scale);
 	ImGui::End();
 }
 

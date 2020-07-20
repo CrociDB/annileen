@@ -243,9 +243,11 @@ namespace annileen
                          | (m_Input->getMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE) ? IMGUI_MBUT_MIDDLE : 0);
 
         m_Gui->beginFrame(m_Input->getMousePosition(), mouseButton, m_Input->getMouseScroll().y,  m_Width, m_Height);
+        m_Gui->drawMainWindowToolbar();
         m_Gui->drawEditorGeneralInfoWindow();
         if (hasValidScene)
         {
+            m_Gui->drawSelectedNodePropertiesWindow();
             m_Gui->drawEditorSceneTreeWindow(m_CurrentScene->getNodeList());
         }
         m_Gui->endFrame();
