@@ -48,6 +48,11 @@ namespace annileen
 		return m_Model;
 	}
 
+	std::string SceneNode::getName() const
+	{
+		return m_Name;
+	}
+
 	SceneNode::SceneNode() : m_Parent(nullptr), m_Active(true)
 	{
 		m_Model.reset();

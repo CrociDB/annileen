@@ -17,6 +17,7 @@ namespace annileen
 		std::vector<SceneNode*> m_Children;
 		SceneNode* m_Parent;
 		Scene* m_ParentScene;
+		std::string m_Name = "SceneNode";
 
 		std::shared_ptr<Model> m_Model;
 
@@ -36,6 +37,8 @@ namespace annileen
 		bool hasModel();
 		void setModel(std::shared_ptr<Model> model);
 		std::shared_ptr<Model> getModel();
+
+		std::string getName() const;
 
 		SceneNode();
 		~SceneNode();
