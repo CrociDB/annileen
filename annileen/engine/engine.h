@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include <bx/bx.h>
+#include <bx/allocator.h>
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
 #include <GLFW/glfw3.h>
@@ -19,6 +20,7 @@
 
 #include "scene.h"
 #include "input.h"
+#include "uniform.h"
 #include "assetmanager.h"
 #include "gui.h"
 
@@ -42,6 +44,7 @@ namespace annileen
 
         std::shared_ptr<Input> m_Input;
         std::shared_ptr<AssetManager> m_AssetManager;
+        Uniform m_Uniform;
 
         Renderer* m_Renderer;
         static bool m_Running;
@@ -52,6 +55,8 @@ namespace annileen
         uint8_t m_TargetFPS;
 
         Scene* m_CurrentScene = nullptr;
+
+        bx::DefaultAllocator s_Allocator;
 
         Engine();
 
@@ -70,7 +75,9 @@ namespace annileen
         std::shared_ptr<Input> getInput(); 
         AssetManager* getAssetManager();
         Renderer* getRenderer();
+        Uniform* getUniform();
         GLFWwindow* getGLFWWindow();
+
         uint16_t getWidth() const;
         uint16_t getHeight() const;
 
@@ -90,6 +97,7 @@ namespace annileen
         void checkInputEvents();
         void renderFrame();
 
+        static bx::DefaultAllocator* getAllocator() { return &getInstance()->s_Allocator; }
         static Engine* getInstance();
         ~Engine();
     };

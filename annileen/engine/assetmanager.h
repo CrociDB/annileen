@@ -9,8 +9,7 @@
 
 #include "asset.h"
 #include "shader.h"
-
-class Shader;
+#include "texture.h"
 
 namespace annileen
 {
@@ -33,5 +32,6 @@ namespace annileen
 
 		// Load functions
 		Shader* loadShader(const std::string& vertex, const std::string& fragment);
+		Texture* loadTexture(const std::string& tex);
 	};
 }
