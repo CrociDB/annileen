@@ -25,8 +25,8 @@ namespace annileen
     class Scene
     {
     private:
-        std::list<SceneNode*> m_Nodes;
-        SceneNode* m_Root;
+        std::list<SceneNodePtr> m_Nodes;
+        SceneNodePtr m_Root;
         std::list<Light*> m_Lights;
         Camera* m_Camera;
 
@@ -41,9 +41,9 @@ namespace annileen
         virtual void start() {};
         virtual void update() {};
 
-        SceneNode* getRoot();
-        SceneNode* createNode();
-        void removeNode(SceneNode* node);
+        SceneNodePtr getRoot();
+        SceneNodePtr createNode();
+        void removeNode(SceneNodePtr node);
 
         /*void addMesh(Mesh* mesh);
         void removeMesh(Mesh* mesh);*/
@@ -56,7 +56,7 @@ namespace annileen
         Skybox* getSkybox() const;*/
 
         void clearNodeList();
-        std::list<SceneNode*>& getNodeList();
+        std::list<SceneNodePtr>& getNodeList();
         std::list<Light*>& getLightList();
         Camera* getCamera();
 

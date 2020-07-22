@@ -41,7 +41,7 @@ private:
     std::shared_ptr<Material> m_Material;
     Mesh* m_Mesh = nullptr;
     std::shared_ptr<Model> m_Model = nullptr;
-    SceneNode* m_Node = nullptr;
+    SceneNodePtr m_Node = nullptr;
 
     void generateMesh();
     float* generateMeshData(int* meshSize, int** indexes, int* indexSize);
@@ -54,7 +54,7 @@ public:
 
     void generateGrid();
     Mesh* getMesh();
-    SceneNode* getSceneNode();
+    SceneNodePtr getSceneNode();
 
     Chunk(int wx, int wz);
     ~Chunk();

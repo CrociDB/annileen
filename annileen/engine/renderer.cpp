@@ -31,7 +31,7 @@ namespace annileen
         scene->getCamera()->updateMatrices();
     }
 
-    void Renderer::renderSceneNode(Scene* scene, SceneNode* node)
+    void Renderer::renderSceneNode(Scene* scene, SceneNodePtr node)
     {
         bgfx::setTransform(glm::value_ptr(node->getTransform().getModelMatrix()));
         bgfx::setVertexBuffer(0, node->getModel()->getMesh()->getVertexBuffer());

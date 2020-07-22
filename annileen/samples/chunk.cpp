@@ -201,7 +201,7 @@ Mesh* Chunk::getMesh()
     return m_Mesh;
 }
 
-SceneNode* Chunk::getSceneNode()
+SceneNodePtr Chunk::getSceneNode()
 {
     if (m_Node == nullptr)
     {

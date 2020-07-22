@@ -4,6 +4,7 @@
 #include<glm.hpp>
 #include <list>
 #include <engine/scenenode.h>
+#include <engine/engine.h>
 
 namespace annileen
 {
@@ -18,10 +19,10 @@ namespace annileen
 
 		void drawMainWindowToolbar();
 		void drawEditorGeneralInfoWindow();
-		void drawEditorSceneTreeWindow(const std::list<SceneNode*> sceneNodeList) const;
+		void drawEditorSceneTreeWindow(const std::list<SceneNodePtr> sceneNodeList) const;
 		void drawSelectedNodePropertiesWindow();
 
-		void _drawTree(SceneNode* const sceneNode) const;
+		void _drawTree(SceneNodePtr const sceneNode) const;
 		
 		Gui();
 		~Gui();

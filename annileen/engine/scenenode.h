@@ -9,13 +9,16 @@
 namespace annileen
 {
 	class Scene;
-
+	class SceneNode;
+	typedef SceneNode* SceneNodePtr;
+	
 	class SceneNode
 	{
+
 	private:
 		Transform m_Transform;
-		std::vector<SceneNode*> m_Children;
-		SceneNode* m_Parent;
+		std::vector<SceneNodePtr> m_Children;
+		SceneNodePtr m_Parent;
 		Scene* m_ParentScene;
 		std::string m_Name = "SceneNode";
 
@@ -25,9 +28,9 @@ namespace annileen
 
 	public:
 		void setParentScene(Scene* scene);
-		void setParent(SceneNode* node);
-		SceneNode* getParent();
-		std::vector<SceneNode*> getChildren();
+		void setParent(SceneNodePtr node);
+		SceneNodePtr getParent();
+		std::vector<SceneNodePtr> getChildren();
 
 		void setAcive(bool active) { m_Active = active; }
 		bool getAcive() { return m_Active; }
@@ -39,6 +42,12 @@ namespace annileen
 		std::shared_ptr<Model> getModel();
 
 		std::string getName() const;
+
+		void addChild(SceneNodePtr node);
+		void removeChild(SceneNodePtr node);
+		std::vector<SceneNodePtr>::iterator findChild(SceneNodePtr node);
+		bool hasChild(SceneNodePtr node);
+		void _destroyNode(SceneNodePtr node);
 
 		SceneNode();
 		~SceneNode();

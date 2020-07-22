@@ -238,6 +238,8 @@ namespace annileen
     {
         bool hasValidScene = m_CurrentScene != nullptr;
 
+        std::list<SceneNodePtr> sceneNode = m_CurrentScene->getNodeList();
+        
         uint8_t mouseButton = (m_Input->getMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)  ? IMGUI_MBUT_LEFT : 0)
                            | (m_Input->getMouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT) ? IMGUI_MBUT_RIGHT : 0)
                          | (m_Input->getMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE) ? IMGUI_MBUT_MIDDLE : 0);

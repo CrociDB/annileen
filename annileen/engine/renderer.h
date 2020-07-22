@@ -26,7 +26,7 @@ namespace annileen
         void clear() const;
         void initFrame(Scene* scene);
         //void renderSkybox(Camera* camera, Skybox* skybox);
-        void renderSceneNode(Scene* scene, SceneNode* node);
+        void renderSceneNode(Scene* scene, SceneNodePtr node);
 
         Renderer();
         ~Renderer();

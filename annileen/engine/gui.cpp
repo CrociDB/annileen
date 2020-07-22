@@ -28,7 +28,10 @@ void annileen::Gui::drawMainWindowToolbar()
 			if (ImGui::MenuItem("Open Scene", "CTRL+O", false, false)) {}  // Disabled item
 			if (ImGui::MenuItem("Save Scene", "CTRL+S", false, false)) {}  // Disabled item
 			ImGui::Separator();
-			if (ImGui::MenuItem("Exit", 0, false, false)) {}			
+			if (ImGui::MenuItem("Exit", 0, false, true)) 
+			{
+				Engine::getInstance()->terminate();
+			}			
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Edit"))
@@ -92,7 +95,7 @@ void Gui::drawEditorGeneralInfoWindow()
 	ImGui::End();
 }
 
-void Gui::drawEditorSceneTreeWindow(const std::list<SceneNode*> sceneNodeList) const
+void Gui::drawEditorSceneTreeWindow(const std::list<SceneNodePtr> sceneNodeList) const
 {
 	char temp[] = "SceneTree";
 
@@ -142,8 +145,12 @@ void annileen::Gui::drawSelectedNodePropertiesWindow()
 }
 
 // TODO: this will be refactored to use queue or stack
-void Gui::_drawTree(SceneNode* const sceneNode) const
+void Gui::_drawTree(SceneNodePtr const sceneNode) const
 {
+	static ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow | 
+										ImGuiTreeNodeFlags_OpenOnDoubleClick | 
+										ImGuiTreeNodeFlags_SpanAvailWidth;
+
 	std::string name = sceneNode->getName();
 	if (sceneNode->hasModel())
 	{
@@ -154,7 +161,7 @@ void Gui::_drawTree(SceneNode* const sceneNode) const
 		name += " (A)";
 	}
 
-	std::vector<SceneNode*> nodeChildren = sceneNode->getChildren();
+	std::vector<SceneNodePtr> nodeChildren = sceneNode->getChildren();
 	
 	if (nodeChildren.empty())
 	{
@@ -162,7 +169,7 @@ void Gui::_drawTree(SceneNode* const sceneNode) const
 	}
 	else
 	{
-		if (ImGui::TreeNode(name.c_str()))
+		if (ImGui::TreeNodeEx(name.c_str(), node_flags))
 		{
 			for (auto childNode : nodeChildren)
 			{

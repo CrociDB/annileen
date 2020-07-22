@@ -37,21 +37,21 @@ namespace annileen
     //    m_Meshes.remove(mesh);
     //}
 
-    SceneNode* Scene::getRoot()
+    SceneNodePtr Scene::getRoot()
     {
         return m_Root;
     }
 
-    SceneNode* Scene::createNode()
+    SceneNodePtr Scene::createNode()
     {
-        SceneNode* node = new SceneNode();
+        SceneNodePtr node = new SceneNode();
         m_Nodes.push_back(node);
         node->setParentScene(this);
         node->setParent(m_Root);
         return node;
     }
 
-    void Scene::removeNode(SceneNode* node)
+    void Scene::removeNode(SceneNodePtr node)
     {
         m_Nodes.remove(node);
         delete node;
@@ -72,7 +72,7 @@ namespace annileen
         m_Nodes.clear();
     }
 
-    std::list<SceneNode*>& Scene::getNodeList()
+    std::list<SceneNodePtr>& Scene::getNodeList()
     {
         return m_Nodes;
     }
