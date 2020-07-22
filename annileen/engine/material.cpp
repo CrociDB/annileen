@@ -1,4 +1,5 @@
 #include "material.h"
+#include "engine.h"
 
 namespace annileen
 {
@@ -12,9 +13,9 @@ namespace annileen
         return m_Shader;
     }
 
-    void Material::addTexture(const char* name, Texture texture)
+    void Material::addTexture(const char* name, Texture* texture)
     {
-        m_Textures.insert(std::pair<std::string, Texture>(std::string(name), texture));
+        m_Textures[name] = texture;
     }
 
     //void Material::addCubemap(const char* name, Cubemap* cubemap)
@@ -22,37 +23,14 @@ namespace annileen
     //    m_Cubemaps.insert(std::pair<std::string, Cubemap*>(std::string(name), cubemap));
     //}
 
-    void Material::loadTextures()
+    void Material::submitTextures()
     {
-	    /*for (auto& tex : m_Textures)
-	    {
-		    tex.second.load();
-	    }
+        auto uniform = Engine::getInstance()->getUniform();
 
-        for (auto& cube : m_Cubemaps)
+        for (const auto& [k, v] : m_Textures)
         {
-            cube.second->load();
-        }*/
-    }
-
-    void Material::useTextures()
-    {
-        /*uint8_t texCount = 0;
-        for (auto& tex : m_Textures)
-        {
-            glActiveTexture(GL_TEXTURE0 + texCount);
-            glBindTexture(GL_TEXTURE_2D, tex.second.getId());
-            m_Shader->setInt(tex.first, texCount);
-            texCount++;
+            uniform->setTextureUniform(k, v);
         }
-
-        for (auto& cube : m_Cubemaps)
-        {
-            glActiveTexture(GL_TEXTURE0 + texCount);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, cube.second->getId());
-            m_Shader->setInt(cube.first, texCount);
-            texCount++;
-        }*/
     }
 
     Material::Material()

@@ -1,3 +1,7 @@
+#include <bimg/decode.h>
+#include <bx/file.h>
+
+#include "engine.h"
 #include "assetmanager.h"
 
 namespace annileen
@@ -94,7 +98,7 @@ namespace annileen
 			auto entry = getAssetEntry(vertexfragment);
 			if (entry->m_Loaded)
 			{
-				return dynamic_cast<Shader*>(entry->m_Asset);
+				return static_cast<Shader*>(entry->m_Asset);
 			}
 		}
 
@@ -120,5 +124,57 @@ namespace annileen
 		};
 	
 		return shader;
+	}
+
+	Texture* AssetManager::loadTexture(const std::string& tex)
+	{
+		auto entry = getAssetEntry(tex);
+		if (entry->m_Loaded)
+		{
+			return dynamic_cast<Texture*>(entry->m_Asset);
+		}
+
+		auto textureData = loadBinaryFile(entry->m_Filepath);
+		//bimg::ImageContainer imageContainer;
+		bx::Error err;
+		//bool success = bimg::imageParse(imageContainer, textureData->data, textureData->size, &err);
+		auto aimageContainer = bimg::imageParse(Engine::getAllocator(), textureData->data, textureData->size);
+		auto imageContainer = (*aimageContainer);
+		//assert(success && "Error parsing image");
+
+		const bgfx::Memory* mem = bgfx::makeRef(imageContainer.m_data, imageContainer.m_size);
+
+		auto format = bgfx::TextureFormat::Enum(imageContainer.m_format);
+		uint64_t flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE;
+		auto handle = bgfx::createTexture2D(
+			uint16_t(imageContainer.m_width),
+			uint16_t(imageContainer.m_height),
+			1 < imageContainer.m_numMips,
+			imageContainer.m_numLayers,
+			format,
+			flags,
+			mem);
+
+		assert(bgfx::isValid(handle) && "Couldn't create texture");
+
+		bgfx::setName(handle, tex.c_str());
+
+		bgfx::TextureInfo info;
+
+		bgfx::calcTextureSize(
+			info,
+			uint16_t(imageContainer.m_width),
+			uint16_t(imageContainer.m_height),
+			uint16_t(imageContainer.m_depth),
+			imageContainer.m_cubeMap,
+			1 < imageContainer.m_numMips,
+			imageContainer.m_numLayers,
+			bgfx::TextureFormat::Enum(imageContainer.m_format));
+
+		Texture* texture = new Texture(handle, info, imageContainer.m_orientation);
+		entry->m_Asset = static_cast<AssetObject*>(texture);
+
+		delete textureData;
+		return texture;
 	}
 };

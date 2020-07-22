@@ -6,12 +6,12 @@ using namespace annileen;
 
 void GameScene::buildMap()
 {
-    annileen::Shader* shader = Engine::getInstance()->getAssetManager()->loadShader("voxel.vs", "voxel.fs");
+    auto texture = Engine::getInstance()->getAssetManager()->loadTexture("blocks.png");
+    auto shader = Engine::getInstance()->getAssetManager()->loadShader("voxel.vs", "voxel.fs");
 
     m_BlockMaterial = std::make_shared<Material>();
     m_BlockMaterial->init(shader);
-    //m_BlockMaterial->addTexture("mainTex", Texture("../../assets/blocks.png"));
-    //m_BlockMaterial->loadTextures();
+    m_BlockMaterial->addTexture("s_mainTex", texture);
 
     fog.color = glm::vec3(0.823f, 0.705f, 0.513f);
     fog.distance = 150.0f;

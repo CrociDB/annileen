@@ -143,6 +143,11 @@ namespace annileen
         return m_Renderer;
     }
 
+    Uniform* Engine::getUniform()
+    {
+        return &m_Uniform;
+    }
+
     GLFWwindow* Engine::getGLFWWindow()
     {
         return m_Window;
@@ -300,6 +305,7 @@ namespace annileen
     Engine::~Engine()
     {
         m_Gui->destroy();
+        m_Uniform.destroy();
         bgfx::shutdown();
         glfwTerminate();
     }

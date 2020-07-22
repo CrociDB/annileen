@@ -1,23 +1,28 @@
-#ifndef _TEXTURE_H_
-#define _TEXTURE_H_
+#pragma once
 
 #include <iostream>
 #include <string>
 
-class Texture
-{
-//private:
-//	SDL_Surface* m_Surface;
-//	std::string m_Filename;
-//	GLuint m_TextureId;
-//
-//public:
-//	bool load();
-//
-//    GLuint getId() const;       
-//
-//	Texture(const std::string& filename);
-//	~Texture();
-};
+#include <bgfx/bgfx.h>
+#include <bimg/bimg.h>
 
-#endif
+#include "asset.h"
+
+namespace annileen
+{
+	class Texture : public AssetObject
+	{
+	private:
+		bgfx::TextureHandle m_Handle;
+		bgfx::TextureInfo m_Info;
+		bimg::Orientation::Enum m_Orientation;
+
+	public:
+		const bgfx::TextureHandle& getHandle() const { return m_Handle; }
+		const bgfx::TextureInfo& getInfo() const { return m_Info; }
+		const bimg::Orientation::Enum& getOrientation() const { return m_Orientation; }
+
+		Texture(bgfx::TextureHandle handle, bgfx::TextureInfo info, bimg::Orientation::Enum orientation);
+		~Texture();
+	};
+}

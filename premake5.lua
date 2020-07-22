@@ -65,6 +65,7 @@ project "annileen"
 		ANNILEEN_DIR,
 		path.join(BGFX_DIR, "include"),
 		path.join(BX_DIR, "include"),
+		path.join(BIMG_DIR, "include"),
 		path.join(GLFW_DIR, "include"),
 		path.join(GLM_DIR, "glm"),
 		path.join(BGFX_DIR, "3rdparty"),
@@ -135,7 +136,7 @@ project "bimg"
 		path.join(BIMG_DIR, "include/bimg/*.h"),
 		path.join(BIMG_DIR, "src/image.cpp"),
 		path.join(BIMG_DIR, "src/image_gnf.cpp"),
-		path.join(BIMG_DIR, "src/*.h"),
+		path.join(BIMG_DIR, "src/*.cpp"),
 		path.join(BIMG_DIR, "3rdparty/astc-codec/src/decoder/*.cc")
 	}
 	includedirs
@@ -144,6 +145,8 @@ project "bimg"
 		path.join(BIMG_DIR, "include"),
 		path.join(BIMG_DIR, "3rdparty/astc-codec"),
 		path.join(BIMG_DIR, "3rdparty/astc-codec/include"),
+		path.join(BIMG_DIR, "3rdparty/iqa/include"),
+		path.join(BIMG_DIR, "3rdparty/")
 	}
 	setBxCompat()
 

@@ -17,13 +17,15 @@ bgfx_texturev = os.path.join(bgfx_tools_dir, 'texturev')
 
 def build_texture(texturefile, dest, options):
     print(f" - Compiling {bcolors.UNDERLINE}'{texturefile}'{bcolors.ENDC}")
-    output_file = os.path.join(dest, tools.path_leaf(texturefile.split('.')[0]) + '.png')
+    output_file = os.path.join(dest, tools.path_leaf(texturefile.split('.')[0]) + '.dds')
 
-    command = "%s -f %s -o %s -t RGBA8" % (
+    command = "%s -f %s -o %s -t ETC2" % (
         bgfx_texturec,
         texturefile,
         output_file,
     )
+
+    print(command)
 
     success = False
     if not os.system(command):
