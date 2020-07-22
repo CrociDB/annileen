@@ -58,7 +58,7 @@ project "annileen"
 		path.join(ANNILEEN_DIR, "*"),
 		path.join(ANNILEEN_DIR, "engine/*"),
 		path.join(ANNILEEN_DIR, "samples/*"),
-		path.join(ANNILEEN_DIR, "engine/imgui-utils/*"),
+		path.join(ANNILEEN_DIR, "imgui-utils/*"),
 	}
 	includedirs
 	{
@@ -69,18 +69,42 @@ project "annileen"
 		path.join(GLFW_DIR, "include"),
 		path.join(GLM_DIR, "glm"),
 		path.join(BGFX_DIR, "3rdparty"),
-		path.join(ANNILEEN_DIR, "engine/resources/imgui"),
+		path.join(ANNILEEN_DIR, "resources/imgui"),
 		TOML11_DIR,
 		PERLINNOISE_DIR
 	}
 	debugdir "."
-	links { "bgfx", "bimg", "bx", "glfw", "imgui" }
+	links { "bgfx", "bimg", "bx", "glfw", "imgui", "annileen-editor" }
 	filter "system:windows"
 		links { "gdi32", "kernel32", "psapi" }
 	filter "system:linux"
 		links { "dl", "GL", "pthread", "X11" }
 	filter "system:macosx"
 		links { "QuartzCore.framework", "Metal.framework", "Cocoa.framework", "IOKit.framework", "CoreVideo.framework" }
+	setBxCompat()
+	
+project "annileen-editor"
+	kind "StaticLib"
+	language "C++"
+	cppdialect "C++17"
+	files
+	{
+		path.join(ANNILEEN_DIR, "editor/*"),
+		path.join(ANNILEEN_DIR, "imgui-utils/*"),
+	}
+	includedirs
+	{
+		ANNILEEN_DIR,
+		path.join(BGFX_DIR, "include"),
+		path.join(BX_DIR, "include"),
+		path.join(BIMG_DIR, "include"),
+		path.join(GLFW_DIR, "include"),
+		path.join(GLM_DIR, "glm"),
+		path.join(BGFX_DIR, "3rdparty"),
+		path.join(ANNILEEN_DIR, "resources/imgui"),
+		TOML11_DIR,
+		PERLINNOISE_DIR
+	}
 	setBxCompat()
 
 project "bgfx"
