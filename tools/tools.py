@@ -50,6 +50,11 @@ shader_types = ["vs", "fs"]
 mesh_types = ["obj", "gltf", "glb"]
 texture_types = ["bmp", "dds", "exr", "gif", "jpg", "hdr", "ktx", "png", "psd", "pvr", "tga"]
 
+texture_descriptor_schema = {
+    'mipmap': False,
+    'filter': 'linear'
+}
+
 def save_descriptor(descriptor):
     descriptor_path = os.path.join('.', build_dir, descriptor_file)
     f = open(descriptor_path, "w")
@@ -57,6 +62,31 @@ def save_descriptor(descriptor):
     f.close()
     return descriptor_path
     
+def save_asset_descriptor(file_path, descriptor):
+    f = open(file_path, "w")
+    toml.dump(descriptor, f)
+    f.close()
+
+def save_built_asset_descriptor(asset_path, descriptor):
+    (head, _) = ntpath.split(asset_path)
+    descriptor_file = os.path.join(head, path_leaf(asset_path.split('.')[0]) + '.toml')
+    save_asset_descriptor(descriptor_file, descriptor)
+
+def load_asset_descriptor(asset_path, schema):
+    (head, _) = ntpath.split(asset_path)
+    descriptor_file = os.path.join(head, path_leaf(asset_path.split('.')[0]) + '.toml')
+
+    if not os.path.isfile(descriptor_file):
+        save_asset_descriptor(descriptor_file, schema)
+        return schema
+
+    return _load_file_descriptor(descriptor_file)
+    
+def _load_file_descriptor(file_path):
+    f = open(file_path, "r")
+    descriptor = toml.load(f)
+    f.close()
+    return descriptor
 
 def get_platform():
     if sys.platform.startswith('win32'):
