@@ -15,22 +15,28 @@ bgfx_tools_dir = os.path.join(tools_dir, 'bgfx-tools', tools.get_platform())
 bgfx_texturec = os.path.join(bgfx_tools_dir, 'texturec')
 bgfx_texturev = os.path.join(bgfx_tools_dir, 'texturev')
 
+
+
 def build_texture(texturefile, dest, options):
     print(f" - Compiling {bcolors.UNDERLINE}'{texturefile}'{bcolors.ENDC}")
     output_file = os.path.join(dest, tools.path_leaf(texturefile.split('.')[0]) + '.dds')
 
-    command = "%s -f %s -o %s -t ETC2" % (
+    descriptor = tools.load_asset_descriptor(texturefile, tools.texture_descriptor_schema)
+
+    mipmap = '-m 1' if descriptor['mipmap'] else ''
+
+    command = "%s -f %s -o %s %s -t ETC2" % (
         bgfx_texturec,
         texturefile,
         output_file,
+        mipmap,
     )
-
-    print(command)
 
     success = False
     if not os.system(command):
         success = True
         print(f" {bcolors.SUCCESS}- Texture compiled: {output_file}{bcolors.ENDC}")
+        tools.save_built_asset_descriptor(output_file, descriptor)
 
     return success, tools.path_leaf(texturefile), output_file
 

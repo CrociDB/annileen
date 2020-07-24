@@ -95,7 +95,7 @@ namespace annileen
         bgfx::renderFrame();
 
         bgfx::Init init;
-        init.type = bgfx::RendererType::OpenGL;
+        init.type = bgfx::RendererType::Direct3D12;
     #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
         init.platformData.ndt = glfwGetX11Display();
         init.platformData.nwh = (void*)(uintptr_t)glfwGetX11Window(m_Window);
@@ -259,13 +259,28 @@ namespace annileen
         }
         m_Gui->endFrame();
 
-        auto camera = m_CurrentScene->getCamera();
-        bgfx::setViewTransform(0, camera->getViewMatrixFloatArray(), camera->getProjectionMatrixFloatArray());
-        bgfx::setViewRect(0, 0, 0, uint16_t(m_Width), uint16_t(m_Height));
-        bgfx::touch(0);
-
         if (hasValidScene)
         {
+            // Setup camera
+            auto camera = m_CurrentScene->getCamera();
+            bgfx::setViewTransform(0, camera->getViewMatrixFloatArray(), camera->getProjectionMatrixFloatArray());
+            bgfx::setViewRect(0, 0, 0, uint16_t(m_Width), uint16_t(m_Height));
+            bgfx::touch(0);
+
+            m_Uniform.setVec3Uniform("u_viewPos", camera->transform.position);
+
+            // Setup lights
+            for (const auto& light : m_CurrentScene->getLightList())
+            {
+                if (light->type == LightDirectional)
+                {
+                    m_Uniform.setVec3Uniform("u_lightDirection", light->transform.getForward());
+                    m_Uniform.setVec3Uniform("u_lightColor", light->color);
+                    m_Uniform.setFloatUniform("u_lightIntensity", light->intensity);
+                }
+            }
+
+            // Render scene
             m_Renderer->initFrame(m_CurrentScene);
 
             for (auto sceneNode : m_CurrentScene->getNodeList())
@@ -279,8 +294,6 @@ namespace annileen
         //{
         //    m_Renderer->renderSkybox(camera, m_CurrentScene->getSkybox());
         //}
-
-        //m_Renderer->swapBuffer();
 
         bgfx::frame();
     }

@@ -26,4 +26,17 @@ namespace annileen
 		bool m_Loaded;
 		AssetObject* m_Asset;
 	};
+
+	// Asset descriptors
+	struct TextureDescriptor
+	{
+		enum class Filtering
+		{
+			Linear,
+			Point
+		};
+
+		bool m_MipMap;
+		Filtering m_Filtering;
+	};
 }

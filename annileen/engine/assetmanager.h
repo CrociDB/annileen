@@ -30,8 +30,11 @@ namespace annileen
 		AssetManager(const std::string& assetfile);
 		~AssetManager();
 
-		// Load functions
+		// Asset loading functions
 		Shader* loadShader(const std::string& vertex, const std::string& fragment);
 		Texture* loadTexture(const std::string& tex);
+
+		// Asset descriptor loading functions
+		TextureDescriptor loadTextureDescriptor(AssetTableEntry* asset);
 	};
 }

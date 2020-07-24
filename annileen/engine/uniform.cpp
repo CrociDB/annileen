@@ -6,7 +6,7 @@ namespace annileen
 {
 	bgfx::UniformHandle Uniform::createUniform(const std::string& uniformname, bgfx::UniformType::Enum uniformtype)
 	{
-		UniformData u{ bgfx::createUniform("s_texColor",  uniformtype), uniformtype };
+		UniformData u{ bgfx::createUniform(uniformname.c_str(),  uniformtype), uniformtype };
 		m_Uniforms[uniformname] = u;
 		return u.m_Handle;
 	}
@@ -15,9 +15,10 @@ namespace annileen
 	{
 		try
 		{
-			return m_Uniforms[uniformname].m_Handle;
+			auto u = m_Uniforms.at(uniformname);
+			return u.m_Handle;
 		}
-		catch (std::out_of_range& e) { }
+		catch (std::out_of_range&) {}
 
 		return createUniform(uniformname, uniformtype);
 	}
@@ -50,18 +51,18 @@ namespace annileen
 	}
 
 	void Uniform::setVec4Uniform(const std::string& uniformname, const glm::vec4& value)
-	{
-		bgfx::setUniform(getVec4UniformHandle(uniformname), glm::value_ptr(value), 4);
+	{ 
+		bgfx::setUniform(getVec4UniformHandle(uniformname), glm::value_ptr(value), 1);
 	}
 
 	void Uniform::setVec3Uniform(const std::string& uniformname, const glm::vec3& value)
 	{
-		bgfx::setUniform(getVec4UniformHandle(uniformname), glm::value_ptr(value), 3);
+		bgfx::setUniform(getVec4UniformHandle(uniformname), glm::value_ptr(value), 1);
 	}
 
 	void Uniform::setVec2Uniform(const std::string& uniformname, const glm::vec2& value)
 	{
-		bgfx::setUniform(getVec4UniformHandle(uniformname), glm::value_ptr(value), 2);
+		bgfx::setUniform(getVec4UniformHandle(uniformname), glm::value_ptr(value), 1);
 	}
 
 	void Uniform::setFloatUniform(const std::string& uniformname, const float& value)
