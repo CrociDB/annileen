@@ -134,18 +134,20 @@ namespace annileen
 			return dynamic_cast<Texture*>(entry->m_Asset);
 		}
 
+		auto descriptor = loadTextureDescriptor(entry);
 		auto textureData = loadBinaryFile(entry->m_Filepath);
-		//bimg::ImageContainer imageContainer;
 		bx::Error err;
-		//bool success = bimg::imageParse(imageContainer, textureData->data, textureData->size, &err);
 		auto aimageContainer = bimg::imageParse(Engine::getAllocator(), textureData->data, textureData->size);
 		auto imageContainer = (*aimageContainer);
-		//assert(success && "Error parsing image");
 
 		const bgfx::Memory* mem = bgfx::makeRef(imageContainer.m_data, imageContainer.m_size);
 
 		auto format = bgfx::TextureFormat::Enum(imageContainer.m_format);
 		uint64_t flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE;
+
+		if (descriptor.m_Filtering == TextureDescriptor::Filtering::Point) 
+			flags |= BGFX_SAMPLER_POINT;
+
 		auto handle = bgfx::createTexture2D(
 			uint16_t(imageContainer.m_width),
 			uint16_t(imageContainer.m_height),
@@ -176,5 +178,15 @@ namespace annileen
 
 		delete textureData;
 		return texture;
+	}
+
+	TextureDescriptor AssetManager::loadTextureDescriptor(AssetTableEntry* asset)
+	{
+		auto assetfile = asset->m_Filepath.substr(0, asset->m_Filepath.find_last_of(".")) + ".toml";
+		auto data = toml::parse(assetfile);
+		return {
+			toml::find(data, "mipmap").as_boolean(),
+			toml::find(data, "filter").as_string() == "point" ? TextureDescriptor::Filtering::Point : TextureDescriptor::Filtering::Linear
+		};
 	}
 };
