@@ -18,6 +18,14 @@ void GameScene::buildMap()
     fog.enabled = 1.0f;
     fog.power = 1.3f;
 
+    Light* light = new Light();
+    light->color = glm::vec3(1.0f, 1.0f, .8f);
+    light->type = LightDirectional;
+    light->intensity = 0.8f;
+    light->transform.rotate(glm::vec3(-40.0f, 0.0f, 0.0f));
+
+    this->addLight(light);
+
     m_Noise = new siv::PerlinNoise(std::random_device{});
 }
 
@@ -79,14 +87,6 @@ void GameScene::start()
     buildMap();
     
     getCamera()->transform.position = glm::vec3(0.0f, 40.0f, 0.0f);
-
-    Light* light = new Light();
-    light->color = glm::vec3(1.0f, 1.0f, .8f);
-    light->type = LightDirectional;
-    light->intensity = 0.8f;
-    light->transform.rotate(glm::vec3(-40.0f, 0.0f, 0.0f));
-    
-    this->addLight(light);
 }
 
 void GameScene::update()
