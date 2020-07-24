@@ -13,7 +13,7 @@ local TOML11_DIR = "toml11"
 
 solution "annileen-engine"
 	location(BUILD_DIR)
-	startproject "helloworld"
+	startproject "annileen-editor"
 	configurations { "Release", "Debug" }
 	if os.is64bit() and not os.istarget("windows") then
 		platforms "x86_64"
@@ -46,8 +46,8 @@ function setBxCompat()
 		includedirs { path.join(BX_DIR, "include/compat/osx") }
 		buildoptions { "-x objective-c++" }
 end
-	
-project "annileen"
+		
+project "annileen-editor"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
@@ -55,9 +55,8 @@ project "annileen"
 	rtti "On"
 	files
 	{
-		path.join(ANNILEEN_DIR, "*"),
-		path.join(ANNILEEN_DIR, "engine/*"),
-		path.join(ANNILEEN_DIR, "samples/*"),
+		path.join(ANNILEEN_DIR, "*"),		
+		path.join(ANNILEEN_DIR, "editor/*"),
 		path.join(ANNILEEN_DIR, "imgui-utils/*"),
 	}
 	includedirs
@@ -66,15 +65,16 @@ project "annileen"
 		path.join(BGFX_DIR, "include"),
 		path.join(BX_DIR, "include"),
 		path.join(BIMG_DIR, "include"),
-		path.join(GLFW_DIR, "include"),
+		path.join(GLFW_DIR, "include"),	
 		path.join(GLM_DIR, "glm"),
 		path.join(BGFX_DIR, "3rdparty"),
+		path.join(ANNILEEN_DIR, "engine"),
 		path.join(ANNILEEN_DIR, "resources/imgui"),
 		TOML11_DIR,
 		PERLINNOISE_DIR
 	}
 	debugdir "."
-	links { "bgfx", "bimg", "bx", "glfw", "imgui", "annileen-editor" }
+	links { "bgfx", "bimg", "bx", "glfw", "imgui", "annileen" }
 	filter "system:windows"
 		links { "gdi32", "kernel32", "psapi" }
 	filter "system:linux"
@@ -83,13 +83,16 @@ project "annileen"
 		links { "QuartzCore.framework", "Metal.framework", "Cocoa.framework", "IOKit.framework", "CoreVideo.framework" }
 	setBxCompat()
 	
-project "annileen-editor"
+project "annileen"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
+	exceptionhandling "On"
+	rtti "On"
 	files
 	{
-		path.join(ANNILEEN_DIR, "editor/*"),
+		path.join(ANNILEEN_DIR, "engine/*"),
+		path.join(ANNILEEN_DIR, "samples/*"),
 		path.join(ANNILEEN_DIR, "imgui-utils/*"),
 	}
 	includedirs
