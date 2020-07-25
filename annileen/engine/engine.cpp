@@ -95,7 +95,7 @@ namespace annileen
         bgfx::renderFrame();
 
         bgfx::Init init;
-        init.type = bgfx::RendererType::Direct3D12;
+        init.type = bgfx::RendererType::OpenGL;
     #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
         init.platformData.ndt = glfwGetX11Display();
         init.platformData.nwh = (void*)(uintptr_t)glfwGetX11Window(m_Window);
@@ -237,6 +237,12 @@ namespace annileen
             bgfx::reset(m_Width, m_Height, BGFX_RESET_VSYNC);
             m_Renderer->clear();
         }
+
+        uint8_t mouseButton = (m_Input->getMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) ? IMGUI_MBUT_LEFT : 0)
+            | (m_Input->getMouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT) ? IMGUI_MBUT_RIGHT : 0)
+            | (m_Input->getMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE) ? IMGUI_MBUT_MIDDLE : 0);
+
+        m_Gui->beginFrame(m_Input->getMousePosition(), mouseButton, m_Input->getMouseScroll().y, m_Width, m_Height);
     }
 
     void Engine::renderFrame()
@@ -245,11 +251,7 @@ namespace annileen
 
         std::list<SceneNodePtr> sceneNode = m_CurrentScene->getNodeList();
         
-        uint8_t mouseButton = (m_Input->getMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)  ? IMGUI_MBUT_LEFT : 0)
-                           | (m_Input->getMouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT) ? IMGUI_MBUT_RIGHT : 0)
-                         | (m_Input->getMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE) ? IMGUI_MBUT_MIDDLE : 0);
-
-        m_Gui->beginFrame(m_Input->getMousePosition(), mouseButton, m_Input->getMouseScroll().y,  m_Width, m_Height);
+        
         m_Gui->drawMainWindowToolbar();
         m_Gui->drawEditorGeneralInfoWindow();
         if (hasValidScene)
@@ -257,6 +259,7 @@ namespace annileen
             m_Gui->drawSelectedNodePropertiesWindow();
             m_Gui->drawEditorSceneTreeWindow(m_CurrentScene->getNodeList());
         }
+
         m_Gui->endFrame();
 
         if (hasValidScene)

@@ -12,20 +12,22 @@ void main()
 	const float light_specular_power = 16.0f;
 
 	vec3 normal = v_normal;
+	normal.x = -normal.x;
 	normal = normalize(normal);
 
 	vec4 tex = texture2D(s_mainTex, v_texcoord0);
 	vec3 ambient = 0.4 * vec3(1.0, 1.0, 1.0);
 
-	float diff = max(dot(normal, u_lightDirection), 0.0);
-	vec3 diffuse = mul(mul(diff, u_lightColor), u_lightIntensity.x);
-
 	vec3 viewDist = (u_viewPos - v_position.xyz);
 	vec3 viewDir = normalize(viewDist);
-	vec3 reflectDir = reflect(-u_lightDirection, normal);
+
+	float diff = max(dot(normal, u_lightDirection.xyz), 0.0);
+	vec3 diffuse = diff * u_lightColor.xyz * u_lightIntensity.x;
+
+	vec3 reflectDir = reflect(-u_lightDirection.xyz, normal);
 
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), light_specular_power);
-	vec3 specular = light_specular_strength * spec * u_lightColor;
+	vec3 specular = light_specular_strength * spec * u_lightColor.xyz;
 
 	vec3 a = ambient * tex.xyz;
 	vec3 d = diffuse * tex.xyz;
