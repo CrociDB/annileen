@@ -15,6 +15,7 @@ matrix:
             - freeglut3-dev
             - mesa-common-dev
             - libglew-dev
+            - libx11-dev
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
