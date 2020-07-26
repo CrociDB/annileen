@@ -15,10 +15,8 @@ solution "annileen-engine"
 	location(BUILD_DIR)
 	startproject "example-worldbuilding"
 	configurations { "Release", "Debug" }
-	if os.is64bit() and not os.istarget("windows") then
+	if os.is64bit() then
 		platforms "x86_64"
-	else
-		platforms { "x86", "x86_64" }
 	end
 	filter "configurations:Release"
 		defines "NDEBUG"
