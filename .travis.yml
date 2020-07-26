@@ -11,6 +11,10 @@ matrix:
           packages:
             - g++-7
             - wget
+            - libglu1-mesa-dev
+            - freeglut3-dev
+            - mesa-common-dev
+            - libglew-dev
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
