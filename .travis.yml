@@ -16,8 +16,8 @@ matrix:
 
 before_install:
   - eval "${MATRIX_EVAL}"
-  - wget https://github.com/premake/premake-core/releases/download/v5.0.0.alpha4/premake-5.0.0.alpha4-linux.tar.gz
-  - tar -xzvf premake-5.0.0.alpha4-linux.tar.gz
+  - wget https://github.com/premake/premake-core/releases/download/v5.0.0-alpha15/premake-5.0.0-alpha15-linux.tar.gz
+  - tar -xzvf premake-5.0.0-alpha15-linux.tar.gz
   - chmod +x premake5
 
 script: "./premake5 gmake && cd build/cmake && make"
