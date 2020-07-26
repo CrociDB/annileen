@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   sodipodi:docname="logo.svg"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   id="svg8"
+   version="1.1"
+   viewBox="0 0 529.16666 264.585"
+   height="1000"
+   width="2000">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     inkscape:window-maximized="1"
+     inkscape:window-y="-8"
+     inkscape:window-x="-8"
+     inkscape:window-height="1387"
+     inkscape:window-width="2560"
+     units="px"
+     showgrid="false"
+     inkscape:document-rotation="0"
+     inkscape:current-layer="layer1"
+     inkscape:document-units="px"
+     inkscape:cy="949.85142"
+     inkscape:cx="1095.5871"
+     inkscape:zoom="0.49497475"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
+    <g
+       style="fill:#333333"
+       transform="matrix(1.376988,0,0,1.376988,-98.223251,-42.266026)"
+       id="g74">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:119.063px;line-height:1.25;font-family:sans-serif;fill:#333333;fill-opacity:1;stroke:none;stroke-width:0.264585"
+         x="85.525116"
+         y="173.19171"
+         id="text12"><tspan
+           sodipodi:role="line"
+           id="tspan10"
+           x="85.525116"
+           y="173.19171"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:119.063px;font-family:'Yanone Kaffeesatz';-inkscape-font-specification:'Yanone Kaffeesatz';stroke-width:0.264585;fill:#333333">annileen</tspan></text>
+      <circle
+         id="path14"
+         cx="419.61417"
+         cy="118.6684"
+         r="18.174442"
+         style="stroke-width:0.264585;fill:#333333" />
+      <circle
+         id="path16"
+         cx="385.93793"
+         cy="89.268578"
+         r="13.898103"
+         style="stroke-width:0.254786;fill:#333333" />
+    </g>
+  </g>
+</svg>
