@@ -71,7 +71,9 @@ project "annileen-editor"
 		path.join(ANNILEEN_DIR, "resources/imgui"),
 		TOML11_DIR,
 		PERLINNOISE_DIR
-	}
+	}	
+	filter "action:vs*"
+		defines "_CRT_SECURE_NO_WARNINGS"
 	setBxCompat()
 	
 project "annileen"
@@ -127,6 +129,14 @@ project "example-worldbuilding"
 	}
 	debugdir "."
 	links { "bgfx", "bimg", "bx", "glfw", "imgui", "annileen" }
+	filter "configurations:Release"
+		defines "NDEBUG"
+		optimize "Full"
+	filter "configurations:Debug*"
+		links {"annileen-editor"}
+		defines "_DEBUG"
+		optimize "Debug"
+		symbols "On"
 	filter "system:windows"
 		links { "gdi32", "kernel32", "psapi" }
 	filter "system:linux"
@@ -162,6 +172,14 @@ project "example-cube"
 	}
 	debugdir "."
 	links { "bgfx", "bimg", "bx", "glfw", "imgui", "annileen" }
+	filter "configurations:Release"
+		defines "NDEBUG"
+		optimize "Full"
+	filter "configurations:Debug*"
+		links {"annileen-editor"}
+		defines "_DEBUG"
+		optimize "Debug"
+		symbols "On"
 	filter "system:windows"
 		links { "gdi32", "kernel32", "psapi" }
 	filter "system:linux"

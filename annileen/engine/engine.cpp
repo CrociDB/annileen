@@ -1,5 +1,5 @@
-#include "engine.h"
-#include "renderer.h"
+#include <engine/engine.h>
+#include <engine/renderer.h>
 
 #include <sstream>
 
@@ -133,6 +133,11 @@ namespace annileen
 	    return m_Input;
     }
 
+    std::shared_ptr<Gui> Engine::getGui()
+    {
+        return m_Gui;
+    }
+
     AssetManager* annileen::Engine::getAssetManager()
     {
         return m_AssetManager.get();
@@ -237,12 +242,6 @@ namespace annileen
             bgfx::reset(m_Width, m_Height, BGFX_RESET_VSYNC);
             m_Renderer->clear();
         }
-
-        uint8_t mouseButton = (m_Input->getMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) ? IMGUI_MBUT_LEFT : 0)
-            | (m_Input->getMouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT) ? IMGUI_MBUT_RIGHT : 0)
-            | (m_Input->getMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE) ? IMGUI_MBUT_MIDDLE : 0);
-
-        m_Gui->beginFrame(m_Input->getMousePosition(), mouseButton, m_Input->getMouseScroll().y, m_Width, m_Height);
     }
 
     void Engine::renderFrame()
@@ -251,17 +250,6 @@ namespace annileen
 
         std::list<SceneNodePtr> sceneNode = m_CurrentScene->getNodeList();
         
-        
-        m_Gui->drawMainWindowToolbar();
-        m_Gui->drawEditorGeneralInfoWindow();
-        if (hasValidScene)
-        {
-            m_Gui->drawSelectedNodePropertiesWindow();
-            m_Gui->drawEditorSceneTreeWindow(m_CurrentScene->getNodeList());
-        }
-
-        m_Gui->endFrame();
-
         if (hasValidScene)
         {
             // Setup camera

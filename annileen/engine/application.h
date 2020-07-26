@@ -2,32 +2,38 @@
 
 #include "engine.h"
 
-class Application
+namespace annileen
 {
-
-private:
-	annileen::Engine* m_Engine;
-
-	void initAnnileen();
-
-	virtual annileen::Scene* init() = 0;
-	virtual void update(float deltaTime) = 0;
-	virtual void finish() = 0;
-	// TODO:
-	// physicsUpdate
-	// beforeRender
-	// afterRender
-
-protected:
-	void destroy();
-
-	inline annileen::Engine* getEngine()
+	class Application
 	{
-		return m_Engine;
-	}
 
-public:
-	int run();
-	Application();
-	~Application();
-};
+	private:
+
+		void initAnnileen();
+
+		virtual Scene* init() = 0;
+		virtual void update(float deltaTime) = 0;
+		virtual void finish() = 0;
+		// TODO:
+		// physicsUpdate
+		// beforeRender
+		// afterRender
+
+		Engine* m_Engine;
+
+	protected:
+
+		virtual void gui();
+		void destroy();
+
+		inline Engine* const getEngine() const
+		{
+			return m_Engine;
+		}
+
+	public:
+		int run();
+		Application();
+		~Application();
+	};
+}

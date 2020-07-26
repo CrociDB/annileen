@@ -1,15 +1,12 @@
-#ifndef _CAMERA_H_
-#define _CAMERA_H_
+#pragma once
 
-#include "transform.h"
-
+#include <engine/transform.h>
 #include <glm.hpp>
-#include <gtc/type_ptr.hpp>
-#include <gtc/matrix_transform.hpp>
-#include <gtc/quaternion.hpp>
 
 namespace annileen
 {
+    class Transform;
+
     enum CameraClearType
     {
         CameraClearColor,
@@ -55,5 +52,3 @@ namespace annileen
         ~Camera();
     };
 }
-
-#endif

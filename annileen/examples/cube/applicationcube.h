@@ -1,6 +1,6 @@
 #pragma once
 
-#include "application.h"
+#define ANNILEEN_APPLICATION
 #include "definitions.h"
 
 // Example cube
@@ -37,7 +37,7 @@ static const uint16_t s_cubeTriList[] =
     6, 3, 7,
 };
 
-class ApplicationCube : public Application
+ANNILEEN_APP_CLASS_DECLARATION(ApplicationCube)
 {
 private:
 	float m_Speed;

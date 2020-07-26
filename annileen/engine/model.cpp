@@ -26,7 +26,7 @@ namespace annileen
 		return m_Material;
 	}
 
-	Model::Model() : m_Mesh(nullptr)
+	Model::Model() : m_Mesh(nullptr), m_State(0), m_Material(nullptr)
 	{
 
 	}
