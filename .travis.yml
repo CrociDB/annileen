@@ -1,16 +1,22 @@
-lang: cpp
+language: cpp
 compiler: gcc
 os: linux
-addons:
+matrix:
+    # works on Precise and Trusty
+    - os: linux
+      addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - g++-4.9
+            - g++-7
+            - premake4
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
 install: make get-deps premake4
 
 before_install:
-  - premake4 gmake
-  - cd build/gmake
-  - make
+  - eval "${MATRIX_EVAL}"
+
+script: "premake4 gmake && cd build/cmake && make"
