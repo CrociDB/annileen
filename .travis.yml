@@ -16,6 +16,7 @@ matrix:
             - mesa-common-dev
             - libglew-dev
             - libx11-dev
+            - libxrandr-dev
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
