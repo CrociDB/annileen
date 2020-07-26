@@ -20,4 +20,4 @@ before_install:
   - tar -xzvf premake-5.0.0-alpha15-linux.tar.gz
   - chmod +x premake5
 
-script: "./premake5 gmake && cd build/cmake && make"
+script: "./premake5 gmake && cd build/gmake && make"
