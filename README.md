@@ -1,5 +1,7 @@
 ![Annileen](https://i.imgur.com/HUMakjJ.png)
 
+[![Build Status](https://travis-ci.com/CrociDB/annileen.svg?branch=master)](https://travis-ci.com/CrociDB/annileen)
+
 This is a toy 3D game engine created for study purposes. It's written in C++ and uses **bgfx** for rendering. Currently runs on **Windows** and **Linux** and supports **OpenGL 2.1**, **DirectX 9**, **DirectX 11**, **DirectX 12** and **Vulkan**.
 
 It's still on an early stage of development, but already supports:
