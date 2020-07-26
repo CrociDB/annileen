@@ -20,6 +20,8 @@ _dM_     _dMM_MM_  _MM_MM_  _MM_MM__MM_ YMMMM9   YMMMM9 _MM_  _MM_
 This is a toy engine initially created for study purposes. It's still on an early stage of development, but already supports:
  - Minecraft-style voxels
 
+![Annileen](https://i.imgur.com/gXnzt7g.png)
+
 ## Dependencies
 
  - premake5
@@ -83,7 +85,7 @@ All the other the specific tools will accept an asset name, no need to include t
 python tools/shader.py
 ```
 ```
-usage: shader.py [-h] [-s [SHADER [SHADER ...]]] [-a]
+usage: shader.py [-h] [-s [SHADER [SHADER ...]]] [-a] [-p {auto,android,asm.js,ios,linux,orbis,osx,windows}] [-m {auto,s_3_0,s_4_0,s_4_0_level,s_5_0,metal,pssl,spirv}]
 
 Annileen Shader Tools
 
@@ -92,7 +94,18 @@ optional arguments:
   -s [SHADER [SHADER ...]], --shader [SHADER [SHADER ...]]
                         compiles the shader specified
   -a, --all             compiles all the available shaders
+  -p {auto,android,asm.js,ios,linux,orbis,osx,windows}, --platform {auto,android,asm.js,ios,linux,orbis,osx,windows}
+                        compiles the shader specified
+  -m {auto,s_3_0,s_4_0,s_4_0_level,s_5_0,metal,pssl,spirv}, --model {auto,s_3_0,s_4_0,s_4_0_level,s_5_0,metal,pssl,spirv}
+                        shader model
 ```
+
+If no `platform` is specified, it will build for tre host platform. The default build model is OpenGL (GLSL), for other APIs, use:
+
+ - DirectX: `s_5_0`
+ - Vulkan: `spirv`
+ - Metal: `metal`
+
 
 ### Mesh Tool
 
@@ -129,3 +142,9 @@ optional arguments:
   -a, --all             compiles all the available textures
   -v VIEW, --view VIEW  view the specified mesh
 ```
+
+# Contributors
+
+  - Bruno Croci - [CrociDB](https://twitter.com/CrociDB)
+  - Teofilo Dutra - [teodutra](https://twitter.com/teodutra)
+
