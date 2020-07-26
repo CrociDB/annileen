@@ -1,3 +1,4 @@
+lang: cpp
 compiler: gcc
 os: linux
 addons:
@@ -6,4 +7,10 @@ addons:
             - ubuntu-toolchain-r-test
           packages:
             - g++-4.9
-            - premake5
+
+install: make get-deps premake4
+
+before_install:
+  - premake4 gmake
+  - cd build/gmake
+  - make
