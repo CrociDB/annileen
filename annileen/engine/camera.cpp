@@ -1,5 +1,8 @@
-#include "camera.h"
-#include "engine.h"
+#include <engine/camera.h>
+#include <engine/engine.h>
+#include <gtc/type_ptr.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <gtc/quaternion.hpp>
 
 namespace annileen
 {

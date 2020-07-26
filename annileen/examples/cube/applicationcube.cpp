@@ -2,7 +2,7 @@
 #include "glm.hpp"
 #include "scene.h"
 
-ApplicationCube::ApplicationCube() : Application() {}
+ApplicationCube::ApplicationCube() {}
 ApplicationCube::~ApplicationCube() {}
 
 using namespace annileen;

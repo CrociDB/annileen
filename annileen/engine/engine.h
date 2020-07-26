@@ -18,16 +18,20 @@
 
 #include <glm.hpp>
 
-#include "scene.h"
-#include "input.h"
-#include "uniform.h"
-#include "assetmanager.h"
-#include "gui.h"
+#include <engine/scene.h>
+#include <engine/input.h>
+#include <engine/uniform.h>
+#include <engine/assetmanager.h>
+#include <engine/gui.h>
 
 namespace annileen
 {
     class Renderer;
     class Gui;
+    class Input;
+    class AssetManager;
+    class Uniform;
+    class Scene;
 
     struct Time
     {
@@ -37,7 +41,7 @@ namespace annileen
         float timeScale;
     };
 
-    class Engine
+    class Engine final
     {
     private:
         GLFWwindow* m_Window;
@@ -74,6 +78,7 @@ namespace annileen
         int init(int width, int height, std::string assetfile);
 
         std::shared_ptr<Input> getInput(); 
+        std::shared_ptr<Gui> getGui();
         AssetManager* getAssetManager();
         Renderer* getRenderer();
         Uniform* getUniform();

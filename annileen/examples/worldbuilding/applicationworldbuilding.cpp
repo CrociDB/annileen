@@ -2,7 +2,7 @@
 #include "gamescene.h"
 #include "glm.hpp"
 
-ApplicationWorldBuilding::ApplicationWorldBuilding() : Application() {}
+ApplicationWorldBuilding::ApplicationWorldBuilding() {}
 ApplicationWorldBuilding::~ApplicationWorldBuilding() {}
 
 annileen::Scene* ApplicationWorldBuilding::init()

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "application.h"
-#include "definitions.h"
+#define ANNILEEN_APPLICATION
+#include <engine/definitions.h>
 
-class ApplicationWorldBuilding : public Application
+ANNILEEN_APP_CLASS_DECLARATION(ApplicationWorldBuilding)
 {
 
 private:

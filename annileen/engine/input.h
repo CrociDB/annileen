@@ -1,9 +1,7 @@
 #pragma once
 
-#include <iostream>
 #include <map>
 #include <glm.hpp>
-#include <GLFW/glfw3.h>
 
 namespace annileen
 {
