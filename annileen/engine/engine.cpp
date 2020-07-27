@@ -258,7 +258,7 @@ namespace annileen
             bgfx::setViewRect(0, 0, 0, uint16_t(m_Width), uint16_t(m_Height));
             bgfx::touch(0);
 
-            m_Uniform.setVec3Uniform("u_viewPos", camera->transform.position);
+            m_Uniform.setVec3Uniform("u_viewPos", camera->transform().position);
 
             // Setup lights
             for (const auto& light : m_CurrentScene->getLightList())
