@@ -56,27 +56,27 @@ void ApplicationCube::update(float deltaTime)
 
     if (getEngine()->getInput()->getKey(GLFW_KEY_S))
     {
-        camera->m_Transform.translate(deltaTime * -m_MovementSpeed * camera->getForward());
+        camera->transform().translate(deltaTime * -m_MovementSpeed * camera->getForward());
     }
     if (getEngine()->getInput()->getKey(GLFW_KEY_W))
     {
-        camera->m_Transform.translate(deltaTime * m_MovementSpeed * camera->getForward());
+        camera->transform().translate(deltaTime * m_MovementSpeed * camera->getForward());
     }
     if (getEngine()->getInput()->getKey(GLFW_KEY_A))
     {
-        camera->m_Transform.translate(deltaTime * m_MovementSpeed * camera->getRight());
+        camera->transform().translate(deltaTime * m_MovementSpeed * camera->getRight());
     }
     if (getEngine()->getInput()->getKey(GLFW_KEY_D))
     {
-        camera->m_Transform.translate(deltaTime * -m_MovementSpeed * camera->getRight());
+        camera->transform().translate(deltaTime * -m_MovementSpeed * camera->getRight());
     }
     if (getEngine()->getInput()->getKey(GLFW_KEY_Q))
     {
-        camera->m_Transform.translate(deltaTime * -m_MovementSpeed * glm::vec3(0.0f, 1.0f, 0.0f));
+        camera->transform().translate(deltaTime * -m_MovementSpeed * glm::vec3(0.0f, 1.0f, 0.0f));
     }
     if (getEngine()->getInput()->getKey(GLFW_KEY_E))
     {
-        camera->m_Transform.translate(deltaTime * m_MovementSpeed * glm::vec3(0.0f, 1.0f, 0.0f));
+        camera->transform().translate(deltaTime * m_MovementSpeed * glm::vec3(0.0f, 1.0f, 0.0f));
     }
 
     if (m_CameraActive)
