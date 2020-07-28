@@ -30,3 +30,11 @@ before_install:
   - chmod +x premake5
 
 script: "./premake5 gmake && cd build/gmake && make"
+
+notifications:
+  email:
+    recipients:
+      - crocidb@gmail.com
+      - teofilo.dutra@gmail.com
+    on_success: never
+    on_failure: always
