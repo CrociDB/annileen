@@ -14,9 +14,12 @@ matrix:
             - libglu1-mesa-dev
             - freeglut3-dev
             - mesa-common-dev
+            - xorg-dev
             - libglew-dev
             - libx11-dev
             - libxrandr-dev
+            - libxcursor-dev
+            - libxinerama-dev
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
