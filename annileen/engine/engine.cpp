@@ -1,6 +1,7 @@
 #include <engine/engine.h>
 #include <engine/renderer.h>
-
+#include <engine/serviceprovider.h>
+#include <engine/core/logger.h>
 #include <sstream>
 
 namespace annileen
@@ -110,6 +111,16 @@ namespace annileen
         init.resolution.reset = BGFX_RESET_VSYNC;
         if (!bgfx::init(init))
             return 1;
+
+        // Initialize services
+        Logger* logger = new Logger();
+        ServiceProvider::provideLogger(logger);
+        //
+
+        ANNILEEN_LOG(LoggingLevel::Message, LoggingChannel::Core, "This is message specifying level");
+        ANNILEEN_LOG_WARNING(LoggingChannel::General, "This is a warning message");
+        ANNILEEN_LOG_ERROR(LoggingChannel::Renderer, "This is a error message");
+        ANNILEEN_LOG_MESSAGE(LoggingChannel::Core, "This is a regular message");
 
         m_Renderer = new Renderer();
         m_Renderer->init(this);
@@ -308,6 +319,13 @@ namespace annileen
 
     Engine::~Engine()
     {
+        Logger* logger = ServiceProvider::getLogger();
+        ServiceProvider::provideLogger(nullptr);
+        if (logger != nullptr)
+        {
+            delete logger;
+        }
+
         m_Gui->destroy();
         m_Uniform.destroy();
         bgfx::shutdown();

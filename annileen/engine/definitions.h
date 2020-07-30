@@ -18,4 +18,38 @@
     #define ANNILEEN_APP_CLASS_DECLARATION(__ApplicationClassName) class __ApplicationClassName : public annileen::Application
 #endif // DEBUG
 
-    
+// Template for enums that allow for bitwise operations, need to find a better 
+template<typename Enum>
+struct EnableBitMaskOperators
+{
+    static const bool enable = false;
+};
+
+template<typename EnumClass>
+typename std::enable_if<EnableBitMaskOperators<EnumClass>::enable, EnumClass>::type
+operator |(EnumClass lhs, EnumClass rhs)
+{
+    using underlying = typename std::underlying_type<EnumClass>::type;
+    return static_cast<EnumClass> (
+        static_cast<underlying>(lhs) |
+        static_cast<underlying>(rhs)
+        );
+}
+
+template<typename EnumClass>
+typename std::enable_if<EnableBitMaskOperators<EnumClass>::enable, EnumClass>::type
+operator &(EnumClass lhs, EnumClass rhs)
+{
+    using underlying = typename std::underlying_type<EnumClass>::type;
+    return static_cast<EnumClass> (
+        static_cast<underlying>(lhs) &
+        static_cast<underlying>(rhs)
+        );
+}
+
+#define ANNILEEN_ENABLE_BITMASK_OPERATORS(x) \
+    template<>                       \
+    struct EnableBitMaskOperators<x> \
+    {                                \
+        static const bool enable = true; \
+    }   ;

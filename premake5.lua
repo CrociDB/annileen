@@ -85,6 +85,7 @@ project "annileen"
 	files
 	{
 		path.join(ANNILEEN_DIR, "engine/*"),
+		path.join(ANNILEEN_DIR, "engine/core/*"),
 		path.join(ANNILEEN_DIR, "imgui-utils/*"),
 	}
 	includedirs
