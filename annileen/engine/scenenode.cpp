@@ -83,7 +83,7 @@ namespace annileen
 
 	std::vector<SceneNodePtr>::iterator SceneNode::findChild(SceneNodePtr node)
 	{
-		return std::find(m_Children.begin(), m_Children.end(), node);
+		//return std::find(m_Children.begin(), m_Children.end(), node);
 	}
 
 	bool SceneNode::hasChild(SceneNodePtr node)

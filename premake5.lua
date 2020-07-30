@@ -87,6 +87,8 @@ project "annileen"
 		path.join(ANNILEEN_DIR, "engine/*"),
 		path.join(ANNILEEN_DIR, "engine/core/*"),
 		path.join(ANNILEEN_DIR, "imgui-utils/*"),
+		path.join(BIMG_DIR, "src/image_decode.cpp"),
+
 	}
 	includedirs
 	{
@@ -97,6 +99,7 @@ project "annileen"
 		path.join(GLFW_DIR, "include"),
 		path.join(GLM_DIR, "glm"),
 		path.join(BGFX_DIR, "3rdparty"),
+		path.join(BIMG_DIR, "3rdparty"),
 		path.join(ANNILEEN_DIR, "resources/imgui"),
 		TOML11_DIR,
 		PERLINNOISE_DIR
@@ -129,7 +132,7 @@ project "example-worldbuilding"
 		PERLINNOISE_DIR
 	}
 	debugdir "."
-	links { "bgfx", "bimg", "bx", "glfw", "imgui", "annileen" }
+	links { "bgfx", "bimg", "bx", "imgui", "annileen", "glfw" }
 	filter "configurations:Release"
 		defines "NDEBUG"
 		optimize "Full"
@@ -172,7 +175,7 @@ project "example-cube"
 		PERLINNOISE_DIR
 	}
 	debugdir "."
-	links { "bgfx", "bimg", "bx", "glfw", "imgui", "annileen" }
+	links { "bgfx", "bimg", "bx", "annileen", "imgui", "glfw" }
 	filter "configurations:Release"
 		defines "NDEBUG"
 		optimize "Full"
@@ -243,6 +246,7 @@ project "bimg"
 		path.join(BIMG_DIR, "include/bimg/*.h"),
 		path.join(BIMG_DIR, "src/image.cpp"),
 		path.join(BIMG_DIR, "src/image_gnf.cpp"),
+		path.join(BIMG_DIR, "src/image_decode.cpp"),
 		path.join(BIMG_DIR, "src/*.cpp"),
 		path.join(BIMG_DIR, "3rdparty/astc-codec/src/decoder/*.cc")
 	}
