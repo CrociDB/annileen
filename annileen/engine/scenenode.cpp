@@ -1,5 +1,6 @@
-#include "scenenode.h"
-#include "scene.h"
+#include <engine/scenenode.h>
+#include <engine/scene.h>
+#include <algorithm>
 
 namespace annileen
 {
