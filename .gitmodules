@@ -19,3 +19,6 @@
 [submodule "toml11"]
 	path = toml11
 	url = https://github.com/ToruNiina/toml11.git
+[submodule "fmt"]
+	path = fmt
+	url = https://github.com/fmtlib/fmt.git

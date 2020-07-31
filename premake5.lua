@@ -10,6 +10,7 @@ local GLFW_DIR = "glfw"
 local GLM_DIR = "glm"
 local PERLINNOISE_DIR = "PerlinNoise"
 local TOML11_DIR = "toml11"
+local FMT_DIR = "fmt"
 
 solution "annileen-engine"
 	location(BUILD_DIR)
@@ -132,7 +133,7 @@ project "example-worldbuilding"
 		PERLINNOISE_DIR
 	}
 	debugdir "."
-	links { "bgfx", "bimg", "bx", "imgui", "annileen", "glfw" }
+	links { "bgfx", "bimg", "bx", "imgui", "fmt", "annileen", "glfw" }
 	filter "configurations:Release"
 		defines "NDEBUG"
 		optimize "Full"
@@ -175,7 +176,7 @@ project "example-cube"
 		PERLINNOISE_DIR
 	}
 	debugdir "."
-	links { "bgfx", "bimg", "bx", "annileen", "imgui", "glfw" }
+	links { "bgfx", "bimg", "bx", "fmt", "annileen", "imgui", "glfw" }
 	filter "configurations:Release"
 		defines "NDEBUG"
 		optimize "Full"
@@ -371,5 +372,19 @@ project "PerlinNoise"
 	includedirs
 	{
 		path.join(PERLINNOISE_DIR, "*"),
+	}
+	setBxCompat()
+
+project "fmt"
+	kind "StaticLib"
+	language "C++"
+	files
+	{
+		path.join(FMT_DIR, "include/fmt/*"),
+		path.join(FMT_DIR, "src/*")
+	}
+	includedirs
+	{
+		path.join(FMT_DIR, "include")
 	}
 	setBxCompat()
