@@ -8,6 +8,7 @@ from tools import bcolors
 import shader
 import mesh
 import texture
+import cubemap
 
 asset_descriptor = {
     'asset': {}
@@ -42,7 +43,7 @@ def build_meshes(platform):
 
 def build_cubemaps(platform):
     print(f'{tools.bcolors.OKBLUE}COMPILING CUBEMAPS{tools.bcolors.ENDC}')
-    for m in mesh.build_all():
+    for m in cubemap.build_all():
         if m[0]:
             asset_descriptor['asset'][m[1].lower()] = {'path': m[2].replace(os.getcwd(), "."), 'type': 'mesh'}
 
