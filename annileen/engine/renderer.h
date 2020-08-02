@@ -25,7 +25,7 @@ namespace annileen
         void clear(const glm::vec3& color) const;
         void clear() const;
         void initFrame(Scene* scene);
-        //void renderSkybox(Camera* camera, Skybox* skybox);
+        void renderSkybox(Camera* camera, Skybox* skybox);
         void renderSceneNode(Scene* scene, SceneNodePtr node);
 
         Renderer();

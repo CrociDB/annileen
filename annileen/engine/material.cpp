@@ -18,18 +18,23 @@ namespace annileen
         m_Textures[name] = texture;
     }
 
-    //void Material::addCubemap(const char* name, Cubemap* cubemap)
-    //{
-    //    m_Cubemaps.insert(std::pair<std::string, Cubemap*>(std::string(name), cubemap));
-    //}
+    void Material::addCubemap(const char* name, Cubemap* cubemap)
+    {
+        m_Cubemaps[name] = cubemap;
+    }
 
-    void Material::submitTextures()
+    void Material::submitUniforms()
     {
         auto uniform = Engine::getInstance()->getUniform();
 
         for (const auto& [k, v] : m_Textures)
         {
             uniform->setTextureUniform(k, v);
+        }
+
+        for (const auto& [k, v] : m_Cubemaps)
+        {
+            uniform->setCubemapUniform(k, v);
         }
     }
 

@@ -1,6 +1,7 @@
 #include "gamescene.h"
 
 #include "engine/engine.h"
+#include "engine/skybox.h"
 
 using namespace annileen;
 
@@ -25,6 +26,12 @@ void GameScene::buildMap()
     light->transform.rotate(glm::vec3(-40.0f, 0.0f, 0.0f));
 
     this->addLight(light);
+
+    auto cubemap = Engine::getInstance()->getAssetManager()->loadCubemap("skybox.toml");
+    auto skybox = new Skybox(cubemap);
+    this->setSkybox(skybox);
+
+    getCamera()->clearType = CameraClearType::CameraClearSkybox;
 
     m_Noise = new siv::PerlinNoise(std::random_device{});
 }

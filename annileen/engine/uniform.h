@@ -7,6 +7,7 @@
 #include <glm.hpp>
 
 #include "texture.h"
+#include "cubemap.h"
 
 namespace annileen
 {
@@ -30,6 +31,7 @@ namespace annileen
 		bgfx::UniformHandle getSMat3UniformHandle(const std::string& uniformname);
 		bgfx::UniformHandle getMat4UniformHandle(const std::string& uniformname);
 
+		void setCubemapUniform(const std::string& uniformname, const Cubemap* value);
 		void setTextureUniform(const std::string& uniformname, const Texture* value);
 		void setColorUniform(const std::string& uniformname, const glm::vec4& value);
 		void setVec4Uniform(const std::string& uniformname, const glm::vec4& value);

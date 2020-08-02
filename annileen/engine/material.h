@@ -6,7 +6,7 @@
 
 #include "shader.h"
 #include "texture.h"
-//#include "cubemap.h"
+#include "cubemap.h"
 
 namespace annileen
 {
@@ -15,16 +15,16 @@ namespace annileen
     private:
         Shader* m_Shader;
         std::map<std::string, Texture*> m_Textures;
-        //std::map<std::string, Cubemap*> m_Cubemaps;
+        std::map<std::string, Cubemap*> m_Cubemaps;
 
     public:
         void init(Shader* shader);
 
         Shader* getShader();
         void addTexture(const char* name, Texture* texture);
-        //void addCubemap(const char* name, Cubemap* cubemap);
+        void addCubemap(const char* name, Cubemap* cubemap);
 
-        void submitTextures();
+        void submitUniforms();
 
         Material();
         ~Material();

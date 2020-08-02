@@ -290,12 +290,12 @@ namespace annileen
                 if (!sceneNode->hasModel() || !sceneNode->getAcive()) continue;
                 m_Renderer->renderSceneNode(m_CurrentScene, sceneNode);
             }
-        }
 
-        //if (camera->clearType == CameraClearSkybox)
-        //{
-        //    m_Renderer->renderSkybox(camera, m_CurrentScene->getSkybox());
-        //}
+            if (camera->clearType == CameraClearType::CameraClearSkybox)
+            {
+                m_Renderer->renderSkybox(camera, m_CurrentScene->getSkybox());
+            }
+        }
 
         bgfx::frame();
     }

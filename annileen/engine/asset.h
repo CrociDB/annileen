@@ -39,4 +39,10 @@ namespace annileen
 		bool m_MipMap;
 		Filtering m_Filtering;
 	};
+
+	// TOML asset types
+	struct CubemapDescriptor
+	{
+		std::string m_StripFile;
+	};
 }

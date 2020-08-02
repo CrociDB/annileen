@@ -45,6 +45,11 @@ namespace annileen
 	}
 
 
+	void Uniform::setCubemapUniform(const std::string& uniformname, const Cubemap* value)
+	{
+		bgfx::setTexture(0, getSamplerUniformHandle(uniformname), value->getHandle());
+	}
+
 	void Uniform::setTextureUniform(const std::string& uniformname, const Texture* value)
 	{
 		bgfx::setTexture(0, getSamplerUniformHandle(uniformname), value->getHandle());

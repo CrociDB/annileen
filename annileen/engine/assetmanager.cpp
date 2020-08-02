@@ -1,4 +1,3 @@
-#include <bimg/decode.h>
 #include <bx/file.h>
 
 #include "engine.h"
@@ -83,6 +82,65 @@ namespace annileen
 		return mem;
 	}
 
+	std::tuple<bgfx::TextureHandle, bgfx::TextureInfo, bimg::ImageContainer*> AssetManager::loadTextureData(const std::string& file, const TextureDescriptor& descriptor)
+	{
+		auto textureData = loadBinaryFile(file);
+		bx::Error err;
+		auto imageContainer = bimg::imageParse(Engine::getAllocator(), textureData->data, textureData->size);
+
+		const bgfx::Memory* mem = bgfx::makeRef(imageContainer->m_data, imageContainer->m_size);
+
+		auto format = bgfx::TextureFormat::Enum(imageContainer->m_format);
+		uint64_t flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE;
+
+		if (descriptor.m_Filtering == TextureDescriptor::Filtering::Point)
+			flags |= BGFX_SAMPLER_POINT;
+
+
+		bgfx::TextureHandle handle;
+		
+		if (imageContainer->m_cubeMap)
+		{
+			handle = bgfx::createTextureCube(
+				uint16_t(imageContainer->m_width),
+				1 < imageContainer->m_numMips,
+				imageContainer->m_numLayers,
+				format,
+				flags,
+				mem);
+		}
+		else
+		{
+			handle = bgfx::createTexture2D(
+				uint16_t(imageContainer->m_width),
+				uint16_t(imageContainer->m_height),
+				1 < imageContainer->m_numMips,
+				imageContainer->m_numLayers,
+				format,
+				flags,
+				mem);
+		}
+
+		assert(bgfx::isValid(handle) && "Couldn't create texture");
+
+		bgfx::setName(handle, file.c_str());
+
+		bgfx::TextureInfo info;
+
+		bgfx::calcTextureSize(
+			info,
+			uint16_t(imageContainer->m_width),
+			uint16_t(imageContainer->m_height),
+			uint16_t(imageContainer->m_depth),
+			imageContainer->m_cubeMap,
+			1 < imageContainer->m_numMips,
+			imageContainer->m_numLayers,
+			bgfx::TextureFormat::Enum(imageContainer->m_format));
+
+		delete textureData;
+		return std::make_tuple(handle, info, imageContainer);
+	}
+
 	AssetManager::~AssetManager()
 	{
 		unloadAssets();
@@ -135,50 +193,39 @@ namespace annileen
 		}
 
 		auto descriptor = loadTextureDescriptor(entry);
-		auto textureData = loadBinaryFile(entry->m_Filepath);
-		bx::Error err;
-		auto aimageContainer = bimg::imageParse(Engine::getAllocator(), textureData->data, textureData->size);
-		auto imageContainer = (*aimageContainer);
-
-		const bgfx::Memory* mem = bgfx::makeRef(imageContainer.m_data, imageContainer.m_size);
-
-		auto format = bgfx::TextureFormat::Enum(imageContainer.m_format);
-		uint64_t flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE;
-
-		if (descriptor.m_Filtering == TextureDescriptor::Filtering::Point) 
-			flags |= BGFX_SAMPLER_POINT;
-
-		auto handle = bgfx::createTexture2D(
-			uint16_t(imageContainer.m_width),
-			uint16_t(imageContainer.m_height),
-			1 < imageContainer.m_numMips,
-			imageContainer.m_numLayers,
-			format,
-			flags,
-			mem);
-
-		assert(bgfx::isValid(handle) && "Couldn't create texture");
-
-		bgfx::setName(handle, tex.c_str());
-
+		
+		bgfx::TextureHandle handle;
 		bgfx::TextureInfo info;
+		bimg::ImageContainer* imageContainer = nullptr;
+		std::tie(handle, info, imageContainer) = loadTextureData(entry->m_Filepath, descriptor);
 
-		bgfx::calcTextureSize(
-			info,
-			uint16_t(imageContainer.m_width),
-			uint16_t(imageContainer.m_height),
-			uint16_t(imageContainer.m_depth),
-			imageContainer.m_cubeMap,
-			1 < imageContainer.m_numMips,
-			imageContainer.m_numLayers,
-			bgfx::TextureFormat::Enum(imageContainer.m_format));
-
-		Texture* texture = new Texture(handle, info, imageContainer.m_orientation);
+		Texture* texture = new Texture(handle, info, imageContainer->m_orientation);
 		entry->m_Asset = static_cast<AssetObject*>(texture);
 
-		delete textureData;
 		return texture;
 	}
+
+	Cubemap* AssetManager::loadCubemap(const std::string& name)
+	{
+		auto entry = getAssetEntry(name);
+		if (entry->m_Loaded)
+		{
+			return dynamic_cast<Cubemap*>(entry->m_Asset);
+		}
+
+		auto descriptor = loadCubemapDescriptor(entry);
+
+		bgfx::TextureHandle handle;
+		bgfx::TextureInfo info;
+		bimg::ImageContainer* imageContainer = nullptr;
+		std::tie(handle, info, imageContainer) = loadTextureData(descriptor.m_StripFile, {});
+
+		Cubemap* cubemap = new Cubemap(handle, info, imageContainer->m_orientation);
+		entry->m_Asset = static_cast<AssetObject*>(cubemap);
+
+		return cubemap;
+	}
+
 
 	TextureDescriptor AssetManager::loadTextureDescriptor(AssetTableEntry* asset)
 	{
@@ -187,6 +234,16 @@ namespace annileen
 		return {
 			toml::find(data, "mipmap").as_boolean(),
 			toml::find(data, "filter").as_string() == "point" ? TextureDescriptor::Filtering::Point : TextureDescriptor::Filtering::Linear
+		};
+	}
+
+	CubemapDescriptor AssetManager::loadCubemapDescriptor(AssetTableEntry* asset)
+	{
+		auto assetfile = asset->m_Filepath;
+		auto data = toml::parse(assetfile);
+		const auto cubemap = toml::find(data, "cubemap");
+		return {
+			cubemap.at("strip_file").as_string(),
 		};
 	}
 };

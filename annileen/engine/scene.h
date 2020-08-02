@@ -6,10 +6,8 @@
 #include <memory>
 
 #include "scenenode.h"
-//#include "rawmesh.h"
 #include "camera.h"
-//#include "cubemap.h"
-//#include "skybox.h"
+#include "skybox.h"
 #include "light.h"
 
 namespace annileen
@@ -29,12 +27,8 @@ namespace annileen
         SceneNodePtr m_Root;
         std::list<Light*> m_Lights;
         Camera* m_Camera;
+        Skybox* m_Skybox = nullptr;
 
-    protected:
-        /*Cubemap* m_Cubemap;
-        Skybox* m_Skybox;*/
-
-        void createSkybox();
     public:
         Fog fog;
 
@@ -45,15 +39,10 @@ namespace annileen
         SceneNodePtr createNode();
         void removeNode(SceneNodePtr node);
 
-        /*void addMesh(Mesh* mesh);
-        void removeMesh(Mesh* mesh);*/
-
         void addLight(Light* light);
 
-        //void setCubemap(Cubemap* cubemap);
-
-        /*Cubemap* getCubemap() const;
-        Skybox* getSkybox() const;*/
+        void setSkybox(Skybox* skybox) { m_Skybox = skybox; }
+        Skybox* getSkybox() const { return m_Skybox; }
 
         void clearNodeList();
         std::list<SceneNodePtr>& getNodeList();
