@@ -17,6 +17,7 @@ def build_assets(platform, shader_model):
     build_shaders(platform, shader_model)
     build_textures(platform)
     build_meshes(platform)
+    build_cubemaps(platform)
 
     descriptor_path = tools.save_descriptor(asset_descriptor)
     print(f'\n{tools.bcolors.OKBLUE}ASSET DESCRIPTOR WRITTEN AT: {tools.bcolors.ENDC}{tools.bcolors.BOLD}{descriptor_path}{tools.bcolors.ENDC}') 
@@ -35,6 +36,12 @@ def build_textures(platform):
 
 def build_meshes(platform):
     print(f'{tools.bcolors.OKBLUE}COMPILING MESHES{tools.bcolors.ENDC}')
+    for m in mesh.build_all():
+        if m[0]:
+            asset_descriptor['asset'][m[1].lower()] = {'path': m[2].replace(os.getcwd(), "."), 'type': 'mesh'}
+
+def build_cubemaps(platform):
+    print(f'{tools.bcolors.OKBLUE}COMPILING CUBEMAPS{tools.bcolors.ENDC}')
     for m in mesh.build_all():
         if m[0]:
             asset_descriptor['asset'][m[1].lower()] = {'path': m[2].replace(os.getcwd(), "."), 'type': 'mesh'}

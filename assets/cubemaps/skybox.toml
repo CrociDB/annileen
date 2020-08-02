@@ -1,0 +1,9 @@
+[cubemap]
+
+[cubemap.sides]
+up="stormydays_up.png"
+down="stormydays_dn.png"
+back="stormydays_bk.png"
+front="stormydays_ft.png"
+left="stormydays_lf.png"
+right="stormydays_rt.png"

@@ -18,6 +18,7 @@ dirs = {
     "shaders": "shaders",
     "textures": "textures",
     "models": "models",
+    "cubemaps": "cubemaps"
 }
 
 available_platforms = [
@@ -49,6 +50,7 @@ descriptor_file = "assets.toml"
 shader_types = ["vs", "fs"]
 mesh_types = ["obj", "gltf", "glb"]
 texture_types = ["bmp", "dds", "exr", "gif", "jpg", "hdr", "ktx", "png", "psd", "pvr", "tga"]
+cubemap_types = ["toml"]
 
 texture_descriptor_schema = {
     'mipmap': False,
