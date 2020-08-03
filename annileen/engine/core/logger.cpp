@@ -1,5 +1,8 @@
 #include <engine/core/logger.h>
 #include <sstream>
+#include <fmt/core.h>
+#include <fmt/color.h>
+#include <list>
 
 namespace annileen
 {
@@ -24,12 +27,11 @@ namespace annileen
 	{
 		std::stringstream composedMessage;
 
-		composedMessage << "[" << getLoggingLevelString(level) << "] "
-			<< "[" << getLoggingChannelString(channel) << "] ";
+		composedMessage << fmt::format("[{0}] [{1}] ", getLoggingLevelString(level), getLoggingChannelString(channel));
 
 		if (!fileName.empty())
 		{
-			composedMessage << "Filename: " << fileName << " (" << line << ") ";
+			composedMessage << fmt::format("Filename: {0} ({1}) ",fileName, line);
 		}
 			
 		composedMessage << message;
@@ -41,9 +43,9 @@ namespace annileen
 
 		if (m_MessagesBuffer.size() == m_MessagesBufferSizeLimit)
 		{
-			m_MessagesBuffer.pop();
+			m_MessagesBuffer.pop_front();
 		}
-		m_MessagesBuffer.push(newMessage);
+		m_MessagesBuffer.push_back(newMessage);
 		
 		if ((m_Mode & LoggingMode::File) == LoggingMode::File)
 		{
@@ -52,8 +54,61 @@ namespace annileen
 
 		if ((m_Mode & LoggingMode::Console) == LoggingMode::Console)
 		{
-			std::cout << "---{ANNILEEN-LOG}--- " << newMessage.m_Message << std::endl;
+			switch (level)
+			{
+			case LoggingLevel::Error:
+				fmt::print(fg(fmt::color::red), "--- ANNILEEN-LOG --- {0}\n", newMessage.m_Message);
+				break;
+			case LoggingLevel::Warning:
+				fmt::print(fg(fmt::color::yellow), "--- ANNILEEN-LOG --- {0}\n", newMessage.m_Message);
+				break;
+			case LoggingLevel::Message:
+				fmt::print("--- ANNILEEN-LOG --- {0}\n", newMessage.m_Message);
+				break;
+			}
 		}
+	}
+
+
+
+
+	std::vector<Logger::Message> Logger::getMessagesAtLevel(LoggingLevel level) noexcept
+	{
+		std::vector<Logger::Message> messages;
+		for (auto message : m_MessagesBuffer)
+		{
+			if (message.m_Level == level)
+			{
+				messages.push_back(message);
+			}
+		}
+		return messages;
+	}
+
+	std::vector<Logger::Message> Logger::getMessagesAtChannel(LoggingChannel channel) noexcept
+	{
+		std::vector<Logger::Message> messages;
+		for (auto message : m_MessagesBuffer)
+		{
+			if (message.m_Channel == channel)
+			{
+				messages.push_back(message);
+			}
+		}
+		return messages;
+	}
+
+	std::vector<Logger::Message> Logger::getMessages(LoggingLevel level, LoggingChannel channel) noexcept
+	{
+		std::vector<Logger::Message> messages;
+		for (auto message : m_MessagesBuffer)
+		{
+			if (message.m_Level == level && message.m_Channel == channel)
+			{
+				messages.push_back(message);
+			}
+		}
+		return messages;
 	}
 
 	Logger::~Logger()

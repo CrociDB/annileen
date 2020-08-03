@@ -102,6 +102,7 @@ project "annileen"
 		path.join(BGFX_DIR, "3rdparty"),
 		path.join(BIMG_DIR, "3rdparty"),
 		path.join(ANNILEEN_DIR, "resources/imgui"),
+		path.join(FMT_DIR, "include"),
 		TOML11_DIR,
 		PERLINNOISE_DIR
 	}

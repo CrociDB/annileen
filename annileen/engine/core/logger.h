@@ -2,7 +2,9 @@
 
 #include <string>
 #include <engine/core/file.h>
-#include <queue>
+#include <list>
+#include <vector>
+#include <fmt/core.h>
 
 #define ANNILEEN_LOG_FILE "annileen-log.txt"
 
@@ -14,6 +16,15 @@
 	ServiceProvider::getLogger()->log(_log_channel, LoggingLevel::Message, _log_message, __FILE__, __LINE__);
 #define ANNILEEN_LOG_ERROR(_log_channel, _log_message) \
 	ServiceProvider::getLogger()->log(_log_channel, LoggingLevel::Error, _log_message, __FILE__, __LINE__);
+
+#define ANNILEEN_LOGF(_log_level, _log_channel, _log_message, ...) \
+	ServiceProvider::getLogger()->logFormat(_log_channel, _log_level, __FILE__, __LINE__, _log_message, __VA_ARGS__);
+#define ANNILEEN_LOGF_WARNING(_log_channel, _log_message, ...) \
+	ServiceProvider::getLogger()->logFormat(_log_channel, LoggingLevel::Warning, __FILE__, __LINE__, _log_message, __VA_ARGS__);
+#define ANNILEEN_LOGF_MESSAGE(_log_channel, _log_message, ...) \
+	ServiceProvider::getLogger()->logFormat(_log_channel, LoggingLevel::Message, __FILE__, __LINE__, _log_message, __VA_ARGS__);
+#define ANNILEEN_LOGF_ERROR(_log_channel, _log_message, ...) \
+	ServiceProvider::getLogger()->logFormat(_log_channel, LoggingLevel::Error, __FILE__, __LINE__, _log_message, __VA_ARGS__);
 
 namespace annileen
 {
@@ -52,14 +63,21 @@ namespace annileen
 		constexpr LoggingMode getMode() const noexcept;
 
 		void log(LoggingChannel channel, LoggingLevel level, std::string message, std::string fileName = "", int line = 0);
+		
+		template <typename S, typename... Args>
+		inline void logFormat(LoggingChannel channel, LoggingLevel level, std::string fileName, int line, const S& format_str, Args&&... args)
+		{
+			std::string message = fmt::format(format_str, args...);
+			log(channel, level, message, fileName, line);
+		}
 	
-	private:
 		struct Message
 		{
 			std::string m_Message;
 			LoggingLevel m_Level;
 			LoggingChannel m_Channel;
 		};
+	private:
 
 		std::string getLoggingLevelString(LoggingLevel level) noexcept
 		{
@@ -88,10 +106,13 @@ namespace annileen
 			}
 		}
 
-		std::queue<Message> m_MessagesBuffer;
+		std::list<Message> m_MessagesBuffer;
 		size_t m_MessagesBufferSizeLimit;
-
-		// TODO: create query methods, so gui can get filtered msgs from buffer.
+		 
+		// For editor console filtering
+		std::vector<Message> getMessagesAtLevel(LoggingLevel level) noexcept;
+		std::vector<Message> getMessagesAtChannel(LoggingChannel channel) noexcept;
+		std::vector<Message> getMessages(LoggingLevel level, LoggingChannel channel) noexcept;
 
 		// will be instantiated by Engine
 		Logger();
