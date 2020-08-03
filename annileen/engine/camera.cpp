@@ -24,6 +24,7 @@ namespace annileen
             m_FarClip);
 
         m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+        m_ViewRotationMatrix = glm::mat4(glm::mat3(m_ViewMatrix));
     }
 
     void Camera::setForward(const glm::vec3 & forward)
@@ -51,6 +52,11 @@ namespace annileen
         return m_ViewMatrix;
     }
 
+    glm::mat4 Camera::getViewRotationMatrix()
+    {
+        return m_ViewRotationMatrix;
+    }
+
     glm::mat4 Camera::getProjectionMatrix()
     {
         return m_ProjectionMatrix;
@@ -59,6 +65,11 @@ namespace annileen
     glm::mat4 Camera::getViewProjectionMatrix()
     {
         return m_ViewProjectionMatrix;
+    }
+
+    float* Camera::getViewRotationMatrixFloatArray()
+    {
+        return glm::value_ptr(m_ViewRotationMatrix);
     }
 
     float* Camera::getViewMatrixFloatArray()

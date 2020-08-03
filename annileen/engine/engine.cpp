@@ -298,6 +298,10 @@ namespace annileen
 
             if (camera->clearType == CameraClearType::CameraClearSkybox)
             {
+                bgfx::setViewName(1, "Skybox");
+                bgfx::setViewRect(1, 0, 0, uint16_t(m_Width), uint16_t(m_Height));
+                bgfx::touch(1);
+                bgfx::setViewTransform(1, camera->getViewRotationMatrixFloatArray(), camera->getProjectionMatrixFloatArray());
                 m_Renderer->renderSkybox(camera, m_CurrentScene->getSkybox());
             }
         }

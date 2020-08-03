@@ -34,16 +34,12 @@ namespace annileen
     void Renderer::renderSkybox(Camera* camera, Skybox* skybox)
     {
         skybox->getModel()->getMaterial()->submitUniforms();
-        glm::mat4* matrix = new glm::mat4(1.0f);
 
-        bgfx::setTransform(glm::value_ptr(*matrix));
         bgfx::setVertexBuffer(0, skybox->getModel()->getMesh()->getVertexBuffer());
         bgfx::setIndexBuffer(skybox->getModel()->getMesh()->getIndexBuffer());
         bgfx::setState(skybox->getModel()->getState());
 
-        bgfx::submit(0, skybox->getModel()->getMaterial()->getShader()->getProgram());
-
-        delete matrix;
+        bgfx::submit(1, skybox->getModel()->getMaterial()->getShader()->getProgram());
     }
 
     void Renderer::renderSceneNode(Scene* scene, SceneNodePtr node)

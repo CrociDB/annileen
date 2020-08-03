@@ -20,6 +20,7 @@ namespace annileen
         Transform m_Transform;
 
         glm::mat4 m_ViewMatrix;
+        glm::mat4 m_ViewRotationMatrix;
         glm::mat4 m_ProjectionMatrix;
         glm::mat4 m_ViewProjectionMatrix;
 
@@ -44,9 +45,11 @@ namespace annileen
         glm::vec3 getUp() const;
 
         glm::mat4 getViewMatrix();
+        glm::mat4 getViewRotationMatrix();
         glm::mat4 getProjectionMatrix();
         glm::mat4 getViewProjectionMatrix();
 
+        float* getViewRotationMatrixFloatArray();
         float* getViewMatrixFloatArray();
         float* getProjectionMatrixFloatArray();
         float* getViewProjectionMatrixFloatArray();
