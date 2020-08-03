@@ -13,6 +13,7 @@ It's still on an early stage of development, but already supports:
 
  - premake5
  - python3
+ - [Pillow](https://pypi.org/project/Pillow/)
 
 ## Build
 
