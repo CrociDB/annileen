@@ -7,16 +7,17 @@ namespace annileen
 {
 	class SceneNode;
 
-	class EditorGui
+	class EditorGui final
 	{
-		EditorGui();
-		~EditorGui();
+		EditorGui() = delete;
+		~EditorGui() = delete;
 	public:
 
 		static void drawMainWindowToolbar();
 		static void drawEditorGeneralInfoWindow();
 		static void drawEditorSceneTreeWindow(const std::list<SceneNodePtr> sceneNodeList);
 		static void drawSelectedNodePropertiesWindow();
+		static void drawConsoleWindow();
 		static void _drawTree(SceneNodePtr const sceneNode);
 	};
 }

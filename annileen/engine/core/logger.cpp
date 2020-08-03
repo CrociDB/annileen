@@ -62,15 +62,12 @@ namespace annileen
 			case LoggingLevel::Warning:
 				fmt::print(fg(fmt::color::yellow), "--- ANNILEEN-LOG --- {0}\n", newMessage.m_Message);
 				break;
-			case LoggingLevel::Message:
+			case LoggingLevel::Info:
 				fmt::print("--- ANNILEEN-LOG --- {0}\n", newMessage.m_Message);
 				break;
 			}
 		}
 	}
-
-
-
 
 	std::vector<Logger::Message> Logger::getMessagesAtLevel(LoggingLevel level) noexcept
 	{
@@ -110,6 +107,17 @@ namespace annileen
 		}
 		return messages;
 	}
+
+	std::vector<Logger::Message> Logger::getAllMessages() noexcept
+	{
+		std::vector<Logger::Message> messages;
+		for (auto message : m_MessagesBuffer)
+		{
+			messages.push_back(message);
+		}
+		return messages;
+	}
+
 
 	Logger::~Logger()
 	{

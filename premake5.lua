@@ -69,7 +69,8 @@ project "annileen-editor"
 		path.join(GLM_DIR, "glm"),
 		path.join(BGFX_DIR, "3rdparty"),
 		path.join(ANNILEEN_DIR, "engine"),
-		path.join(ANNILEEN_DIR, "resources/imgui"),
+		path.join(ANNILEEN_DIR, "resources/imgui"),	
+		path.join(FMT_DIR, "include"),
 		TOML11_DIR,
 		PERLINNOISE_DIR
 	}	

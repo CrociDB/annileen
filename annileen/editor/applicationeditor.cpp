@@ -15,14 +15,15 @@ namespace annileen
 
 		if (showEditorGui)
 		{
-			annileen::EditorGui::drawMainWindowToolbar();
-			annileen::EditorGui::drawEditorGeneralInfoWindow();
-			annileen::Scene* scene = getEngine()->getScene();
+			EditorGui::drawMainWindowToolbar();
+			EditorGui::drawEditorGeneralInfoWindow();
+			Scene* scene = getEngine()->getScene();
 			if (scene != nullptr)
 			{
-				annileen::EditorGui::drawSelectedNodePropertiesWindow();
-				annileen::EditorGui::drawEditorSceneTreeWindow(scene->getNodeList());
+				EditorGui::drawSelectedNodePropertiesWindow();
+				EditorGui::drawEditorSceneTreeWindow(scene->getNodeList());
 			}
+			EditorGui::drawConsoleWindow();
 		}
 	}
 }

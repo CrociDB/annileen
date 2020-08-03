@@ -12,8 +12,8 @@
 	ServiceProvider::getLogger()->log(_log_channel, _log_level, _log_message, __FILE__, __LINE__);
 #define ANNILEEN_LOG_WARNING(_log_channel, _log_message) \
 	ServiceProvider::getLogger()->log(_log_channel, LoggingLevel::Warning, _log_message, __FILE__, __LINE__);
-#define ANNILEEN_LOG_MESSAGE(_log_channel, _log_message) \
-	ServiceProvider::getLogger()->log(_log_channel, LoggingLevel::Message, _log_message, __FILE__, __LINE__);
+#define ANNILEEN_LOG_INFO(_log_channel, _log_message) \
+	ServiceProvider::getLogger()->log(_log_channel, LoggingLevel::Info, _log_message, __FILE__, __LINE__);
 #define ANNILEEN_LOG_ERROR(_log_channel, _log_message) \
 	ServiceProvider::getLogger()->log(_log_channel, LoggingLevel::Error, _log_message, __FILE__, __LINE__);
 
@@ -21,8 +21,8 @@
 	ServiceProvider::getLogger()->logFormat(_log_channel, _log_level, __FILE__, __LINE__, _log_message, __VA_ARGS__);
 #define ANNILEEN_LOGF_WARNING(_log_channel, _log_message, ...) \
 	ServiceProvider::getLogger()->logFormat(_log_channel, LoggingLevel::Warning, __FILE__, __LINE__, _log_message, __VA_ARGS__);
-#define ANNILEEN_LOGF_MESSAGE(_log_channel, _log_message, ...) \
-	ServiceProvider::getLogger()->logFormat(_log_channel, LoggingLevel::Message, __FILE__, __LINE__, _log_message, __VA_ARGS__);
+#define ANNILEEN_LOGF_INFO(_log_channel, _log_message, ...) \
+	ServiceProvider::getLogger()->logFormat(_log_channel, LoggingLevel::Info, __FILE__, __LINE__, _log_message, __VA_ARGS__);
 #define ANNILEEN_LOGF_ERROR(_log_channel, _log_message, ...) \
 	ServiceProvider::getLogger()->logFormat(_log_channel, LoggingLevel::Error, __FILE__, __LINE__, _log_message, __VA_ARGS__);
 
@@ -37,7 +37,7 @@ namespace annileen
 
 	enum class LoggingLevel
 	{
-		Message = 0x01,
+		Info = 0x01,
 		Warning = 0x02,
 		Error = 0x04
 	};
@@ -84,7 +84,7 @@ namespace annileen
 			switch (level)
 			{
 			case LoggingLevel::Error: return "Error";
-			case LoggingLevel::Message: return "Message";
+			case LoggingLevel::Info: return "Message";
 			case LoggingLevel::Warning: return "Warning";
 			default: return "";
 			}
@@ -113,6 +113,7 @@ namespace annileen
 		std::vector<Message> getMessagesAtLevel(LoggingLevel level) noexcept;
 		std::vector<Message> getMessagesAtChannel(LoggingChannel channel) noexcept;
 		std::vector<Message> getMessages(LoggingLevel level, LoggingChannel channel) noexcept;
+		std::vector<Message> getAllMessages() noexcept;
 
 		// will be instantiated by Engine
 		Logger();

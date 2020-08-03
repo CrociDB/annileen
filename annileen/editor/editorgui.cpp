@@ -2,6 +2,7 @@
 #include <engine/engine.h>
 #include <imgui-utils/imgui.h>
 #include <glm.hpp>
+#include <engine/serviceprovider.h>
 
 namespace annileen
 {
@@ -168,6 +169,62 @@ namespace annileen
 		}
 	}
 
-	EditorGui::EditorGui() {}
-	EditorGui::~EditorGui() {}
+	void EditorGui::drawConsoleWindow()
+	{
+		char temp[] = "Console";
+
+		ImGui::SetNextWindowPos(
+			ImVec2(10.0f, 820.0f)
+			, ImGuiCond_FirstUseEver
+		);
+		ImGui::SetNextWindowSize(
+			ImVec2(900.0f, 180.0f)
+			, ImGuiCond_FirstUseEver
+		);
+
+
+		ImGui::Begin(temp);
+		if (ImGui::SmallButton("Clear")) 
+		{ 
+		}
+		ImGui::SameLine();
+		int opt = 0;
+		ImGui::PushItemWidth(150);
+		ImGui::Combo("Message Level", &opt, "All\0Info\0Warning\0Error");		// hard coded for testing, will be changed
+		ImGui::SameLine();
+		ImGui::Combo("Message Channel", &opt, "All\0Renderer\0Physics\0Input\0Editor\0Asset\0AI\0General"); // hard coded for testing, will be changed
+		ImGui::SameLine();
+		ImGuiTextFilter Filter;
+		Filter.Draw("Filter");
+		ImGui::PopItemWidth();
+		ImGui::Separator();
+
+		std::vector<Logger::Message> messages = ServiceProvider::getLogger()->getAllMessages();
+
+		ImVec4 infoColor = ImVec4(1, 1, 1, 1);
+		ImVec4 errorColor = ImVec4(1, 0, 0, 1);
+		ImVec4 warningColor = ImVec4(1, 1, 0, 1);
+
+		for (auto message : messages)
+		{
+			switch (message.m_Level)
+			{
+			case LoggingLevel::Error: ImGui::PushStyleColor(ImGuiCol_Text, errorColor); break;
+			case LoggingLevel::Warning: ImGui::PushStyleColor(ImGuiCol_Text, warningColor); break;
+			case LoggingLevel::Info: ImGui::PushStyleColor(ImGuiCol_Text, infoColor); break;
+			}
+			ImGui::TextUnformatted(message.m_Message.c_str());
+			ImGui::PopStyleColor();
+		}
+
+		ImGui::Separator();
+	
+		char InputBuf[256]; // hard coded for testing, will be changed
+		memset(InputBuf, 0, sizeof(InputBuf));
+		if (ImGui::InputText("Input", InputBuf, IM_ARRAYSIZE(InputBuf)))
+		{
+		}
+
+		ImGui::End();
+	}
 }

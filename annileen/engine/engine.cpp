@@ -117,15 +117,15 @@ namespace annileen
         ServiceProvider::provideLogger(logger);
         //
 
-        ANNILEEN_LOG(LoggingLevel::Message, LoggingChannel::Core, "This is a message specifying level");
+        ANNILEEN_LOG(LoggingLevel::Info, LoggingChannel::Core, "This is a message specifying level");
         ANNILEEN_LOG_WARNING(LoggingChannel::General, "This is a warning message");
         ANNILEEN_LOG_ERROR(LoggingChannel::Renderer, "This is a error message");
-        ANNILEEN_LOG_MESSAGE(LoggingChannel::Core, "This is a regular message");
+        ANNILEEN_LOG_INFO(LoggingChannel::Core, "This is a regular message");
 
-        ANNILEEN_LOGF(LoggingLevel::Message, LoggingChannel::Core, "This {0} {1} {2} {3} {4} {5}", "is", "a", "formatted", "message", "specifying", "level");
+        ANNILEEN_LOGF(LoggingLevel::Info, LoggingChannel::Core, "This {0} {1} {2} {3} {4} {5}", "is", "a", "formatted", "message", "specifying", "level");
         ANNILEEN_LOGF_WARNING(LoggingChannel::General, "This is a formatted warning message: {0} {1} {2}", 1, 2.0f, 3.0F);
         ANNILEEN_LOGF_ERROR(LoggingChannel::Renderer, "This is a formatted error message: {0}", "bla");
-        ANNILEEN_LOGF_MESSAGE(LoggingChannel::Core, "This is a formatted regular message: {0}", "ble");
+        ANNILEEN_LOGF_INFO(LoggingChannel::Core, "This is a formatted regular message: {0}", "ble");
 
         m_Renderer = new Renderer();
         m_Renderer->init(this);
