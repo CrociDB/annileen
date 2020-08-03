@@ -4,7 +4,7 @@
 #include <engine/core/file.h>
 #include <list>
 #include <vector>
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 #define ANNILEEN_LOG_FILE "annileen-log.txt"
 
@@ -118,9 +118,13 @@ namespace annileen
 		Logger();
 		// will be destroyed by Engine
 		~Logger();
-		friend class Engine;
 
 		LoggingMode m_Mode;
 		File* m_File;
+		
+		// To allow for use ctor/dtor
+		friend class Engine;
+		// To allow for getting console messages
+		friend class EditorGui;
 	};
 }

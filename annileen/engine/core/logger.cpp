@@ -1,6 +1,6 @@
 #include <engine/core/logger.h>
 #include <sstream>
-#include <fmt/core.h>
+#include <fmt/format.h>
 #include <fmt/color.h>
 #include <list>
 
