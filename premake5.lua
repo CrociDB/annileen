@@ -135,7 +135,7 @@ project "example-worldbuilding"
 		PERLINNOISE_DIR
 	}
 	debugdir "."
-	links { "bgfx", "bimg", "bx", "imgui", "fmt", "annileen", "glfw" }
+	links { "bgfx", "bimg", "bx", "imgui", "annileen", "glfw" }
 	filter "configurations:Release"
 		defines "NDEBUG"
 		optimize "Full"
@@ -178,7 +178,7 @@ project "example-cube"
 		PERLINNOISE_DIR
 	}
 	debugdir "."
-	links { "bgfx", "bimg", "bx", "fmt", "annileen", "imgui", "glfw" }
+	links { "bgfx", "bimg", "bx", "annileen", "imgui", "glfw" }
 	filter "configurations:Release"
 		defines "NDEBUG"
 		optimize "Full"
@@ -374,19 +374,5 @@ project "PerlinNoise"
 	includedirs
 	{
 		path.join(PERLINNOISE_DIR, "*"),
-	}
-	setBxCompat()
-
-project "fmt"
-	kind "StaticLib"
-	language "C++"
-	files
-	{
-		path.join(FMT_DIR, "include/fmt/*"),
-		path.join(FMT_DIR, "src/*")
-	}
-	includedirs
-	{
-		path.join(FMT_DIR, "include")
 	}
 	setBxCompat()

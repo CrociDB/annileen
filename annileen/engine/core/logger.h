@@ -4,6 +4,7 @@
 #include <engine/core/file.h>
 #include <list>
 #include <vector>
+#define FMT_HEADER_ONLY
 #include <fmt/format.h>
 
 #define ANNILEEN_LOG_FILE "annileen-log.txt"
