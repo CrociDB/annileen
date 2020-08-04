@@ -13,7 +13,6 @@ It's still on an early stage of development, but already supports:
 
  - premake5
  - python3
- - [Pillow](https://pypi.org/project/Pillow/)
 
 ## Build
 
@@ -136,3 +135,6 @@ optional arguments:
   - Bruno Croci - [CrociDB](https://twitter.com/CrociDB)
   - Teofilo Dutra - [teodutra](https://twitter.com/teodutra)
 
+# License
+
+Annileen is licensed under the [MIT License](/LICENSE.md)
