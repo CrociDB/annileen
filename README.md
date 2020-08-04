@@ -138,3 +138,15 @@ optional arguments:
 # License
 
 Annileen is licensed under the [MIT License](/LICENSE.md)
+
+# Third Party
+
+Annileen uses the following libraries:
+
+  - [bgfx](https://github.com/bkaradzic/bgfx) by bkaradzic - [BSD 2-Clause](https://github.com/bkaradzic/bgfx/blob/master/LICENSE)
+  - [toml11](https://github.com/ToruNiina/toml11) by ToruNiina - [MIT License](https://github.com/ToruNiina/toml11/blob/master/LICENSE)
+  - [glm](https://github.com/g-truc/glm) by G-Truc Creation - [The Happy Bunny License/MIT](https://github.com/g-truc/glm/blob/master/copying.txt)
+  - [glfm](https://github.com/glfw/glfw) - [zlib License](https://github.com/glfw/glfw/blob/master/LICENSE.md)
+  - [fmt](https://github.com/fmtlib/fmt) - [License](https://github.com/fmtlib/fmt/blob/master/LICENSE.rst)
+  - [PerlinNoise](https://github.com/Reputeless/PerlinNoise) by Reputeless - [MIT License](https://github.com/Reputeless/PerlinNoise/blob/master/LICENSE)
+  
