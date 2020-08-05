@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include <vector>
 #include <engine/scenenode.h>
 
 namespace annileen
@@ -9,15 +10,20 @@ namespace annileen
 
 	class EditorGui final
 	{
-		EditorGui() = delete;
-		~EditorGui() = delete;
-	public:
+		std::vector<const char*> m_ConsoleLoggingChannelsList;
+		std::vector<const char*> m_ConsoleLoggingLevelsList;
 
-		static void drawMainWindowToolbar();
-		static void drawEditorGeneralInfoWindow();
-		static void drawEditorSceneTreeWindow(const std::list<SceneNodePtr> sceneNodeList);
-		static void drawSelectedNodePropertiesWindow();
-		static void drawConsoleWindow();
-		static void _drawTree(SceneNodePtr const sceneNode);
+		EditorGui();
+		~EditorGui();
+
+		void initialize();
+		void drawMainWindowToolbar();
+		void drawEditorGeneralInfoWindow();
+		void drawEditorSceneTreeWindow(const std::list<SceneNodePtr> sceneNodeList);
+		void drawSelectedNodePropertiesWindow();
+		void drawConsoleWindow();
+		void _drawTree(SceneNodePtr const sceneNode);
+
+		friend class ApplicationEditor;
 	};
 }

@@ -1,29 +1,42 @@
 #include <editor/applicationeditor.h>
 #include <editor/editorgui.h>
+#include <engine/core/logger.h>
 
 namespace annileen
 {
 	ApplicationEditor::ApplicationEditor() : showEditorGui(true)
-	{}
+	{
+		m_EditorGui = new EditorGui();
+	}
 
 	ApplicationEditor::~ApplicationEditor()
-	{}
-
-	void ApplicationEditor::gui()
 	{
-		Application::gui();
+		if (m_EditorGui != nullptr)
+		{
+			delete m_EditorGui;
+		}
+	}
 
+	void ApplicationEditor::initializeEditorGui()
+	{
+		m_EditorGui->initialize();
+		
+		ANNILEEN_LOG_INFO(LoggingChannel::General, "Initialized Editor GUI");	 	
+	}
+
+	void ApplicationEditor::updateEditorGui()
+	{
 		if (showEditorGui)
 		{
-			EditorGui::drawMainWindowToolbar();
-			EditorGui::drawEditorGeneralInfoWindow();
+			m_EditorGui->drawMainWindowToolbar();
+			m_EditorGui->drawEditorGeneralInfoWindow();
 			Scene* scene = getEngine()->getScene();
 			if (scene != nullptr)
 			{
-				EditorGui::drawSelectedNodePropertiesWindow();
-				EditorGui::drawEditorSceneTreeWindow(scene->getNodeList());
+				m_EditorGui->drawSelectedNodePropertiesWindow();
+				m_EditorGui->drawEditorSceneTreeWindow(scene->getNodeList());
 			}
-			EditorGui::drawConsoleWindow();
+			m_EditorGui->drawConsoleWindow();
 		}
 	}
 }

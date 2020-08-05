@@ -2,10 +2,40 @@
 #include <engine/engine.h>
 #include <imgui-utils/imgui.h>
 #include <glm.hpp>
-#include <engine/serviceprovider.h>
+#include <engine/core/logger.h>
 
 namespace annileen
 {
+	EditorGui::EditorGui()
+	{
+	}
+
+	EditorGui::~EditorGui()
+	{
+
+	}
+
+	void EditorGui::initialize()
+	{
+		Logger *logger = ServiceProvider::getLogger();
+		
+		std::vector<LoggingLevel> loggingLevelsList = logger->getLoggingLevelsList();
+
+		m_ConsoleLoggingLevelsList.push_back("All");
+		for (LoggingLevel loggingLevel : loggingLevelsList)
+		{
+			m_ConsoleLoggingLevelsList.push_back(logger->getLoggingLevelString(loggingLevel));
+		}
+
+		std::vector<LoggingChannel> loggingChannelsList = logger->getLoggingChannelsList();
+
+		m_ConsoleLoggingChannelsList.push_back("All");
+		for (LoggingChannel loggingChannel : loggingChannelsList)
+		{
+			m_ConsoleLoggingChannelsList.push_back(logger->getLoggingChannelString(loggingChannel));
+		}
+	}
+
 	void EditorGui::drawMainWindowToolbar()
 	{
 		if (ImGui::BeginMainMenuBar())
@@ -188,18 +218,76 @@ namespace annileen
 		{ 
 		}
 		ImGui::SameLine();
-		int opt = 0;
+		
 		ImGui::PushItemWidth(150);
-		ImGui::Combo("Message Level", &opt, "All\0Info\0Warning\0Error");		// hard coded for testing, will be changed
+		static const char* levelOption = nullptr;
+		static int levelOptionId = 0;
+		if (ImGui::BeginCombo("Message Level", levelOption))
+		{
+			for (int n = 0; n < m_ConsoleLoggingLevelsList.size(); ++n)
+			{
+				const char* selectedOption = m_ConsoleLoggingLevelsList[n];
+				bool isSelected = (levelOption == selectedOption);
+				if (ImGui::Selectable(selectedOption, isSelected))
+				{
+					levelOption = selectedOption;
+					levelOptionId = n;
+				}
+				if (isSelected)
+				{
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
+		
 		ImGui::SameLine();
-		ImGui::Combo("Message Channel", &opt, "All\0Renderer\0Physics\0Input\0Editor\0Asset\0AI\0General"); // hard coded for testing, will be changed
+		static const char* channelOption = nullptr;
+		static int channelOptionId = 0;
+		if (ImGui::BeginCombo("Message Channel", channelOption))
+		{
+			for (int n = 0; n < m_ConsoleLoggingChannelsList.size(); ++n)
+			{
+				const char* selectedOption = m_ConsoleLoggingChannelsList[n];
+				bool isSelected = (channelOption == selectedOption);
+				if (ImGui::Selectable(selectedOption, isSelected))
+				{
+					channelOption = selectedOption;
+					channelOptionId = n;
+				}
+				if (isSelected)
+				{
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
 		ImGui::SameLine();
 		ImGuiTextFilter Filter;
 		Filter.Draw("Filter");
 		ImGui::PopItemWidth();
 		ImGui::Separator();
 
-		std::vector<Logger::Message> messages = ServiceProvider::getLogger()->getAllMessages();
+		std::vector<Logger::Message> messages;
+
+		Logger* logger = ServiceProvider::getLogger();
+		
+		if (levelOptionId != 0 && channelOptionId == 0)
+		{
+			messages = ServiceProvider::getLogger()->getMessagesAtLevel(logger->getLoggingLevelsList()[levelOptionId-1]);
+		}
+		else if (levelOptionId == 0 && channelOptionId != 0)
+		{
+			messages = ServiceProvider::getLogger()->getMessagesAtChannel(logger->getLoggingChannelsList()[channelOptionId - 1]);
+		}
+		else if (levelOptionId != 0 && channelOptionId != 0)
+		{
+			messages = ServiceProvider::getLogger()->getMessages(logger->getLoggingLevelsList()[levelOptionId - 1], logger->getLoggingChannelsList()[channelOptionId - 1]);
+		}
+		else
+		{
+			messages = ServiceProvider::getLogger()->getAllMessages();
+		}
 
 		ImVec4 infoColor = ImVec4(1, 1, 1, 1);
 		ImVec4 errorColor = ImVec4(1, 0, 0, 1);

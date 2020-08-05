@@ -1,11 +1,12 @@
 #pragma once
 
 #include <string>
-#include <engine/core/file.h>
 #include <list>
 #include <vector>
 #define FMT_HEADER_ONLY
 #include <fmt/format.h>
+#include <engine/core/file.h>
+#include <engine/serviceprovider.h>
 
 #define ANNILEEN_LOG_FILE "annileen-log.txt"
 
@@ -80,18 +81,18 @@ namespace annileen
 		};
 	private:
 
-		std::string getLoggingLevelString(LoggingLevel level) noexcept
+		const char* getLoggingLevelString(LoggingLevel level) noexcept
 		{
 			switch (level)
 			{
 			case LoggingLevel::Error: return "Error";
-			case LoggingLevel::Info: return "Message";
+			case LoggingLevel::Info: return "Info";
 			case LoggingLevel::Warning: return "Warning";
 			default: return "";
 			}
 		}
 
-		std::string getLoggingChannelString(LoggingChannel channel) noexcept
+		const char* getLoggingChannelString(LoggingChannel channel) noexcept
 		{
 			switch (channel)
 			{
@@ -107,8 +108,15 @@ namespace annileen
 			}
 		}
 
-		std::list<Message> m_MessagesBuffer;
-		size_t m_MessagesBufferSizeLimit;
+		std::vector<LoggingLevel> getLoggingLevelsList() noexcept
+		{
+			return m_LoggingLevelsList;
+		}
+
+		std::vector<LoggingChannel> getLoggingChannelsList() noexcept
+		{
+			return m_LoggingChannelsList;
+		}
 		 
 		// For editor console filtering
 		std::vector<Message> getMessagesAtLevel(LoggingLevel level) noexcept;
@@ -121,6 +129,12 @@ namespace annileen
 		// will be destroyed by Engine
 		~Logger();
 
+		std::vector<LoggingLevel> m_LoggingLevelsList = { LoggingLevel::Error , LoggingLevel::Info, LoggingLevel::Warning };
+		std::vector<LoggingChannel> m_LoggingChannelsList = { LoggingChannel::Core, LoggingChannel::Renderer, LoggingChannel::Physics,
+			LoggingChannel::Input, LoggingChannel::Editor, LoggingChannel::Asset, LoggingChannel::AI, LoggingChannel::General };
+
+		std::list<Message> m_MessagesBuffer;
+		size_t m_MessagesBufferSizeLimit;
 		LoggingMode m_Mode;
 		File* m_File;
 		

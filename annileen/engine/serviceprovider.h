@@ -5,6 +5,8 @@
 
 namespace annileen
 {
+	class Logger;
+
 	class ServiceProvider final
 	{
 	private:

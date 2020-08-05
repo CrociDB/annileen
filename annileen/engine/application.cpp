@@ -11,13 +11,13 @@ namespace annileen
 		m_Engine->init(1920, 1080, "build_assets/assets.toml");
 	}
 
-	void Application::gui()
-	{
-	}
-
 	int Application::run()
 	{
 		initAnnileen();
+
+#ifdef _DEBUG
+		initializeEditorGui();
+#endif
 
 		annileen::Scene* scene = init();
 
@@ -47,7 +47,9 @@ namespace annileen
 
 			update(dt);
 
-			gui();
+#ifdef _DEBUG
+			updateEditorGui();
+#endif
 
 			m_Engine->getGui()->endFrame();
 

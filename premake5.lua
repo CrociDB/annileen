@@ -131,6 +131,7 @@ project "example-worldbuilding"
 		path.join(BGFX_DIR, "3rdparty"),
 		path.join(ANNILEEN_DIR, "engine"),
 		path.join(ANNILEEN_DIR, "resources/imgui"),
+		path.join(FMT_DIR, "include"),
 		TOML11_DIR,
 		PERLINNOISE_DIR
 	}
@@ -174,6 +175,7 @@ project "example-cube"
 		path.join(BGFX_DIR, "3rdparty"),
 		path.join(ANNILEEN_DIR, "engine"),
 		path.join(ANNILEEN_DIR, "resources/imgui"),
+		path.join(FMT_DIR, "include"),
 		TOML11_DIR,
 		PERLINNOISE_DIR
 	}

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine.h"
+#include <engine/engine.h>
 
 namespace annileen
 {
@@ -21,9 +21,15 @@ namespace annileen
 
 		Engine* m_Engine;
 
+// ApplicationEditor has to be able to inject the editor gui stuff
+#ifdef _DEBUG
+		friend class ApplicationEditor;
+		virtual void initializeEditorGui() = 0;
+		virtual void updateEditorGui() = 0;
+#endif
+
 	protected:
 
-		virtual void gui();
 		void destroy();
 
 		inline Engine* const getEngine() const
