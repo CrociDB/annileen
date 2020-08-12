@@ -35,7 +35,7 @@ before_install:
   - chmod +x premake5
   - pip install -r tools/requirements.txt
 
-script: "./premake5 gmake --python=python3.6 && cd build/gmake && make"
+script: "./premake5 gmake --python=echo && cd build/gmake && make"
 
 notifications:
   email:
