@@ -18,9 +18,13 @@ bgfx_tools_dir = os.path.join(tools_dir, 'bgfx-tools', tools.get_platform())
 bgfx_shaderc = os.path.join(bgfx_tools_dir, 'shaderc')
 bgfx_source_folder = os.path.join(os. getcwd(), 'bgfx', 'src')
 
-def build_shader(shaderfile, dest, options, platform, model):
+def build_shader(shaderfile, dest, options, platform, model, force=False):
     print(f" - Compiling {bcolors.UNDERLINE}'{shaderfile}'{bcolors.ENDC}")
     output_file = os.path.join(dest, tools.path_leaf(shaderfile))
+
+    if not force and not tools.check_should_build(output_file, shaderfile): 
+        print(f" {bcolors.WARNING}- SKIPPED{bcolors.ENDC}")
+        return True, tools.path_leaf(shaderfile), output_file
 
     shadertype = "vertex" if shaderfile.split('.')[1] == 'vs' else "fragment"
 
@@ -61,9 +65,9 @@ def _build_shader(shadername, options, platform, model):
         print(f"{bcolors.ERROR}[ERROR]{bcolors.ENDC} File '{shadername}' not found.")
 
 
-def build_all(platform, model):
+def build_all(platform, model, force=False):
     shaders = reduce(lambda x, y : x + y, [glob.glob(os.path.join(shader_path, "**", "*." + filetype), recursive=True) for filetype in tools.shader_types])
-    return [build_shader(shaderfile, shader_build_path, "", platform, model) for shaderfile in shaders]
+    return [build_shader(shaderfile, shader_build_path, "", platform, model, force) for shaderfile in shaders]
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=f'{bcolors.SUCCESS}Annileen Shader Tools{bcolors.ENDC}')

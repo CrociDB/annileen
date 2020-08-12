@@ -14,36 +14,36 @@ asset_descriptor = {
     'asset': {}
 }
 
-def build_assets(platform, shader_model):
-    build_shaders(platform, shader_model)
-    build_textures(platform)
-    build_meshes(platform)
-    build_cubemaps(platform)
+def build_assets(platform, shader_model, force=False):
+    build_shaders(platform, shader_model, force)
+    build_textures(platform, force)
+    build_meshes(platform, force)
+    build_cubemaps(platform, force)
 
     descriptor_path = tools.save_descriptor(asset_descriptor)
     print(f'\n{tools.bcolors.OKBLUE}ASSET DESCRIPTOR WRITTEN AT: {tools.bcolors.ENDC}{tools.bcolors.BOLD}{descriptor_path}{tools.bcolors.ENDC}') 
 
-def build_shaders(platform, shader_model):
+def build_shaders(platform, shader_model, force=False):
     print(f'{tools.bcolors.OKBLUE}COMPILING SHADERS{tools.bcolors.ENDC}')
-    for s in shader.build_all(platform, shader_model):
+    for s in shader.build_all(platform, shader_model, force):
         if s[0]:
             asset_descriptor['asset'][s[1].lower()] = {'path': s[2].replace(os.getcwd(), "."), 'type': 'shader'}
 
-def build_textures(platform):
+def build_textures(platform, force=False):
     print(f'{tools.bcolors.OKBLUE}COMPILING TEXTURES{tools.bcolors.ENDC}')
-    for t in texture.build_all():
+    for t in texture.build_all(force):
         if t[0]:
             asset_descriptor['asset'][t[1].lower()] = {'path': t[2].replace(os.getcwd(), "."), 'type': 'texture'}
 
-def build_meshes(platform):
+def build_meshes(platform, force=False):
     print(f'{tools.bcolors.OKBLUE}COMPILING MESHES{tools.bcolors.ENDC}')
-    for m in mesh.build_all():
+    for m in mesh.build_all(force):
         if m[0]:
             asset_descriptor['asset'][m[1].lower()] = {'path': m[2].replace(os.getcwd(), "."), 'type': 'mesh'}
 
-def build_cubemaps(platform):
+def build_cubemaps(platform, force=False):
     print(f'{tools.bcolors.OKBLUE}COMPILING CUBEMAPS{tools.bcolors.ENDC}')
-    for m in cubemap.build_all():
+    for m in cubemap.build_all(force):
         if m[0]:
             asset_descriptor['asset'][m[1].lower()] = {'path': m[2].replace(os.getcwd(), "."), 'type': 'mesh'}
 
@@ -73,6 +73,7 @@ def check_required_dir():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=f'{bcolors.SUCCESS}Annileen Asset Tools{bcolors.ENDC}')
+    parser.add_argument('-f', '--force', help='force rebuild of all assets', action='store_true')
     parser.add_argument('-p', '--platform', help='compiles the mesh specified', choices=tools.available_platforms, default='auto')
     parser.add_argument('-s', '--shader', help='shader model', choices=tools.available_shader_models, default='auto')
     args = parser.parse_args()
@@ -80,4 +81,4 @@ if __name__ == '__main__':
 
     if check_required_dir():
         ensure_build_dir()
-        build_assets(args.platform, args.shader)
+        build_assets(args.platform, args.shader, args.force)

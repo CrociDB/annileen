@@ -82,13 +82,21 @@ def load_asset_descriptor(asset_path, schema):
         save_asset_descriptor(descriptor_file, schema)
         return schema
 
-    return _load_file_descriptor(descriptor_file)
+    return descriptor_file, _load_file_descriptor(descriptor_file)
     
 def _load_file_descriptor(file_path):
     f = open(file_path, "r")
     descriptor = toml.load(f)
     f.close()
     return descriptor
+
+def check_should_build(output, input, descriptor=None):
+    if not os.path.isfile(output): return True
+    f = os.path.getmtime(output) < os.path.getmtime(input)
+    d = True
+    if descriptor != None: f = os.path.getmtime(output) < os.path.getmtime(descriptor)
+
+    return f and d
 
 def get_platform():
     if sys.platform.startswith('win32'):

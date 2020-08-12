@@ -17,12 +17,16 @@ bgfx_tools_dir = os.path.join(tools_dir, 'bgfx-tools', tools.get_platform())
 bgfx_texturec = os.path.join(bgfx_tools_dir, 'texturec')
 bgfx_texturev = os.path.join(bgfx_tools_dir, 'texturev')
 
-def build_cubemap(cubemapfile, dest, options):
+def build_cubemap(cubemapfile, dest, options, force=False):
     print(f" - Compiling {bcolors.UNDERLINE}'{cubemapfile}'{bcolors.ENDC}")
     output_file = os.path.join(dest, tools.path_leaf(cubemapfile.split('.')[0]) + '.toml')
     output_texture_file = os.path.join(dest, tools.path_leaf(cubemapfile.split('.')[0]) + '.dds')
 
-    cubemap = tools.load_asset_descriptor(cubemapfile, None)
+    if not force and not tools.check_should_build(output_file, cubemapfile): 
+        print(f" {bcolors.WARNING}- SKIPPED{bcolors.ENDC}")
+        return True, tools.path_leaf(cubemapfile), output_file
+
+    _, cubemap = tools.load_asset_descriptor(cubemapfile, None)
     if cubemap == None:
         print(f"{bcolors.ERROR}[ERROR]{bcolors.ENDC} File '{cubemap}' not found.")
         return (False, None, None)
@@ -84,15 +88,15 @@ def _build_cubemap(cubemap, options):
     else:
         print(f"{bcolors.ERROR}[ERROR]{bcolors.ENDC} File '{cubemap}' not found.")
 
-def build_all():
+def build_all(force=False):
     cubemaps = reduce(lambda x, y : x + y, [glob.glob(os.path.join(cubemap_path, "**", "*." + filetype), recursive=True) for filetype in tools.cubemap_types])
     print(cubemaps)
-    return [build_cubemap(cubemapfile, cubemap_build_path, "") for cubemapfile in cubemaps]
+    return [build_cubemap(cubemapfile, cubemap_build_path, "", force) for cubemapfile in cubemaps]
 
 def view_cubemap(cubemap):
     filepath = glob.glob(os.path.join(cubemap_build_path, "**", cubemap.split('.')[0] + '.*'), recursive=True)
     if filepath != None and len(filepath) > 0: 
-        cubemap = tools.load_asset_descriptor(filepath[0], None)
+        _, cubemap = tools.load_asset_descriptor(filepath[0], None)
         command = "%s %s" % (
             bgfx_texturev,
             cubemap['cubemap']['strip_file'],

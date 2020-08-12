@@ -15,9 +15,13 @@ bgfx_tools_dir = os.path.join(tools_dir, 'bgfx-tools', tools.get_platform())
 bgfx_geometryc = os.path.join(bgfx_tools_dir, 'geometryc')
 bgfx_geometryv = os.path.join(bgfx_tools_dir, 'geometryv')
 
-def build_mesh(meshfile, dest, options):
+def build_mesh(meshfile, dest, options, force=False):
     print(f" - Compiling {bcolors.UNDERLINE}'{meshfile}'{bcolors.ENDC}")
     output_file = os.path.join(dest, tools.path_leaf(meshfile.split('.')[0]) + '.mesh')
+
+    if not force and not tools.check_should_build(output_file, meshfile): 
+        print(f" {bcolors.WARNING}- SKIPPED{bcolors.ENDC}")
+        return True, tools.path_leaf(meshfile), output_file
 
     command = "%s -f %s -o %s -s 1 --packnormal 0 --packuv 0" % (
         bgfx_geometryc,
@@ -40,9 +44,9 @@ def _build_mesh(meshname, options):
     else:
         print(f"{bcolors.ERROR}[ERROR]{bcolors.ENDC} File '{meshname}' not found.")
 
-def build_all():
+def build_all(force=False):
     meshes = reduce(lambda x, y : x + y, [glob.glob(os.path.join(models_path, "**", "*." + filetype), recursive=True) for filetype in tools.mesh_types])
-    return [build_mesh(meshfile, models_build_path, "") for meshfile in meshes]
+    return [build_mesh(meshfile, models_build_path, "", force) for meshfile in meshes]
 
 def view_mesh(meshname):
     filepath = glob.glob(os.path.join(models_build_path, meshname.split('.')[0] + '.*'), recursive=True)

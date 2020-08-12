@@ -15,13 +15,15 @@ bgfx_tools_dir = os.path.join(tools_dir, 'bgfx-tools', tools.get_platform())
 bgfx_texturec = os.path.join(bgfx_tools_dir, 'texturec')
 bgfx_texturev = os.path.join(bgfx_tools_dir, 'texturev')
 
-
-
-def build_texture(texturefile, dest, options):
+def build_texture(texturefile, dest, options, force=False):
     print(f" - Compiling {bcolors.UNDERLINE}'{texturefile}'{bcolors.ENDC}")
     output_file = os.path.join(dest, tools.path_leaf(texturefile.split('.')[0]) + '.dds')
 
-    descriptor = tools.load_asset_descriptor(texturefile, tools.texture_descriptor_schema)
+    descriptor_filename, descriptor = tools.load_asset_descriptor(texturefile, tools.texture_descriptor_schema)
+
+    if not force and not tools.check_should_build(output_file, texturefile, descriptor_filename): 
+        print(f" {bcolors.WARNING}- SKIPPED{bcolors.ENDC}")
+        return True, tools.path_leaf(texturefile), output_file
 
     mipmap = '-m 1' if descriptor['mipmap'] else ''
 
@@ -48,9 +50,9 @@ def _build_texture(meshname, options):
     else:
         print(f"{bcolors.ERROR}[ERROR]{bcolors.ENDC} File '{meshname}' not found.")
 
-def build_all():
+def build_all(force=False):
     textures = reduce(lambda x, y : x + y, [glob.glob(os.path.join(texture_path, "**", "*." + filetype), recursive=True) for filetype in tools.texture_types])
-    return [build_texture(texturefile, texture_build_path, "") for texturefile in textures]
+    return [build_texture(texturefile, texture_build_path, "", force) for texturefile in textures]
 
 def view_texture(meshname):
     filepath = glob.glob(os.path.join(texture_build_path, meshname.split('.')[0] + '.*'), recursive=True)
