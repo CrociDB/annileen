@@ -19,7 +19,7 @@ newoption {
 	allowed = {
 	   { "python3",    "Python3 - whatever one installed in the system" },
 	   { "python3.6",  "force Python3.6" },
-	   { "python3.7",  "force Python3.6" }
+	   { "python3.7",  "force Python3.6" },
 	   { "echo",  "ignore python" }
 	}
  }
