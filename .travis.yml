@@ -4,8 +4,6 @@ os: linux
 matrix:
     # works on Precise and Trusty
     - os: linux
-      include:
-        - python: 3.7
       addons:
         apt:
           sources:
@@ -25,6 +23,8 @@ matrix:
             - python3-pip
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+      include:
+        - python: 3.7
 
 before_install:
   - eval "${MATRIX_EVAL}"
