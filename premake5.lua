@@ -12,6 +12,17 @@ local PERLINNOISE_DIR = "PerlinNoise"
 local TOML11_DIR = "toml11"
 local FMT_DIR = "fmt"
 
+newoption {
+	trigger     = "python",
+	value       = "python3",
+	description = "Choose python version",
+	allowed = {
+	   { "python3",    "Python3 - whatever one installed in the system" },
+	   { "python3.6",  "force Python3.6" },
+	   { "python3.7",  "force Python3.6" }
+	}
+ }
+
 solution "annileen-engine"
 	location(BUILD_DIR)
 	startproject "example-worldbuilding"
@@ -110,7 +121,7 @@ project "annileen"
 	configuration "windows"
 		prebuildcommands { "%{os.getcwd()}/tools/win-tools/run_asset_tools.bat" }
 	configuration "not windows"
-		prebuildcommands { "python3 %{os.getcwd()}/tools/asset_tools.py" }
+		prebuildcommands { "%{_OPTIONS[\"python\"]} %{os.getcwd()}/tools/asset_tools.py" }
 	setBxCompat()
 
 project "example-worldbuilding"
