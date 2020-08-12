@@ -1,6 +1,8 @@
 language: cpp
 compiler: gcc
 os: linux
+python:
+  - 3.6
 matrix:
     # works on Precise and Trusty
     - os: linux
