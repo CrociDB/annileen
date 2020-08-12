@@ -107,6 +107,10 @@ project "annileen"
 		TOML11_DIR,
 		PERLINNOISE_DIR
 	}
+	configuration "windows"
+		prebuildcommands { "%{os.getcwd()}/tools/win-tools/run_asset_tools.bat" }
+	configuration "not windows"
+		prebuildcommands { "python3 %{os.getcwd()}/tools/asset_tools.py" }
 	setBxCompat()
 
 project "example-worldbuilding"
