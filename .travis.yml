@@ -20,11 +20,10 @@ matrix:
             - libxrandr-dev
             - libxcursor-dev
             - libxinerama-dev
+            - python3.7
             - python3-pip
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
-      include:
-        - python: 3.7
 
 before_install:
   - eval "${MATRIX_EVAL}"
