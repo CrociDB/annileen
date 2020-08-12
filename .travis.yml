@@ -20,6 +20,8 @@ matrix:
             - libxrandr-dev
             - libxcursor-dev
             - libxinerama-dev
+            - python3
+            - python3-pip
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
@@ -28,6 +30,7 @@ before_install:
   - wget https://github.com/premake/premake-core/releases/download/v5.0.0-alpha15/premake-5.0.0-alpha15-linux.tar.gz
   - tar -xzvf premake-5.0.0-alpha15-linux.tar.gz
   - chmod +x premake5
+  - python3 -m pip install -r tools/requirements.txt
 
 script: "./premake5 gmake && cd build/gmake && make"
 
