@@ -1,6 +1,8 @@
 language: cpp
 compiler: gcc
 os: linux
+python:
+  - "3.7"
 matrix:
     # works on Precise and Trusty
     - os: linux
@@ -20,7 +22,6 @@ matrix:
             - libxrandr-dev
             - libxcursor-dev
             - libxinerama-dev
-            - python3
             - python3-pip
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
