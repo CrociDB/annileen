@@ -34,7 +34,7 @@ def build_shader(shaderfile, dest, options, platform, model, force=False):
     platform = tools.get_platform() if platform == 'auto' else platform
     if model.find('s_') > -1:
         model = ('p' if shadertype == 'fragment' else 'v') + model
-    model = '' if model == 'auto' else f'--profile {model}'
+    model = '--profile 440' if model == 'auto' else f'--profile {model}'
 
     command = "%s -f %s -o %s -i %s --varyingdef %s --platform %s %s --type %s" % (
         bgfx_shaderc,
@@ -57,10 +57,10 @@ def build_shader(shaderfile, dest, options, platform, model, force=False):
     return success, tools.path_leaf(shaderfile), output_file
 
 
-def _build_shader(shadername, options, platform, model):
+def _build_shader(shadername, options, platform, model, force):
     filepath = glob.glob(os.path.join(shader_path, shadername), recursive=True)
     if filepath != None and len(filepath) == 1:
-        build_shader(filepath[0], shader_build_path, options, platform, model)
+        build_shader(filepath[0], shader_build_path, options, platform, model, force)
     else:
         print(f"{bcolors.ERROR}[ERROR]{bcolors.ENDC} File '{shadername}' not found.")
 
@@ -72,6 +72,7 @@ def build_all(platform, model, force=False):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=f'{bcolors.SUCCESS}Annileen Shader Tools{bcolors.ENDC}')
     parser.add_argument('-s', '--shader', nargs='*', help='compiles the shader specified')
+    parser.add_argument('-f', '--force', help='force rebuild', action='store_true')
     parser.add_argument('-a', '--all', action='store_true', help='compiles all the available shaders')
     parser.add_argument('-p', '--platform', help='compiles the mesh specified', choices=tools.available_platforms, default='auto')
     parser.add_argument('-m', '--model', help='shader model', choices=tools.available_shader_models, default='auto')
@@ -80,6 +81,6 @@ if __name__ == '__main__':
     if args.all:
         build_all(args.platform, args.model)
     elif args.shader != None:
-        _build_shader(args.shader[0], " ".join(args.shader[1:]), args.platform, args.model)
+        _build_shader(args.shader[0], " ".join(args.shader[1:]), args.platform, args.model, args.force)
     else:
         parser.print_help()

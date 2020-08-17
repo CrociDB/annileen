@@ -41,6 +41,12 @@ available_shader_models = [
     'metal',
     'pssl',
     'spirv',
+    '330',
+    '400',
+    '410',
+    '420',
+    '430',
+    '440',
 ]
 
 root_dir = "assets"
