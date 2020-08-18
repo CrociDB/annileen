@@ -2,27 +2,31 @@
 
 #include <iostream>
 #include <memory>
+#include <vector>
 #include <map>
 
-#include "shader.h"
-#include "texture.h"
-#include "cubemap.h"
+#include <engine/shaderpass.h>
+#include <engine/texture.h>
+#include <engine/cubemap.h>
 
 namespace annileen
 {
     class Material
     {
     private:
-        Shader* m_Shader;
-        std::map<std::string, Texture*> m_Textures;
-        std::map<std::string, Cubemap*> m_Cubemaps;
+        
+        std::vector<std::shared_ptr<ShaderPass>> m_ShaderPasses;
+        std::map<std::string, std::pair<uint8_t,Texture*>> m_Textures;
+        std::map<std::string, std::pair<uint8_t,Cubemap*>> m_Cubemaps;
 
     public:
-        void init(Shader* shader);
+        void addShaderPass(std::shared_ptr<ShaderPass> shaderPass);
+        void removeShaderPass(std::shared_ptr<ShaderPass> shaderPass);
+        std::shared_ptr<ShaderPass> getShaderPassAt(size_t shaderPassId);
+        size_t getNumberOfShaderPasses() const;
 
-        Shader* getShader();
-        void addTexture(const char* name, Texture* texture);
-        void addCubemap(const char* name, Cubemap* cubemap);
+        void addTexture(const char* name, Texture* texture, uint8_t registerId);
+        void addCubemap(const char* name, Cubemap* cubemap, uint8_t registerId);
 
         void submitUniforms();
 

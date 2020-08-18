@@ -45,14 +45,14 @@ namespace annileen
 	}
 
 
-	void Uniform::setCubemapUniform(const std::string& uniformname, const Cubemap* value)
+	void Uniform::setCubemapUniform(const std::string& uniformname, const Cubemap* value, uint8_t registerId)
 	{
-		bgfx::setTexture(0, getSamplerUniformHandle(uniformname), value->getHandle());
+		bgfx::setTexture(registerId, getSamplerUniformHandle(uniformname), value->getHandle());
 	}
 
-	void Uniform::setTextureUniform(const std::string& uniformname, const Texture* value)
+	void Uniform::setTextureUniform(const std::string& uniformname, const Texture* value, uint8_t registerId)
 	{
-		bgfx::setTexture(0, getSamplerUniformHandle(uniformname), value->getHandle());
+		bgfx::setTexture(registerId, getSamplerUniformHandle(uniformname), value->getHandle());
 	}
 
 	void Uniform::setVec4Uniform(const std::string& uniformname, const glm::vec4& value)
@@ -75,6 +75,10 @@ namespace annileen
 		bgfx::setUniform(getVec4UniformHandle(uniformname), &value, 1);
 	}
 
+	void Uniform::setMat4Uniform(const std::string& uniformname, const glm::mat4& value)
+	{
+		bgfx::setUniform(getMat4UniformHandle(uniformname), glm::value_ptr(value), 1);
+	}
 
 	void Uniform::destroy()
 	{

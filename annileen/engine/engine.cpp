@@ -2,7 +2,10 @@
 #include <engine/renderer.h>
 #include <engine/serviceprovider.h>
 #include <engine/core/logger.h>
+#include <engine/renderview.h>
 #include <sstream>
+#include <bx/math.h>
+#include <glm.hpp>
 
 namespace annileen
 {
@@ -96,7 +99,7 @@ namespace annileen
         bgfx::renderFrame();
 
         bgfx::Init init;
-        init.type = bgfx::RendererType::OpenGL;
+        init.type = bgfx::RendererType::Direct3D11;
     #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
         init.platformData.ndt = glfwGetX11Display();
         init.platformData.nwh = (void*)(uintptr_t)glfwGetX11Window(m_Window);
@@ -109,6 +112,7 @@ namespace annileen
         init.resolution.width = m_Width;
         init.resolution.height = m_Height;
         init.resolution.reset = BGFX_RESET_VSYNC;
+
         if (!bgfx::init(init))
             return 1;
 
@@ -117,15 +121,7 @@ namespace annileen
         ServiceProvider::provideLogger(logger);
         //
 
-        /*ANNILEEN_LOG(LoggingLevel::Info, LoggingChannel::Core, "This is a message specifying level");
-        ANNILEEN_LOG_WARNING(LoggingChannel::General, "This is a warning message");
-        ANNILEEN_LOG_ERROR(LoggingChannel::Renderer, "This is a error message");
-        ANNILEEN_LOG_INFO(LoggingChannel::Core, "This is a regular message");
-
-        ANNILEEN_LOGF(LoggingLevel::Info, LoggingChannel::Core, "This {0} {1} {2} {3} {4} {5}", "is", "a", "formatted", "message", "specifying", "level");
-        ANNILEEN_LOGF_WARNING(LoggingChannel::General, "This is a formatted warning message: {0} {1} {2}", 1, 2.0f, 3.0F);
-        ANNILEEN_LOGF_ERROR(LoggingChannel::Renderer, "This is a formatted error message: {0}", "bla");
-        ANNILEEN_LOGF_INFO(LoggingChannel::Core, "This is a formatted regular message: {0}", "ble");*/
+        m_AssetManager = std::make_shared<AssetManager>(assetfile);
 
         m_Renderer = new Renderer();
         m_Renderer->init(this);
@@ -138,8 +134,6 @@ namespace annileen
 
         m_Running = true;
         m_Time.deltaTime = m_Time.unscaledDeltaTime = m_Time.time = 0;
-
-        m_AssetManager = std::make_shared<AssetManager>(assetfile);
 
         return 0;
     }
@@ -256,54 +250,21 @@ namespace annileen
         if (m_Width != oldWidth || m_Height != oldHeight)
         {
             bgfx::reset(m_Width, m_Height, BGFX_RESET_VSYNC);
-            m_Renderer->clear();
+            static RenderView* sceneRenderView = RenderView::getRenderView(RenderView::Scene);
+
+            m_Renderer->clear(sceneRenderView->getId());
         }
     }
 
     void Engine::renderFrame()
     {
-        bool hasValidScene = m_CurrentScene != nullptr;
-
-        std::list<SceneNodePtr> sceneNode = m_CurrentScene->getNodeList();
-        
-        if (hasValidScene)
+        if (m_CurrentScene != nullptr)
         {
-            // Setup camera
-            auto camera = m_CurrentScene->getCamera();
-            bgfx::setViewTransform(0, camera->getViewMatrixFloatArray(), camera->getProjectionMatrixFloatArray());
-            bgfx::setViewRect(0, 0, 0, uint16_t(m_Width), uint16_t(m_Height));
-            bgfx::touch(0);
-
-            m_Uniform.setVec3Uniform("u_viewPos", camera->transform().position);
-
-            // Setup lights
-            for (const auto& light : m_CurrentScene->getLightList())
-            {
-                if (light->type == LightDirectional)
-                {
-                    m_Uniform.setVec3Uniform("u_lightDirection", light->transform.getForward());
-                    m_Uniform.setVec3Uniform("u_lightColor", light->color);
-                    m_Uniform.setFloatUniform("u_lightIntensity", light->intensity);
-                }
-            }
-
-            // Render scene
-            m_Renderer->initFrame(m_CurrentScene);
-
-            for (auto sceneNode : m_CurrentScene->getNodeList())
-            {
-                if (!sceneNode->hasModel() || !sceneNode->getAcive()) continue;
-                m_Renderer->renderSceneNode(m_CurrentScene, sceneNode);
-            }
-
-            if (camera->clearType == CameraClearType::CameraClearSkybox)
-            {
-                bgfx::setViewName(1, "Skybox");
-                bgfx::setViewRect(1, 0, 0, uint16_t(m_Width), uint16_t(m_Height));
-                bgfx::touch(1);
-                bgfx::setViewTransform(1, camera->getViewRotationMatrixFloatArray(), camera->getProjectionMatrixFloatArray());
-                m_Renderer->renderSkybox(camera, m_CurrentScene->getSkybox());
-            }
+            m_Renderer->setActiveCamera(m_CurrentScene->getCamera());
+            m_Renderer->setSceneLights(m_CurrentScene->getLightList());
+            m_Renderer->setSceneNodes(m_CurrentScene->getNodeList());
+            m_Renderer->setSkybox(m_CurrentScene->getSkybox());
+            m_Renderer->render();            
         }
 
         bgfx::frame();

@@ -9,7 +9,9 @@ namespace annileen
 {
     enum LightType
     {
-        LightDirectional
+        Spot,
+        Point,
+        Directional
     };
 
     class Light

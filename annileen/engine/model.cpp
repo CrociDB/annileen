@@ -1,4 +1,4 @@
-#include "model.h"
+#include <engine/model.h>
 
 namespace annileen
 {
@@ -6,14 +6,6 @@ namespace annileen
 	{
 		m_Mesh = mesh;
 		m_Material = material;
-
-		m_State = BGFX_STATE_WRITE_RGB
-			| BGFX_STATE_WRITE_A
-			| BGFX_STATE_WRITE_Z
-			| BGFX_STATE_DEPTH_TEST_LESS
-			| BGFX_STATE_CULL_CCW
-			| BGFX_STATE_MSAA
-			| UINT64_C(0);
 	}
 
 	Mesh* Model::getMesh()
@@ -26,7 +18,7 @@ namespace annileen
 		return m_Material;
 	}
 
-	Model::Model() : m_Mesh(nullptr), m_State(0), m_Material(nullptr)
+	Model::Model() : m_Mesh(nullptr), m_Material(nullptr)
 	{
 
 	}

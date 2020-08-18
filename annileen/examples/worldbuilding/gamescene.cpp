@@ -8,11 +8,21 @@ using namespace annileen;
 void GameScene::buildMap()
 {
     auto texture = Engine::getInstance()->getAssetManager()->loadTexture("blocks.png");
-    auto shader = Engine::getInstance()->getAssetManager()->loadShader("voxel.vs", "voxel.fs");
+    std::shared_ptr<Shader> shader(Engine::getInstance()->getAssetManager()->loadShader("voxel.vs", "voxel.fs"));
+
+    std::shared_ptr<ShaderPass> shaderPass = std::make_shared<ShaderPass>();
+    shaderPass->init(shader);
+    shaderPass->setState(BGFX_STATE_WRITE_RGB
+        | BGFX_STATE_WRITE_A
+        | BGFX_STATE_WRITE_Z
+        | BGFX_STATE_DEPTH_TEST_LESS
+        | BGFX_STATE_CULL_CW
+        | BGFX_STATE_MSAA
+        | UINT64_C(0));
 
     m_BlockMaterial = std::make_shared<Material>();
-    m_BlockMaterial->init(shader);
-    m_BlockMaterial->addTexture("s_mainTex", texture);
+    m_BlockMaterial->addTexture("s_mainTex", texture, 0);
+    m_BlockMaterial->addShaderPass(shaderPass);
 
     fog.color = glm::vec3(0.823f, 0.705f, 0.513f);
     fog.distance = 150.0f;
@@ -21,7 +31,7 @@ void GameScene::buildMap()
 
     Light* light = new Light();
     light->color = glm::vec3(1.0f, 1.0f, .8f);
-    light->type = LightDirectional;
+    light->type = Directional;
     light->intensity = 0.8f;
     light->transform.rotate(glm::vec3(-40.0f, 0.0f, 0.0f));
 
@@ -34,6 +44,27 @@ void GameScene::buildMap()
     getCamera()->clearType = CameraClearType::CameraClearSkybox;
 
     m_Noise = new siv::PerlinNoise(std::random_device{});
+
+
+    bgfx::VertexLayout vlayout;
+    vlayout.begin()
+        .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+        .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
+        .end();
+
+    auto vdata = bgfx::makeRef(s_cubeVertices, sizeof(s_cubeVertices));
+    auto idata = bgfx::makeRef(s_cubeTriList, sizeof(s_cubeTriList));
+
+    Mesh* mesh = new Mesh();
+    mesh->init(vdata, vlayout, idata, sizeof(s_cubeTriList) / sizeof(uint16_t));
+
+    std::shared_ptr<Model> model = std::make_shared<Model>();
+    model->init(mesh, m_BlockMaterial);
+
+    SceneNode* node = createNode();
+    node->setModel(model);
+    node->getTransform().translate(glm::vec3(7.0, 20.0, 7.0));
+    node->getTransform().rotate(glm::vec3(0.0, 45.0, 0.0));
 }
 
 void GameScene::createChunkAt(int x, int z)

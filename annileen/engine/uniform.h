@@ -31,13 +31,14 @@ namespace annileen
 		bgfx::UniformHandle getSMat3UniformHandle(const std::string& uniformname);
 		bgfx::UniformHandle getMat4UniformHandle(const std::string& uniformname);
 
-		void setCubemapUniform(const std::string& uniformname, const Cubemap* value);
-		void setTextureUniform(const std::string& uniformname, const Texture* value);
+		void setCubemapUniform(const std::string& uniformname, const Cubemap* value, uint8_t registerId);
+		void setTextureUniform(const std::string& uniformname, const Texture* value, uint8_t registerId);
 		void setColorUniform(const std::string& uniformname, const glm::vec4& value);
 		void setVec4Uniform(const std::string& uniformname, const glm::vec4& value);
 		void setVec3Uniform(const std::string& uniformname, const glm::vec3& value);
 		void setVec2Uniform(const std::string& uniformname, const glm::vec2& value);
 		void setFloatUniform(const std::string& uniformname, const float& value);
+		void setMat4Uniform(const std::string& uniformname, const glm::mat4& value);
 
 		void destroy();
 

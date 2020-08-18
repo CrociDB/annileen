@@ -1,26 +1,45 @@
-#include "material.h"
-#include "engine.h"
+#include <engine/material.h>
+#include <engine/engine.h>
 
 namespace annileen
 {
-    void Material::init(Shader* shader)
+    void Material::addShaderPass(std::shared_ptr<ShaderPass> shaderPass)
     {
-        m_Shader = shader;
+        m_ShaderPasses.push_back(shaderPass);
+    }
+    
+    void Material::removeShaderPass(std::shared_ptr<ShaderPass> shaderPass)
+    {
+        auto shaderPassIt = std::find(m_ShaderPasses.begin(), m_ShaderPasses.end(), shaderPass);
+        if (shaderPassIt != m_ShaderPasses.end())
+        {
+            m_ShaderPasses.erase(shaderPassIt);
+        }
+    }
+    
+    std::shared_ptr<ShaderPass> Material::getShaderPassAt(size_t shaderPassId)
+    {
+        if (shaderPassId >= 0 && shaderPassId < m_ShaderPasses.size())
+        {
+            return m_ShaderPasses.at(shaderPassId);
+        }
+
+        return nullptr;
     }
 
-    Shader* Material::getShader()
+    size_t Material::getNumberOfShaderPasses() const
     {
-        return m_Shader;
+        return m_ShaderPasses.size();
     }
 
-    void Material::addTexture(const char* name, Texture* texture)
+    void Material::addTexture(const char* name, Texture* texture, uint8_t registerId)
     {
-        m_Textures[name] = texture;
+        m_Textures[name] = std::make_pair(registerId, texture);
     }
 
-    void Material::addCubemap(const char* name, Cubemap* cubemap)
+    void Material::addCubemap(const char* name, Cubemap* cubemap, uint8_t registerId)
     {
-        m_Cubemaps[name] = cubemap;
+        m_Cubemaps[name] = std::make_pair(registerId, cubemap);
     }
 
     void Material::submitUniforms()
@@ -29,12 +48,12 @@ namespace annileen
 
         for (const auto& [k, v] : m_Textures)
         {
-            uniform->setTextureUniform(k, v);
+            uniform->setTextureUniform(k, v.second, v.first);
         }
 
         for (const auto& [k, v] : m_Cubemaps)
         {
-            uniform->setCubemapUniform(k, v);
+            uniform->setCubemapUniform(k, v.second, v.first);
         }
     }
 

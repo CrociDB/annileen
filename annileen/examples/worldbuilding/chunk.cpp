@@ -30,13 +30,6 @@ void Chunk::generateMesh()
 
     m_Model = std::make_shared<Model>();
     m_Model->init(m_Mesh, m_Material);
-    m_Model->setState(BGFX_STATE_WRITE_RGB
-                        | BGFX_STATE_WRITE_A
-                        | BGFX_STATE_WRITE_Z
-                        | BGFX_STATE_DEPTH_TEST_LESS
-                        | BGFX_STATE_CULL_CW
-                        | BGFX_STATE_MSAA
-                        | UINT64_C(0));
 }
 
 float* Chunk::generateMeshData(int* meshSize, int** indexes, int* indexSize)
