@@ -23,7 +23,7 @@ float hardShadow(Sampler _sampler, vec4 _shadowCoord, float _bias)
 //#if SHADOW_PACKED_DEPTH
 //	return step(texCoord.z-_bias, unpackRgbaToFloat(texture2D(_sampler, texCoord.xy) ) );
 //#else
-	return shadow2D(_sampler, vec3(texCoord.xy, texCoord.z-_bias) ).r;
+	return shadow2D(_sampler, vec3(texCoord.xy, texCoord.z-_bias) );
 //#endif // SHADOW_PACKED_DEPTH
 }
 
@@ -89,15 +89,14 @@ void main()
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), light_specular_power);
 	vec3 specular = light_specular_strength * spec * u_lightColor.xyz;
 
-	vec3 a = ambient * tex.xyz;
-	vec3 d = diffuse * tex.xyz;
-	vec3 finalColor = a + d + specular;
-
 	// shadow
 	float shadowMapBias = 0.0;
 	vec2 texelSize = vec2_splat(1.0/1024.0);
 	float visibility = PCF(s_shadowMap, v_shadowcoord, shadowMapBias, texelSize);
-	finalColor *= visibility;
+
+	vec3 a = ambient * tex.xyz;
+	vec3 d = diffuse * tex.xyz;
+	vec3 finalColor = a + (d + specular) * visibility;
 
 	//gl_FragColor = vec4(v_shadowcoord.xy/v_shadowcoord.w, 0.0, 1.0);
 	gl_FragColor = vec4(finalColor, 1.0);

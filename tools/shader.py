@@ -34,7 +34,7 @@ def build_shader(shaderfile, dest, options, platform, model, force=False):
     platform = tools.get_platform() if platform == 'auto' else platform
     if model.find('s_') > -1:
         model = ('p' if shadertype == 'fragment' else 'v') + model
-    model = '--profile 440' if model == 'auto' else f'--profile {model}'
+    model = '--profile 120' if model == 'auto' else f'--profile {model}'
 
     command = "%s -f %s -o %s -i %s --varyingdef %s --platform %s %s --type %s" % (
         bgfx_shaderc,

@@ -99,7 +99,7 @@ namespace annileen
         bgfx::renderFrame();
 
         bgfx::Init init;
-        init.type = bgfx::RendererType::Direct3D11;
+        init.type = bgfx::RendererType::OpenGL;
     #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
         init.platformData.ndt = glfwGetX11Display();
         init.platformData.nwh = (void*)(uintptr_t)glfwGetX11Window(m_Window);
