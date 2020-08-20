@@ -1,5 +1,3 @@
-#pragma once
-
 #include "engine.h"
 #include "skybox.h"
 
@@ -7,7 +5,7 @@ namespace annileen
 {
 	void Skybox::createModel()
 	{
-		std::shared_ptr<Shader> shader(Engine::getInstance()->getAssetManager()->loadShader("skybox.vs", "skybox.fs"));
+		Shader* shader = Engine::getInstance()->getAssetManager()->loadShader("skybox.vs", "skybox.fs");
 		std::shared_ptr<Material> material = std::make_shared<Material>();
 		
 		std::shared_ptr<ShaderPass> shaderPass = std::make_shared<ShaderPass>();

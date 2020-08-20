@@ -8,7 +8,7 @@ using namespace annileen;
 void GameScene::buildMap()
 {
     auto texture = Engine::getInstance()->getAssetManager()->loadTexture("blocks.png");
-    std::shared_ptr<Shader> shader(Engine::getInstance()->getAssetManager()->loadShader("voxel.vs", "voxel.fs"));
+    Shader* shader = Engine::getInstance()->getAssetManager()->loadShader("voxel.vs", "voxel.fs");
 
     std::shared_ptr<ShaderPass> shaderPass = std::make_shared<ShaderPass>();
     shaderPass->init(shader);

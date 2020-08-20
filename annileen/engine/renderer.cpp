@@ -26,7 +26,7 @@ namespace annileen
         // compare less equal feature is supported.
         m_Shadow->useShadowSampler = 0 != (m_Capabilities->supported & BGFX_CAPS_TEXTURE_COMPARE_LEQUAL);;
 
-        std::shared_ptr<Shader> shader(Engine::getInstance()->getAssetManager()->loadShader("vs_sms_shadow.vs", "fs_sms_shadow.fs"));
+        Shader* shader = Engine::getInstance()->getAssetManager()->loadShader("vs_sms_shadow.vs", "fs_sms_shadow.fs");
         std::shared_ptr<ShaderPass> shaderPass = std::make_shared<ShaderPass>();
 
         shaderPass->init(shader);

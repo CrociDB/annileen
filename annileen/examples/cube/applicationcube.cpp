@@ -1,6 +1,7 @@
 #include "applicationcube.h"
 #include "glm.hpp"
 #include "scene.h"
+#include "shaderpass.h"
 
 ApplicationCube::ApplicationCube() {}
 ApplicationCube::~ApplicationCube() {}
@@ -13,8 +14,12 @@ annileen::Scene* ApplicationCube::init()
     getEngine()->setScene(scene);
 
     annileen::Shader* shader = getEngine()->getAssetManager()->loadShader("unlit.vs", "unlit.fs");
+    
+    std::shared_ptr<ShaderPass> shaderPass = std::make_shared<ShaderPass>();
+    shaderPass->init(shader);
+
     std::shared_ptr<Material> material = std::make_shared<Material>();
-    material->init(shader);
+    material->addShaderPass(shaderPass);
 
     bgfx::VertexLayout vlayout;
     vlayout .begin()

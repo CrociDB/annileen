@@ -2,7 +2,7 @@
 
 namespace annileen
 {
-    void ShaderPass::init(std::shared_ptr<Shader> shader) noexcept
+    void ShaderPass::init(Shader* shader) noexcept
     {
         m_Shader = shader;
 
@@ -15,7 +15,7 @@ namespace annileen
             | UINT64_C(0); 
     }
 
-    std::shared_ptr<Shader> ShaderPass::getShader() const noexcept
+    Shader* ShaderPass::getShader() const noexcept
     {
         return m_Shader;
     }
