@@ -122,7 +122,7 @@ project "annileen"
 	configuration "windows"
 		prebuildcommands { "%{os.getcwd()}/tools/win-tools/run_asset_tools.bat" }
 	configuration "not windows"
-		prebuildcommands { "%{_OPTIONS[\"python\"]} %{os.getcwd()}/tools/asset_tools.py" }
+		prebuildcommands { "python3 %{_OPTIONS[\"python\"]} %{os.getcwd()}/tools/asset_tools.py" }
 	setBxCompat()
 
 project "example-worldbuilding"
@@ -220,7 +220,7 @@ project "bgfx"
 	cppdialect "C++14"
 	exceptionhandling "Off"
 	rtti "Off"
-	defines "__STDC_FORMAT_MACROS"
+	defines {"__STDC_FORMAT_MACROS", "BGFX_CONFIG_RENDERER_OPENGL=32"}
 	files
 	{
 		path.join(BGFX_DIR, "include/bgfx/**.h"),
