@@ -79,7 +79,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.all:
-        build_all(args.platform, args.model)
+        build_all(args.platform, args.model, args.force)
     elif args.shader != None:
         _build_shader(args.shader[0], " ".join(args.shader[1:]), args.platform, args.model, args.force)
     else:
