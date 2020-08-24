@@ -2,10 +2,12 @@
 
 //#include <engine/audio.h>
 #include <engine/core/logger.h>
+#include <engine/assetmanager.h>
 
 namespace annileen
 {
 	class Logger;
+	class AssetManager;
 
 	class ServiceProvider final
 	{
@@ -14,7 +16,8 @@ namespace annileen
 		ServiceProvider() {}
 
 		//static Audio* m_audioService;
-		static Logger* m_loggerService;
+		static Logger* m_LoggerService;
+		static AssetManager* m_AssetManagerService;
 
 	public:
 		ServiceProvider(const ServiceProvider&) = delete;
@@ -29,5 +32,8 @@ namespace annileen
 
 		static void provideLogger(Logger* logger);
 		static Logger* getLogger();
+
+		static void provideAssetManager(AssetManager* assetManager);
+		static AssetManager* getAssetManager();
 	};
 }

@@ -1,11 +1,12 @@
-#include "engine.h"
-#include "skybox.h"
+#include <engine/engine.h>
+#include <engine/skybox.h>
+#include <engine/serviceprovider.h>
 
 namespace annileen
 {
 	void Skybox::createModel()
 	{
-		Shader* shader = Engine::getInstance()->getAssetManager()->loadShader("skybox.vs", "skybox.fs");
+		Shader* shader = ServiceProvider::getAssetManager()->loadShader("skybox.vs", "skybox.fs");
 		std::shared_ptr<Material> material = std::make_shared<Material>();
 		
 		std::shared_ptr<ShaderPass> shaderPass = std::make_shared<ShaderPass>();

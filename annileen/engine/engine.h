@@ -21,7 +21,6 @@
 #include <engine/scene.h>
 #include <engine/input.h>
 #include <engine/uniform.h>
-#include <engine/assetmanager.h>
 #include <engine/gui.h>
 
 namespace annileen
@@ -48,7 +47,6 @@ namespace annileen
         int m_Width, m_Height;
 
         std::shared_ptr<Input> m_Input;
-        std::shared_ptr<AssetManager> m_AssetManager;
         Uniform m_Uniform;
 
         Renderer* m_Renderer;
@@ -79,7 +77,6 @@ namespace annileen
 
         std::shared_ptr<Input> getInput(); 
         std::shared_ptr<Gui> getGui();
-        AssetManager* getAssetManager();
         Renderer* getRenderer();
         Uniform* getUniform();
         GLFWwindow* getGLFWWindow();

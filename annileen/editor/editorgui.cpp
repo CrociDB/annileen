@@ -274,15 +274,15 @@ namespace annileen
 		
 		if (levelOptionId != 0 && channelOptionId == 0)
 		{
-			messages = ServiceProvider::getLogger()->getMessagesAtLevel(logger->getLoggingLevelsList()[levelOptionId-1]);
+			messages = ServiceProvider::getLogger()->getMessagesAtLevel(logger->getLoggingLevelsList()[static_cast<int>(levelOptionId)-1]);
 		}
 		else if (levelOptionId == 0 && channelOptionId != 0)
 		{
-			messages = ServiceProvider::getLogger()->getMessagesAtChannel(logger->getLoggingChannelsList()[channelOptionId - 1]);
+			messages = ServiceProvider::getLogger()->getMessagesAtChannel(logger->getLoggingChannelsList()[static_cast<int>(channelOptionId) - 1]);
 		}
 		else if (levelOptionId != 0 && channelOptionId != 0)
 		{
-			messages = ServiceProvider::getLogger()->getMessages(logger->getLoggingLevelsList()[levelOptionId - 1], logger->getLoggingChannelsList()[channelOptionId - 1]);
+			messages = ServiceProvider::getLogger()->getMessages(logger->getLoggingLevelsList()[static_cast<int>(levelOptionId) - 1], logger->getLoggingChannelsList()[static_cast<int>(channelOptionId) - 1]);
 		}
 		else
 		{

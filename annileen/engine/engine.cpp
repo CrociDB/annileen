@@ -119,9 +119,10 @@ namespace annileen
         // Initialize services
         Logger* logger = new Logger();
         ServiceProvider::provideLogger(logger);
-        //
 
-        m_AssetManager = std::make_shared<AssetManager>(assetfile);
+        AssetManager* assetManager = new AssetManager(assetfile);
+        ServiceProvider::provideAssetManager(assetManager);
+        //
 
         m_Renderer = new Renderer();
         m_Renderer->init(this);
@@ -146,11 +147,6 @@ namespace annileen
     std::shared_ptr<Gui> Engine::getGui()
     {
         return m_Gui;
-    }
-
-    AssetManager* annileen::Engine::getAssetManager()
-    {
-        return m_AssetManager.get();
     }
 
     Renderer* Engine::getRenderer()
@@ -292,6 +288,13 @@ namespace annileen
         if (logger != nullptr)
         {
             delete logger;
+        }
+
+        AssetManager* assetManager = ServiceProvider::getAssetManager();
+        ServiceProvider::provideAssetManager(nullptr);
+        if (assetManager != nullptr)
+        {
+            delete assetManager;
         }
 
         m_Gui->destroy();

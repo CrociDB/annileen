@@ -1,14 +1,15 @@
 #include "gamescene.h"
 
-#include "engine/engine.h"
-#include "engine/skybox.h"
+#include <engine/engine.h>
+#include <engine/skybox.h>
+#include <engine/serviceprovider.h>
 
 using namespace annileen;
 
 void GameScene::buildMap()
 {
-    auto texture = Engine::getInstance()->getAssetManager()->loadTexture("blocks.png");
-    Shader* shader = Engine::getInstance()->getAssetManager()->loadShader("voxel.vs", "voxel.fs");
+    auto texture = ServiceProvider::getAssetManager()->loadTexture("blocks.png");
+    Shader* shader = ServiceProvider::getAssetManager()->loadShader("voxel.vs", "voxel.fs");
 
     std::shared_ptr<ShaderPass> shaderPass = std::make_shared<ShaderPass>();
     shaderPass->init(shader);
@@ -37,7 +38,7 @@ void GameScene::buildMap()
 
     this->addLight(light);
 
-    auto cubemap = Engine::getInstance()->getAssetManager()->loadCubemap("skybox.toml");
+    auto cubemap = ServiceProvider::getAssetManager()->loadCubemap("skybox.toml");
     auto skybox = new Skybox(cubemap);
     this->setSkybox(skybox);
 

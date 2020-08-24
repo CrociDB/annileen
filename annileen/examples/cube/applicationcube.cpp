@@ -1,7 +1,8 @@
 #include "applicationcube.h"
 #include "glm.hpp"
-#include "scene.h"
-#include "shaderpass.h"
+#include <engine/scene.h>
+#include <engine/shaderpass.h>
+#include <engine/serviceprovider.h>
 
 ApplicationCube::ApplicationCube() {}
 ApplicationCube::~ApplicationCube() {}
@@ -13,7 +14,7 @@ annileen::Scene* ApplicationCube::init()
     Scene* scene = new Scene();
     getEngine()->setScene(scene);
 
-    annileen::Shader* shader = getEngine()->getAssetManager()->loadShader("unlit.vs", "unlit.fs");
+    annileen::Shader* shader = ServiceProvider::getAssetManager()->loadShader("unlit.vs", "unlit.fs");
     
     std::shared_ptr<ShaderPass> shaderPass = std::make_shared<ShaderPass>();
     shaderPass->init(shader);
