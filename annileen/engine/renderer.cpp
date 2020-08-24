@@ -78,13 +78,14 @@ namespace annileen
         initializeShadows();
 
         // Initialize Reserved Render Views
-        m_ShadowRenderView = new RenderView(0, "Shadows");
-        m_SceneRenderView = new RenderView(1, "Scene");
-        m_SkyboxRenderView = new RenderView(2, "Skybox");
-
-        RenderView::addRenderView(RenderView::Shadow, m_ShadowRenderView);
-        RenderView::addRenderView(RenderView::Scene, m_SceneRenderView);
-        RenderView::addRenderView(RenderView::Skybox, m_SkyboxRenderView);
+        RenderView::addReservedRenderView(RenderView::Shadow, "Shadows");
+        RenderView::addReservedRenderView(RenderView::Scene, "Scene");
+        RenderView::addReservedRenderView(RenderView::Skybox, "Skybox");
+        //RenderView::addReservedRenderView(RenderView::PostProcessing, "Post-processing");
+        
+        m_ShadowRenderView = RenderView::getRenderView(RenderView::Shadow);
+        m_SceneRenderView = RenderView::getRenderView(RenderView::Scene);
+        m_SkyboxRenderView = RenderView::getRenderView(RenderView::Skybox);
     }
 
     void Renderer::setActiveCamera(Camera* camera)
@@ -128,12 +129,12 @@ namespace annileen
         glm::mat4 lightProj = glm::ortho(-area, area, -area, area, -100.0f, 100.0f);
 
         // Setup shadow
-        bgfx::setViewRect(m_ShadowRenderView->getId(), 0, 0, m_Shadow->shadowMapSize, m_Shadow->shadowMapSize);
-        bgfx::setViewFrameBuffer(m_ShadowRenderView->getId(), m_Shadow->frameBuffer);
-        bgfx::setViewTransform(m_ShadowRenderView->getId(), glm::value_ptr(lightView), glm::value_ptr(lightProj));
+        bgfx::setViewRect(m_ShadowRenderView->getViewId(), 0, 0, m_Shadow->shadowMapSize, m_Shadow->shadowMapSize);
+        bgfx::setViewFrameBuffer(m_ShadowRenderView->getViewId(), m_Shadow->frameBuffer);
+        bgfx::setViewTransform(m_ShadowRenderView->getViewId(), glm::value_ptr(lightView), glm::value_ptr(lightProj));
 
         // Clear backbuffer and shadowmap framebuffer at beginning.
-        bgfx::setViewClear(m_ShadowRenderView->getId(), BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
+        bgfx::setViewClear(m_ShadowRenderView->getViewId(), BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
 
         const float sy = m_Capabilities->originBottomLeft ? 0.5f : -0.5f;
         const float sz = m_Capabilities->homogeneousDepth ? 0.5f : 1.0f;
@@ -153,16 +154,16 @@ namespace annileen
         {
             if (!sceneNode->hasModel() || !sceneNode->getAcive()) continue;
 
-            renderSceneNode(m_ShadowRenderView->getId(), nullptr, sceneNode, m_Shadow->material);
+            renderSceneNode(m_ShadowRenderView->getViewId(), nullptr, sceneNode, m_Shadow->material);
         }
 
         // Setup camera
         m_ActiveCamera->updateMatrices();
-        bgfx::setViewTransform(m_SceneRenderView->getId(), m_ActiveCamera->getViewMatrixFloatArray(), m_ActiveCamera->getProjectionMatrixFloatArray());
-        bgfx::setViewRect(m_SceneRenderView->getId(), 0, 0, Engine::getInstance()->getWidth(), Engine::getInstance()->getHeight());
+        bgfx::setViewTransform(m_SceneRenderView->getViewId(), m_ActiveCamera->getViewMatrixFloatArray(), m_ActiveCamera->getProjectionMatrixFloatArray());
+        bgfx::setViewRect(m_SceneRenderView->getViewId(), 0, 0, Engine::getInstance()->getWidth(), Engine::getInstance()->getHeight());
 
         // Clear backbuffer and shadowmap framebuffer at beginning.
-        bgfx::setViewClear(m_SceneRenderView->getId(), BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
+        bgfx::setViewClear(m_SceneRenderView->getViewId(), BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
 
         m_Uniform.setVec3Uniform("u_viewPos", m_ActiveCamera->transform().position);
 
@@ -175,14 +176,14 @@ namespace annileen
             m_Uniform.setTextureUniform("s_shadowMap",  m_Shadow->texture, m_Shadow->textureRegisterId);
 
             m_Shadow->material->submitUniforms();
-            renderSceneNode(m_SceneRenderView->getId(), nullptr, sceneNode, sceneNode->getModel()->getMaterial());
+            renderSceneNode(m_SceneRenderView->getViewId(), nullptr, sceneNode, sceneNode->getModel()->getMaterial());
         }
 
         if (m_ActiveCamera->clearType == CameraClearType::CameraClearSkybox)
         {
-            bgfx::setViewRect(m_SkyboxRenderView->getId(), 0, 0, Engine::getInstance()->getWidth(), Engine::getInstance()->getHeight());
-            bgfx::setViewTransform(m_SkyboxRenderView->getId(), m_ActiveCamera->getViewRotationMatrixFloatArray(), m_ActiveCamera->getProjectionMatrixFloatArray());
-            renderSkybox(m_SkyboxRenderView->getId(), m_ActiveCamera, m_Skybox);
+            bgfx::setViewRect(m_SkyboxRenderView->getViewId(), 0, 0, Engine::getInstance()->getWidth(), Engine::getInstance()->getHeight());
+            bgfx::setViewTransform(m_SkyboxRenderView->getViewId(), m_ActiveCamera->getViewRotationMatrixFloatArray(), m_ActiveCamera->getProjectionMatrixFloatArray());
+            renderSkybox(m_SkyboxRenderView->getViewId(), m_ActiveCamera, m_Skybox);
         }
     }
 

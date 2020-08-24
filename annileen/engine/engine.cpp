@@ -249,10 +249,8 @@ namespace annileen
 
         if (m_Width != oldWidth || m_Height != oldHeight)
         {
-            bgfx::reset(m_Width, m_Height, BGFX_RESET_VSYNC);
-            static RenderView* sceneRenderView = RenderView::getRenderView(RenderView::Scene);
-
-            m_Renderer->clear(sceneRenderView->getId());
+            bgfx::reset(m_Width, m_Height, BGFX_RESET_VSYNC);            
+            m_Renderer->clear(RenderView::getRenderView(RenderView::Scene)->getViewId());
         }
     }
 

@@ -44,27 +44,6 @@ void GameScene::buildMap()
     getCamera()->clearType = CameraClearType::CameraClearSkybox;
 
     m_Noise = new siv::PerlinNoise(std::random_device{});
-
-
-    bgfx::VertexLayout vlayout;
-    vlayout.begin()
-        .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-        .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
-        .end();
-
-    auto vdata = bgfx::makeRef(s_cubeVertices, sizeof(s_cubeVertices));
-    auto idata = bgfx::makeRef(s_cubeTriList, sizeof(s_cubeTriList));
-
-    Mesh* mesh = new Mesh();
-    mesh->init(vdata, vlayout, idata, sizeof(s_cubeTriList) / sizeof(uint16_t));
-
-    std::shared_ptr<Model> model = std::make_shared<Model>();
-    model->init(mesh, m_BlockMaterial);
-
-    SceneNode* node = createNode();
-    node->setModel(model);
-    node->getTransform().translate(glm::vec3(7.0, 20.0, 7.0));
-    node->getTransform().rotate(glm::vec3(0.0, 45.0, 0.0));
 }
 
 void GameScene::createChunkAt(int x, int z)
