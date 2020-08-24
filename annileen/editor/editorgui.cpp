@@ -293,8 +293,10 @@ namespace annileen
 		ImVec4 errorColor = ImVec4(1, 0, 0, 1);
 		ImVec4 warningColor = ImVec4(1, 1, 0, 1);
 
-		for (auto message : messages)
+		for (int messageId = static_cast<int>(messages.size()) - 1; messageId >= 0; --messageId)
 		{
+			Logger::Message message = messages[messageId];
+		
 			switch (message.m_Level)
 			{
 			case LoggingLevel::Error: ImGui::PushStyleColor(ImGuiCol_Text, errorColor); break;
