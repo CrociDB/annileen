@@ -1,12 +1,6 @@
-$input v_position, v_texcoord0, v_normal, v_view, v_shadowcoord
-
-#include <bgfx_shader.sh>
-#include "../default/annileen.sh"
-
-//uniform vec4 u_lightPos;
-
 SAMPLER2D(s_mainTex,  0);
 
+#if SHADOW_ENABLED
 //#define SHADOW_PACKED_DEPTH 0
 
 //#if SHADOW_PACKED_DEPTH
@@ -65,6 +59,7 @@ float PCF(Sampler _sampler, vec4 _shadowCoord, float _bias, vec2 _texelSize)
 
 	return result / 16.0;
 }
+#endif
 
 void main()
 {
@@ -89,15 +84,18 @@ void main()
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), light_specular_power);
 	vec3 specular = light_specular_strength * spec * u_lightColor.xyz;
 
+
+	vec3 a = ambient * tex.xyz;
+	vec3 d = diffuse * tex.xyz;
+	vec3 finalColor = a + (d + specular);
+
+	#if SHADOW_ENABLED
 	// shadow
 	float shadowMapBias = 0.0;
 	vec2 texelSize = vec2_splat(1.0/1024.0);
 	float visibility = PCF(s_shadowMap, v_shadowcoord, shadowMapBias, texelSize);
+	finalColor*= visibility;
+	#endif
 
-	vec3 a = ambient * tex.xyz;
-	vec3 d = diffuse * tex.xyz;
-	vec3 finalColor = a + (d + specular) * visibility;
-
-	//gl_FragColor = vec4(v_shadowcoord.xy/v_shadowcoord.w, 0.0, 1.0);
 	gl_FragColor = vec4(finalColor, 1.0);
 }

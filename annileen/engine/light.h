@@ -1,13 +1,12 @@
-#ifndef _LIGHT_H_
-#define _LIGHT_H_
+#pragma once
 
 #include <glm.hpp>
 
-#include "transform.h"
+#include <engine/transform.h>
 
 namespace annileen
 {
-    enum LightType
+    enum class LightType
     {
         Spot,
         Point,
@@ -17,11 +16,13 @@ namespace annileen
     class Light
     {
     public:
+        // Should this be moved to a parent component class? Will model be a "component"?
+        bool isStatic = false;
+        bool enabled = true;
+
         Transform transform;
         glm::vec3 color;
         LightType type;
         float intensity;
     };
 }
-
-#endif

@@ -28,9 +28,9 @@ namespace annileen
 			return 1;
 		}
 
-		m_Engine->setScene(scene);
-
 		scene->start();
+
+		m_Engine->setScene(scene);
 
 		while (m_Engine->run())
 		{

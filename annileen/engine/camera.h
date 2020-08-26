@@ -30,6 +30,10 @@ namespace annileen
         float m_NearClip;
         float m_FarClip;
     public:
+        // Should this be moved to a parent component class? Will model be a "component"?
+        bool isStatic;
+        bool enabled;
+
         inline Transform& transform() { return m_Transform; }
 
         // Clear types

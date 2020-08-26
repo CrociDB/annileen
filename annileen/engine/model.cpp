@@ -18,9 +18,9 @@ namespace annileen
 		return m_Material;
 	}
 
-	Model::Model() : m_Mesh(nullptr), m_Material(nullptr)
+	Model::Model() : m_Mesh(nullptr), m_Material(nullptr), castShadows(true), 
+		receiveShadows(true), isStatic(false), enabled(true)
 	{
-
 	}
 
 	Model::~Model()

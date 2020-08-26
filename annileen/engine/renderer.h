@@ -34,9 +34,7 @@ namespace annileen
 
         Shadow* m_Shadow;
         Camera* m_ActiveCamera;
-        std::list<Light*> m_SceneLights;
-        std::list<SceneNodePtr> m_SceneNodes;
-        Skybox* m_Skybox;
+        Scene* m_Scene;
 
         RenderView* m_SceneRenderView;
         RenderView* m_ShadowRenderView;
@@ -51,9 +49,8 @@ namespace annileen
         void init(Engine* engine);
 
         void setActiveCamera(Camera* camera);
-        void setSceneNodes(std::list<SceneNodePtr> sceneNodes);
-        void setSceneLights(std::list<Light*> sceneLights);
-        void setSkybox(Skybox* skybox) { m_Skybox = skybox; };
+        void setScene(Scene* scene);
+
         void render();
 
         void clear(bgfx::ViewId viewId, const glm::vec3& color) const;

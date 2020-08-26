@@ -87,7 +87,8 @@ namespace annileen
         return glm::value_ptr(m_ViewProjectionMatrix);
     }
 
-    Camera::Camera(float fov, float nearc, float farc) : m_FieldOfView(fov), m_NearClip(nearc), m_FarClip(farc)
+    Camera::Camera(float fov, float nearc, float farc) : m_FieldOfView(fov), m_NearClip(nearc), m_FarClip(farc), 
+        enabled(true), isStatic(false)
     {
         clearType = CameraClearType::CameraClearColor;
         clearColor = glm::vec3(0.156, 0.337, 0.360);

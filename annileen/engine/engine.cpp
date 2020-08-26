@@ -122,6 +122,9 @@ namespace annileen
 
         AssetManager* assetManager = new AssetManager(assetfile);
         ServiceProvider::provideAssetManager(assetManager);
+
+        Settings* settings = new Settings();
+        ServiceProvider::provideSettings(settings);
         //
 
         m_Renderer = new Renderer();
@@ -135,6 +138,7 @@ namespace annileen
 
         m_Running = true;
         m_Time.deltaTime = m_Time.unscaledDeltaTime = m_Time.time = 0;
+
 
         return 0;
     }
@@ -195,10 +199,10 @@ namespace annileen
         return m_Time;
     }
 
-
     void Engine::setScene(Scene* scene)
     {
         m_CurrentScene = scene;
+        m_Renderer->setScene(m_CurrentScene);
     }
 
     bool Engine::run()
@@ -254,10 +258,7 @@ namespace annileen
     {
         if (m_CurrentScene != nullptr)
         {
-            m_Renderer->setActiveCamera(m_CurrentScene->getCamera());
-            m_Renderer->setSceneLights(m_CurrentScene->getLightList());
-            m_Renderer->setSceneNodes(m_CurrentScene->getNodeList());
-            m_Renderer->setSkybox(m_CurrentScene->getSkybox());
+            m_Renderer->setActiveCamera(m_CurrentScene->getCamera());            
             m_Renderer->render();            
         }
 
@@ -295,6 +296,13 @@ namespace annileen
         if (assetManager != nullptr)
         {
             delete assetManager;
+        }
+
+        Settings* settings = ServiceProvider::getSettings();
+        ServiceProvider::provideSettings(nullptr);
+        if (settings != nullptr)
+        {
+            delete settings;
         }
 
         m_Gui->destroy();

@@ -4,6 +4,7 @@ namespace annileen
 {
 	Logger* ServiceProvider::m_LoggerService = nullptr;
 	AssetManager* ServiceProvider::m_AssetManagerService = nullptr;
+	Settings* ServiceProvider::m_SettingsService = nullptr;
 
 	void ServiceProvider::provideLogger(Logger* logger)
 	{
@@ -23,5 +24,15 @@ namespace annileen
 	AssetManager* ServiceProvider::getAssetManager()
 	{
 		return m_AssetManagerService;
+	}
+
+	void ServiceProvider::provideSettings(Settings* settings)
+	{
+		m_SettingsService = settings;
+	}
+
+	Settings* ServiceProvider::getSettings()
+	{
+		return m_SettingsService;
 	}
 }

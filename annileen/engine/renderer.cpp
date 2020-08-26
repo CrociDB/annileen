@@ -94,19 +94,14 @@ namespace annileen
         // TODO: update setup
     }
 
-    void Renderer::setSceneNodes(std::list<SceneNodePtr> sceneNodes)
+    void Renderer::setScene(Scene* scene)
     {
-        m_SceneNodes = sceneNodes;
-    }
-
-    void Renderer::setSceneLights(std::list<Light*> sceneLights)
-    {
-        m_SceneLights = sceneLights;
+        m_Scene = scene;
 
         // Setup lights
-        for (const auto& light : m_SceneLights)
+        for (const auto& light : m_Scene->getLightList())
         {
-            if (light->type == Directional)
+            if (light->type == LightType::Directional)
             {
                 m_Uniform.setVec3Uniform("u_lightDirection", light->transform.getForward());
                 m_Uniform.setVec3Uniform("u_lightColor", light->color);
@@ -120,41 +115,52 @@ namespace annileen
         // Temp: for shadows
         // Setup lights.            
         // Define matrices.
-        glm::vec3 lightPos = glm::vec3(0.0, 30.0, 0.0);
-        const glm::vec3 eye = lightPos;
-        const glm::vec3 at = glm::vec3(7.0f, 20.0f, 7.0f);
-        glm::mat4 lightView = glm::lookAt(eye, at, glm::vec3(0, 1, 0));
 
-        const float area = 30.0f;
-        glm::mat4 lightProj = glm::ortho(-area, area, -area, area, -100.0f, 100.0f);
-
-        // Setup shadow
-        bgfx::setViewRect(m_ShadowRenderView->getViewId(), 0, 0, m_Shadow->shadowMapSize, m_Shadow->shadowMapSize);
-        bgfx::setViewFrameBuffer(m_ShadowRenderView->getViewId(), m_Shadow->frameBuffer);
-        bgfx::setViewTransform(m_ShadowRenderView->getViewId(), glm::value_ptr(lightView), glm::value_ptr(lightProj));
-
-        // Clear backbuffer and shadowmap framebuffer at beginning.
-        bgfx::setViewClear(m_ShadowRenderView->getViewId(), BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
-
-        const float sy = m_Capabilities->originBottomLeft ? 0.5f : -0.5f;
-        const float sz = m_Capabilities->homogeneousDepth ? 0.5f : 1.0f;
-        const float tz = m_Capabilities->homogeneousDepth ? 0.5f : 0.0f;
-        const glm::mat4 mtxCrop =
-        {
-            0.5f, 0.0f, 0.0f, 0.0f,
-            0.0f,   sy, 0.0f, 0.0f,
-            0.0f, 0.0f, sz,   0.0f,
-            0.5f, 0.5f, tz,   1.0f,
-        };
-
-        glm::mat4 mtxShadow = mtxCrop * lightProj * lightView;
+        glm::mat4 mtxShadow;
         glm::mat4 lightMtx;
 
-        for (auto sceneNode : m_SceneNodes)
+        if (ServiceProvider::getSettings()->shadows)
         {
-            if (!sceneNode->hasModel() || !sceneNode->getAcive()) continue;
+            const glm::vec3 eye = glm::vec3(0.0, 30.0, 0.0);
+            const glm::vec3 at = glm::vec3(7.0f, 20.0f, 7.0f);
+            glm::mat4 lightView = glm::lookAt(eye, at, m_Scene->getLightList().front()->transform.getUp());
 
-            renderSceneNode(m_ShadowRenderView->getViewId(), nullptr, sceneNode, m_Shadow->material);
+            const float area = 30.0f;
+            glm::mat4 lightProj = glm::ortho(-area, area, -area, area, -100.0f, 100.0f);
+
+            // Setup shadow
+            bgfx::setViewRect(m_ShadowRenderView->getViewId(), 0, 0, m_Shadow->shadowMapSize, m_Shadow->shadowMapSize);
+            bgfx::setViewFrameBuffer(m_ShadowRenderView->getViewId(), m_Shadow->frameBuffer);
+            bgfx::setViewTransform(m_ShadowRenderView->getViewId(), glm::value_ptr(lightView), glm::value_ptr(lightProj));
+
+            // Clear backbuffer and shadowmap framebuffer at beginning.
+            bgfx::setViewClear(m_ShadowRenderView->getViewId(), BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
+
+            const float sy = m_Capabilities->originBottomLeft ? 0.5f : -0.5f;
+            const float sz = m_Capabilities->homogeneousDepth ? 0.5f : 1.0f;
+            const float tz = m_Capabilities->homogeneousDepth ? 0.5f : 0.0f;
+            const glm::mat4 mtxCrop =
+            {
+                0.5f, 0.0f, 0.0f, 0.0f,
+                0.0f,   sy, 0.0f, 0.0f,
+                0.0f, 0.0f, sz,   0.0f,
+                0.5f, 0.5f, tz,   1.0f,
+            };
+
+            mtxShadow = mtxCrop * lightProj * lightView;
+
+            for (auto sceneNode : m_Scene->getNodeList())
+            {
+                if (!sceneNode->hasModel() || !sceneNode->getAcive()) continue;
+
+                if (ServiceProvider::getSettings()->shadows && sceneNode->getModel()->castShadows)
+                {
+                    renderSceneNode(m_ShadowRenderView->getViewId(), nullptr, sceneNode, m_Shadow->material);
+                }
+            }
+
+            m_Uniform.setTextureUniform("s_shadowMap", m_Shadow->texture, m_Shadow->textureRegisterId);
+            m_Shadow->material->submitUniforms();
         }
 
         // Setup camera
@@ -167,23 +173,31 @@ namespace annileen
 
         m_Uniform.setVec3Uniform("u_viewPos", m_ActiveCamera->transform().position);
 
-        for (auto sceneNode : m_SceneNodes)
+        for (auto sceneNode : m_Scene->getNodeList())
         {
             if (!sceneNode->hasModel() || !sceneNode->getAcive()) continue;
 
-            lightMtx = mtxShadow * sceneNode->getTransform().getModelMatrix();
-            m_Uniform.setMat4Uniform("u_lightMtx", lightMtx);
-            m_Uniform.setTextureUniform("s_shadowMap",  m_Shadow->texture, m_Shadow->textureRegisterId);
+            if (ServiceProvider::getSettings()->shadows && sceneNode->getModel()->receiveShadows)
+            {
+                lightMtx = mtxShadow * sceneNode->getTransform().getModelMatrix();
+                m_Uniform.setMat4Uniform("u_lightMtx", lightMtx);                
+            }
 
-            m_Shadow->material->submitUniforms();
             renderSceneNode(m_SceneRenderView->getViewId(), nullptr, sceneNode, sceneNode->getModel()->getMaterial());
         }
 
         if (m_ActiveCamera->clearType == CameraClearType::CameraClearSkybox)
         {
-            bgfx::setViewRect(m_SkyboxRenderView->getViewId(), 0, 0, Engine::getInstance()->getWidth(), Engine::getInstance()->getHeight());
-            bgfx::setViewTransform(m_SkyboxRenderView->getViewId(), m_ActiveCamera->getViewRotationMatrixFloatArray(), m_ActiveCamera->getProjectionMatrixFloatArray());
-            renderSkybox(m_SkyboxRenderView->getViewId(), m_ActiveCamera, m_Skybox);
+            if (m_Scene->getSkybox() != nullptr)
+            {
+                bgfx::setViewRect(m_SkyboxRenderView->getViewId(), 0, 0, Engine::getInstance()->getWidth(), Engine::getInstance()->getHeight());
+                bgfx::setViewTransform(m_SkyboxRenderView->getViewId(), m_ActiveCamera->getViewRotationMatrixFloatArray(), m_ActiveCamera->getProjectionMatrixFloatArray());
+                renderSkybox(m_SkyboxRenderView->getViewId(), m_ActiveCamera, m_Scene->getSkybox());
+            }
+            else
+            {
+                ANNILEEN_LOG_WARNING(LoggingChannel::Renderer, "Camera clear type is set for skybox, but no skybox was set.");
+            }
         }
     }
 

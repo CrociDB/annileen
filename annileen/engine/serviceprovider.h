@@ -3,11 +3,13 @@
 //#include <engine/audio.h>
 #include <engine/core/logger.h>
 #include <engine/assetmanager.h>
+#include <engine/settings.h>
 
 namespace annileen
 {
 	class Logger;
 	class AssetManager;
+	class Settings;
 
 	class ServiceProvider final
 	{
@@ -18,6 +20,7 @@ namespace annileen
 		//static Audio* m_audioService;
 		static Logger* m_LoggerService;
 		static AssetManager* m_AssetManagerService;
+		static Settings* m_SettingsService;
 
 	public:
 		ServiceProvider(const ServiceProvider&) = delete;
@@ -35,5 +38,8 @@ namespace annileen
 
 		static void provideAssetManager(AssetManager* assetManager);
 		static AssetManager* getAssetManager();
+
+		static void provideSettings(Settings* settings);
+		static Settings* getSettings();
 	};
 }
