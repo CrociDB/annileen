@@ -19,6 +19,7 @@ namespace annileen
         // Should this be moved to a parent component class? Will model be a "component"?
         bool isStatic = false;
         bool enabled = true;
+        bool generateShadows = true;
 
         Transform transform;
         glm::vec3 color;

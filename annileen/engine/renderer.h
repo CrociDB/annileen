@@ -13,7 +13,6 @@ namespace annileen
 {
     struct Shadow
     {
-        uint16_t shadowMapSize;
         bool useShadowSampler;
         std::shared_ptr<Material> material;
         bgfx::FrameBufferHandle frameBuffer;

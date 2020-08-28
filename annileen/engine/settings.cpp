@@ -4,8 +4,11 @@ namespace annileen
 {
 	const char* Settings::settingsFileName = "TODO.txt";
 
-	Settings::Settings() : shadows(true)
+	Settings::Settings()
 	{
+		shadows.enabled = true;
+		shadows.shadowMapSize = 1024;
+
 		loadSettings();
 	}
 

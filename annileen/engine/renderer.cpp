@@ -20,8 +20,6 @@ namespace annileen
             .add(bgfx::Attrib::Normal, 4, bgfx::AttribType::Uint8, true, true)
             .end();
 
-        m_Shadow->shadowMapSize = 1024;
-
         // Shadow samplers are supported at least partially supported if texture
         // compare less equal feature is supported.
         m_Shadow->useShadowSampler = 0 != (m_Capabilities->supported & BGFX_CAPS_TEXTURE_COMPARE_LEQUAL);;
@@ -43,8 +41,8 @@ namespace annileen
         bgfx::TextureHandle fbtextures[] =
         {
             bgfx::createTexture2D(
-                  m_Shadow->shadowMapSize
-                , m_Shadow->shadowMapSize
+                  uint16_t(ServiceProvider::getSettings()->shadows.shadowMapSize)
+                , uint16_t(ServiceProvider::getSettings()->shadows.shadowMapSize)
                 , false
                 , 1
                 , bgfx::TextureFormat::D16
@@ -57,8 +55,8 @@ namespace annileen
         bgfx::TextureInfo textureInfo;
         bgfx::calcTextureSize(
             textureInfo,
-            uint16_t(m_Shadow->shadowMapSize),
-            uint16_t(m_Shadow->shadowMapSize),
+            uint16_t(ServiceProvider::getSettings()->shadows.shadowMapSize),
+            uint16_t(ServiceProvider::getSettings()->shadows.shadowMapSize),
             1,
             false,
             false,
@@ -96,9 +94,14 @@ namespace annileen
 
     void Renderer::setScene(Scene* scene)
     {
-        m_Scene = scene;
+        m_Scene = scene;   
+    }
 
-        // Setup lights
+    void Renderer::render()
+    {
+        Light* mainLightForShadows = nullptr;
+
+        // Set light properties and get first light that generate shadows to be main light for shadows.
         for (const auto& light : m_Scene->getLightList())
         {
             if (light->type == LightType::Directional)
@@ -107,29 +110,38 @@ namespace annileen
                 m_Uniform.setVec3Uniform("u_lightColor", light->color);
                 m_Uniform.setFloatUniform("u_lightIntensity", light->intensity);
             }
-        }
-    }
 
-    void Renderer::render()
-    {
-        // Temp: for shadows
-        // Setup lights.            
-        // Define matrices.
+            if (light->generateShadows && mainLightForShadows == nullptr)
+            {
+                mainLightForShadows = light;
+            }
+        }
 
         glm::mat4 mtxShadow;
         glm::mat4 lightMtx;
 
-        if (ServiceProvider::getSettings()->shadows)
+        if (ServiceProvider::getSettings()->shadows.enabled && mainLightForShadows != nullptr && mainLightForShadows->generateShadows)
         {
-            const glm::vec3 eye = glm::vec3(0.0, 30.0, 0.0);
-            const glm::vec3 at = glm::vec3(7.0f, 20.0f, 7.0f);
-            glm::mat4 lightView = glm::lookAt(eye, at, m_Scene->getLightList().front()->transform.getUp());
-
+            glm::mat4 lightView;
+            
+            if (mainLightForShadows->type == LightType::Directional)
+            {
+                lightView = glm::lookAt(mainLightForShadows->transform.getForward(), glm::vec3(0, 0, 0), mainLightForShadows->transform.getUp());
+            }
+            else
+            {
+                //TODO: This has to be tested as soon as we get other type of lights
+                glm::vec3 at = mainLightForShadows->transform.position + mainLightForShadows->transform.getForward();
+                lightView = glm::lookAt(mainLightForShadows->transform.position, at, mainLightForShadows->transform.getUp());
+            }
+            
             const float area = 30.0f;
             glm::mat4 lightProj = glm::ortho(-area, area, -area, area, -100.0f, 100.0f);
 
             // Setup shadow
-            bgfx::setViewRect(m_ShadowRenderView->getViewId(), 0, 0, m_Shadow->shadowMapSize, m_Shadow->shadowMapSize);
+            bgfx::setViewRect(m_ShadowRenderView->getViewId(), 0, 0, 
+                ServiceProvider::getSettings()->shadows.shadowMapSize, 
+                ServiceProvider::getSettings()->shadows.shadowMapSize);
             bgfx::setViewFrameBuffer(m_ShadowRenderView->getViewId(), m_Shadow->frameBuffer);
             bgfx::setViewTransform(m_ShadowRenderView->getViewId(), glm::value_ptr(lightView), glm::value_ptr(lightProj));
 
@@ -153,7 +165,7 @@ namespace annileen
             {
                 if (!sceneNode->hasModel() || !sceneNode->getAcive()) continue;
 
-                if (ServiceProvider::getSettings()->shadows && sceneNode->getModel()->castShadows)
+                if (ServiceProvider::getSettings()->shadows.enabled && sceneNode->getModel()->castShadows)
                 {
                     renderSceneNode(m_ShadowRenderView->getViewId(), nullptr, sceneNode, m_Shadow->material);
                 }
@@ -177,7 +189,7 @@ namespace annileen
         {
             if (!sceneNode->hasModel() || !sceneNode->getAcive()) continue;
 
-            if (ServiceProvider::getSettings()->shadows && sceneNode->getModel()->receiveShadows)
+            if (ServiceProvider::getSettings()->shadows.enabled && sceneNode->getModel()->receiveShadows)
             {
                 lightMtx = mtxShadow * sceneNode->getTransform().getModelMatrix();
                 m_Uniform.setMat4Uniform("u_lightMtx", lightMtx);                

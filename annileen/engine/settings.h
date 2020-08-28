@@ -2,7 +2,7 @@
 
 namespace annileen
 {
-    class Settings
+    class Settings final
     {
     private: 
         Settings();
@@ -15,7 +15,12 @@ namespace annileen
 
         friend class Engine;
     public:
+        struct Shadows
+        {
+            bool enabled;
+            size_t shadowMapSize;
+        };
 
-        bool shadows;
+        Shadows shadows;
     };
 }

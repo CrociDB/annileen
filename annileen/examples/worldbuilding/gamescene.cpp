@@ -9,7 +9,17 @@ using namespace annileen;
 void GameScene::buildMap()
 {
     auto texture = ServiceProvider::getAssetManager()->loadTexture("blocks.png");
-    Shader* shader = ServiceProvider::getAssetManager()->loadShader("voxel_shadow.vs", "voxel_shadow.fs");
+
+    Shader* shader = nullptr;
+
+    if (ServiceProvider::getSettings()->shadows.enabled)
+    {
+        shader = ServiceProvider::getAssetManager()->loadShader("voxel_shadow.vs", "voxel_shadow.fs");
+    }
+    else
+    {
+        shader = ServiceProvider::getAssetManager()->loadShader("voxel_noshadow.vs", "voxel_noshadow.fs");
+    }
 
     std::shared_ptr<ShaderPass> shaderPass = std::make_shared<ShaderPass>();
     shaderPass->init(shader);
@@ -34,7 +44,7 @@ void GameScene::buildMap()
     light->color = glm::vec3(1.0f, 1.0f, .8f);
     light->type = LightType::Directional;
     light->intensity = 0.8f;
-    light->transform.rotate(glm::vec3(-40.0f, 0.0f, 0.0f));
+    light->transform.rotate(glm::vec3(-40.0f, 0.0f, -40.0f));
 
     this->addLight(light);
 
