@@ -91,10 +91,10 @@ void main()
 
 	#if SHADOW_ENABLED
 	// shadow
-	float shadowMapBias = 0.0;
+	float shadowMapBias = 0.001;
 	vec2 texelSize = vec2_splat(1.0/1024.0);
 	float visibility = PCF(s_shadowMap, v_shadowcoord, shadowMapBias, texelSize);
-	finalColor*= visibility;
+	finalColor = a + (d + specular) * visibility;
 	#endif
 
 	gl_FragColor = vec4(finalColor, 1.0);
