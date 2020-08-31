@@ -32,7 +32,7 @@ namespace annileen
             | (m_Shadow->useShadowSampler ? 0 : BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A)
             | BGFX_STATE_WRITE_Z
             | BGFX_STATE_DEPTH_TEST_LESS
-            | BGFX_STATE_CULL_CCW
+            | BGFX_STATE_CULL_CW
             | BGFX_STATE_MSAA);
 
         m_Shadow->material = std::make_shared<Material>();
@@ -127,6 +127,7 @@ namespace annileen
             if (mainLightForShadows->type == LightType::Directional)
             {
                 lightView = glm::lookAt(mainLightForShadows->transform.getForward(), glm::vec3(0, 0, 0), mainLightForShadows->transform.getUp());
+                lightView = glm::translate(lightView, -m_ActiveCamera->transform().position);
             }
             else
             {
