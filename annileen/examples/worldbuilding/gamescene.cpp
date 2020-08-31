@@ -76,6 +76,11 @@ void GameScene::removeFarthestChunk()
 
     for (const auto& c : m_AvailableChunks)
     {
+        if (c.second == nullptr)
+        {
+            continue;
+        }
+
         auto d = glm::abs(glm::length(cameraPos - c.second->getSceneNode()->getTransform().position));
         if (dist < d)
         {
@@ -88,8 +93,8 @@ void GameScene::removeFarthestChunk()
     if (k)
     {
         auto chunk = m_AvailableChunks.at(ikill);
-        removeChunk(chunk);
         m_AvailableChunks.erase(ikill);
+        removeChunk(chunk);
         delete chunk;
     }
 }
@@ -114,7 +119,7 @@ void GameScene::start()
 {
     buildMap();
     
-    getCamera()->transform().position = glm::vec3(0.0f, 40.0f, 0.0f);
+    getCamera()->transform().position = glm::vec3(0.0f, 70.0f, 0.0f);
 }
 
 void GameScene::update()
@@ -142,14 +147,15 @@ void GameScene::update()
         removeFarthestChunk();
     }
 
-    /*for (int x = cx - GAME_CHUNK_RADIUS; x < cx + GAME_CHUNK_RADIUS; x++)
+    for (int x = cx - GAME_CHUNK_RADIUS; x < cx + GAME_CHUNK_RADIUS; x++)
     {
         for (int z = cz - GAME_CHUNK_RADIUS; z < cz + GAME_CHUNK_RADIUS; z++)
-        {*/
-			uint64_t ca = (uint32_t)cx | (((uint64_t)cz) << 32);
-            if (m_AvailableChunks.count(ca) == 0 && std::find(m_ChunksToCreate.begin(), m_ChunksToCreate.end(), ca) == m_ChunksToCreate.end())
+        {
+			uint64_t ca = (uint32_t)x | (((uint64_t)z) << 32);
+            if (m_AvailableChunks.count(ca) == 0)
             {
-				m_ChunksToCreate.push_back(ca);
+                if (std::find(m_ChunksToCreate.begin(), m_ChunksToCreate.end(), ca) == m_ChunksToCreate.end())
+				    m_ChunksToCreate.push_back(ca);
             }
 
             if (m_AvailableChunks.count(ca) > 0)
@@ -157,8 +163,8 @@ void GameScene::update()
                 auto chunk = m_AvailableChunks.at(ca);
                 addChunk(chunk);
             }
-     /*   }
-    }*/
+        }
+    }
 }
 
 GameScene::GameScene()

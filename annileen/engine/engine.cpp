@@ -265,6 +265,11 @@ namespace annileen
         bgfx::frame();
     }
 
+    void Engine::releaseMem(void* _ptr, void* _userData)
+    {
+        delete[] _ptr;
+    }
+
     Engine::Engine()
     {
         m_Input = std::make_shared<Input>();

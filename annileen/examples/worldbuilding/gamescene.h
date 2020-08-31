@@ -12,7 +12,7 @@
 
 #include "chunk.h"
 
-#define GAME_CHUNK_RADIUS           3
+#define GAME_CHUNK_RADIUS           5
 #define GAME_CHUNK_MAX              (GAME_CHUNK_RADIUS * GAME_CHUNK_RADIUS * 4) + (GAME_CHUNK_RADIUS * 10)
 
 using namespace annileen;

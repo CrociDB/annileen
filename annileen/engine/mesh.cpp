@@ -2,28 +2,27 @@
 
 using namespace annileen;
 
-void Mesh::init(const bgfx::Memory* vertexData, bgfx::VertexLayout vertexLayout, const bgfx::Memory* indexData, uint16_t indexCount)
+void Mesh::init(const bgfx::Memory* vertexData, bgfx::VertexLayout vertexLayout, const bgfx::Memory* indexData)
 {
-	m_VertexData = vertexData;
-	m_IndexData = indexData;
-	m_IndexCount = indexCount;
 	m_HasIndices = (indexData != nullptr);
 
-	m_VertexBufferHandle = bgfx::createVertexBuffer(m_VertexData, vertexLayout);
+	m_VertexBufferHandle = bgfx::createVertexBuffer(vertexData, vertexLayout);
 	if (m_HasIndices)
-		m_IndexBufferHandle = bgfx::createIndexBuffer(m_IndexData);
+		m_IndexBufferHandle = bgfx::createIndexBuffer(indexData);
 }
 
 void Mesh::init(const bgfx::Memory* vertexData, bgfx::VertexLayout vertexLayout)
 {
-	init(vertexData, vertexLayout, nullptr, 0);
+	init(vertexData, vertexLayout, nullptr);
 }
 
 void Mesh::unload()
 {
 	bgfx::destroy(m_VertexBufferHandle);
 	if (m_HasIndices)
+	{
 		bgfx::destroy(m_IndexBufferHandle);
+	}
 }
 
 Mesh::Mesh()

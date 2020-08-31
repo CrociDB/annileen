@@ -100,6 +100,7 @@ namespace annileen
         void checkInputEvents();
         void renderFrame();
 
+        static void releaseMem(void* _ptr, void* _userData);
         static bx::DefaultAllocator* getAllocator() { return &getInstance()->s_Allocator; }
         static Engine* getInstance();
         ~Engine();

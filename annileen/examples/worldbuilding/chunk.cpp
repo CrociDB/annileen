@@ -15,8 +15,7 @@ void Chunk::generateMesh()
 
     int meshSize;
     int indexSize;
-    int* indexes = nullptr;
-    float* meshData = generateMeshData(&meshSize, &indexes, &indexSize);
+    float* meshData = generateMeshData(&meshSize);
 
     bgfx::VertexLayout vlayout;
     vlayout.begin()
@@ -26,22 +25,45 @@ void Chunk::generateMesh()
         .end();
 
 
-    m_Mesh->init(bgfx::makeRef(meshData, meshSize * sizeof(float)), vlayout);
+    m_Mesh->init(bgfx::makeRef(meshData, meshSize * sizeof(float), Engine::releaseMem), vlayout);
 
     m_Model = std::make_shared<Model>();
     m_Model->init(m_Mesh, m_Material);
 }
 
-float* Chunk::generateMeshData(int* meshSize, int** indexes, int* indexSize)
+float* Chunk::generateMeshData(int* meshSize)
 {
+    size_t ds = 0;
+    for (int x = 0; x < CHUNK_WIDTH; x++)
+    {
+        for (int y = 0; y < CHUNK_HEIGHT; y++)
+        {
+            for (int z = 0; z < CHUNK_DEPTH; z++)
+            {
+                int i = GRID_AT(x, y, z);
 
-    int vertices = sizeof(DATA_CUBE_VERTICES) / sizeof(float);
-    int uvs = sizeof(DATA_CUBE_NORMALIZED_UVS) / sizeof(float);
-    int normals = sizeof(DATA_CUBE_NORMALS) / sizeof(float);
-    int data_size = CHUNK_TOTAL_VOXELS * (vertices + uvs + normals);
+                if (m_Grid[i] == BlockEmpty)
+                {
+                    continue;
+                }
 
-    float* data = new float[data_size];
-    int* index_list = new int[CHUNK_TOTAL_VOXELS * (vertices / 3)];
+                for (int f = 0; f < 6; f++)
+                {
+                    bool showFace = gridEmpty(x + DATA_CUBE_VALIDATIONS[f][0],
+                        y + DATA_CUBE_VALIDATIONS[f][1],
+                        z + DATA_CUBE_VALIDATIONS[f][2]);
+
+                    if (showFace)
+                    {
+                        ds += 6 * (3 + 2 + 3);
+                    }
+                }
+
+            }
+        }
+    }
+
+    float* data = new float[ds + 1];
     int data_i = 0;
     int data_index = 0;
 
@@ -87,9 +109,6 @@ float* Chunk::generateMeshData(int* meshSize, int** indexes, int* indexSize)
                             data[data_i++] = DATA_CUBE_NORMALS[f][jv];
                             data[data_i++] = DATA_CUBE_NORMALS[f][jv + 1];
                             data[data_i++] = DATA_CUBE_NORMALS[f][jv + 2];
-
-                            index_list[data_index] = data_index;
-                            data_index++;
                         }
                     }
                 }
@@ -99,8 +118,6 @@ float* Chunk::generateMeshData(int* meshSize, int** indexes, int* indexSize)
     }
 
     (*meshSize) = (data_i + 1);
-    (*indexes) = index_list;
-    (*indexSize) = data_index;
     return data;
 }
 

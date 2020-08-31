@@ -11,7 +11,7 @@
 #include "data.h"
 
 #define CHUNK_WIDTH             16
-#define CHUNK_HEIGHT            32
+#define CHUNK_HEIGHT            90
 #define CHUNK_DEPTH             16
 #define CHUNK_TOTAL_VOXELS      CHUNK_WIDTH * CHUNK_HEIGHT * CHUNK_DEPTH
 #define CHUNK_PERIOD            6
@@ -19,7 +19,7 @@
 
 using namespace annileen;
 
-enum BlockType
+enum BlockType : uint8_t
 {
     BlockEmpty = -1,
     BlockDirt = 0,
@@ -44,7 +44,7 @@ private:
     SceneNodePtr m_Node = nullptr;
 
     void generateMesh();
-    float* generateMeshData(int* meshSize, int** indexes, int* indexSize);
+    float* generateMeshData(int* meshSize);
 
     bool gridEmpty(int x, int y, int z);
 
