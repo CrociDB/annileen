@@ -170,25 +170,15 @@ namespace annileen
 			ImGuiTreeNodeFlags_OpenOnDoubleClick |
 			ImGuiTreeNodeFlags_SpanAvailWidth;
 
-		std::string name = sceneNode->getName();
-		if (sceneNode->hasModel())
-		{
-			name += " (M)";
-		}
-		if (sceneNode->getAcive())
-		{
-			name += " (A)";
-		}
-
 		std::vector<SceneNodePtr> nodeChildren = sceneNode->getChildren();
 
 		if (nodeChildren.empty())
 		{
-			ImGui::Text(name.c_str());
+			ImGui::Text(sceneNode->name.c_str());
 		}
 		else
 		{
-			if (ImGui::TreeNodeEx(name.c_str(), node_flags))
+			if (ImGui::TreeNodeEx(sceneNode->name.c_str(), node_flags))
 			{
 				for (auto childNode : nodeChildren)
 				{

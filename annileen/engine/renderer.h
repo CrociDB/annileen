@@ -42,7 +42,7 @@ namespace annileen
         void initializeShadows();
 
         void renderSkybox(bgfx::ViewId viewId, Camera* camera, Skybox* skybox);
-        void renderSceneNode(bgfx::ViewId viewId, Scene* scene, SceneNodePtr node, std::shared_ptr<Material> material);
+        void renderSceneNode(bgfx::ViewId viewId, ModelPtr model, std::shared_ptr<Material> material);
 
     public:
         void init(Engine* engine);

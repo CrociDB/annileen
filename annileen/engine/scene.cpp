@@ -1,4 +1,5 @@
-#include "scene.h"
+#include <engine/scene.h>
+#include <engine/serviceprovider.h>
 
 namespace annileen
 {
@@ -22,11 +23,6 @@ namespace annileen
         delete node;
     }
 
-    void Scene::addLight(Light* light)
-    {
-        m_Lights.push_back(light);
-    }
-
     void Scene::clearNodeList()
     {
         /*for (auto node : m_Root->getChildren())
@@ -47,21 +43,34 @@ namespace annileen
         return m_Lights;
     }
 
-    Camera* Scene::getCamera()
+    std::list<Camera*>& Scene::getCameraList()
     {
-        return m_Camera;
+        return m_Cameras;
     }
 
-    Scene::Scene()
+    Camera* Scene::getCamera()
     {
-        m_Camera = new Camera(60.0f, 0.1f, 300.0f);
+        for (auto camera : m_Cameras)
+        {
+            if (camera->enabled)
+            {
+                return camera;
+            }
+        }
+
+        ANNILEEN_LOG_ERROR(LoggingChannel::General, "Cannot find an active camera in the scene.");
+        return nullptr;
+    }
+
+    Scene::Scene() : fog()
+    {
+        //m_Camera = new Camera(60.0f, 0.1f, 300.0f);
         m_Root = new SceneNode();
     }
 
     Scene::~Scene()
     {
         if (m_Skybox != nullptr) delete m_Skybox;
-        delete m_Camera;
         delete m_Root;
     }
 }

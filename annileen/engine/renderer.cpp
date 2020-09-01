@@ -1,6 +1,10 @@
 #include <iostream>
 #include <engine/renderer.h>
 #include <engine/serviceprovider.h>
+#include <engine/shaderpass.h>
+#include <engine/material.h>
+#include <engine/model.h>
+#include <engine/mesh.h>
 
 namespace annileen
 {
@@ -100,13 +104,13 @@ namespace annileen
     void Renderer::render()
     {
         Light* mainLightForShadows = nullptr;
-
+        
         // Set light properties and get first light that generate shadows to be main light for shadows.
         for (const auto& light : m_Scene->getLightList())
         {
             if (light->type == LightType::Directional)
             {
-                m_Uniform.setVec3Uniform("u_lightDirection", light->transform.getForward());
+                m_Uniform.setVec3Uniform("u_lightDirection", light->getTransform().getForward());
                 m_Uniform.setVec3Uniform("u_lightColor", light->color);
                 m_Uniform.setFloatUniform("u_lightIntensity", light->intensity);
             }
@@ -126,14 +130,14 @@ namespace annileen
             
             if (mainLightForShadows->type == LightType::Directional)
             {
-                lightView = glm::lookAt(mainLightForShadows->transform.getForward(), glm::vec3(0, 0, 0), mainLightForShadows->transform.getUp());
-                lightView = glm::translate(lightView, -m_ActiveCamera->transform().position);
+				lightView = glm::lookAt(mainLightForShadows->getTransform().getForward(), glm::vec3(0, 0, 0), mainLightForShadows->getTransform().getUp());
+                lightView = glm::translate(lightView, -m_ActiveCamera->getTransform().position);
             }
             else
             {
                 //TODO: This has to be tested as soon as we get other type of lights
-                glm::vec3 at = mainLightForShadows->transform.position + mainLightForShadows->transform.getForward();
-                lightView = glm::lookAt(mainLightForShadows->transform.position, at, mainLightForShadows->transform.getUp());
+                glm::vec3 at = mainLightForShadows->getTransform().position + mainLightForShadows->getTransform().getForward();
+                lightView = glm::lookAt(mainLightForShadows->getTransform().position, at, mainLightForShadows->getTransform().getUp());
             }
             
             const float area = 50.0f;
@@ -164,11 +168,13 @@ namespace annileen
 
             for (auto sceneNode : m_Scene->getNodeList())
             {
-                if (!sceneNode->hasModel() || !sceneNode->getAcive()) continue;
+                ModelPtr model = sceneNode->getModule<Model>();
 
-                if (ServiceProvider::getSettings()->shadows.enabled && sceneNode->getModel()->castShadows)
+                if (model == nullptr || !sceneNode->getAcive()) continue;
+
+                if (ServiceProvider::getSettings()->shadows.enabled && model->castShadows)
                 {
-                    renderSceneNode(m_ShadowRenderView->getViewId(), nullptr, sceneNode, m_Shadow->material);
+                    renderSceneNode(m_ShadowRenderView->getViewId(), model, m_Shadow->material);
                 }
             }
 
@@ -193,19 +199,21 @@ namespace annileen
         // Clear backbuffer and shadowmap framebuffer at beginning.
         bgfx::setViewClear(m_SceneRenderView->getViewId(), BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
 
-        m_Uniform.setVec3Uniform("u_viewPos", m_ActiveCamera->transform().position);
+        m_Uniform.setVec3Uniform("u_viewPos", m_ActiveCamera->getTransform().position);
 
         for (auto sceneNode : m_Scene->getNodeList())
         {
-            if (!sceneNode->hasModel() || !sceneNode->getAcive()) continue;
+            ModelPtr model = sceneNode->getModule<Model>();
 
-            if (ServiceProvider::getSettings()->shadows.enabled && sceneNode->getModel()->receiveShadows)
+            if (model == nullptr|| !sceneNode->getAcive()) continue;
+
+            if (ServiceProvider::getSettings()->shadows.enabled && model->receiveShadows)
             {
                 lightMtx = mtxShadow * sceneNode->getTransform().getModelMatrix();
                 m_Uniform.setMat4Uniform("u_lightMtx", lightMtx);                
             }
 
-            renderSceneNode(m_SceneRenderView->getViewId(), nullptr, sceneNode, sceneNode->getModel()->getMaterial());
+            renderSceneNode(m_SceneRenderView->getViewId(), model, model->getMaterial());
         }
 
         if (m_ActiveCamera->clearType == CameraClearType::CameraClearSkybox)
@@ -258,14 +266,14 @@ namespace annileen
         }
     }
 
-    void Renderer::renderSceneNode(bgfx::ViewId viewId, Scene* scene, SceneNodePtr node, std::shared_ptr<Material> material)
+    void Renderer::renderSceneNode(bgfx::ViewId viewId, ModelPtr model, std::shared_ptr<Material> material)
     {
         material->submitUniforms();
 
-        bgfx::setTransform(glm::value_ptr(node->getTransform().getModelMatrix()));
-        bgfx::setVertexBuffer(0, node->getModel()->getMesh()->getVertexBuffer());
-        if (node->getModel()->getMesh()->hasIndices()) 
-            bgfx::setIndexBuffer(node->getModel()->getMesh()->getIndexBuffer());
+        bgfx::setTransform(glm::value_ptr(model->getTransform().getModelMatrix()));
+        bgfx::setVertexBuffer(0, model->getMesh()->getVertexBuffer());
+        if (model->getMesh()->hasIndices()) 
+            bgfx::setIndexBuffer(model->getMesh()->getIndexBuffer());
         
         for (int shaderPassId = 0; shaderPassId < material->getNumberOfShaderPasses(); ++shaderPassId)
         {

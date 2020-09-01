@@ -5,12 +5,12 @@
 #include <vector>
 #include <map>
 
-#include <engine/shaderpass.h>
-#include <engine/texture.h>
-#include <engine/cubemap.h>
-
 namespace annileen
 {
+    class ShaderPass;
+    class Texture;
+    class Cubemap;
+
     class Material
     {
     private:

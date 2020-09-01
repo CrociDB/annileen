@@ -1,5 +1,6 @@
 #include "chunk.h"
-#include "engine/engine.h"
+#include <engine/engine.h>
+#include <engine/mesh.h>
 
 #define GRID_AT(X, Y, Z)        Z + Y * CHUNK_WIDTH + X * CHUNK_HEIGHT * CHUNK_DEPTH
 
@@ -27,7 +28,7 @@ void Chunk::generateMesh()
 
     m_Mesh->init(bgfx::makeRef(meshData, meshSize * sizeof(float), Engine::releaseMem), vlayout);
 
-    m_Model = std::make_shared<Model>();
+    m_Model = new Model();
     m_Model->init(m_Mesh, m_Material);
 }
 
@@ -216,7 +217,8 @@ SceneNodePtr Chunk::getSceneNode()
     if (m_Node == nullptr)
     {
         m_Node = Engine::getInstance()->getScene()->createNode();
-        m_Node->setModel(m_Model);
+        
+        m_Node->addModule<Model>(m_Model);
 
         m_Node->getTransform().position = glm::vec3(
             m_WorldX * CHUNK_WIDTH,

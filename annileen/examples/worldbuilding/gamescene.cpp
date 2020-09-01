@@ -3,6 +3,7 @@
 #include <engine/engine.h>
 #include <engine/skybox.h>
 #include <engine/serviceprovider.h>
+#include <engine/shaderpass.h>
 
 using namespace annileen;
 
@@ -41,12 +42,19 @@ void GameScene::buildMap()
     fog.power = 1.3f;
 
     Light* light = new Light();
+    SceneNodePtr lightNode = createNode();
+    lightNode->name = "Light";
+    lightNode->addModule<Light>(light);
+
     light->color = glm::vec3(1.0f, 1.0f, .8f);
     light->type = LightType::Directional;
     light->intensity = 0.8f;
-    light->transform.rotate(glm::vec3(-40.0f, 0.0f, -40.0f));
+    light->getTransform().rotate(glm::vec3(-40.0f, 0.0f, -40.0f));
 
-    this->addLight(light);
+    Camera* camera = new Camera(60.0f, 0.1f, 300.0f);
+    SceneNodePtr cameraNode = createNode();
+    cameraNode->name = "Camera";
+    cameraNode->addModule<Camera>(camera);
 
     auto cubemap = ServiceProvider::getAssetManager()->loadCubemap("skybox.toml");
     auto skybox = new Skybox(cubemap);
@@ -68,7 +76,7 @@ void GameScene::createChunkAt(int x, int z)
 
 void GameScene::removeFarthestChunk()
 {
-    auto cameraPos = getCamera()->transform().position;
+    auto cameraPos = getCamera()->getTransform().position;
 
     bool k = false;
     uint64_t ikill;
@@ -119,7 +127,7 @@ void GameScene::start()
 {
     buildMap();
     
-    getCamera()->transform().position = glm::vec3(0.0f, 70.0f, 0.0f);
+    getCamera()->getTransform().position = glm::vec3(0.0f, 70.0f, 0.0f);
 }
 
 void GameScene::update()
@@ -128,7 +136,7 @@ void GameScene::update()
     // TODO: the render/occlusion part will have to be moved over to a better place later
     //clearChunks();
 
-    auto cameraPos = getCamera()->transform().position;
+    auto cameraPos = getCamera()->getTransform().position;
     int cx = static_cast<int>(cameraPos.x / CHUNK_WIDTH);
     int cz = static_cast<int>(cameraPos.z / CHUNK_DEPTH);
 

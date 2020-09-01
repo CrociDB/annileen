@@ -1,6 +1,7 @@
+#include <algorithm>
 #include <engine/scenenode.h>
 #include <engine/scene.h>
-#include <algorithm>
+#include <engine/serviceprovider.h>
 
 namespace annileen
 {
@@ -32,26 +33,6 @@ namespace annileen
 	Transform& SceneNode::getTransform()
 	{
 		return m_Transform;
-	}
-
-	bool SceneNode::hasModel()
-	{
-		return m_Model.use_count() >= 0;
-	}
-
-	void SceneNode::setModel(std::shared_ptr<Model> model)
-	{
-		m_Model = model;
-	}
-
-	std::shared_ptr<Model> SceneNode::getModel()
-	{
-		return m_Model;
-	}
-
-	std::string SceneNode::getName() const
-	{
-		return m_Name;
 	}
 
 	void SceneNode::addChild(SceneNodePtr node)
@@ -99,7 +80,6 @@ namespace annileen
 
 	SceneNode::SceneNode() : m_Parent(nullptr), m_Active(true)
 	{
-		m_Model.reset();
 	}
 
 	SceneNode::~SceneNode()
@@ -109,4 +89,6 @@ namespace annileen
 			delete children;
 		}*/
 	}
+
+	
 }

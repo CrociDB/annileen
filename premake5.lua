@@ -100,6 +100,7 @@ project "annileen"
 	{
 		path.join(ANNILEEN_DIR, "engine/*"),
 		path.join(ANNILEEN_DIR, "engine/core/*"),
+		path.join(ANNILEEN_DIR, "engine/text/*"),	
 		path.join(ANNILEEN_DIR, "imgui-utils/*"),
 		path.join(BIMG_DIR, "src/image_decode.cpp"),
 

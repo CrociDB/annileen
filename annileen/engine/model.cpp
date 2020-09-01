@@ -18,7 +18,7 @@ namespace annileen
 		return m_Material;
 	}
 
-	Model::Model() : m_Mesh(nullptr), m_Material(nullptr), castShadows(true), 
+	Model::Model() : SceneNodeModule(), m_Mesh(nullptr), m_Material(nullptr), castShadows(true), 
 		receiveShadows(true), isStatic(false), enabled(true)
 	{
 	}

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <engine/transform.h>
-#include <glm.hpp>
+#include <engine/scenenodemodule.h>
 
 namespace annileen
 {
@@ -14,11 +14,9 @@ namespace annileen
         CameraClearNone
     };
 
-    class Camera
+    class Camera final : public SceneNodeModule
     {
     private:
-        Transform m_Transform;
-
         glm::mat4 m_ViewMatrix;
         glm::mat4 m_ViewRotationMatrix;
         glm::mat4 m_ProjectionMatrix;
@@ -33,8 +31,6 @@ namespace annileen
         // Should this be moved to a parent component class? Will model be a "component"?
         bool isStatic;
         bool enabled;
-
-        inline Transform& transform() { return m_Transform; }
 
         // Clear types
         CameraClearType clearType;
@@ -61,4 +57,6 @@ namespace annileen
         Camera(float fov, float nearc, float farc);
         ~Camera();
     };
+
+    typedef Camera* CameraPtr;
 }

@@ -1,6 +1,9 @@
 #include <engine/engine.h>
 #include <engine/skybox.h>
 #include <engine/serviceprovider.h>
+#include <engine/shaderpass.h>
+#include <engine/material.h>
+#include <engine/mesh.h>
 
 namespace annileen
 {

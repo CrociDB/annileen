@@ -3,12 +3,15 @@
 #include <iostream>
 #include <vector>
 
-#include "mesh.h"
-#include "material.h"
+#include <engine/scenenodemodule.h>
 
 namespace annileen
 {
-	class Model
+	class SceneNodeModule;
+	class Mesh;
+	class Material; 
+
+	class Model final : public SceneNodeModule
 	{
 	private:
 		Mesh* m_Mesh = nullptr;
@@ -30,4 +33,6 @@ namespace annileen
 		Model();
 		~Model();
 	};
+
+	typedef Model* ModelPtr;
 }

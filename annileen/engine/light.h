@@ -3,6 +3,7 @@
 #include <glm.hpp>
 
 #include <engine/transform.h>
+#include <engine/scenenodemodule.h>
 
 namespace annileen
 {
@@ -13,7 +14,7 @@ namespace annileen
         Directional
     };
 
-    class Light
+    class Light final : public SceneNodeModule
     {
     public:
         // Should this be moved to a parent component class? Will model be a "component"?
@@ -21,9 +22,10 @@ namespace annileen
         bool enabled = true;
         bool generateShadows = true;
 
-        Transform transform;
         glm::vec3 color;
         LightType type;
         float intensity;
     };
+
+    typedef Light* LightPtr;
 }

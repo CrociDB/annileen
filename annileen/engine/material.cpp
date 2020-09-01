@@ -1,6 +1,11 @@
 #include <engine/material.h>
 #include <engine/engine.h>
 
+//#include <engine/shaderpass.h>
+//#include <engine/texture.h>
+//#include <engine/cubemap.h>
+
+
 namespace annileen
 {
     void Material::addShaderPass(std::shared_ptr<ShaderPass> shaderPass)

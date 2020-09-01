@@ -40,7 +40,7 @@ private:
 
     std::shared_ptr<Material> m_Material;
     Mesh* m_Mesh = nullptr;
-    std::shared_ptr<Model> m_Model = nullptr;
+    ModelPtr m_Model = nullptr;
     SceneNodePtr m_Node = nullptr;
 
     void generateMesh();
