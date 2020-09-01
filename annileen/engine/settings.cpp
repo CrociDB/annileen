@@ -7,7 +7,7 @@ namespace annileen
 	Settings::Settings()
 	{
 		shadows.enabled = true;
-		shadows.shadowMapSize = 1024;
+		shadows.shadowMapSize = 4096;
 
 		loadSettings();
 	}

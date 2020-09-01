@@ -136,7 +136,7 @@ namespace annileen
                 lightView = glm::lookAt(mainLightForShadows->transform.position, at, mainLightForShadows->transform.getUp());
             }
             
-            const float area = 30.0f;
+            const float area = 50.0f;
             glm::mat4 lightProj = glm::ortho(-area, area, -area, area, -100.0f, 100.0f);
 
             // Setup shadow
@@ -175,6 +175,15 @@ namespace annileen
             m_Uniform.setTextureUniform("s_shadowMap", m_Shadow->texture, m_Shadow->textureRegisterId);
             m_Shadow->material->submitUniforms();
         }
+
+        // Setup fog
+        glm::vec3 settings{
+            m_Scene->fog.distance,
+            m_Scene->fog.power,
+            m_Scene->fog.enabled,
+        };
+        m_Uniform.setVec3Uniform("u_fogSettings", settings);
+        m_Uniform.setVec3Uniform("u_fogColor", m_Scene->fog.color);
 
         // Setup camera
         m_ActiveCamera->updateMatrices();

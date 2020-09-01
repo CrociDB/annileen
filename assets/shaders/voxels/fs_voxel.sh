@@ -97,5 +97,7 @@ void main()
 	finalColor = a + (d + specular) * visibility;
 	#endif
 
+	finalColor = mix(finalColor, u_fogColor.xyz, clamp(pow(length(viewDist) / u_fogSettings.x, u_fogSettings.y), 0.0, 1.0) * u_fogSettings.z);
+
 	gl_FragColor = vec4(finalColor, 1.0);
 }

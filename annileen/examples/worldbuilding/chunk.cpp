@@ -150,8 +150,8 @@ void Chunk::generateGrid()
         for (int z = 0; z < CHUNK_DEPTH; z++)
         {
 			float noise0 = m_Noise->accumulatedOctaveNoise2D_0_1(
-				(float)((m_WorldX * CHUNK_WIDTH) + (float)x) / (float)(CHUNK_WIDTH * CHUNK_PERIOD) * 0.3,
-				(float)((m_WorldZ * CHUNK_DEPTH) + (float)z) / (float)(CHUNK_DEPTH * CHUNK_PERIOD) * 0.3,
+				(float)((m_WorldX * CHUNK_WIDTH) + (float)x) / (float)(CHUNK_WIDTH * CHUNK_PERIOD) * 0.4,
+				(float)((m_WorldZ * CHUNK_DEPTH) + (float)z) / (float)(CHUNK_DEPTH * CHUNK_PERIOD) * 0.4,
 				1) * .8f + .2f;
 
             float noise = m_Noise->accumulatedOctaveNoise2D_0_1(
@@ -164,10 +164,10 @@ void Chunk::generateGrid()
 
 			noise *= noise0;
 
-            int base = (int)(.3f * CHUNK_HEIGHT);
+            int base = (int)(.2f * CHUNK_HEIGHT);
             int sy = (int)(noise * (CHUNK_HEIGHT - base)) + base;
 
-            if (sy < (.48f * CHUNK_HEIGHT))
+            if (sy < (.38f * CHUNK_HEIGHT))
             {
                 for (int y = sy; y >= 0; y--)
                 {
@@ -178,7 +178,7 @@ void Chunk::generateGrid()
 						m_Grid[i] = BlockSand;
                 }
             }
-			else if (sy > (.78f * CHUNK_HEIGHT))
+			else if (sy > (.65f * CHUNK_HEIGHT))
 			{
 				for (int y = sy; y >= 0; y--)
 				{
