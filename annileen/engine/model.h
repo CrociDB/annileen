@@ -3,7 +3,8 @@
 #include <iostream>
 #include <vector>
 
-#include <engine/scenenodemodule.h>
+#include "scenenodemodule.h"
+#include "mesh.h"
 
 namespace annileen
 {
@@ -14,7 +15,7 @@ namespace annileen
 	class Model final : public SceneNodeModule
 	{
 	private:
-		Mesh* m_Mesh = nullptr;
+		MeshGroup* m_MeshGroup = nullptr;
 		std::shared_ptr<Material> m_Material = nullptr;
 
 	public:
@@ -25,9 +26,9 @@ namespace annileen
 		bool isStatic;
 		bool enabled;
 
-		void init(Mesh* mesh, std::shared_ptr<Material> material);
+		void init(MeshGroup* meshGroup, std::shared_ptr<Material> material);
 
-		Mesh* getMesh();
+		MeshGroup* getMeshGroup();
 		std::shared_ptr<Material> getMaterial();
 
 		Model();

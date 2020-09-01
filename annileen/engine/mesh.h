@@ -1,12 +1,15 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
 #include <memory>
 
 #include <bgfx/bgfx.h>
 
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
+
+#include "asset.h"
 
 namespace annileen
 {
@@ -33,6 +36,12 @@ namespace annileen
 
         Mesh();
         ~Mesh();
+    };
+
+    class MeshGroup : AssetObject
+    {
+    public:
+        std::vector<Mesh> m_Meshes;
     };
 }
 

@@ -31,12 +31,12 @@ namespace annileen
 		auto vdata = bgfx::makeRef(s_skyboxCubeVertices, sizeof(s_skyboxCubeVertices));
 		auto idata = bgfx::makeRef(s_skyboxCubeTriList, sizeof(s_skyboxCubeTriList));
 
-		Mesh* mesh = new Mesh();
-		mesh->init(vdata, vlayout, idata);
+		m_MeshGroup = new MeshGroup();
+		m_MeshGroup->m_Meshes.resize(1);
+		m_MeshGroup->m_Meshes[0].init(vdata, vlayout, idata);
 
 		m_Model = std::make_shared<Model>();
-		m_Model->init(mesh, material);
-		
+		m_Model->init(m_MeshGroup, material);
 	}
 
 	Skybox::Skybox(Cubemap* cubemap) : m_Cubemap(cubemap)
@@ -46,5 +46,6 @@ namespace annileen
 	
 	Skybox::~Skybox()
 	{
+		delete m_MeshGroup;
 	}
 }

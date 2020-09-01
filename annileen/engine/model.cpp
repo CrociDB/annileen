@@ -2,15 +2,15 @@
 
 namespace annileen
 {
-	void Model::init(Mesh* mesh, std::shared_ptr<Material> material)
+	void Model::init(MeshGroup* meshGroup, std::shared_ptr<Material> material)
 	{
-		m_Mesh = mesh;
+		m_MeshGroup = meshGroup;
 		m_Material = material;
 	}
 
-	Mesh* Model::getMesh()
+	MeshGroup* Model::getMeshGroup()
 	{
-		return m_Mesh;
+		return m_MeshGroup;
 	}
 
 	std::shared_ptr<Material> Model::getMaterial()
@@ -18,7 +18,7 @@ namespace annileen
 		return m_Material;
 	}
 
-	Model::Model() : SceneNodeModule(), m_Mesh(nullptr), m_Material(nullptr), castShadows(true), 
+	Model::Model() : SceneNodeModule(), m_MeshGroup(nullptr), m_Material(nullptr), castShadows(true),
 		receiveShadows(true), isStatic(false), enabled(true)
 	{
 	}

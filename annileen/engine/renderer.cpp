@@ -252,17 +252,21 @@ namespace annileen
     {
         skybox->getModel()->getMaterial()->submitUniforms();
 
-        bgfx::setVertexBuffer(0, skybox->getModel()->getMesh()->getVertexBuffer());
-        bgfx::setIndexBuffer(skybox->getModel()->getMesh()->getIndexBuffer());
-      
-        std::shared_ptr<Material> material = skybox->getModel()->getMaterial();
-
-        for (int shaderPassId = 0; shaderPassId < material->getNumberOfShaderPasses(); ++shaderPassId)
+        auto meshGroup = skybox->getModel()->getMeshGroup();
+        for (auto& mesh : meshGroup->m_Meshes)
         {
-            std::shared_ptr<ShaderPass> shaderPass = material->getShaderPassAt(shaderPassId);
+            bgfx::setVertexBuffer(0, mesh.getVertexBuffer());
+            bgfx::setIndexBuffer(mesh.getIndexBuffer());
+      
+            std::shared_ptr<Material> material = skybox->getModel()->getMaterial();
+
+            for (int shaderPassId = 0; shaderPassId < material->getNumberOfShaderPasses(); ++shaderPassId)
+            {
+                std::shared_ptr<ShaderPass> shaderPass = material->getShaderPassAt(shaderPassId);
             
-            bgfx::setState(shaderPass->getState());
-            bgfx::submit(viewId, shaderPass->getShader()->getProgram());
+                bgfx::setState(shaderPass->getState());
+                bgfx::submit(viewId, shaderPass->getShader()->getProgram());
+            }
         }
     }
 
@@ -271,16 +275,21 @@ namespace annileen
         material->submitUniforms();
 
         bgfx::setTransform(glm::value_ptr(model->getTransform().getModelMatrix()));
-        bgfx::setVertexBuffer(0, model->getMesh()->getVertexBuffer());
-        if (model->getMesh()->hasIndices()) 
-            bgfx::setIndexBuffer(model->getMesh()->getIndexBuffer());
-        
-        for (int shaderPassId = 0; shaderPassId < material->getNumberOfShaderPasses(); ++shaderPassId)
-        {
-            std::shared_ptr<ShaderPass> shaderPass = material->getShaderPassAt(shaderPassId);
 
-            bgfx::setState(shaderPass->getState());
-            bgfx::submit(viewId, shaderPass->getShader()->getProgram());
+        auto meshGroup = model->getMeshGroup();
+        for (auto& mesh : meshGroup->m_Meshes)
+        {
+            bgfx::setVertexBuffer(0, mesh.getVertexBuffer());
+            if (mesh.hasIndices())
+                bgfx::setIndexBuffer(mesh.getIndexBuffer());
+        
+            for (int shaderPassId = 0; shaderPassId < material->getNumberOfShaderPasses(); ++shaderPassId)
+            {
+                std::shared_ptr<ShaderPass> shaderPass = material->getShaderPassAt(shaderPassId);
+
+                bgfx::setState(shaderPass->getState());
+                bgfx::submit(viewId, shaderPass->getShader()->getProgram());
+            }
         }
     }
 

@@ -39,7 +39,7 @@ private:
     BlockType* m_Grid;
 
     std::shared_ptr<Material> m_Material;
-    Mesh* m_Mesh = nullptr;
+    MeshGroup* m_MeshGroup = nullptr;
     ModelPtr m_Model = nullptr;
     SceneNodePtr m_Node = nullptr;
 
@@ -53,7 +53,6 @@ public:
     void setMaterial(std::shared_ptr<Material> material) { m_Material = material; }
 
     void generateGrid();
-    Mesh* getMesh();
     SceneNodePtr getSceneNode();
 
     Chunk(int wx, int wz);

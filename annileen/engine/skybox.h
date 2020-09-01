@@ -38,6 +38,7 @@ namespace annileen
     {
     private:
         std::shared_ptr<Model> m_Model;
+        MeshGroup* m_MeshGroup;
         Cubemap* m_Cubemap;
         void createModel();
 

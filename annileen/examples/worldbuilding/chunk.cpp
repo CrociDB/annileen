@@ -6,13 +6,13 @@
 
 void Chunk::generateMesh()
 {
-    if (m_Mesh != nullptr)
+    if (m_MeshGroup != nullptr)
     {
         delete m_Node;
-        delete m_Mesh;
+        delete m_MeshGroup;
     }
 
-    m_Mesh = new annileen::Mesh();
+    m_MeshGroup = new annileen::MeshGroup();
 
     int meshSize;
     int indexSize;
@@ -25,11 +25,11 @@ void Chunk::generateMesh()
         .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
         .end();
 
-
-    m_Mesh->init(bgfx::makeRef(meshData, meshSize * sizeof(float), Engine::releaseMem), vlayout);
+    m_MeshGroup->m_Meshes.resize(1);
+    m_MeshGroup->m_Meshes[0].init(bgfx::makeRef(meshData, meshSize * sizeof(float), Engine::releaseMem), vlayout);
 
     m_Model = new Model();
-    m_Model->init(m_Mesh, m_Material);
+    m_Model->init(m_MeshGroup, m_Material);
 }
 
 float* Chunk::generateMeshData(int* meshSize)
@@ -207,11 +207,6 @@ void Chunk::generateGrid()
     generateMesh();
 }
 
-Mesh* Chunk::getMesh()
-{
-    return m_Mesh;
-}
-
 SceneNodePtr Chunk::getSceneNode()
 {
     if (m_Node == nullptr)
@@ -237,6 +232,6 @@ Chunk::Chunk(int wx, int wz)
 
 Chunk::~Chunk()
 {
-    delete m_Mesh;
+    delete m_MeshGroup;
     delete m_Grid;
 }
