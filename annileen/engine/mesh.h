@@ -16,6 +16,7 @@ namespace annileen
     class Mesh
     {
     private:
+        bool m_Loaded = false;
         bgfx::VertexBufferHandle m_VertexBufferHandle;
         bgfx::IndexBufferHandle m_IndexBufferHandle;
 
@@ -38,7 +39,7 @@ namespace annileen
         ~Mesh();
     };
 
-    class MeshGroup : AssetObject
+    class MeshGroup : public AssetObject
     {
     public:
         std::vector<Mesh> m_Meshes;

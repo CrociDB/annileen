@@ -9,6 +9,8 @@ void Mesh::init(const bgfx::Memory* vertexData, bgfx::VertexLayout vertexLayout,
 	m_VertexBufferHandle = bgfx::createVertexBuffer(vertexData, vertexLayout);
 	if (m_HasIndices)
 		m_IndexBufferHandle = bgfx::createIndexBuffer(indexData);
+
+	m_Loaded = true;
 }
 
 void Mesh::init(const bgfx::Memory* vertexData, bgfx::VertexLayout vertexLayout)
@@ -18,6 +20,8 @@ void Mesh::init(const bgfx::Memory* vertexData, bgfx::VertexLayout vertexLayout)
 
 void Mesh::unload()
 {
+	if (!m_Loaded) return;
+
 	bgfx::destroy(m_VertexBufferHandle);
 	if (m_HasIndices)
 	{

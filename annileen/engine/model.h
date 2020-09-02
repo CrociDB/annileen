@@ -28,7 +28,8 @@ namespace annileen
 
 		void init(MeshGroup* meshGroup, std::shared_ptr<Material> material);
 
-		MeshGroup* getMeshGroup();
+		void setMeshGroup(MeshGroup* meshGroup) { m_MeshGroup = meshGroup; }
+		MeshGroup* getMeshGroup() const { return m_MeshGroup; }
 		std::shared_ptr<Material> getMaterial();
 
 		Model();

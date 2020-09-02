@@ -2,6 +2,7 @@
 
 #include "engine.h"
 #include "assetmanager.h"
+#include "modelloader.h"
 
 namespace annileen
 {
@@ -189,7 +190,7 @@ namespace annileen
 		auto entry = getAssetEntry(tex);
 		if (entry->m_Loaded)
 		{
-			return dynamic_cast<Texture*>(entry->m_Asset);
+			return static_cast<Texture*>(entry->m_Asset);
 		}
 
 		auto descriptor = loadTextureDescriptor(entry);
@@ -210,7 +211,7 @@ namespace annileen
 		auto entry = getAssetEntry(name);
 		if (entry->m_Loaded)
 		{
-			return dynamic_cast<Cubemap*>(entry->m_Asset);
+			return static_cast<Cubemap*>(entry->m_Asset);
 		}
 
 		auto descriptor = loadCubemapDescriptor(entry);
@@ -226,6 +227,19 @@ namespace annileen
 		return cubemap;
 	}
 
+	MeshGroup* AssetManager::loadMesh(const std::string& name)
+	{
+		auto entry = getAssetEntry(name);
+		if (entry->m_Loaded)
+		{
+			return static_cast<MeshGroup*>(entry->m_Asset);
+		}
+
+		ModelLoader loader;
+		auto meshGroup = loader.loadMesh(entry->m_Filepath);
+		entry->m_Asset = static_cast<AssetObject*>(meshGroup);
+		return meshGroup;
+	}
 
 	TextureDescriptor AssetManager::loadTextureDescriptor(AssetTableEntry* asset)
 	{

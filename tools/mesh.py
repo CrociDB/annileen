@@ -2,6 +2,7 @@ import os
 import argparse
 import glob
 import ntpath
+from shutil import copyfile
 from functools import reduce
 
 import tools
@@ -23,16 +24,20 @@ def build_mesh(meshfile, dest, options, force=False):
         print(f" {bcolors.WARNING}- SKIPPED{bcolors.ENDC}")
         return True, tools.path_leaf(meshfile), output_file
 
-    command = "%s -f %s -o %s -s 1 --packnormal 0 --packuv 0" % (
-        bgfx_geometryc,
-        meshfile,
-        output_file,
-    )
+    # command = "%s -f %s -o %s -s 1 --packnormal 0 --packuv 0" % (
+    #     bgfx_geometryc,
+    #     meshfile,
+    #     output_file,
+    # )
 
-    success = False
-    if not os.system(command):
-        success = True
-        print(f" {bcolors.SUCCESS}- Mesh compiled: {output_file}{bcolors.ENDC}")
+    # success = False
+    # if not os.system(command):
+    #     success = True
+    #     print(f" {bcolors.SUCCESS}- Mesh compiled: {output_file}{bcolors.ENDC}")
+
+    success = copyfile(meshfile, output_file)
+    if success:
+        print(f" {bcolors.SUCCESS}- Mesh copied: {output_file}{bcolors.ENDC}")
 
     return success, tools.path_leaf(meshfile), output_file
 
@@ -64,13 +69,14 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=f'{bcolors.SUCCESS}Annileen Mesh Tools{bcolors.ENDC}')
     parser.add_argument('-m', '--mesh', nargs='*', help='compiles the mesh specified')
     parser.add_argument('-a', '--all', action='store_true', help='compiles all the available meshes')
+    parser.add_argument('-f', '--force', help='force rebuild', action='store_true')
     parser.add_argument('-v', '--view', nargs=1, help='view the specified mesh')
     args = parser.parse_args()
 
     if args.all:
-        build_all()
+        build_all(args.force)
     elif args.mesh != None:
-        _build_mesh(args.mesh[0], " ".join(args.mesh[1:]))
+        _build_mesh(args.mesh[0], " ".join(args.mesh[1:]), args.force)
     elif args.view != None:
         view_mesh(args.view[0])
     else:

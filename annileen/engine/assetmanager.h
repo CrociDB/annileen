@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include <iostream>
@@ -12,6 +13,7 @@
 #include <engine/shader.h>
 #include <engine/texture.h>
 #include <engine/cubemap.h>
+#include <engine/mesh.h>
 
 namespace annileen
 {
@@ -39,6 +41,7 @@ namespace annileen
 		Shader* loadShader(const std::string& vertex, const std::string& fragment);
 		Texture* loadTexture(const std::string& tex);
 		Cubemap* loadCubemap(const std::string& name);
+		MeshGroup* loadMesh(const std::string& name);
 
 		// Asset descriptor loading functions
 		TextureDescriptor loadTextureDescriptor(AssetTableEntry* asset);

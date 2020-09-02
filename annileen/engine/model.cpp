@@ -8,11 +8,6 @@ namespace annileen
 		m_Material = material;
 	}
 
-	MeshGroup* Model::getMeshGroup()
-	{
-		return m_MeshGroup;
-	}
-
 	std::shared_ptr<Material> Model::getMaterial()
 	{
 		return m_Material;
