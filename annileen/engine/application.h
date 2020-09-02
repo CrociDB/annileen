@@ -20,6 +20,7 @@ namespace annileen
 		// afterRender
 
 		Engine* m_Engine;
+		std::string m_ApplicationName;
 
 // ApplicationEditor has to be able to inject the editor gui stuff
 #ifdef _DEBUG
@@ -38,7 +39,7 @@ namespace annileen
 		}
 
 	public:
-		int run();
+		int run(std::string applicationName);
 		Application();
 		~Application();
 	};

@@ -75,10 +75,11 @@ namespace annileen
     }
 
 
-    int Engine::init(int width, int height, std::string assetfile)
+    int Engine::init(int width, int height, std::string assetfile, std::string applicationName)
     {
         m_Width = width;
         m_Height = height;
+        m_ApplicationName = applicationName;
 
         glfwSetErrorCallback(&Engine::glfw_errorCallback);
         if (!glfwInit())
@@ -218,7 +219,7 @@ namespace annileen
         {
             fpsCount = 0;
             std::stringstream ss;
-            ss << "Annileen - Framerate: " << getFPS() << " FPS";
+            ss << "Annileen - " << m_ApplicationName << " - Framerate: " << getFPS() << " FPS";
             setWindowTitle(ss.str());
         }
 
@@ -250,7 +251,6 @@ namespace annileen
         if (m_Width != oldWidth || m_Height != oldHeight)
         {
             bgfx::reset(m_Width, m_Height, BGFX_RESET_VSYNC);            
-            m_Renderer->clear(RenderView::getRenderView(RenderView::Scene)->getViewId());
         }
     }
 

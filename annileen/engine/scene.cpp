@@ -8,10 +8,11 @@ namespace annileen
         return m_Root;
     }
 
-    SceneNodePtr Scene::createNode()
+    SceneNodePtr Scene::createNode(std::string name)
     {
         SceneNodePtr node = new SceneNode();
         m_Nodes.push_back(node);
+        node->name = name;
         node->setParentScene(this);
         node->setParent(m_Root);
         return node;

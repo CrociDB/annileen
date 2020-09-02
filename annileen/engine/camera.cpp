@@ -18,10 +18,10 @@ namespace annileen
 
         m_ProjectionMatrix = glm::mat4(1.0f);
         m_ProjectionMatrix = glm::perspective(
-            glm::radians(m_FieldOfView),
+            glm::radians(fieldOfView),
             (float)Engine::getInstance()->getWidth() / (float)Engine::getInstance()->getHeight(),
-            m_NearClip,
-            m_FarClip);
+            nearClip,
+            farClip);
 
         m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
         m_ViewRotationMatrix = glm::mat4(glm::mat3(m_ViewMatrix));
@@ -87,7 +87,7 @@ namespace annileen
         return glm::value_ptr(m_ViewProjectionMatrix);
     }
 
-    Camera::Camera(float fov, float nearc, float farc) : m_FieldOfView(fov), m_NearClip(nearc), m_FarClip(farc), 
+    Camera::Camera() : fieldOfView(60.0f), nearClip(0.1f), farClip(300.0f), 
         enabled(true), isStatic(false)
     {
         clearType = CameraClearType::CameraClearColor;

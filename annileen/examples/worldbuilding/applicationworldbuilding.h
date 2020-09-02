@@ -23,4 +23,4 @@ public:
 	~ApplicationWorldBuilding();
 };
 
-ANNILEEN_APP_MAIN(ApplicationWorldBuilding)
+ANNILEEN_APP_MAIN(ApplicationWorldBuilding, "World Building")

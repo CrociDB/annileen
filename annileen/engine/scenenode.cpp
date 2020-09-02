@@ -78,7 +78,7 @@ namespace annileen
 		// TODO:
 	}
 
-	SceneNode::SceneNode() : m_Parent(nullptr), m_Active(true)
+	SceneNode::SceneNode() : m_Parent(nullptr), m_Active(true), m_ParentScene(nullptr)
 	{
 	}
 
@@ -88,6 +88,32 @@ namespace annileen
 		{
 			delete children;
 		}*/
+	
+		for (auto moduleIt : m_Modules)
+		{
+			SceneNodeModulePtr sceneNodeModule = moduleIt.second;
+
+			if (sceneNodeModule != nullptr)
+			{
+				if (moduleIt.first == typeid(Camera))
+				{
+					Camera* camera = static_cast<Camera*>(sceneNodeModule);
+					m_ParentScene->m_Cameras.remove(camera);
+					camera = nullptr;
+				}
+				else if (moduleIt.first == typeid(Light))
+				{
+					Light* light = static_cast<Light*>(sceneNodeModule);
+					m_ParentScene->m_Lights.remove(light);
+					light = nullptr;
+				}
+
+				delete sceneNodeModule;
+				sceneNodeModule = nullptr;
+			}
+		}
+
+		m_Modules.clear();
 	}
 
 	

@@ -10,7 +10,6 @@
 #include <engine/transform.h>
 #include <engine/model.h>
 
-
 namespace annileen
 {
 	class Scene;
@@ -54,7 +53,7 @@ namespace annileen
 		void _destroyNode(SceneNodePtr node);
 
 		template <class T> T* getModule() const;
-		template <class T> bool addModule(T* module);
+		template <class T> T* addModule();
 		template <class T> bool removeModule();
 
 		SceneNode();
@@ -77,14 +76,12 @@ namespace annileen
 	}
 
 	template <class T>
-	bool SceneNode::addModule(T* module)
+	T* SceneNode::addModule()
 	{
-		SceneNodeModulePtr sceneNodeModule = static_cast<SceneNodeModulePtr>(module);
-
-		if (sceneNodeModule == nullptr)
+		if (!std::is_base_of<SceneNodeModule, T>::value)
 		{
 			//ANNILEEN_LOGF_ERROR(LoggingChannel::General, "\"{0}\" cannot be added because it is not a module.", typeid(T).name());
-			return false;
+			return nullptr;
 		}
 
 		auto moduleIt = m_Modules.find(typeid(T));
@@ -92,10 +89,12 @@ namespace annileen
 		if (moduleIt != m_Modules.end())
 		{
 			//ANNILEEN_LOG_ERROR(LoggingChannel::General, "This SceneNode has a Module of this type already. Remove the existing module before adding a new one of the same type.");
-			return false;
+			return nullptr;
 		}
 
-		m_Modules[typeid(T)] = module;
+		T* module = new T();
+
+		m_Modules[typeid(T)] = static_cast<SceneNodeModulePtr>(module);
 
 		module->m_SceneNode = this;
 
@@ -109,7 +108,7 @@ namespace annileen
 			m_ParentScene->m_Lights.push_back(module);
 		}
 
-		return true;
+		return module;
 	}
 
 	template <class T>

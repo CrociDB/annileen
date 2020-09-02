@@ -27,9 +27,6 @@ void Chunk::generateMesh()
 
     m_MeshGroup->m_Meshes.resize(1);
     m_MeshGroup->m_Meshes[0].init(bgfx::makeRef(meshData, meshSize * sizeof(float), Engine::releaseMem), vlayout);
-
-    m_Model = new Model();
-    m_Model->init(m_MeshGroup, m_Material);
 }
 
 float* Chunk::generateMeshData(int* meshSize)
@@ -211,9 +208,10 @@ SceneNodePtr Chunk::getSceneNode()
 {
     if (m_Node == nullptr)
     {
-        m_Node = Engine::getInstance()->getScene()->createNode();
+        m_Node = Engine::getInstance()->getScene()->createNode("Chunk");
         
-        m_Node->addModule<Model>(m_Model);
+        m_Model = m_Node->addModule<Model>();
+        m_Model->init(m_MeshGroup, m_Material);
 
         m_Node->getTransform().position = glm::vec3(
             m_WorldX * CHUNK_WIDTH,

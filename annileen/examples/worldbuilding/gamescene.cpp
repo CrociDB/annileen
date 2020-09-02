@@ -41,20 +41,20 @@ void GameScene::buildMap()
     fog.enabled = 1.0f;
     fog.power = 1.3f;
 
-    Light* light = new Light();
-    SceneNodePtr lightNode = createNode();
-    lightNode->name = "Light";
-    lightNode->addModule<Light>(light);
+    SceneNodePtr lightNode = createNode("Light");
+    Light* light = lightNode->addModule<Light>();
 
     light->color = glm::vec3(1.0f, 1.0f, .8f);
     light->type = LightType::Directional;
     light->intensity = 0.8f;
     light->getTransform().rotate(glm::vec3(-40.0f, 0.0f, -40.0f));
 
-    Camera* camera = new Camera(60.0f, 0.1f, 300.0f);
-    SceneNodePtr cameraNode = createNode();
-    cameraNode->name = "Camera";
-    cameraNode->addModule<Camera>(camera);
+    SceneNodePtr cameraNode = createNode("Camera");
+
+    Camera* camera = cameraNode->addModule<Camera>();
+    camera->fieldOfView = 60.0f;
+    camera->nearClip = 0.1f;
+    camera->farClip = 300.0f;
 
     auto cubemap = ServiceProvider::getAssetManager()->loadCubemap("skybox.toml");
     auto skybox = new Skybox(cubemap);

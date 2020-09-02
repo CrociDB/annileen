@@ -51,25 +51,23 @@ private:
         std::shared_ptr<Material> material = std::make_shared<Material>();
         material->addShaderPass(shaderPass);
 
-        ModelPtr model = new Model();
+
+        m_ModelNode = scene->createNode("Model");
+        ModelPtr model = m_ModelNode->addModule<Model>();
         model->init(ServiceProvider::getAssetManager()->loadMesh("statue.obj"), material);
 
-        m_ModelNode = scene->createNode();
-        m_ModelNode->name = "Model";
-        m_ModelNode->addModule<Model>(model);
         m_ModelNode->getTransform().translate(glm::vec3(-10.0, -10.0, -10.0));
         m_ModelNode->getTransform().scale = glm::vec3(0.05, 0.05, 0.05);
         //modelNode->getTransform().rotate(glm::vec3(0.0, 45.0, 0.0));
 
-        Camera* camera = new Camera(60.0f, 0.1f, 300.0f);
-        SceneNodePtr cameraNode = scene->createNode();
-        cameraNode->name = "Camera";
-        cameraNode->addModule<Camera>(camera);
-
-        Light* light = new Light();
-        SceneNodePtr lightNode = scene->createNode();
-        lightNode->name = "Light";
-        lightNode->addModule<Light>(light);
+        SceneNodePtr cameraNode = scene->createNode("Camera");
+        Camera* camera = cameraNode->addModule<Camera>(); 
+        camera->fieldOfView = 60.0f;
+        camera->nearClip = 0.1f;
+        camera->farClip = 300.0f;
+        
+        SceneNodePtr lightNode = scene->createNode("Light");
+        Light* light = lightNode->addModule<Light>();
 
         light->color = glm::vec3(1.0f, 1.0f, .8f);
         light->type = LightType::Directional;
@@ -185,4 +183,4 @@ public:
     ~ApplicationCube() {}
 };
 
-ANNILEEN_APP_MAIN(ApplicationCube)
+ANNILEEN_APP_MAIN(ApplicationCube, "Cube")

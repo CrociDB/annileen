@@ -197,7 +197,8 @@ namespace annileen
         bgfx::setViewRect(m_SceneRenderView->getViewId(), 0, 0, Engine::getInstance()->getWidth(), Engine::getInstance()->getHeight());
 
         // Clear backbuffer and shadowmap framebuffer at beginning.
-        bgfx::setViewClear(m_SceneRenderView->getViewId(), BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
+        bgfx::setViewClear(m_SceneRenderView->getViewId(), BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 
+            convert_color_vec3_uint32(m_ActiveCamera->clearColor), 1.0f, 0);
 
         m_Uniform.setVec3Uniform("u_viewPos", m_ActiveCamera->getTransform().position);
 
@@ -229,18 +230,6 @@ namespace annileen
                 ANNILEEN_LOG_WARNING(LoggingChannel::Renderer, "Camera clear type is set for skybox, but no skybox was set.");
             }
         }
-    }
-
-    // TODO: Move this to camera
-    void Renderer::clear(bgfx::ViewId viewId, const glm::vec3& color) const
-    {
-        bgfx::setViewClear(viewId, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, convert_color_vec3_uint32(color), 1.0f);
-        bgfx::setViewRect(viewId, 0, 0, bgfx::BackbufferRatio::Equal);
-    }
-
-    void Renderer::clear(bgfx::ViewId viewId) const
-    {
-        clear(viewId, glm::vec3(0.2, 0.3, 1.0));
     }
 
     void Renderer::initFrame(Scene* scene)

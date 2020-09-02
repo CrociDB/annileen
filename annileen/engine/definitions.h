@@ -1,9 +1,9 @@
 #pragma once
 
-#define ANNILEEN_APP_MAIN(__ApplicationClassName) \
+#define ANNILEEN_APP_MAIN(__ApplicationClassName, __ApplicationName) \
     int main(int argc, char* argv[]) { \
         std::unique_ptr<__ApplicationClassName> __app__ = std::make_unique<__ApplicationClassName>(); \
-        return __app__->run(); \
+        return __app__->run(__ApplicationName); \
     }
 
 #ifdef _DEBUG

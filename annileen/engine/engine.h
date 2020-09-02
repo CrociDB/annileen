@@ -45,6 +45,7 @@ namespace annileen
     private:
         GLFWwindow* m_Window;
         int m_Width, m_Height;
+        std::string m_ApplicationName;
 
         std::shared_ptr<Input> m_Input;
         Uniform m_Uniform;
@@ -73,7 +74,7 @@ namespace annileen
         static void glfw_joystickCallback(int jid, int event);
 
     public:
-        int init(int width, int height, std::string assetfile);
+        int init(int width, int height, std::string assetfile, std::string applicationName);
 
         std::shared_ptr<Input> getInput(); 
         std::shared_ptr<Gui> getGui();

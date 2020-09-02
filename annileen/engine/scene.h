@@ -37,7 +37,7 @@ namespace annileen
         virtual void update() {};
 
         SceneNodePtr getRoot();
-        SceneNodePtr createNode();
+        SceneNodePtr createNode(std::string name = "SceneNode");
         void removeNode(SceneNodePtr node);
 
         void setSkybox(Skybox* skybox) { m_Skybox = skybox; }

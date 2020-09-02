@@ -52,8 +52,6 @@ namespace annileen
 
         void render();
 
-        void clear(bgfx::ViewId viewId, const glm::vec3& color) const;
-        void clear(bgfx::ViewId viewId) const;
         void initFrame(Scene* scene);
 
         const bgfx::Caps* getCapabilities() const;

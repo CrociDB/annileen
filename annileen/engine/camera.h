@@ -23,14 +23,14 @@ namespace annileen
         glm::mat4 m_ViewProjectionMatrix;
 
         glm::vec3 m_CameraTarget;
-
-        float m_FieldOfView;
-        float m_NearClip;
-        float m_FarClip;
     public:
         // Should this be moved to a parent component class? Will model be a "component"?
         bool isStatic;
         bool enabled;
+
+        float fieldOfView;
+        float nearClip;
+        float farClip;
 
         // Clear types
         CameraClearType clearType;
@@ -54,7 +54,7 @@ namespace annileen
         float* getProjectionMatrixFloatArray();
         float* getViewProjectionMatrixFloatArray();
 
-        Camera(float fov, float nearc, float farc);
+        Camera();
         ~Camera();
     };
 
