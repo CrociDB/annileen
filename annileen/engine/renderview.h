@@ -23,6 +23,7 @@ namespace annileen
             Shadow = 0,
             Scene,
             Skybox,
+            UI,
             PostProcessing            
         };
 

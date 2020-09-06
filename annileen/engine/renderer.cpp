@@ -5,6 +5,7 @@
 #include <engine/material.h>
 #include <engine/model.h>
 #include <engine/mesh.h>
+#include <engine/text/text.h>
 
 namespace annileen
 {
@@ -84,11 +85,13 @@ namespace annileen
         RenderView::addReservedRenderView(RenderView::Shadow, "Shadows");
         RenderView::addReservedRenderView(RenderView::Scene, "Scene");
         RenderView::addReservedRenderView(RenderView::Skybox, "Skybox");
+        RenderView::addReservedRenderView(RenderView::UI, "UI");
         //RenderView::addReservedRenderView(RenderView::PostProcessing, "Post-processing");
         
         m_ShadowRenderView = RenderView::getRenderView(RenderView::Shadow);
         m_SceneRenderView = RenderView::getRenderView(RenderView::Scene);
         m_SkyboxRenderView = RenderView::getRenderView(RenderView::Skybox);
+        m_UIRenderView = RenderView::getRenderView(RenderView::UI);
     }
 
     void Renderer::setActiveCamera(Camera* camera)
@@ -217,6 +220,40 @@ namespace annileen
 
             renderSceneNode(m_SceneRenderView->getViewId(), model, model->getMaterial());
         }
+
+        const bx::Vec3 at = { 0.0f, 0.0f,  0.0f };
+        const bx::Vec3 eye = { 0.0f, 0.0f, -1.0f };
+
+        float view[16];
+        bx::mtxLookAt(view, eye, at);
+
+        const float centering = 0.5f;
+        
+        float ortho[16];
+        bx::mtxOrtho(
+            ortho
+            , centering
+            , Engine::getInstance()->getWidth() + centering
+            , Engine::getInstance()->getHeight() + centering
+            , centering
+            , 0.0f
+            , 100.0f
+            , 0.0f
+            , m_Capabilities->homogeneousDepth
+        );
+        bgfx::setViewTransform(m_UIRenderView->getViewId(), view, ortho);
+        bgfx::setViewRect(m_UIRenderView->getViewId(), 0, 0, Engine::getInstance()->getWidth(), Engine::getInstance()->getHeight());
+        
+
+        for (auto sceneNode : m_Scene->getNodeList())
+        {
+            TextPtr text = sceneNode->getModule<Text>();
+
+            if (text == nullptr ) continue;
+
+            text->update(m_UIRenderView->getViewId(), Engine::getInstance()->getWidth(), Engine::getInstance()->getHeight());
+        }
+
 
         if (m_ActiveCamera->clearType == CameraClearType::CameraClearSkybox)
         {

@@ -4,6 +4,7 @@
 #include <engine/skybox.h>
 #include <engine/serviceprovider.h>
 #include <engine/shaderpass.h>
+#include <engine/text/text.h>
 
 using namespace annileen;
 
@@ -55,6 +56,9 @@ void GameScene::buildMap()
     camera->fieldOfView = 60.0f;
     camera->nearClip = 0.1f;
     camera->farClip = 300.0f;
+
+    SceneNodePtr textNode = createNode("Text");
+    Text* text = textNode->addModule<Text>();
 
     auto cubemap = ServiceProvider::getAssetManager()->loadCubemap("skybox.toml");
     auto skybox = new Skybox(cubemap);

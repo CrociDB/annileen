@@ -38,6 +38,7 @@ namespace annileen
         RenderView* m_SceneRenderView;
         RenderView* m_ShadowRenderView;
         RenderView* m_SkyboxRenderView;
+        RenderView* m_UIRenderView;
 
         void initializeShadows();
 
