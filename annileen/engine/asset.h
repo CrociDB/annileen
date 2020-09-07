@@ -40,6 +40,18 @@ namespace annileen
 		Filtering m_Filtering;
 	};
 
+	struct MeshDescriptor
+	{
+		enum class Normals
+		{
+			Auto,
+			Generate,
+			GenerateSmooth
+		};
+
+		Normals m_Normals;
+	};
+
 	// TOML asset types
 	struct CubemapDescriptor
 	{

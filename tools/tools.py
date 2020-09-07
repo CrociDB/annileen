@@ -58,6 +58,10 @@ texture_descriptor_schema = {
     'filter': 'linear'
 }
 
+mesh_descriptor_schema = {
+    'normals': 'auto' # 'auto', 'generate', 'generate_soft'
+}
+
 def save_descriptor(descriptor):
     descriptor_path = os.path.join('.', build_dir, descriptor_file)
     f = open(descriptor_path, "w")
@@ -80,8 +84,8 @@ def load_asset_descriptor(asset_path, schema):
     descriptor_file = os.path.join(head, path_leaf(asset_path.split('.')[0]) + '.toml')
 
     if not os.path.isfile(descriptor_file):
-        save_asset_descriptor(descriptor_file, schema)
-        return schema
+        # save_asset_descriptor(descriptor_file, schema)
+        return descriptor_file, schema
 
     return descriptor_file, _load_file_descriptor(descriptor_file)
     

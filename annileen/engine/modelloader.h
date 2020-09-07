@@ -12,12 +12,12 @@ namespace annileen
     class ModelLoader
     {
     private:
-        void processNode(aiNode* node, const aiScene* scene, MeshGroup* meshGroup);
-        void convertMesh(Mesh* mesh, aiMesh* aiMesh, const aiScene* scene);
+        void processNode(aiNode* node, const aiScene* scene, MeshGroup* meshGroup, const MeshDescriptor& descriptor);
+        void convertMesh(Mesh* mesh, aiMesh* aiMesh, const aiScene* scene, const MeshDescriptor& descriptor);
     public:
         ModelLoader();
         ~ModelLoader();
 
-        MeshGroup* loadMesh(const std::string& filename);
+        MeshGroup* loadMesh(const std::string& filename, const MeshDescriptor& descriptor);
     };
 }

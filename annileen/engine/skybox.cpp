@@ -33,7 +33,7 @@ namespace annileen
 
 		m_MeshGroup = new MeshGroup();
 		m_MeshGroup->m_Meshes.resize(1);
-		m_MeshGroup->m_Meshes[0].init(vdata, vlayout, idata);
+		m_MeshGroup->m_Meshes[0]->init(vdata, vlayout, idata);
 
 		m_Model = std::make_shared<Model>();
 		m_Model->init(m_MeshGroup, material);

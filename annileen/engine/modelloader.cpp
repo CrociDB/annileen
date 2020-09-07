@@ -11,12 +11,16 @@ namespace annileen
 	{
 	}
 
-	MeshGroup* ModelLoader::loadMesh(const std::string& filename)
+	MeshGroup* ModelLoader::loadMesh(const std::string& filename, const MeshDescriptor& descriptor)
 	{
 		MeshGroup* meshGroup = new MeshGroup();
 
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(filename, aiProcess_Triangulate | aiProcess_FlipUVs);
+		
+		uint32_t flags = aiProcess_Triangulate | aiProcess_FlipUVs;
+		if (descriptor.m_Normals == MeshDescriptor::Normals::GenerateSmooth) flags |= aiProcess_GenSmoothNormals;
+
+		const aiScene* scene = importer.ReadFile(filename, flags);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
@@ -24,29 +28,28 @@ namespace annileen
 			exit(-1);
 		}
 
-		std::string directory = filename.substr(0, filename.find_last_of('/'));
-
-		processNode(scene->mRootNode, scene, meshGroup);
+		processNode(scene->mRootNode, scene, meshGroup, descriptor);
 
 		return meshGroup;
 	}
 
-	void ModelLoader::processNode(aiNode* node, const aiScene* scene, MeshGroup* meshGroup)
+	void ModelLoader::processNode(aiNode* node, const aiScene* scene, MeshGroup* meshGroup, const MeshDescriptor& descriptor)
 	{
-		for (uint16_t i = 0; i < node->mNumMeshes; i++)
+ 		for (uint16_t i = 0; i < node->mNumMeshes; i++)
 		{
 			aiMesh* aiMesh = scene->mMeshes[node->mMeshes[i]];
-			meshGroup->m_Meshes.push_back(Mesh());
-			convertMesh(&meshGroup->m_Meshes.back(), aiMesh, scene);
+			Mesh* mesh = new Mesh();
+			convertMesh(mesh, aiMesh, scene, descriptor);
+			meshGroup->m_Meshes.push_back(mesh);
 		}
 
 		for (uint16_t i = 0; i < node->mNumChildren; i++)
 		{
-			processNode(node->mChildren[i], scene, meshGroup);
+			processNode(node->mChildren[i], scene, meshGroup, descriptor);
 		}
 	}
 
-	void ModelLoader::convertMesh(Mesh* mesh, aiMesh* aiMesh, const aiScene* scene)
+	void ModelLoader::convertMesh(Mesh* mesh, aiMesh* aiMesh, const aiScene* scene, const MeshDescriptor& descriptor)
 	{
 		RawMesh rawMesh;
 
@@ -91,6 +94,6 @@ namespace annileen
 				rawMesh.m_Indices.push_back(face.mIndices[j]);
 		}
 
-		rawMesh.getMesh(mesh);
+		rawMesh.getMesh(mesh, descriptor);
 	}
 }

@@ -40,6 +40,7 @@ namespace annileen
             | BGFX_STATE_MSAA);
 
         m_Shadow->material = std::make_shared<Material>();
+        m_Shadow->material->setName("ShadowMaterial");
         m_Shadow->material->addShaderPass(shaderPass);
 
         bgfx::TextureHandle fbtextures[] =
@@ -244,8 +245,8 @@ namespace annileen
         auto meshGroup = skybox->getModel()->getMeshGroup();
         for (auto& mesh : meshGroup->m_Meshes)
         {
-            bgfx::setVertexBuffer(0, mesh.getVertexBuffer());
-            bgfx::setIndexBuffer(mesh.getIndexBuffer());
+            bgfx::setVertexBuffer(0, mesh->getVertexBuffer());
+            bgfx::setIndexBuffer(mesh->getIndexBuffer());
       
             std::shared_ptr<Material> material = skybox->getModel()->getMaterial();
 
@@ -263,14 +264,13 @@ namespace annileen
     {
         material->submitUniforms();
 
-        bgfx::setTransform(glm::value_ptr(model->getTransform().getModelMatrix()));
-
         auto meshGroup = model->getMeshGroup();
         for (auto& mesh : meshGroup->m_Meshes)
         {
-            bgfx::setVertexBuffer(0, mesh.getVertexBuffer());
-            if (mesh.hasIndices())
-                bgfx::setIndexBuffer(mesh.getIndexBuffer());
+            bgfx::setTransform(glm::value_ptr(model->getTransform().getModelMatrix()));
+            bgfx::setVertexBuffer(0, mesh->getVertexBuffer());
+            if (mesh->hasIndices())
+                bgfx::setIndexBuffer(mesh->getIndexBuffer());
         
             for (int shaderPassId = 0; shaderPassId < material->getNumberOfShaderPasses(); ++shaderPassId)
             {

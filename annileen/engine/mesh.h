@@ -42,7 +42,8 @@ namespace annileen
     class MeshGroup : public AssetObject
     {
     public:
-        std::vector<Mesh> m_Meshes;
+        std::vector<Mesh*> m_Meshes;
+        ~MeshGroup();
     };
 }
 

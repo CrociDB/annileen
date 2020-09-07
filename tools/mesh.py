@@ -18,7 +18,9 @@ bgfx_geometryv = os.path.join(bgfx_tools_dir, 'geometryv')
 
 def build_mesh(meshfile, dest, options, force=False):
     print(f" - Compiling {bcolors.UNDERLINE}'{meshfile}'{bcolors.ENDC}")
-    output_file = os.path.join(dest, tools.path_leaf(meshfile.split('.')[0]) + '.mesh')
+    output_file = os.path.join(dest, tools.path_leaf(meshfile.split('.')[0]) + '.obj')
+
+    descriptor_filename, descriptor = tools.load_asset_descriptor(meshfile, tools.mesh_descriptor_schema)
 
     if not force and not tools.check_should_build(output_file, meshfile): 
         print(f" {bcolors.WARNING}- SKIPPED{bcolors.ENDC}")
@@ -38,6 +40,7 @@ def build_mesh(meshfile, dest, options, force=False):
     success = copyfile(meshfile, output_file)
     if success:
         print(f" {bcolors.SUCCESS}- Mesh copied: {output_file}{bcolors.ENDC}")
+        tools.save_built_asset_descriptor(output_file, descriptor)
 
     return success, tools.path_leaf(meshfile), output_file
 

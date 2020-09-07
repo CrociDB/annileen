@@ -45,6 +45,7 @@ namespace annileen
 
 		// Asset descriptor loading functions
 		TextureDescriptor loadTextureDescriptor(AssetTableEntry* asset);
+		MeshDescriptor loadMeshDescriptor(AssetTableEntry* asset);
 		CubemapDescriptor loadCubemapDescriptor(AssetTableEntry* asset);
 	};
 }

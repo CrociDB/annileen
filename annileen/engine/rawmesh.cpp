@@ -23,9 +23,10 @@ namespace annileen
 		}
 	}
 
-	void RawMesh::getMesh(Mesh* mesh)
+	void RawMesh::getMesh(Mesh* mesh, const MeshDescriptor& descriptor)
 	{
-		//generateNormals();
+		if (descriptor.m_Normals == MeshDescriptor::Normals::Generate)
+			generateNormals();
 
 		bool vertexColor = false;
 		bool vertexNormal = m_Vertices[0].m_HasNormal;
@@ -73,5 +74,5 @@ namespace annileen
 			bgfx::makeRef(meshData, vertexData.size() * sizeof(float), Engine::releaseMem), 
 			vlayout,
 			bgfx::makeRef(indexData, m_Indices.size() * sizeof(uint16_t), Engine::releaseMem));
-	}
+ 	}
 }

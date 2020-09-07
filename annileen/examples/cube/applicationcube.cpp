@@ -50,14 +50,31 @@ private:
 
         std::shared_ptr<Material> material = std::make_shared<Material>();
         material->addShaderPass(shaderPass);
+        material->setName("ModelMaterial");
 
 
         m_ModelNode = scene->createNode("Model");
         ModelPtr model = m_ModelNode->addModule<Model>();
         model->init(ServiceProvider::getAssetManager()->loadMesh("statue.obj"), material);
 
-        m_ModelNode->getTransform().translate(glm::vec3(-10.0, -10.0, -10.0));
+        auto b = scene->createNode("Model2");
+        ModelPtr model2 = b->addModule<Model>();
+        model2->init(ServiceProvider::getAssetManager()->loadMesh("bunny.obj"), material);
+
+        auto c = scene->createNode("Model3");
+        ModelPtr model3 = c->addModule<Model>();
+        model3->init(ServiceProvider::getAssetManager()->loadMesh("head.obj"), material);
+
+        auto d = scene->createNode("Model4");
+        ModelPtr model4 = d->addModule<Model>();
+        model4->init(ServiceProvider::getAssetManager()->loadMesh("bunny.obj"), material);
+
+        //m_ModelNode->getTransform().translate(glm::vec3(-15.5, -1.0, -15.5));
         m_ModelNode->getTransform().scale = glm::vec3(0.05, 0.05, 0.05);
+        b->getTransform().position = glm::vec3(-15.5, -1.0, -15.5);
+        c->getTransform().position = glm::vec3(-8.0, 5.05, -5.0);
+        d->getTransform().position = glm::vec3(5.0, 5.05, 5.0);
+        c->getTransform().scale = glm::vec3(12.0, 12.0, 12.0);
         //modelNode->getTransform().rotate(glm::vec3(0.0, 45.0, 0.0));
 
         SceneNodePtr cameraNode = scene->createNode("Camera");
@@ -89,6 +106,20 @@ private:
 
     void update(float deltaTime)
     {
+        ImGui::SetNextWindowSize(ImVec2(300, 100), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowPos(ImVec2(350, 50), ImGuiCond_FirstUseEver);
+        ImGui::Begin("Light", NULL, 0);
+
+        static float lightDir[3] = {
+            getEngine()->getScene()->getLightList().front()->getTransform().getEuler().x,
+            getEngine()->getScene()->getLightList().front()->getTransform().getEuler().y,
+            getEngine()->getScene()->getLightList().front()->getTransform().getEuler().z };
+
+        ImGui::DragFloat3("Pos", lightDir, .5);
+
+        ImGui::End();
+        getEngine()->getScene()->getLightList().front()->getTransform().setEulerAngles((glm::vec3(lightDir[0], lightDir[1], lightDir[2])));
+
         m_ModelNode->getTransform().rotate(glm::vec3(0.0, 15.0 * deltaTime, 0.0));
 
         Camera* camera = getEngine()->getScene()->getCamera();

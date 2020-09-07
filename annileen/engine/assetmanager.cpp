@@ -235,8 +235,10 @@ namespace annileen
 			return static_cast<MeshGroup*>(entry->m_Asset);
 		}
 
+		const auto descriptor = loadMeshDescriptor(entry);
+
 		ModelLoader loader;
-		auto meshGroup = loader.loadMesh(entry->m_Filepath);
+		auto meshGroup = loader.loadMesh(entry->m_Filepath, descriptor);
 		entry->m_Asset = static_cast<AssetObject*>(meshGroup);
 		return meshGroup;
 	}
@@ -248,6 +250,22 @@ namespace annileen
 		return {
 			toml::find(data, "mipmap").as_boolean(),
 			toml::find(data, "filter").as_string() == "point" ? TextureDescriptor::Filtering::Point : TextureDescriptor::Filtering::Linear
+		};
+	}
+
+	MeshDescriptor AssetManager::loadMeshDescriptor(AssetTableEntry* asset)
+	{
+		auto assetfile = asset->m_Filepath.substr(0, asset->m_Filepath.find_last_of(".")) + ".toml";
+		auto data = toml::parse(assetfile);
+
+		auto normalsValue = toml::find(data, "normals").as_string();
+		auto normals = MeshDescriptor::Normals::Auto;
+
+		if (normalsValue == "generate") normals = MeshDescriptor::Normals::Generate;
+		else if (normalsValue == "generate_smooth") normals = MeshDescriptor::Normals::GenerateSmooth;
+
+		return {
+			normals
 		};
 	}
 
