@@ -5,6 +5,7 @@
 #include <engine/serviceprovider.h>
 #include <engine/shaderpass.h>
 #include <engine/text/text.h>
+#include <engine/fontloader.h>
 
 using namespace annileen;
 
@@ -59,6 +60,24 @@ void GameScene::buildMap()
 
     SceneNodePtr textNode = createNode("Text");
     Text* text = textNode->addModule<Text>();
+    text->init(true);
+
+    text->setFont(ServiceProvider::getFontLoader()->load("assets/font/droidsans.ttf"));
+    text->setScreenPosition(Engine::getInstance()->getWidth()- 300.0f, 200.0f);
+    text->setTextColor(glm::vec3(1, 0, 0));
+    text->setBackgroundColor(glm::vec3(0.5));
+    text->setStyle(Text::TextStyle::Background);
+    text->setText("This is a Annileen");
+
+    SceneNodePtr textNode2 = createNode("Text2");
+    Text* text2 = textNode2->addModule<Text>();
+    text2->init(false);
+
+    text2->setFont(ServiceProvider::getFontLoader()->load("assets/font/bleeding_cowboys.ttf"));
+    text2->setScreenPosition(Engine::getInstance()->getWidth() - 200.0f, 300.0f);
+    text2->setTextColor(glm::vec3(0, 1, 0));
+    text2->setStyle(Text::TextStyle::StrikeThrough);
+    text2->setText("OH YEAH");
 
     auto cubemap = ServiceProvider::getAssetManager()->loadCubemap("skybox.toml");
     auto skybox = new Skybox(cubemap);

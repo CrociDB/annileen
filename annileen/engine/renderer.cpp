@@ -6,6 +6,7 @@
 #include <engine/model.h>
 #include <engine/mesh.h>
 #include <engine/text/text.h>
+#include <bx/math.h>
 
 namespace annileen
 {
@@ -244,14 +245,13 @@ namespace annileen
         bgfx::setViewTransform(m_UIRenderView->getViewId(), view, ortho);
         bgfx::setViewRect(m_UIRenderView->getViewId(), 0, 0, Engine::getInstance()->getWidth(), Engine::getInstance()->getHeight());
         
-
         for (auto sceneNode : m_Scene->getNodeList())
         {
             TextPtr text = sceneNode->getModule<Text>();
 
             if (text == nullptr ) continue;
 
-            text->update(m_UIRenderView->getViewId(), Engine::getInstance()->getWidth(), Engine::getInstance()->getHeight());
+            text->render(m_UIRenderView->getViewId());
         }
 
 

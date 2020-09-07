@@ -126,6 +126,13 @@ namespace annileen
 
         Settings* settings = new Settings();
         ServiceProvider::provideSettings(settings);
+
+        // TODO: Get parameter from settings.
+        FontManager* fontManager = new FontManager(512);
+        ServiceProvider::provideFontManager(fontManager);
+
+        FontLoader* fontLoader = new FontLoader();
+        ServiceProvider::provideFontLoader(fontLoader);
         //
 
         m_Renderer = new Renderer();
@@ -308,6 +315,20 @@ namespace annileen
         if (settings != nullptr)
         {
             delete settings;
+        }
+
+        FontManager* fontManager = ServiceProvider::getFontManager();
+        ServiceProvider::provideFontManager(nullptr);
+        if (fontManager != nullptr)
+        {
+            delete fontManager;
+        }
+
+        FontLoader* fontLoader = ServiceProvider::getFontLoader();
+        ServiceProvider::provideFontLoader(nullptr);
+        if (fontLoader != nullptr)
+        {
+            delete fontLoader;
         }
 
         m_Gui->destroy();

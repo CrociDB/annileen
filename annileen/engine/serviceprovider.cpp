@@ -5,6 +5,9 @@ namespace annileen
 	Logger* ServiceProvider::m_LoggerService = nullptr;
 	AssetManager* ServiceProvider::m_AssetManagerService = nullptr;
 	Settings* ServiceProvider::m_SettingsService = nullptr;
+	FontManager* ServiceProvider::m_FontManager = nullptr;
+	TextBufferManager* ServiceProvider::m_TextBufferManager = nullptr;
+	FontLoader* ServiceProvider::m_FontLoader = nullptr;
 
 	void ServiceProvider::provideLogger(Logger* logger)
 	{
@@ -34,5 +37,41 @@ namespace annileen
 	Settings* ServiceProvider::getSettings()
 	{
 		return m_SettingsService;
+	}
+
+	void ServiceProvider::provideFontManager(FontManager* fontManager)
+	{
+		m_FontManager = fontManager;
+
+		if (m_TextBufferManager != nullptr)
+		{
+			delete m_TextBufferManager;
+			m_TextBufferManager = nullptr;
+		}
+
+		if (m_FontManager != nullptr)
+		{
+			m_TextBufferManager = new TextBufferManager(m_FontManager);
+		}
+	}
+
+	FontManager* ServiceProvider::getFontManager()
+	{
+		return m_FontManager;
+	}
+
+	TextBufferManager* ServiceProvider::getTextBufferManager()
+	{
+		return m_TextBufferManager;
+	}
+
+	void ServiceProvider::provideFontLoader(FontLoader* fontLoader)
+	{
+		m_FontLoader = fontLoader;
+	}
+
+	FontLoader* ServiceProvider::getFontLoader()
+	{
+		return m_FontLoader;
 	}
 }
