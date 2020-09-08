@@ -211,7 +211,7 @@ namespace annileen
         {
             ModelPtr model = sceneNode->getModule<Model>();
 
-            if (model == nullptr|| !sceneNode->getAcive()) continue;
+            if (model == nullptr || model->getMeshGroup() == nullptr || !sceneNode->getAcive()) continue;
 
             if (ServiceProvider::getSettings()->shadows.enabled && model->receiveShadows)
             {

@@ -8,7 +8,7 @@ namespace annileen
 
 		m_VertexBufferHandle = bgfx::createVertexBuffer(vertexData, vertexLayout);
 		if (m_HasIndices)
-			m_IndexBufferHandle = bgfx::createIndexBuffer(indexData);
+			m_IndexBufferHandle = bgfx::createIndexBuffer(indexData, BGFX_BUFFER_INDEX32);
 
 		m_Loaded = true;
 	}

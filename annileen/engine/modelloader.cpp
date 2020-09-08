@@ -17,7 +17,9 @@ namespace annileen
 
 		Assimp::Importer importer;
 		
-		uint32_t flags = aiProcess_Triangulate | aiProcess_FlipUVs;
+		uint32_t flags = aiProcess_Triangulate
+			| aiProcess_FlipUVs;
+
 		if (descriptor.m_Normals == MeshDescriptor::Normals::GenerateSmooth) flags |= aiProcess_GenSmoothNormals;
 
 		const aiScene* scene = importer.ReadFile(filename, flags);

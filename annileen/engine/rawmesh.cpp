@@ -67,12 +67,12 @@ namespace annileen
 		float* meshData = new float[vertexData.size()];
 		memcpy(meshData, vertexData.data(), vertexData.size() * sizeof(float));
 
-		uint16_t* indexData = new uint16_t[m_Indices.size()];
-		memcpy(indexData, m_Indices.data(), m_Indices.size() * sizeof(uint16_t));
+		uint32_t* indexData = new uint32_t[m_Indices.size()];
+		memcpy(indexData, m_Indices.data(), m_Indices.size() * sizeof(uint32_t));
 
 		mesh->init(
 			bgfx::makeRef(meshData, vertexData.size() * sizeof(float), Engine::releaseMem), 
 			vlayout,
-			bgfx::makeRef(indexData, m_Indices.size() * sizeof(uint16_t), Engine::releaseMem));
+			bgfx::makeRef(indexData, m_Indices.size() * sizeof(uint32_t), Engine::releaseMem));
  	}
 }

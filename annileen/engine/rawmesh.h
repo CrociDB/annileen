@@ -26,7 +26,7 @@ namespace annileen
 
 	public:
 		std::vector<RawVertex> m_Vertices;
-		std::vector<uint16_t> m_Indices;
+		std::vector<uint32_t> m_Indices;
 
 		void getMesh(Mesh* mesh, const MeshDescriptor& descriptor);
 	};

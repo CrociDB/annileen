@@ -55,28 +55,10 @@ private:
 
         m_ModelNode = scene->createNode("Model");
         ModelPtr model = m_ModelNode->addModule<Model>();
-        model->init(ServiceProvider::getAssetManager()->loadMesh("statue.obj"), material);
+        model->init(ServiceProvider::getAssetManager()->loadMesh("bunny.obj"), material);
 
-        auto b = scene->createNode("Model2");
-        ModelPtr model2 = b->addModule<Model>();
-        model2->init(ServiceProvider::getAssetManager()->loadMesh("bunny.obj"), material);
-
-        auto c = scene->createNode("Model3");
-        ModelPtr model3 = c->addModule<Model>();
-        model3->init(ServiceProvider::getAssetManager()->loadMesh("head.obj"), material);
-
-        auto d = scene->createNode("Model4");
-        ModelPtr model4 = d->addModule<Model>();
-        model4->init(ServiceProvider::getAssetManager()->loadMesh("bunny.obj"), material);
-
-        //m_ModelNode->getTransform().translate(glm::vec3(-15.5, -1.0, -15.5));
-        m_ModelNode->getTransform().scale = glm::vec3(0.05, 0.05, 0.05);
-        b->getTransform().position = glm::vec3(-15.5, -1.0, -15.5);
-        c->getTransform().position = glm::vec3(-8.0, 5.05, -5.0);
-        d->getTransform().position = glm::vec3(5.0, 5.05, 5.0);
-        c->getTransform().scale = glm::vec3(12.0, 12.0, 12.0);
-        //modelNode->getTransform().rotate(glm::vec3(0.0, 45.0, 0.0));
-
+        m_ModelNode->getTransform().translate(glm::vec3(-1.0, -1.0, -1.0));
+         
         SceneNodePtr cameraNode = scene->createNode("Camera");
         Camera* camera = cameraNode->addModule<Camera>(); 
         camera->fieldOfView = 60.0f;
