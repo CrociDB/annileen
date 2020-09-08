@@ -25,8 +25,9 @@ void Chunk::generateMesh()
         .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
         .end();
 
-    m_MeshGroup->m_Meshes.resize(1);
-    m_MeshGroup->m_Meshes[0].init(bgfx::makeRef(meshData, meshSize * sizeof(float), Engine::releaseMem), vlayout);
+    auto mesh = new Mesh();
+    mesh->init(bgfx::makeRef(meshData, meshSize * sizeof(float), Engine::releaseMem), vlayout);
+    m_MeshGroup->m_Meshes.push_back(mesh);
 }
 
 float* Chunk::generateMeshData(int* meshSize)

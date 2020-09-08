@@ -14,7 +14,7 @@ const float s_skyboxCubeVertices[8][3] =
     { 1.0f, -1.0f, -1.0f},
 };
 
-const uint16_t s_skyboxCubeTriList[] =
+const uint32_t s_skyboxCubeTriList[] =
 {
     0, 1, 2,
     1, 3, 2,

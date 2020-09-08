@@ -32,8 +32,9 @@ namespace annileen
 		auto idata = bgfx::makeRef(s_skyboxCubeTriList, sizeof(s_skyboxCubeTriList));
 
 		m_MeshGroup = new MeshGroup();
-		m_MeshGroup->m_Meshes.resize(1);
-		m_MeshGroup->m_Meshes[0]->init(vdata, vlayout, idata);
+		auto mesh = new Mesh();
+		mesh->init(vdata, vlayout, idata);
+		m_MeshGroup->m_Meshes.push_back(mesh);
 
 		m_Model = std::make_shared<Model>();
 		m_Model->init(m_MeshGroup, material);
