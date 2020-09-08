@@ -7,7 +7,7 @@ This is a toy 3D game engine created for study purposes. It's written in C++ and
 It's still on an early stage of development, but already supports:
  - Minecraft-style voxels
 
-![Annileen](https://i.imgur.com/gXnzt7g.png)
+![Annileen](screenshot/annileen.jpg)
 
 ## Dependencies
 
