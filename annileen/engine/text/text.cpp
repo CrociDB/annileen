@@ -10,21 +10,28 @@ namespace annileen
 		
 		// TODO: add fallback font.
 
-		//if (isValid(m_FontHandle))
-		//{
-		//	fontManager->destroyFont(m_FontHandle);
-		//}
+		if (isValid(m_FontHandle))
+		{
+			fontManager->destroyFont(m_FontHandle);
+		}
 
-		m_FontHandle = fontManager->createFontByPixelSize(m_Font, 0, m_PixelSize);
+		if (m_Sdf)
+		{
+			m_FontHandle = fontManager->createFontByPixelSize(m_Font, 0, m_PixelSize, FONT_TYPE_DISTANCE);
+		}
+		else
+		{
+			m_FontHandle = fontManager->createFontByPixelSize(m_Font, 0, m_PixelSize);
+		}
 
 		// Preload glyphs and blit them to atlas.
 		//fontManager->preloadGlyph(m_FontHandle, L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ. \n");
-
 	}
 
-	void Text::setFont(TrueTypeHandle font)
+	void Text::setFont(TrueTypeHandle font, bool sdf)
 	{
 		m_Font = font;
+		m_Sdf = sdf;
 		
 		createFont();
 	}
@@ -150,13 +157,24 @@ namespace annileen
 
 		m_IsStatic = isStatic;
 
+		uint32_t fontType = FONT_TYPE_ALPHA;
+		if (m_Sdf)
+		{
+			fontType = FONT_TYPE_DISTANCE;
+		}
+
+		if (isValid(m_TextBufferHandle))
+		{
+			ServiceProvider::getTextBufferManager()->destroyTextBuffer(m_TextBufferHandle);
+		}
+
 		if (m_IsStatic)
 		{
-			m_TextBufferHandle = textBufferManager->createTextBuffer(FONT_TYPE_ALPHA, BufferType::Static);
+			m_TextBufferHandle = textBufferManager->createTextBuffer(fontType, BufferType::Static);
 		}
 		else
 		{
-			m_TextBufferHandle = textBufferManager->createTextBuffer(FONT_TYPE_ALPHA, BufferType::Transient);
+			m_TextBufferHandle = textBufferManager->createTextBuffer(fontType, BufferType::Transient);
 		}
 	}
 
@@ -183,6 +201,8 @@ namespace annileen
 		m_UnderlineColor(glm::vec3(1.0f)), m_TextColor(glm::vec3(1.0f)), m_OverlineColor(glm::vec3(1.0f)),
 		m_StrikeThroughColor(glm::vec3(1.0f)), m_TextStyle(TextStyle::Normal)
 	{
+		m_FontHandle.idx = bgfx::kInvalidHandle;
+		m_TextBufferHandle.idx = bgfx::kInvalidHandle;
 	}
 
 	Text::~Text()

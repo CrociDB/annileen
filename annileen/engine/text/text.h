@@ -28,6 +28,7 @@ namespace annileen
 		TextBufferHandle m_TextBufferHandle;
 		glm::vec2 m_ScreenPosition;
 		std::string m_Text;
+		bool m_Sdf;
 
 		void createFont();
 
@@ -49,7 +50,7 @@ namespace annileen
 		
 		void render(bgfx::ViewId viewId);
 
-		void setFont(TrueTypeHandle font);
+		void setFont(TrueTypeHandle font, bool sdf = false);
 		void setPixelSize(uint32_t pixelSize);
 		void setText(const std::string text);
 		void setScreenPosition(float x, float y);

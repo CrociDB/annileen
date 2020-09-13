@@ -61,12 +61,12 @@ void GameScene::buildMap()
     Text* text = textNode->addModule<Text>();
     text->init(true);
 
-    text->setFont(ServiceProvider::getAssetManager()->loadFont("droidsans.ttf")->getHandle());
+    text->setFont(ServiceProvider::getAssetManager()->loadFont("droidsans.ttf")->getHandle(), true);
     text->setScreenPosition(Engine::getInstance()->getWidth()- 300.0f, 200.0f);
     text->setTextColor(glm::vec3(1, 0, 0));
     text->setBackgroundColor(glm::vec3(0.5));
     text->setStyle(Text::TextStyle::Background);
-    text->setText("This is a Annileen");
+    text->setText("This is a Annileen\nUsing SDF");
 
     SceneNodePtr textNode2 = createNode("Text2");
     Text* text2 = textNode2->addModule<Text>();
