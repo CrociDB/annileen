@@ -17,14 +17,14 @@
 #include <bx/file.h>
 #include <unordered_map>
 
+#include <engine/asset.h>
 #include <engine/text/fontmanager.h>
 
 namespace annileen
 {
-	class FontLoader final
+	class Font final : public AssetObject
 	{
 	private:
-		std::unordered_map<std::string, TrueTypeHandle> m_CachedFonts;
 
 		static bx::DefaultAllocator s_allocator;
 		static bx::FileReaderI* s_fileReader;
@@ -105,11 +105,12 @@ namespace annileen
 			return NULL;
 		}
 
-	public:
-		TrueTypeHandle load(const std::string& filename);
-		bool unload(const std::string& filename);
+		TrueTypeHandle m_Handle;
 
-		FontLoader();
-		~FontLoader();
+	public:
+		const TrueTypeHandle& getHandle() const { return m_Handle; }
+
+		Font(std::string filename);
+		~Font();
 	};
 }

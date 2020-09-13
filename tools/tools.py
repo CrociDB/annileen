@@ -18,7 +18,8 @@ dirs = {
     "shaders": "shaders",
     "textures": "textures",
     "models": "models",
-    "cubemaps": "cubemaps"
+    "cubemaps": "cubemaps",
+    "fonts": "fonts"
 }
 
 available_platforms = [
@@ -52,6 +53,7 @@ shader_types = ["vs", "fs"]
 mesh_types = ["obj", "gltf", "glb"]
 texture_types = ["bmp", "dds", "exr", "gif", "jpg", "hdr", "ktx", "png", "psd", "pvr", "tga"]
 cubemap_types = ["toml"]
+font_types = ["ttf", "otf"]
 
 texture_descriptor_schema = {
     'mipmap': False,

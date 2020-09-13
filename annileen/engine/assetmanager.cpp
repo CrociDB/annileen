@@ -243,6 +243,19 @@ namespace annileen
 		return meshGroup;
 	}
 
+	Font* AssetManager::loadFont(const std::string& name)
+	{
+		auto entry = getAssetEntry(name);
+		if (entry->m_Loaded)
+		{
+			return static_cast<Font*>(entry->m_Asset);
+		}
+
+		Font* font = new Font(entry->m_Filepath);
+		entry->m_Asset = static_cast<AssetObject*>(font);
+		return font;
+	}
+
 	TextureDescriptor AssetManager::loadTextureDescriptor(AssetTableEntry* asset)
 	{
 		auto assetfile = asset->m_Filepath.substr(0, asset->m_Filepath.find_last_of(".")) + ".toml";

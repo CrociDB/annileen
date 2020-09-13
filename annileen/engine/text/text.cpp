@@ -1,5 +1,4 @@
 #include <engine/text/text.h>
-#include <engine/fontloader.h>
 #include <engine/serviceprovider.h>
 #include <engine/engine.h>
 

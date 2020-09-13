@@ -7,7 +7,6 @@ namespace annileen
 	Settings* ServiceProvider::m_SettingsService = nullptr;
 	FontManager* ServiceProvider::m_FontManager = nullptr;
 	TextBufferManager* ServiceProvider::m_TextBufferManager = nullptr;
-	FontLoader* ServiceProvider::m_FontLoader = nullptr;
 
 	void ServiceProvider::provideLogger(Logger* logger)
 	{
@@ -63,15 +62,5 @@ namespace annileen
 	TextBufferManager* ServiceProvider::getTextBufferManager()
 	{
 		return m_TextBufferManager;
-	}
-
-	void ServiceProvider::provideFontLoader(FontLoader* fontLoader)
-	{
-		m_FontLoader = fontLoader;
-	}
-
-	FontLoader* ServiceProvider::getFontLoader()
-	{
-		return m_FontLoader;
 	}
 }

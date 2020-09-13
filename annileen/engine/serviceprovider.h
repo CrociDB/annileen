@@ -6,7 +6,6 @@
 #include <engine/settings.h>
 #include <engine/text/fontmanager.h>
 #include <engine/text/textbuffermanager.h>
-#include <engine/fontloader.h>
 
 namespace annileen
 {
@@ -26,7 +25,6 @@ namespace annileen
 		static Settings* m_SettingsService;
 		static FontManager* m_FontManager;
 		static TextBufferManager* m_TextBufferManager;
-		static FontLoader* m_FontLoader;
 
 	public:
 		ServiceProvider(const ServiceProvider&) = delete;
@@ -51,8 +49,5 @@ namespace annileen
 		static void provideFontManager(FontManager* fontManager);
 		static FontManager* getFontManager();
 		static TextBufferManager* getTextBufferManager();
-
-		static void provideFontLoader(FontLoader* fontLoader);
-		static FontLoader* getFontLoader();
 	};
 }

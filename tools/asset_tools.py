@@ -9,6 +9,7 @@ import shader
 import mesh
 import texture
 import cubemap
+import font
 
 asset_descriptor = {
     'asset': {}
@@ -19,6 +20,7 @@ def build_assets(platform, shader_model, force=False):
     build_textures(platform, force)
     build_meshes(platform, force)
     build_cubemaps(platform, force)
+    build_fonts(platform, force)
 
     descriptor_path = tools.save_descriptor(asset_descriptor)
     print(f'\n{tools.bcolors.OKBLUE}ASSET DESCRIPTOR WRITTEN AT: {tools.bcolors.ENDC}{tools.bcolors.BOLD}{descriptor_path}{tools.bcolors.ENDC}') 
@@ -46,6 +48,13 @@ def build_cubemaps(platform, force=False):
     for m in cubemap.build_all(force):
         if m[0]:
             asset_descriptor['asset'][m[1].lower()] = {'path': m[2].replace(os.getcwd(), "."), 'type': 'mesh'}
+
+def build_fonts(platform, force=False):
+    print(f'{tools.bcolors.OKBLUE}COMPILING FONTS{tools.bcolors.ENDC}')
+    for f in font.build_all(force):
+        if f[0]:
+            asset_descriptor['asset'][f[1].lower()] = {'path': f[2].replace(os.getcwd(), "."), 'type': 'font'}
+
 
 def ensure_build_dir():
     build_assets = os.path.join(os.getcwd(), tools.build_dir)

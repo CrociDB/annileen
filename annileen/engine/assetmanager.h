@@ -14,6 +14,7 @@
 #include <engine/texture.h>
 #include <engine/cubemap.h>
 #include <engine/mesh.h>
+#include <engine/font.h>
 
 namespace annileen
 {
@@ -42,6 +43,7 @@ namespace annileen
 		Texture* loadTexture(const std::string& tex);
 		Cubemap* loadCubemap(const std::string& name);
 		MeshGroup* loadMesh(const std::string& name);
+		Font* loadFont(const std::string& name);
 
 		// Asset descriptor loading functions
 		TextureDescriptor loadTextureDescriptor(AssetTableEntry* asset);
