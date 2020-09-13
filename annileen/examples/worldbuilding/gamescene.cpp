@@ -59,9 +59,9 @@ void GameScene::buildMap()
 
     SceneNodePtr textNode = createNode("Text");
     Text* text = textNode->addModule<Text>();
-    text->init(true);
+    text->init(true, true);
 
-    text->setFont(ServiceProvider::getAssetManager()->loadFont("droidsans.ttf")->getHandle(), true);
+    text->setFont(ServiceProvider::getAssetManager()->loadFont("droidsans.ttf")->getHandle());
     text->setScreenPosition(Engine::getInstance()->getWidth()- 300.0f, 200.0f);
     text->setTextColor(glm::vec3(1, 0, 0));
     text->setBackgroundColor(glm::vec3(0.5));

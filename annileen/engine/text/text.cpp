@@ -10,6 +10,12 @@ namespace annileen
 		
 		// TODO: add fallback font.
 
+		if (!isValid(m_Font))
+		{
+			ANNILEEN_LOG_ERROR(LoggingChannel::Renderer, "Font cannot be created because font is not valid.");
+			return;
+		}
+
 		if (isValid(m_FontHandle))
 		{
 			fontManager->destroyFont(m_FontHandle);
@@ -28,10 +34,9 @@ namespace annileen
 		//fontManager->preloadGlyph(m_FontHandle, L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ. \n");
 	}
 
-	void Text::setFont(TrueTypeHandle font, bool sdf)
+	void Text::setFont(TrueTypeHandle font)
 	{
 		m_Font = font;
-		m_Sdf = sdf;
 		
 		createFont();
 	}
@@ -48,6 +53,18 @@ namespace annileen
 
 	void Text::setText(const std::string text)
 	{
+		if (!isValid(m_TextBufferHandle))
+		{
+			ANNILEEN_LOG_ERROR(LoggingChannel::Renderer, "Text cannot be set because text buffer is not valid.");
+			return;
+		}
+
+		if (!isValid(m_FontHandle))
+		{
+			ANNILEEN_LOG_ERROR(LoggingChannel::Renderer, "Text cannot be set because font is not valid.");
+			return;
+		}
+
 		if (m_IsStatic && m_HasSubmittedOnce)
 		{
 			ANNILEEN_LOG_WARNING(LoggingChannel::Renderer, "Text cannot be set because text is static and has been submitted once already.");
@@ -62,6 +79,12 @@ namespace annileen
 
 	void Text::setScreenPosition(float x, float y)
 	{
+		if (!isValid(m_TextBufferHandle))
+		{
+			ANNILEEN_LOG_ERROR(LoggingChannel::Renderer, "New position cannot be set because text buffer is not valid.");
+			return;
+		}
+
 		if (m_IsStatic && m_HasSubmittedOnce)
 		{
 			ANNILEEN_LOG_WARNING(LoggingChannel::Renderer, "New position cannot be set because text is static and has been submitted once already.");
@@ -74,6 +97,12 @@ namespace annileen
 
 	void Text::setBackgroundColor(glm::vec3 backgroundColor)
 	{
+		if (!isValid(m_TextBufferHandle))
+		{
+			ANNILEEN_LOG_ERROR(LoggingChannel::Renderer, "Color cannot be set because text buffer is not valid.");
+			return;
+		}
+
 		if (m_IsStatic && m_HasSubmittedOnce)
 		{
 			ANNILEEN_LOG_WARNING(LoggingChannel::Renderer, "Color cannot be set because text is static and has been submitted once already.");
@@ -86,6 +115,12 @@ namespace annileen
 
 	void Text::setTextColor(glm::vec3 textColor)
 	{
+		if (!isValid(m_TextBufferHandle))
+		{
+			ANNILEEN_LOG_ERROR(LoggingChannel::Renderer, "Color cannot be set because text buffer is not valid.");
+			return;
+		}
+
 		if (m_IsStatic && m_HasSubmittedOnce)
 		{
 			ANNILEEN_LOG_WARNING(LoggingChannel::Renderer, "Color cannot be set because text is static and has been submitted once already.");
@@ -98,6 +133,12 @@ namespace annileen
 
 	void Text::setUnderlineColor(glm::vec3 underlineColor)
 	{
+		if (!isValid(m_TextBufferHandle))
+		{
+			ANNILEEN_LOG_ERROR(LoggingChannel::Renderer, "Color cannot be set because text buffer is not valid.");
+			return;
+		}
+
 		if (m_IsStatic && m_HasSubmittedOnce)
 		{
 			ANNILEEN_LOG_WARNING(LoggingChannel::Renderer, "Color cannot be set because text is static and has been submitted once already.");
@@ -110,6 +151,12 @@ namespace annileen
 
 	void Text::setOverlineColor(glm::vec3 overlineColor)
 	{
+		if (!isValid(m_TextBufferHandle))
+		{
+			ANNILEEN_LOG_ERROR(LoggingChannel::Renderer, "Color cannot be set because text buffer is not valid.");
+			return;
+		}
+
 		if (m_IsStatic && m_HasSubmittedOnce)
 		{
 			ANNILEEN_LOG_WARNING(LoggingChannel::Renderer, "Color cannot be set because text is static and has been submitted once already.");
@@ -122,6 +169,12 @@ namespace annileen
 
 	void Text::setStrikeThroughColor(glm::vec3 strikeThroughColor)
 	{
+		if (!isValid(m_TextBufferHandle))
+		{
+			ANNILEEN_LOG_ERROR(LoggingChannel::Renderer, "Color cannot be set because text buffer is not valid.");
+			return;
+		}
+
 		if (m_IsStatic && m_HasSubmittedOnce)
 		{
 			ANNILEEN_LOG_WARNING(LoggingChannel::Renderer, "Color cannot be set because text is static and has been submitted once already.");
@@ -138,6 +191,12 @@ namespace annileen
 #endif
 	void Text::setStyle(TextStyle textStyle)
 	{
+		if (!isValid(m_TextBufferHandle))
+		{
+			ANNILEEN_LOG_ERROR(LoggingChannel::Renderer, "Style cannot be set because text buffer is not valid.");
+			return;
+		}
+
 		if (m_IsStatic && m_HasSubmittedOnce)
 		{
 			ANNILEEN_LOG_WARNING(LoggingChannel::Renderer, "Style cannot be set because text is static and has been submitted once already.");
@@ -150,12 +209,13 @@ namespace annileen
 #pragma warning(pop)
 #endif
 
-	void Text::init(bool isStatic)
+	void Text::init(bool isStatic, bool sdf)
 	{
 		FontManager* fontManager = ServiceProvider::getFontManager();
 		TextBufferManager* textBufferManager = ServiceProvider::getTextBufferManager();
 
 		m_IsStatic = isStatic;
+		m_Sdf = sdf;
 
 		uint32_t fontType = FONT_TYPE_ALPHA;
 		if (m_Sdf)
@@ -199,10 +259,9 @@ namespace annileen
 
 	Text::Text() : m_IsStatic(false), enabled(true), m_HasSubmittedOnce(false), m_BackgroundColor(glm::vec3(1.0f)),
 		m_UnderlineColor(glm::vec3(1.0f)), m_TextColor(glm::vec3(1.0f)), m_OverlineColor(glm::vec3(1.0f)),
-		m_StrikeThroughColor(glm::vec3(1.0f)), m_TextStyle(TextStyle::Normal)
+		m_StrikeThroughColor(glm::vec3(1.0f)), m_TextStyle(TextStyle::Normal), m_FontHandle(BGFX_INVALID_HANDLE),
+		m_TextBufferHandle(BGFX_INVALID_HANDLE), m_Font(BGFX_INVALID_HANDLE), m_Sdf(false), m_ScreenPosition(glm::vec2(0.0f))
 	{
-		m_FontHandle.idx = bgfx::kInvalidHandle;
-		m_TextBufferHandle.idx = bgfx::kInvalidHandle;
 	}
 
 	Text::~Text()

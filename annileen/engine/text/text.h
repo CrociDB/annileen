@@ -46,11 +46,11 @@ namespace annileen
 
 		bool enabled;
 
-		void init(bool isStatic);
+		void init(bool isStatic, bool sdf = false);
 		
 		void render(bgfx::ViewId viewId);
 
-		void setFont(TrueTypeHandle font, bool sdf = false);
+		void setFont(TrueTypeHandle font);
 		void setPixelSize(uint32_t pixelSize);
 		void setText(const std::string text);
 		void setScreenPosition(float x, float y);
