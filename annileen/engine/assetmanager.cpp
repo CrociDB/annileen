@@ -202,7 +202,7 @@ namespace annileen
 
 		Texture* texture = new Texture(handle, info, imageContainer->m_orientation);
 		entry->m_Asset = static_cast<AssetObject*>(texture);
-
+		entry->m_Loaded = true;
 		return texture;
 	}
 
@@ -223,7 +223,7 @@ namespace annileen
 
 		Cubemap* cubemap = new Cubemap(handle, info, imageContainer->m_orientation);
 		entry->m_Asset = static_cast<AssetObject*>(cubemap);
-
+		entry->m_Loaded = true;
 		return cubemap;
 	}
 
@@ -240,6 +240,7 @@ namespace annileen
 		ModelLoader loader;
 		auto meshGroup = loader.loadMesh(entry->m_Filepath, descriptor);
 		entry->m_Asset = static_cast<AssetObject*>(meshGroup);
+		entry->m_Loaded = true;
 		return meshGroup;
 	}
 
@@ -253,6 +254,7 @@ namespace annileen
 
 		Font* font = new Font(entry->m_Filepath);
 		entry->m_Asset = static_cast<AssetObject*>(font);
+		entry->m_Loaded = true;
 		return font;
 	}
 

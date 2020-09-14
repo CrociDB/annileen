@@ -42,10 +42,6 @@ def build_font(fontfile, dest, options, force=False):
     except: 
         print(f"{bcolors.ERROR}[ERROR]{bcolors.ENDC} Error occurred while copying file: {output_file}") 
 
-    if not copyfile(fontfile, output_file):
-        success = True
-        print(f" {bcolors.SUCCESS}- Font compiled: {output_file}{bcolors.ENDC}")
-
     return success, tools.path_leaf(fontfile), output_file
 
 
