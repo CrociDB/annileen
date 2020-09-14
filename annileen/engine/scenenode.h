@@ -16,6 +16,8 @@ namespace annileen
 	class SceneNode;
 	class Model;
 	class SceneNodeModule;
+	class Light;
+	class Camera;
 
 	// TODO: move this kind of defs to separate header
 	typedef SceneNode* SceneNodePtr;
