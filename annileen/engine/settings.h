@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 namespace annileen
 {
     class Settings final
@@ -18,7 +20,7 @@ namespace annileen
         struct Shadows
         {
             bool enabled;
-            size_t shadowMapSize;
+            uint16_t shadowMapSize;
         };
 
         Shadows shadows;

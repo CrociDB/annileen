@@ -10,7 +10,7 @@ namespace annileen
 		if (m_SceneNode == nullptr)
 		{
 			ANNILEEN_LOG_ERROR(LoggingChannel::General, "Cannot get correct SceneNodeModule transform because it is not attached to a SceneNode.");
-			return Transform();
+			exit(-1);
 		}
 
 		return m_SceneNode->getTransform();

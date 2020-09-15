@@ -21,7 +21,7 @@ using namespace annileen;
 
 enum BlockType : uint8_t
 {
-    BlockEmpty = -1,
+    BlockEmpty = 255,
     BlockDirt = 0,
     BlockGrass,
     BlockSand,
