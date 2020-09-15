@@ -203,7 +203,7 @@ namespace annileen
         auto idIt = std::find(m_RenderViewIds.begin(), m_RenderViewIds.end(), id);
         if (idIt == m_RenderViewIds.end())
         {
-            ANNILEEN_LOGF_ERROR(LoggingChannel::Renderer, "RenderView {0} cannot be removed, because it does not exist.");
+            ANNILEEN_LOGF_ERROR(LoggingChannel::Renderer, "RenderView {0} cannot be removed, because it does not exist.", id);
             return false;
         }
 
@@ -212,7 +212,7 @@ namespace annileen
         auto viewIdIt = m_ViewIds.find(id);
         if (viewIdIt == m_ViewIds.end())
         {
-            ANNILEEN_LOGF_ERROR(LoggingChannel::Renderer, "RenderView {0} cannot be removed, because it does not exist.");
+            ANNILEEN_LOGF_ERROR(LoggingChannel::Renderer, "RenderView {0} cannot be removed, because it does not exist.", id);
             return false;
         }
 
