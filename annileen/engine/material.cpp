@@ -1,5 +1,6 @@
 #include <engine/material.h>
 #include <engine/engine.h>
+#include <algorithm>
 
 //#include <engine/shaderpass.h>
 //#include <engine/texture.h>
