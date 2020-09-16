@@ -8,6 +8,12 @@ namespace annileen
 {
 	EditorGui::EditorGui()
 	{
+		m_ShowToolsWindow = true;
+		m_ShowSceneHierarchyWindow = true;
+		m_ShowSceneNodePropertiesWindow = true;
+		m_ShowConsoleWindow = true;
+		m_ShowSettingsWindow = false;
+		m_SelectedSceneNode = nullptr;
 	}
 
 	EditorGui::~EditorGui()
@@ -36,32 +42,71 @@ namespace annileen
 		}
 	}
 
+	void EditorGui::render(Scene* scene)
+	{
+		drawMainWindowToolbar();
+		
+		if (m_ShowToolsWindow) drawToolsWindow();
+		
+		if (scene != nullptr)
+		{
+			if (m_ShowSceneHierarchyWindow) drawSceneHierarchyWindow(scene->getNodeList());
+			if (m_SelectedSceneNode != nullptr)
+			{
+				if(m_ShowSceneNodePropertiesWindow) drawSelectedNodePropertiesWindow();
+			}
+		}
+
+		if (m_ShowConsoleWindow) drawConsoleWindow();
+		if (m_ShowSettingsWindow) drawSettingsWindow();
+	}
+
 	void EditorGui::drawMainWindowToolbar()
 	{
 		if (ImGui::BeginMainMenuBar())
 		{
 			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("New Scene", "CTRL+N", false, false)) {}
-				ImGui::Separator();
-				if (ImGui::MenuItem("Open Scene", "CTRL+O", false, false)) {}  // Disabled item
-				if (ImGui::MenuItem("Save Scene", "CTRL+S", false, false)) {}  // Disabled item
-				ImGui::Separator();
+				//if (ImGui::MenuItem("New Scene", "CTRL+N", false, false)) {}
+				//ImGui::Separator();
+				//if (ImGui::MenuItem("Open Scene", "CTRL+O", false, false)) {}  // Disabled item
+				//if (ImGui::MenuItem("Save Scene", "CTRL+S", false, false)) {}  // Disabled item
+				//ImGui::Separator();
 				if (ImGui::MenuItem("Exit", 0, false, true))
 				{
 					Engine::getInstance()->terminate();
 				}
 				ImGui::EndMenu();
 			}
-			if (ImGui::BeginMenu("Edit"))
-			{
-				if (ImGui::MenuItem("Undo", "CTRL+Z", false, false)) {}
-				if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item			
-				ImGui::EndMenu();
-			}
-			if (ImGui::BeginMenu("Tools"))
+			//if (ImGui::BeginMenu("Edit"))
+			//{
+			//	if (ImGui::MenuItem("Undo", "CTRL+Z", false, false)) {}
+			//	if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item			
+			//	ImGui::EndMenu();
+			//}
+			/*if (ImGui::BeginMenu("Tools"))
 			{
 				if (ImGui::MenuItem("Generate Assets", 0, false, false)) {}
+				ImGui::EndMenu();
+			}*/
+
+			if (ImGui::BeginMenu("Window"))
+			{
+				if (ImGui::MenuItem("Restore Default Layout", 0, false, true)) 
+				{
+					m_ShowToolsWindow = true;
+					m_ShowSceneHierarchyWindow = true;
+					m_ShowSceneNodePropertiesWindow = true;
+					m_ShowConsoleWindow = true;
+					m_ShowSettingsWindow = false;
+				}
+				ImGui::Separator();
+				ImGui::MenuItem("Toolbar", nullptr, &m_ShowToolsWindow);
+				ImGui::MenuItem("Scene Hierarchy", nullptr, &m_ShowSceneHierarchyWindow);
+				ImGui::MenuItem("SceneNode Properties", nullptr, &m_ShowSceneNodePropertiesWindow);
+				ImGui::MenuItem("Console", 0, &m_ShowConsoleWindow);
+				ImGui::Separator();
+				ImGui::MenuItem("Settings", 0, &m_ShowSettingsWindow);
 				ImGui::EndMenu();
 			}
 
@@ -69,10 +114,8 @@ namespace annileen
 		}
 	}
 
-	void EditorGui::drawEditorGeneralInfoWindow()
+	void EditorGui::drawToolsWindow()
 	{
-		char temp[1024] = "Editor";
-
 		ImGui::SetNextWindowPos(
 			ImVec2(10.0f, 50.0f)
 			, ImGuiCond_FirstUseEver
@@ -82,7 +125,11 @@ namespace annileen
 			, ImGuiCond_FirstUseEver
 		);
 
-		ImGui::Begin(temp);
+		if (!ImGui::Begin("Tools", &m_ShowToolsWindow))
+		{
+			ImGui::End();
+			return;
+		}
 
 		//ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(3.0f, 3.0f));
 		//if (ImGui::Button(ICON_FA_REPEAT " Restart"))
@@ -114,10 +161,8 @@ namespace annileen
 		ImGui::End();
 	}
 
-	void EditorGui::drawEditorSceneTreeWindow(const std::list<SceneNodePtr> sceneNodeList)
+	void EditorGui::drawSceneHierarchyWindow(const std::list<SceneNodePtr> sceneNodeList)
 	{
-		char temp[] = "SceneTree";
-
 		ImGui::SetNextWindowPos(
 			ImVec2(10.0f, 270.0f)
 			, ImGuiCond_FirstUseEver
@@ -127,10 +172,12 @@ namespace annileen
 			, ImGuiCond_FirstUseEver
 		);
 
-		ImGui::Begin(temp);
+		if (!ImGui::Begin("Scene Hierarchy", &m_ShowSceneHierarchyWindow))
+		{
+			ImGui::End();
+			return;
+		}
 
-		int nodeCount = 0;
-		std::string name = "node";
 		for (auto sceneNode : sceneNodeList)
 		{
 			_drawTree(sceneNode);
@@ -141,8 +188,6 @@ namespace annileen
 
 	void annileen::EditorGui::drawSelectedNodePropertiesWindow()
 	{
-		char temp[] = "SceneNode Properties";
-
 		ImGui::SetNextWindowPos(
 			ImVec2(10.0f, 690.0f)
 			, ImGuiCond_FirstUseEver
@@ -152,14 +197,18 @@ namespace annileen
 			, ImGuiCond_FirstUseEver
 		);
 
-		ImGui::Begin(temp);
+		if (!ImGui::Begin("SceneNode Properties", &m_ShowSceneNodePropertiesWindow))
+		{
+			ImGui::End();
+			return;
+		}
 
 		float position[3] = { 0,0,0 };
-		ImGui::DragFloat3("Position", position);
+		ImGui::DragFloat3("Position", glm::value_ptr(m_SelectedSceneNode->getTransform().position), 0.01F);
 		float rotation[3] = { 0,0,0 };
-		ImGui::DragFloat3("Rotation", rotation);
+		ImGui::DragFloat3("Rotation", glm::value_ptr(m_SelectedSceneNode->getTransform().rotation), 0.01F);
 		float scale[3] = { 0,0,0 };
-		ImGui::DragFloat3("Scale", scale);
+		ImGui::DragFloat3("Scale", glm::value_ptr(m_SelectedSceneNode->getTransform().scale), 0.01F);
 		ImGui::End();
 	}
 
@@ -174,7 +223,10 @@ namespace annileen
 
 		if (nodeChildren.empty())
 		{
-			ImGui::Text(sceneNode->name.c_str());
+			if (ImGui::Selectable(sceneNode->name.c_str(), sceneNode == m_SelectedSceneNode))
+			{
+				m_SelectedSceneNode = sceneNode;
+			}
 		}
 		else
 		{
@@ -191,8 +243,6 @@ namespace annileen
 
 	void EditorGui::drawConsoleWindow()
 	{
-		char temp[] = "Console";
-
 		ImGui::SetNextWindowPos(
 			ImVec2(10.0f, 820.0f)
 			, ImGuiCond_FirstUseEver
@@ -202,8 +252,12 @@ namespace annileen
 			, ImGuiCond_FirstUseEver
 		);
 
+		if (!ImGui::Begin("Console", &m_ShowConsoleWindow))
+		{
+			ImGui::End();
+			return;
+		}
 
-		ImGui::Begin(temp);
 		if (ImGui::SmallButton("Clear")) 
 		{ 
 		}
@@ -303,6 +357,26 @@ namespace annileen
 		memset(InputBuf, 0, sizeof(InputBuf));
 		if (ImGui::InputText("Input", InputBuf, IM_ARRAYSIZE(InputBuf)))
 		{
+		}
+
+		ImGui::End();
+	}
+
+	void EditorGui::drawSettingsWindow()
+	{
+		ImGui::SetNextWindowPos(
+			ImVec2(400.0f, 520.0f)
+			, ImGuiCond_FirstUseEver
+		);
+		ImGui::SetNextWindowSize(
+			ImVec2(400.0f, 180.0f)
+			, ImGuiCond_FirstUseEver
+		);
+
+		if (!ImGui::Begin("Settings", &m_ShowSettingsWindow))
+		{
+			ImGui::End();
+			return;
 		}
 
 		ImGui::End();

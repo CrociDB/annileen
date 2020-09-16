@@ -16,12 +16,22 @@ namespace annileen
 		EditorGui();
 		~EditorGui();
 
+		bool m_ShowToolsWindow;
+		bool m_ShowSceneHierarchyWindow;
+		bool m_ShowSceneNodePropertiesWindow;
+		bool m_ShowConsoleWindow;
+		bool m_ShowSettingsWindow;
+
+		SceneNode* m_SelectedSceneNode;
+
 		void initialize();
+		void render(Scene* scene);
 		void drawMainWindowToolbar();
-		void drawEditorGeneralInfoWindow();
-		void drawEditorSceneTreeWindow(const std::list<SceneNodePtr> sceneNodeList);
+		void drawToolsWindow();
+		void drawSceneHierarchyWindow(const std::list<SceneNodePtr> sceneNodeList);
 		void drawSelectedNodePropertiesWindow();
 		void drawConsoleWindow();
+		void drawSettingsWindow();
 		void _drawTree(SceneNodePtr const sceneNode);
 
 		friend class ApplicationEditor;

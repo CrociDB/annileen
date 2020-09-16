@@ -28,15 +28,7 @@ namespace annileen
 	{
 		if (showEditorGui)
 		{
-			m_EditorGui->drawMainWindowToolbar();
-			m_EditorGui->drawEditorGeneralInfoWindow();
-			Scene* scene = getEngine()->getScene();
-			if (scene != nullptr)
-			{
-				m_EditorGui->drawSelectedNodePropertiesWindow();
-				m_EditorGui->drawEditorSceneTreeWindow(scene->getNodeList());
-			}
-			m_EditorGui->drawConsoleWindow();
+			m_EditorGui->render(getEngine()->getScene());
 		}
 	}
 }
