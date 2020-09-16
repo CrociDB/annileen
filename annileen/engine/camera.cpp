@@ -10,8 +10,8 @@ namespace annileen
     {
         m_ViewMatrix = glm::mat4(1.0f);
         glm::mat4 rotate = glm::lookAt(
-            getTransform().position,
-            getTransform().position + m_CameraTarget,
+            getTransform().position(),
+            getTransform().position() + m_CameraTarget,
             getUp());
 
         m_ViewMatrix *= rotate;

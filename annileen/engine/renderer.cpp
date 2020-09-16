@@ -136,13 +136,13 @@ namespace annileen
             if (mainLightForShadows->type == LightType::Directional)
             {
 				lightView = glm::lookAt(mainLightForShadows->getTransform().getForward(), glm::vec3(0, 0, 0), mainLightForShadows->getTransform().getUp());
-                lightView = glm::translate(lightView, -m_ActiveCamera->getTransform().position);
+                lightView = glm::translate(lightView, -m_ActiveCamera->getTransform().position());
             }
             else
             {
                 //TODO: This has to be tested as soon as we get other type of lights
-                glm::vec3 at = mainLightForShadows->getTransform().position + mainLightForShadows->getTransform().getForward();
-                lightView = glm::lookAt(mainLightForShadows->getTransform().position, at, mainLightForShadows->getTransform().getUp());
+                glm::vec3 at = mainLightForShadows->getTransform().position() + mainLightForShadows->getTransform().getForward();
+                lightView = glm::lookAt(mainLightForShadows->getTransform().position(), at, mainLightForShadows->getTransform().getUp());
             }
             
             const float area = 50.0f;
@@ -205,7 +205,7 @@ namespace annileen
         bgfx::setViewClear(m_SceneRenderView->getViewId(), BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 
             convert_color_vec3_uint32(m_ActiveCamera->clearColor), 1.0f, 0);
 
-        m_Uniform.setVec3Uniform("u_viewPos", m_ActiveCamera->getTransform().position);
+        m_Uniform.setVec3Uniform("u_viewPos", m_ActiveCamera->getTransform().position());
 
         for (auto sceneNode : m_Scene->getNodeList())
         {

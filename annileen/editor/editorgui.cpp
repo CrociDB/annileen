@@ -203,13 +203,18 @@ namespace annileen
 			return;
 		}
 
-		ImGui::DragFloat3("Position", glm::value_ptr(m_SelectedSceneNode->getTransform().position), 0.01F);
+		auto position = m_SelectedSceneNode->getTransform().position();
+		ImGui::DragFloat3("Position", glm::value_ptr(position), 0.01F);
+		m_SelectedSceneNode->getTransform().position(position);
 
-		auto rotationEuler = m_SelectedSceneNode->getTransform().getEuler();
+		auto rotationEuler = m_SelectedSceneNode->getTransform().euler();
 		ImGui::DragFloat3("Rotation", glm::value_ptr(rotationEuler), 0.01F);
-		m_SelectedSceneNode->getTransform().setEulerAngles(rotationEuler);
+		m_SelectedSceneNode->getTransform().euler(rotationEuler);
 
-		ImGui::DragFloat3("Scale", glm::value_ptr(m_SelectedSceneNode->getTransform().scale), 0.01F);
+		auto scale = m_SelectedSceneNode->getTransform().scale();
+		ImGui::DragFloat3("Scale", glm::value_ptr(scale), 0.01F);
+		m_SelectedSceneNode->getTransform().scale(scale);
+
 		ImGui::End();
 	}
 

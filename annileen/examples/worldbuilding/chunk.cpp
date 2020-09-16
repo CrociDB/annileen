@@ -214,10 +214,10 @@ SceneNodePtr Chunk::getSceneNode()
         m_Model = m_Node->addModule<Model>();
         m_Model->init(m_MeshGroup, m_Material);
 
-        m_Node->getTransform().position = glm::vec3(
+        m_Node->getTransform().position(glm::vec3(
             m_WorldX * CHUNK_WIDTH,
             0,
-            m_WorldZ * CHUNK_DEPTH);
+            m_WorldZ * CHUNK_DEPTH));
     }
 
     return m_Node;

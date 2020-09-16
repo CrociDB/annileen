@@ -10,13 +10,26 @@ namespace annileen
 {
     class Transform
     {
+    private:
+        glm::vec3 m_Scale;
+        glm::vec3 m_Position;
+        glm::vec3 m_RotationEuler;
+        glm::quat m_RotationQuat;
+
+        glm::quat computeQuaternion();
+
     public:
-        glm::vec3 scale;
-        glm::vec3 position;
-        glm::quat rotation;
+        inline glm::vec3 scale() const { return m_Scale; }
+        inline glm::vec3 position() const { return m_Position; }
+        inline glm::quat rotation() { return computeQuaternion(); }
+        inline glm::vec3 euler() const { return m_RotationEuler; }
+
+        void scale(const glm::vec3& scale) { m_Scale = scale; }
+        void position(const glm::vec3& position) { m_Position = position; }
+        void euler(const glm::vec3& euler) { m_RotationEuler = euler; }
+        void rotation(const glm::quat& rotation) { m_RotationQuat = rotation; }
 
         glm::mat4 getModelMatrix();
-        float* getModelMatrixFloatArray();
         
         void translate(const glm::vec3& pos, bool local = true);
 
@@ -27,12 +40,9 @@ namespace annileen
         void rotatePitch(float angle);
         void rotateRoll(float angle);
 
-        void setEulerAngles(const glm::vec3& euler);
-        glm::vec3 getEuler() const;
-
-        glm::vec3 getForward() const;
-        glm::vec3 getRight() const;
-        glm::vec3 getUp() const;
+        glm::vec3 getForward();
+        glm::vec3 getRight();
+        glm::vec3 getUp();
 
         void setForward(glm::vec3 forward);
 

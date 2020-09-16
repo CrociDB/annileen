@@ -98,7 +98,7 @@ void GameScene::createChunkAt(int x, int z)
 
 void GameScene::removeFarthestChunk()
 {
-    auto cameraPos = getCamera()->getTransform().position;
+    auto cameraPos = getCamera()->getTransform().position();
 
     bool k = false;
     uint64_t ikill;
@@ -111,7 +111,7 @@ void GameScene::removeFarthestChunk()
             continue;
         }
 
-        auto d = glm::abs(glm::length(cameraPos - c.second->getSceneNode()->getTransform().position));
+        auto d = glm::abs(glm::length(cameraPos - c.second->getSceneNode()->getTransform().position()));
         if (dist < d)
         {
             k = true;
@@ -149,7 +149,7 @@ void GameScene::start()
 {
     buildMap();
     
-    getCamera()->getTransform().position = glm::vec3(0.0f, 70.0f, 0.0f);
+    getCamera()->getTransform().position(glm::vec3(0.0f, 70.0f, 0.0f));
 }
 
 void GameScene::update()
@@ -158,7 +158,7 @@ void GameScene::update()
     // TODO: the render/occlusion part will have to be moved over to a better place later
     //clearChunks();
 
-    auto cameraPos = getCamera()->getTransform().position;
+    auto cameraPos = getCamera()->getTransform().position();
     int cx = static_cast<int>(cameraPos.x / CHUNK_WIDTH);
     int cz = static_cast<int>(cameraPos.z / CHUNK_DEPTH);
 

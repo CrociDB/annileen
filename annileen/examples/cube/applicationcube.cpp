@@ -93,14 +93,14 @@ private:
         ImGui::Begin("Light", NULL, 0);
 
         static float lightDir[3] = {
-            getEngine()->getScene()->getLightList().front()->getTransform().getEuler().x,
-            getEngine()->getScene()->getLightList().front()->getTransform().getEuler().y,
-            getEngine()->getScene()->getLightList().front()->getTransform().getEuler().z };
+            getEngine()->getScene()->getLightList().front()->getTransform().euler().x,
+            getEngine()->getScene()->getLightList().front()->getTransform().euler().y,
+            getEngine()->getScene()->getLightList().front()->getTransform().euler().z };
 
         ImGui::DragFloat3("Pos", lightDir, .5);
 
         ImGui::End();
-        getEngine()->getScene()->getLightList().front()->getTransform().setEulerAngles((glm::vec3(lightDir[0], lightDir[1], lightDir[2])));
+        getEngine()->getScene()->getLightList().front()->getTransform().euler((glm::vec3(lightDir[0], lightDir[1], lightDir[2])));
 
         m_ModelNode->getTransform().rotate(glm::vec3(0.0, 15.0 * deltaTime, 0.0));
 

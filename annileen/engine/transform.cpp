@@ -6,40 +6,42 @@ namespace annileen
     {
         glm::mat4 matrix(1.0f);
 
-        matrix = glm::translate(matrix, position);
-        glm::mat4 mrot = glm::mat4_cast(rotation);
+        computeQuaternion();
+
+        matrix = glm::translate(matrix, m_Position);
+        glm::mat4 mrot = glm::mat4_cast(m_RotationQuat);
         matrix *= mrot;
-        matrix = glm::scale(matrix, scale);
+        matrix = glm::scale(matrix, m_Scale);
 
         return matrix;
     }
 
-    float* Transform::getModelMatrixFloatArray()
+    glm::quat Transform::computeQuaternion()
     {
-        auto m = getModelMatrix();
-        return glm::value_ptr(m);
+        m_RotationQuat = glm::quat(glm::radians(m_RotationEuler));
+        return m_RotationQuat;
     }
 
     void Transform::translate(const glm::vec3& pos, bool local)
     {
         if (local)
         {
-            position += rotation * pos;
+            m_Position += rotation() * pos;
         }
         else
         {
-            position += pos;
+            m_Position += pos;
         }
     }
 
     void Transform::rotate(const glm::vec3& axis)
     {
-        rotate(glm::quat(glm::radians(axis)));
+        m_RotationEuler += axis;
     }
 
     void Transform::rotate(const glm::quat& quat)
     {
-	    rotation *= quat;
+        m_RotationEuler += glm::degrees(glm::eulerAngles(quat));
     }
 
     void Transform::rotateYaw(float angle)
@@ -57,57 +59,47 @@ namespace annileen
 	    rotate(angle * getForward());
     }
 
-    void Transform::setEulerAngles(const glm::vec3& euler)
+    glm::vec3 Transform::getForward()
     {
-        rotation = glm::quat(glm::radians(euler));
+        return rotation() * glm::vec3(0.0f, 0.0f, 1.0f);
     }
 
-    glm::vec3 Transform::getEuler() const
+    glm::vec3 Transform::getRight()
     {
-        return glm::degrees(glm::eulerAngles(rotation));
+        return rotation() * glm::vec3(1.0f, 0.0f, 0.0f);
     }
 
-    glm::vec3 Transform::getForward() const
+    glm::vec3 Transform::getUp()
     {
-        return rotation * glm::vec3(0.0f, 0.0f, 1.0f);
+        return rotation() * glm::vec3(0.0f, 1.0f, 0.0f);
     }
-
-    glm::vec3 Transform::getRight() const
-    {
-        return rotation * glm::vec3(1.0f, 0.0f, 0.0f);
-    }
-
-    glm::vec3 Transform::getUp() const
-    {
-        return rotation * glm::vec3(0.0f, 1.0f, 0.0f);
-    }
-
 
     void Transform::setForward(glm::vec3 forward)
     {
-        lookAt(position + forward);
+        lookAt(m_Position + forward);
     }
 
     void Transform::lookAt(Transform transform)
     {
-        lookAt(transform.position);
+        lookAt(transform.position());
     }
 
     void Transform::lookAt(glm::vec3 pos)
     {
-        glm::vec3 direction = glm::normalize(position - pos);
+        glm::vec3 direction = glm::normalize(m_Position - pos);
         float dot = glm::dot(glm::vec3(0.0f, 0.0f, 1.0f), direction);
         float angle = (float)acos(dot);
         glm::vec3 rotationAxis = glm::normalize(glm::cross(glm::vec3(0.0f, 0.0f, 1.0f), direction));
-        rotation = glm::normalize(glm::quat(rotationAxis * angle));
+        m_RotationEuler = glm::normalize(rotationAxis * angle);
     }
 
 
     Transform::Transform()
     {
-        scale = glm::vec3(1.0f, 1.0f, 1.0f);
-        position = glm::vec3(0.0f, 0.0f, 0.0f);
-        rotation = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
+        m_Scale = glm::vec3(1.0f, 1.0f, 1.0f);
+        m_Position = glm::vec3(0.0f, 0.0f, 0.0f);
+        m_RotationEuler = glm::vec3(0.0f, 0.0f, 0.0f);
+        computeQuaternion();
     }
 
 

@@ -29,15 +29,15 @@ void ApplicationWorldBuilding::update(float deltaTime)
     ImGui::Begin("Light", NULL, 0);
 
     static float lightDir[3] = { 
-        getEngine()->getScene()->getLightList().front()->getTransform().getEuler().x, 
-        getEngine()->getScene()->getLightList().front()->getTransform().getEuler().y,
-        getEngine()->getScene()->getLightList().front()->getTransform().getEuler().z};
+        getEngine()->getScene()->getLightList().front()->getTransform().euler().x, 
+        getEngine()->getScene()->getLightList().front()->getTransform().euler().y,
+        getEngine()->getScene()->getLightList().front()->getTransform().euler().z};
 
     ImGui::DragFloat3("Pos", lightDir, .5);
 
     ImGui::End();
 
-    getEngine()->getScene()->getLightList().front()->getTransform().setEulerAngles((glm::vec3(lightDir[0], lightDir[1], lightDir[2])));
+    getEngine()->getScene()->getLightList().front()->getTransform().euler((glm::vec3(lightDir[0], lightDir[1], lightDir[2])));
 
     Camera* camera = getEngine()->getScene()->getCamera();
     m_MovementSpeed = getEngine()->getInput()->getKey(GLFW_KEY_LEFT_SHIFT) ? 5.0 * m_Speed : m_Speed;
