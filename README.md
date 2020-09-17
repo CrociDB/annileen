@@ -12,14 +12,14 @@ It's still on an early stage of development, but already supports:
 ## Dependencies
 
  - premake5
- - python3
+ - python3 / pip3
 
 ## Build
 
 First of all, update all submodules and download Python dependencies:
 
 ```
-git submodule update
+git submodule init && git submodule update
 python -m pip install -r tools/requirements.txt
 ```
 
@@ -42,6 +42,14 @@ python tools/asset_tools.py
 Now you can run the projects on Visual Studio.
 
 ### Linux
+
+Install dependecies:
+
+```
+sudo apt install libglu1-mesa-dev freeglut3-dev mesa-common-dev xorg-dev libglew-dev libx11-dev libxrandr-dev libxcursor-dev libxinerama-dev
+```
+
+Build:
 
 ```
 premake5 gmake
@@ -72,7 +80,8 @@ All the other the specific tools will accept an asset name, no need to include t
 python tools/shader.py
 ```
 ```
-usage: shader.py [-h] [-s [SHADER [SHADER ...]]] [-a] [-p {auto,android,asm.js,ios,linux,orbis,osx,windows}] [-m {auto,s_3_0,s_4_0,s_4_0_level,s_5_0,metal,pssl,spirv}]
+usage: shader.py [-h] [-s [SHADER [SHADER ...]]] [-f] [-a] [-p {auto,android,asm.js,ios,linux,orbis,osx,windows}]
+                 [-m {auto,s_3_0,s_4_0,s_4_0_level,s_5_0,metal,pssl,spirv,120}]
 
 Annileen Shader Tools
 
@@ -80,10 +89,11 @@ optional arguments:
   -h, --help            show this help message and exit
   -s [SHADER [SHADER ...]], --shader [SHADER [SHADER ...]]
                         compiles the shader specified
+  -f, --force           force rebuild
   -a, --all             compiles all the available shaders
   -p {auto,android,asm.js,ios,linux,orbis,osx,windows}, --platform {auto,android,asm.js,ios,linux,orbis,osx,windows}
-                        compiles the shader specified
-  -m {auto,s_3_0,s_4_0,s_4_0_level,s_5_0,metal,pssl,spirv}, --model {auto,s_3_0,s_4_0,s_4_0_level,s_5_0,metal,pssl,spirv}
+                        compiles the mesh specified
+  -m {auto,s_3_0,s_4_0,s_4_0_level,s_5_0,metal,pssl,spirv,120}, --model {auto,s_3_0,s_4_0,s_4_0_level,s_5_0,metal,pssl,spirv,120}
                         shader model
 ```
 
@@ -100,7 +110,7 @@ If no `platform` is specified, it will build for tre host platform. The default 
 python tools/mesh.py
 ```
 ```
-usage: mesh.py [-h] [-m [MESH [MESH ...]]] [-a] [-v VIEW]
+usage: mesh.py [-h] [-m [MESH [MESH ...]]] [-a] [-f] [-v VIEW]
 
 Annileen Mesh Tools
 
@@ -109,6 +119,7 @@ optional arguments:
   -m [MESH [MESH ...]], --mesh [MESH [MESH ...]]
                         compiles the mesh specified
   -a, --all             compiles all the available meshes
+  -f, --force           force rebuild
   -v VIEW, --view VIEW  view the specified mesh
 ```
 
@@ -130,6 +141,42 @@ optional arguments:
   -v VIEW, --view VIEW  view the specified mesh
 ```
 
+### Cubemap Tool
+
+```
+python tools/cubemap.py
+```
+```
+usage: cubemap.py [-h] [-c [CUBEMAP [CUBEMAP ...]]] [-a] [-v VIEW]
+
+Annileen Cubemap Tools
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -c [CUBEMAP [CUBEMAP ...]], --cubemap [CUBEMAP [CUBEMAP ...]]
+                        compiles the cubemap specified
+  -a, --all             compiles all the available cubemaps
+  -v VIEW, --view VIEW  view the specified cubemap
+```
+
+
+### Font Tool
+
+```
+python tools/font.py
+```
+```
+usage: font.py [-h] [-f [FONT [FONT ...]]] [-a]
+
+Annileen Font Tools
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -f [FONT [FONT ...]], --font [FONT [FONT ...]]
+                        compiles the font specified
+  -a, --all             compiles all the available fonts
+```
+
 # Contributors
 
   - Bruno Croci - [CrociDB](https://twitter.com/CrociDB)
@@ -143,10 +190,12 @@ Annileen is licensed under the [MIT License](/LICENSE.md)
 
 Annileen uses the following libraries:
 
-  - [bgfx](https://github.com/bkaradzic/bgfx) by bkaradzic - [BSD 2-Clause](https://github.com/bkaradzic/bgfx/blob/master/LICENSE)
-  - [toml11](https://github.com/ToruNiina/toml11) by ToruNiina - [MIT License](https://github.com/ToruNiina/toml11/blob/master/LICENSE)
-  - [glm](https://github.com/g-truc/glm) by G-Truc Creation - [The Happy Bunny License/MIT](https://github.com/g-truc/glm/blob/master/copying.txt)
+  - [bgfx](https://github.com/bkaradzic/bgfx) - [BSD 2-Clause](https://github.com/bkaradzic/bgfx/blob/master/LICENSE)
+  - [toml11](https://github.com/ToruNiina/toml11) - [MIT License](https://github.com/ToruNiina/toml11/blob/master/LICENSE)
+  - [glm](https://github.com/g-truc/glm) - [The Happy Bunny License/MIT](https://github.com/g-truc/glm/blob/master/copying.txt)
   - [glfm](https://github.com/glfw/glfw) - [zlib License](https://github.com/glfw/glfw/blob/master/LICENSE.md)
   - [fmt](https://github.com/fmtlib/fmt) - [License](https://github.com/fmtlib/fmt/blob/master/LICENSE.rst)
-  - [PerlinNoise](https://github.com/Reputeless/PerlinNoise) by Reputeless - [MIT License](https://github.com/Reputeless/PerlinNoise/blob/master/LICENSE)
+  - [PerlinNoise](https://github.com/Reputeless/PerlinNoise) - [MIT License](https://github.com/Reputeless/PerlinNoise/blob/master/LICENSE)
+  - [assimp](https://github.com/assimp/assimp) - [BSD-Custom License](https://github.com/assimp/assimp/blob/master/LICENSE)
+  - [fmt](https://github.com/fmtlib/fmt) - [Custom License](https://github.com/fmtlib/fmt/blob/master/LICENSE.rst)
   
