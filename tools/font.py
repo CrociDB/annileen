@@ -15,7 +15,7 @@ font_build_path = os.path.join(os.getcwd(), tools.build_dir, tools.dirs['fonts']
 def build_font(fontfile, dest, options, force=False):
     print(f" - Compiling {bcolors.UNDERLINE}'{fontfile}'{bcolors.ENDC}")
     output_file = os.path.join(dest, tools.path_leaf(fontfile))
-    print("->" + output_file)
+    
     if not force and not tools.check_should_build(output_file, fontfile): 
         print(f" {bcolors.WARNING}- SKIPPED{bcolors.ENDC}")
         return True, tools.path_leaf(fontfile), output_file

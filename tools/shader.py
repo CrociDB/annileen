@@ -47,8 +47,6 @@ def build_shader(shaderfile, dest, options, platform, model, force=False):
         shadertype
     )
 
-    print(command)
-
     success = False
     if not os.system(command):
         success = True
