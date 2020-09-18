@@ -50,17 +50,35 @@ namespace annileen
 		
 		void render(bgfx::ViewId viewId);
 
+		bool isStatic() { return m_IsStatic; }
+
 		void setFont(TrueTypeHandle font);
 		void setPixelSize(uint32_t pixelSize);
+		uint32_t getPixelSize() { return m_PixelSize; }
+
 		void setText(const std::string text);
+		std::string getText() { return m_Text; }
+
 		void setScreenPosition(float x, float y);
+		glm::vec2 getScreenPosition() { return m_ScreenPosition; }
 
 		void setBackgroundColor(glm::vec3 backgroundColor);
+		glm::vec3 getBackgroundColor() { return m_BackgroundColor; }
+
 		void setTextColor(glm::vec3 textColor);
+		glm::vec3 getTextColor() { return m_TextColor; }
+
 		void setUnderlineColor(glm::vec3 underlineColor);
+		glm::vec3 getUnderlineColor() { return m_UnderlineColor; }
+
 		void setOverlineColor(glm::vec3 overlineColor);
+		glm::vec3 getOverlineColor() { return m_OverlineColor; }
+
 		void setStrikeThroughColor(glm::vec3 strikeThroughColor);
+		glm::vec3 getStrikeThroughColor() { return m_StrikeThroughColor; }
+
 		void setStyle(TextStyle textStyle);
+		TextStyle getStyle() { return m_TextStyle; }
 
 		Text();
 		~Text();

@@ -4,6 +4,13 @@
 #include <glm.hpp>
 #include <engine/core/logger.h>
 
+#include <engine/model.h>
+#include <engine/camera.h>
+#include <engine/light.h>
+#include <engine/text/text.h>
+#include <engine/material.h>
+
+
 namespace annileen
 {
 	EditorGui::EditorGui()
@@ -203,18 +210,46 @@ namespace annileen
 			return;
 		}
 
-		auto position = m_SelectedSceneNode->getTransform().position();
-		ImGui::DragFloat3("Position", glm::value_ptr(position), 0.01F);
-		m_SelectedSceneNode->getTransform().position(position);
 
-		auto rotationEuler = m_SelectedSceneNode->getTransform().euler();
-		ImGui::DragFloat3("Rotation", glm::value_ptr(rotationEuler), 0.01F);
-		m_SelectedSceneNode->getTransform().euler(rotationEuler);
+		Text* text = m_SelectedSceneNode->getModule<Text>();
 
-		auto scale = m_SelectedSceneNode->getTransform().scale();
-		ImGui::DragFloat3("Scale", glm::value_ptr(scale), 0.01F);
-		m_SelectedSceneNode->getTransform().scale(scale);
+		if (text == nullptr)
+		{
+			ImGui::Text("Transform");
+			auto position = m_SelectedSceneNode->getTransform().position();
+			ImGui::DragFloat3("Position", glm::value_ptr(position), 0.01F);
+			m_SelectedSceneNode->getTransform().position(position);
 
+			auto rotationEuler = m_SelectedSceneNode->getTransform().euler();
+			ImGui::DragFloat3("Rotation", glm::value_ptr(rotationEuler), 0.01F);
+			m_SelectedSceneNode->getTransform().euler(rotationEuler);
+
+			auto scale = m_SelectedSceneNode->getTransform().scale();
+			ImGui::DragFloat3("Scale", glm::value_ptr(scale), 0.01F);
+			m_SelectedSceneNode->getTransform().scale(scale);
+		}
+		else
+		{
+			drawTextModuleProperties(text);
+		}
+
+		Model* model = m_SelectedSceneNode->getModule<Model>();
+		if (model != nullptr)
+		{
+			drawModelModuleProperties(model);
+		}
+
+		Camera* camera = m_SelectedSceneNode->getModule<Camera>();
+		if (camera != nullptr)
+		{
+			drawCameraModuleProperties(camera);
+		}
+
+		Light* light = m_SelectedSceneNode->getModule<Light>();
+		if (light != nullptr)
+		{
+			drawLightModuleProperties(light);
+		}
 		ImGui::End();
 	}
 
@@ -229,10 +264,13 @@ namespace annileen
 
 		if (nodeChildren.empty())
 		{
+			// Using memory address as id, each sceneNode should have an id in the future though.
+			ImGui::PushID(sceneNode);
 			if (ImGui::Selectable(sceneNode->name.c_str(), sceneNode == m_SelectedSceneNode))
 			{
 				m_SelectedSceneNode = sceneNode;
 			}
+			ImGui::PopID();
 		}
 		else
 		{
@@ -386,5 +424,131 @@ namespace annileen
 		}
 
 		ImGui::End();
+	}
+
+	void EditorGui::drawModelModuleProperties(Model* model)
+	{
+		ImGui::Separator();
+		ImGui::Text("Model");		
+		ImGui::Checkbox("Enabled", &model->enabled);
+		ImGui::Checkbox("Static", &model->isStatic);
+		ImGui::Checkbox("Cast Shadows", &model->castShadows);
+		ImGui::Checkbox("Receive Shadows", &model->receiveShadows);
+		ImGui::Separator();
+		ImGui::Text("Material");
+		std::shared_ptr<Material> mat = model->getMaterial();
+		ImGui::Text("Name: %s", mat.get()->getName());
+	}
+
+	void EditorGui::drawLightModuleProperties(Light* light)
+	{
+		ImGui::Separator();
+		ImGui::Text("Light");
+		ImGui::Checkbox("Enabled", &light->enabled);
+		ImGui::Checkbox("Static", &light->isStatic);
+		ImGui::Checkbox("Generate Shadows", &light->generateShadows);
+		ImGui::DragFloat("Intensity", &light->intensity);
+		ImGui::ColorEdit3("Color", glm::value_ptr(light->color));
+	}
+
+	void EditorGui::drawCameraModuleProperties(Camera* camera)
+	{
+		ImGui::Separator();
+		ImGui::Text("Camera");
+		ImGui::Checkbox("Enabled", &camera->enabled);
+		ImGui::Checkbox("Static", &camera->isStatic);
+
+		ImGui::ColorEdit4("Clear Color", glm::value_ptr(camera->clearColor));
+		ImGui::DragFloat("Near", &camera->nearClip);
+		ImGui::DragFloat("Far", &camera->farClip);
+		ImGui::DragFloat("Field Of View", &camera->fieldOfView);
+	}
+
+	void EditorGui::drawTextModuleProperties(Text* text)
+	{
+		bool staticText = text->isStatic();
+
+		if(staticText)
+		{
+			ImVec2 buttonSize = ImGui::GetWindowSize();
+			buttonSize.y = 100;
+			ImGui::Button("Properties cannot be changed \nbecause this text is static", buttonSize);
+		}
+
+		ImGui::Text("Transform");
+		glm::vec2 screenPosition = text->getScreenPosition();
+		ImGui::DragFloat2("Screen Position", glm::value_ptr(screenPosition));
+		if (!staticText && screenPosition != text->getScreenPosition())
+		{
+			text->setScreenPosition(screenPosition.x, screenPosition.y);
+		}
+		ImGui::Separator();
+		ImGui::Text("Text");
+		
+		Text::TextStyle textStyle = text->getStyle();
+
+		bool background = textStyle & Text::TextStyle::Background;
+		ImGui::Checkbox("Background", &background);
+		glm::vec3 backgroundColor = text->getBackgroundColor();
+		ImGui::ColorEdit3("Background Color", glm::value_ptr(backgroundColor));
+		if (!staticText && backgroundColor != text->getBackgroundColor())
+		{
+			text->setBackgroundColor(backgroundColor);
+		}
+		
+		bool overline = textStyle & Text::TextStyle::Overline;
+		ImGui::Checkbox("Overline", &overline);
+		glm::vec3 overlineColor = text->getOverlineColor();
+		ImGui::ColorEdit3("Overline Color", glm::value_ptr(overlineColor));
+		if (!staticText && overlineColor != text->getOverlineColor())
+		{
+			text->setOverlineColor(overlineColor);
+		}
+		
+		bool underline = textStyle & Text::TextStyle::Underline;
+		ImGui::Checkbox("Underline", &underline);
+		glm::vec3 underlineColor = text->getUnderlineColor();
+		ImGui::ColorEdit3("Underline Color", glm::value_ptr(underlineColor));
+		if (!staticText && underlineColor != text->getUnderlineColor())
+		{
+			text->setUnderlineColor(underlineColor);
+		}
+		
+		bool strikethrough = textStyle & Text::TextStyle::StrikeThrough;
+		ImGui::Checkbox("StrikeThrough", &strikethrough);
+		glm::vec3 strikeThroughColor = text->getStrikeThroughColor();
+		ImGui::ColorEdit3("StrikeThrough Color", glm::value_ptr(strikeThroughColor));
+		if (!staticText && strikeThroughColor != text->getStrikeThroughColor())
+		{
+			text->setStrikeThroughColor(strikeThroughColor);
+		}
+
+		textStyle = static_cast<Text::TextStyle>((background ? Text::TextStyle::Background : 0) |
+			(overline ? Text::TextStyle::Overline : 0) |
+			(underline ? Text::TextStyle::Underline : 0) |
+			(strikethrough ? Text::TextStyle::StrikeThrough : 0));
+
+		if (!staticText && textStyle != text->getStyle())
+		{
+			text->setStyle(textStyle);
+		}
+
+		glm::vec3 textColor = text->getTextColor();
+		ImGui::ColorEdit3("Text Color", glm::value_ptr(textColor));
+		if (!staticText && textColor != text->getTextColor())
+		{
+			text->setTextColor(textColor);
+		}
+
+		//const char* constTextContent = text->getText().c_str();
+		//char textContent[256] = "";
+		//strncpy(textContent, constTextContent, 256);
+
+		//ImGui::InputTextMultiline("Text", textContent, IM_ARRAYSIZE(textContent));
+
+		//if (strcmp(textContent, constTextContent) != 0)
+		//{
+		//	text->setText(textContent);
+		//}
 	}
 }

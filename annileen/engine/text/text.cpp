@@ -203,6 +203,7 @@ namespace annileen
 			return;
 		}
 
+		m_TextStyle = textStyle;
 		ServiceProvider::getTextBufferManager()->setStyle(m_TextBufferHandle, textStyle);
 	}
 #if _MSC_VER && !__INTEL_COMPILER

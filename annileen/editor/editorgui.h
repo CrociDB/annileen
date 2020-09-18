@@ -34,6 +34,12 @@ namespace annileen
 		void drawSettingsWindow();
 		void _drawTree(SceneNodePtr const sceneNode);
 
+		// Modules
+		void drawModelModuleProperties(Model* model);
+		void drawLightModuleProperties(Light* light);
+		void drawCameraModuleProperties(Camera* camera);
+		void drawTextModuleProperties(Text* text);
+
 		friend class ApplicationEditor;
 	};
 }
