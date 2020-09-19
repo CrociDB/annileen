@@ -196,11 +196,11 @@ namespace annileen
 	void annileen::EditorGui::drawSelectedNodePropertiesWindow()
 	{
 		ImGui::SetNextWindowPos(
-			ImVec2(10.0f, 690.0f)
+			ImVec2(320.0f, 270.0f)
 			, ImGuiCond_FirstUseEver
 		);
 		ImGui::SetNextWindowSize(
-			ImVec2(300.0f, 120.0f)
+			ImGui::GetContentRegionAvail()
 			, ImGuiCond_FirstUseEver
 		);
 
@@ -215,18 +215,20 @@ namespace annileen
 
 		if (text == nullptr)
 		{
-			ImGui::Text("Transform");
-			auto position = m_SelectedSceneNode->getTransform().position();
-			ImGui::DragFloat3("Position", glm::value_ptr(position), 0.01F);
-			m_SelectedSceneNode->getTransform().position(position);
+			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				auto position = m_SelectedSceneNode->getTransform().position();
+				ImGui::DragFloat3("Position", glm::value_ptr(position), 0.01F);
+				m_SelectedSceneNode->getTransform().position(position);
 
-			auto rotationEuler = m_SelectedSceneNode->getTransform().euler();
-			ImGui::DragFloat3("Rotation", glm::value_ptr(rotationEuler), 0.01F);
-			m_SelectedSceneNode->getTransform().euler(rotationEuler);
+				auto rotationEuler = m_SelectedSceneNode->getTransform().euler();
+				ImGui::DragFloat3("Rotation", glm::value_ptr(rotationEuler), 0.01F);
+				m_SelectedSceneNode->getTransform().euler(rotationEuler);
 
-			auto scale = m_SelectedSceneNode->getTransform().scale();
-			ImGui::DragFloat3("Scale", glm::value_ptr(scale), 0.01F);
-			m_SelectedSceneNode->getTransform().scale(scale);
+				auto scale = m_SelectedSceneNode->getTransform().scale();
+				ImGui::DragFloat3("Scale", glm::value_ptr(scale), 0.01F);
+				m_SelectedSceneNode->getTransform().scale(scale);
+			}
 		}
 		else
 		{
@@ -428,40 +430,43 @@ namespace annileen
 
 	void EditorGui::drawModelModuleProperties(Model* model)
 	{
-		ImGui::Separator();
-		ImGui::Text("Model");		
-		ImGui::Checkbox("Enabled", &model->enabled);
-		ImGui::Checkbox("Static", &model->isStatic);
-		ImGui::Checkbox("Cast Shadows", &model->castShadows);
-		ImGui::Checkbox("Receive Shadows", &model->receiveShadows);
-		ImGui::Separator();
-		ImGui::Text("Material");
-		std::shared_ptr<Material> mat = model->getMaterial();
-		ImGui::Text("Name: %s", mat.get()->getName());
+		if (ImGui::CollapsingHeader("Model", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::Checkbox("Enabled", &model->enabled);
+			ImGui::Checkbox("Static", &model->isStatic);
+			ImGui::Checkbox("Cast Shadows", &model->castShadows);
+			ImGui::Checkbox("Receive Shadows", &model->receiveShadows);
+			ImGui::Separator();
+			ImGui::Text("Material");
+			std::shared_ptr<Material> mat = model->getMaterial();
+			ImGui::Text("Name: %s", mat.get()->getName());
+		}
 	}
 
 	void EditorGui::drawLightModuleProperties(Light* light)
 	{
-		ImGui::Separator();
-		ImGui::Text("Light");
-		ImGui::Checkbox("Enabled", &light->enabled);
-		ImGui::Checkbox("Static", &light->isStatic);
-		ImGui::Checkbox("Generate Shadows", &light->generateShadows);
-		ImGui::DragFloat("Intensity", &light->intensity);
-		ImGui::ColorEdit3("Color", glm::value_ptr(light->color));
+		if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::Checkbox("Enabled", &light->enabled);
+			ImGui::Checkbox("Static", &light->isStatic);
+			ImGui::Checkbox("Generate Shadows", &light->generateShadows);
+			ImGui::DragFloat("Intensity", &light->intensity, 0.1F, 0.0F,10.F);
+			ImGui::ColorEdit3("Color", glm::value_ptr(light->color));
+		}
 	}
 
 	void EditorGui::drawCameraModuleProperties(Camera* camera)
 	{
-		ImGui::Separator();
-		ImGui::Text("Camera");
-		ImGui::Checkbox("Enabled", &camera->enabled);
-		ImGui::Checkbox("Static", &camera->isStatic);
+		if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::Checkbox("Enabled", &camera->enabled);
+			ImGui::Checkbox("Static", &camera->isStatic);
 
-		ImGui::ColorEdit4("Clear Color", glm::value_ptr(camera->clearColor));
-		ImGui::DragFloat("Near", &camera->nearClip);
-		ImGui::DragFloat("Far", &camera->farClip);
-		ImGui::DragFloat("Field Of View", &camera->fieldOfView);
+			ImGui::ColorEdit4("Clear Color", glm::value_ptr(camera->clearColor));
+			ImGui::DragFloat("Near", &camera->nearClip);
+			ImGui::DragFloat("Far", &camera->farClip);
+			ImGui::DragFloat("Field Of View", &camera->fieldOfView);
+		}
 	}
 
 	void EditorGui::drawTextModuleProperties(Text* text)
@@ -470,74 +475,89 @@ namespace annileen
 
 		if(staticText)
 		{
+			ImDrawList* draw_list = ImGui::GetWindowDrawList();
+			
 			ImVec2 buttonSize = ImGui::GetWindowSize();
+			buttonSize.x -= 25;
 			buttonSize.y = 100;
-			ImGui::Button("Properties cannot be changed \nbecause this text is static", buttonSize);
+
+			ImVec2 pos = ImGui::GetCursorScreenPos();
+			ImVec2 marker_min = ImVec2(pos.x + buttonSize.x, pos.y);
+			ImVec2 marker_max = ImVec2(pos.x + buttonSize.x + 10, pos.y + ImGui::GetTextLineHeight());
+			ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + buttonSize.x);
+			ImGui::Text("Properties cannot be changed because this text is static", buttonSize.x);
+			// Draw actual text bounding box, following by marker of our expected limit (should not overlap!)
+			draw_list->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), IM_COL32(255, 255, 0, 255));
+			draw_list->AddRectFilled(marker_min, marker_max, IM_COL32(255, 0, 255, 255));
+			ImGui::PopTextWrapPos();
+			//ImGui::Button("Properties cannot be changed \nbecause this text is static", buttonSize);
 		}
 
-		ImGui::Text("Transform");
-		glm::vec2 screenPosition = text->getScreenPosition();
-		ImGui::DragFloat2("Screen Position", glm::value_ptr(screenPosition));
-		if (!staticText && screenPosition != text->getScreenPosition())
+		if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			text->setScreenPosition(screenPosition.x, screenPosition.y);
+			glm::vec2 screenPosition = text->getScreenPosition();
+			ImGui::DragFloat2("Screen Position", glm::value_ptr(screenPosition));
+			if (!staticText && screenPosition != text->getScreenPosition())
+			{
+				text->setScreenPosition(screenPosition.x, screenPosition.y);
+			}
 		}
-		ImGui::Separator();
-		ImGui::Text("Text");
-		
-		Text::TextStyle textStyle = text->getStyle();
+		if (ImGui::CollapsingHeader("Text", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			Text::TextStyle textStyle = text->getStyle();
 
-		bool background = textStyle & Text::TextStyle::Background;
-		ImGui::Checkbox("Background", &background);
-		glm::vec3 backgroundColor = text->getBackgroundColor();
-		ImGui::ColorEdit3("Background Color", glm::value_ptr(backgroundColor));
-		if (!staticText && backgroundColor != text->getBackgroundColor())
-		{
-			text->setBackgroundColor(backgroundColor);
-		}
-		
-		bool overline = textStyle & Text::TextStyle::Overline;
-		ImGui::Checkbox("Overline", &overline);
-		glm::vec3 overlineColor = text->getOverlineColor();
-		ImGui::ColorEdit3("Overline Color", glm::value_ptr(overlineColor));
-		if (!staticText && overlineColor != text->getOverlineColor())
-		{
-			text->setOverlineColor(overlineColor);
-		}
-		
-		bool underline = textStyle & Text::TextStyle::Underline;
-		ImGui::Checkbox("Underline", &underline);
-		glm::vec3 underlineColor = text->getUnderlineColor();
-		ImGui::ColorEdit3("Underline Color", glm::value_ptr(underlineColor));
-		if (!staticText && underlineColor != text->getUnderlineColor())
-		{
-			text->setUnderlineColor(underlineColor);
-		}
-		
-		bool strikethrough = textStyle & Text::TextStyle::StrikeThrough;
-		ImGui::Checkbox("StrikeThrough", &strikethrough);
-		glm::vec3 strikeThroughColor = text->getStrikeThroughColor();
-		ImGui::ColorEdit3("StrikeThrough Color", glm::value_ptr(strikeThroughColor));
-		if (!staticText && strikeThroughColor != text->getStrikeThroughColor())
-		{
-			text->setStrikeThroughColor(strikeThroughColor);
-		}
+			bool background = textStyle & Text::TextStyle::Background;
+			ImGui::Checkbox("Background", &background);
+			glm::vec3 backgroundColor = text->getBackgroundColor();
+			ImGui::ColorEdit3("Background Color", glm::value_ptr(backgroundColor));
+			if (!staticText && backgroundColor != text->getBackgroundColor())
+			{
+				text->setBackgroundColor(backgroundColor);
+			}
 
-		textStyle = static_cast<Text::TextStyle>((background ? Text::TextStyle::Background : 0) |
-			(overline ? Text::TextStyle::Overline : 0) |
-			(underline ? Text::TextStyle::Underline : 0) |
-			(strikethrough ? Text::TextStyle::StrikeThrough : 0));
+			bool overline = textStyle & Text::TextStyle::Overline;
+			ImGui::Checkbox("Overline", &overline);
+			glm::vec3 overlineColor = text->getOverlineColor();
+			ImGui::ColorEdit3("Overline Color", glm::value_ptr(overlineColor));
+			if (!staticText && overlineColor != text->getOverlineColor())
+			{
+				text->setOverlineColor(overlineColor);
+			}
 
-		if (!staticText && textStyle != text->getStyle())
-		{
-			text->setStyle(textStyle);
-		}
+			bool underline = textStyle & Text::TextStyle::Underline;
+			ImGui::Checkbox("Underline", &underline);
+			glm::vec3 underlineColor = text->getUnderlineColor();
+			ImGui::ColorEdit3("Underline Color", glm::value_ptr(underlineColor));
+			if (!staticText && underlineColor != text->getUnderlineColor())
+			{
+				text->setUnderlineColor(underlineColor);
+			}
 
-		glm::vec3 textColor = text->getTextColor();
-		ImGui::ColorEdit3("Text Color", glm::value_ptr(textColor));
-		if (!staticText && textColor != text->getTextColor())
-		{
-			text->setTextColor(textColor);
+			bool strikethrough = textStyle & Text::TextStyle::StrikeThrough;
+			ImGui::Checkbox("StrikeThrough", &strikethrough);
+			glm::vec3 strikeThroughColor = text->getStrikeThroughColor();
+			ImGui::ColorEdit3("StrikeThrough Color", glm::value_ptr(strikeThroughColor));
+			if (!staticText && strikeThroughColor != text->getStrikeThroughColor())
+			{
+				text->setStrikeThroughColor(strikeThroughColor);
+			}
+
+			textStyle = static_cast<Text::TextStyle>((background ? Text::TextStyle::Background : 0) |
+				(overline ? Text::TextStyle::Overline : 0) |
+				(underline ? Text::TextStyle::Underline : 0) |
+				(strikethrough ? Text::TextStyle::StrikeThrough : 0));
+
+			if (!staticText && textStyle != text->getStyle())
+			{
+				text->setStyle(textStyle);
+			}
+
+			glm::vec3 textColor = text->getTextColor();
+			ImGui::ColorEdit3("Text Color", glm::value_ptr(textColor));
+			if (!staticText && textColor != text->getTextColor())
+			{
+				text->setTextColor(textColor);
+			}
 		}
 
 		//const char* constTextContent = text->getText().c_str();
