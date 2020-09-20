@@ -1,5 +1,6 @@
 #include <engine/input.h>
 #include <GLFW/glfw3.h>
+#include <engine/serviceprovider.h>
 
 namespace annileen
 {
@@ -147,8 +148,8 @@ namespace annileen
 
 	void Input::_setMouseScroll(float x, float y)
 	{
-		m_MouseScroll.x = x;
-		m_MouseScroll.y = y;
+		m_MouseScroll.x += x;
+		m_MouseScroll.y += y;
 	}
 
 	Input::Input()
@@ -158,6 +159,7 @@ namespace annileen
 
 		m_MousePosition.x = m_MousePosition.y = 0;
 		m_MouseDelta.x = m_MouseDelta.y = 0;
+		m_MouseScroll.x = m_MouseScroll.y = 0;
 	}
 
 	Input::~Input()

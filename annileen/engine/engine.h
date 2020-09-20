@@ -53,7 +53,7 @@ namespace annileen
         Renderer* m_Renderer;
         static bool m_Running;
         
-        std::shared_ptr<Gui> m_Gui;
+        Gui* m_Gui;
 
         Time m_Time;
         uint8_t m_TargetFPS;
@@ -77,7 +77,7 @@ namespace annileen
         int init(int width, int height, std::string assetfile, std::string applicationName);
 
         std::shared_ptr<Input> getInput(); 
-        std::shared_ptr<Gui> getGui();
+        Gui* getGui();
         Renderer* getRenderer();
         Uniform* getUniform();
         GLFWwindow* getGLFWWindow();

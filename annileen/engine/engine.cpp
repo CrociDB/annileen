@@ -60,6 +60,7 @@ namespace annileen
 
     void Engine::glfw_mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
     {
+        getInstance()->getInput()->_setMouseScroll(xoffset, yoffset);
     }
 
     void Engine::glfw_joystickCallback(int jid, int event)
@@ -93,8 +94,8 @@ namespace annileen
         glfwSetKeyCallback(m_Window, glfw_keyCallback);
         glfwSetMouseButtonCallback(m_Window, glfw_mouseButtonCallback);
         glfwSetCursorPosCallback(m_Window, glfw_mouseCursorPositionCallback);
+        glfwSetScrollCallback(m_Window, glfw_mouseScrollCallback);
         //glfwSetCursorEnterCallback(m_Window, glfw_mouseCursorEnterCallback);
-        //glfwSetScrollCallback(m_Window, glfw_mouseScrollCallback);
         //glfwSetJoystickCallback(glwf_joystickCallback);
 
         bgfx::renderFrame();
@@ -135,8 +136,7 @@ namespace annileen
         m_Renderer = new Renderer();
         m_Renderer->init(this);
 
-        m_Gui = std::make_shared<Gui>();
-        m_Gui->init();
+        m_Gui = new Gui();
 
         m_TargetFPS = 60; 
         m_Time.timeScale = 1.0f;
@@ -153,7 +153,7 @@ namespace annileen
 	    return m_Input;
     }
 
-    std::shared_ptr<Gui> Engine::getGui()
+    Gui* Engine::getGui()
     {
         return m_Gui;
     }
@@ -321,7 +321,11 @@ namespace annileen
             delete fontManager;
         }
 
-        m_Gui->destroy();
+        if (m_Gui != nullptr)
+        {
+            delete m_Gui;
+        }
+
         m_Uniform.destroy();
         bgfx::shutdown();
         glfwTerminate();

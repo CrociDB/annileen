@@ -436,10 +436,10 @@ namespace annileen
 			ImGui::Checkbox("Static", &model->isStatic);
 			ImGui::Checkbox("Cast Shadows", &model->castShadows);
 			ImGui::Checkbox("Receive Shadows", &model->receiveShadows);
-			ImGui::Separator();
-			ImGui::Text("Material");
-			std::shared_ptr<Material> mat = model->getMaterial();
-			ImGui::Text("Name: %s", mat.get()->getName());
+		}
+		if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::Text("Name: %s", model->getMaterial()->getName());
 		}
 	}
 

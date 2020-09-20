@@ -36,6 +36,7 @@ void GameScene::buildMap()
     m_BlockMaterial = std::make_shared<Material>();
     m_BlockMaterial->addTexture("s_mainTex", texture, 0);
     m_BlockMaterial->addShaderPass(shaderPass);
+    m_BlockMaterial->setName("BlockMaterial");
 
     fog.color = glm::vec3(0.823f, 0.705f, 0.513f);
     fog.distance = 150.0f;
@@ -157,6 +158,11 @@ void GameScene::update()
     // know exactly what chunks to generate and render
     // TODO: the render/occlusion part will have to be moved over to a better place later
     //clearChunks();
+
+    if (getCamera() == nullptr)
+    {
+        return;
+    }
 
     auto cameraPos = getCamera()->getTransform().position();
     int cx = static_cast<int>(cameraPos.x / CHUNK_WIDTH);

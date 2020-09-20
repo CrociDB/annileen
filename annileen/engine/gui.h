@@ -5,17 +5,17 @@
 
 namespace annileen
 {
-	class Gui
+	class Gui final
 	{
 	public:
-		void init();
-		void destroy();
-
 		void beginFrame(glm::vec2 mousePos, uint8_t mouseButton, int32_t mouseScroll, uint32_t width, uint32_t height);
 		void endFrame();
 
+	private:
 		Gui();
 		~Gui();
+
+		friend class Engine;
 	};
 }
 

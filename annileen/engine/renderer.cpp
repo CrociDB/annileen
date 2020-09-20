@@ -108,6 +108,12 @@ namespace annileen
 
     void Renderer::render()
     {
+        if (m_ActiveCamera == nullptr || !m_ActiveCamera->enabled)
+        {
+            // TODO: show black screen with 'no camera' msg
+            return;
+        }
+
         Light* mainLightForShadows = nullptr;
         
         // Set light properties and get first light that generate shadows to be main light for shadows.

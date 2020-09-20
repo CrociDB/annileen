@@ -63,7 +63,7 @@ namespace annileen
         }
     }
 
-    Material::Material()
+    Material::Material() : m_Name("MaterialName")
     {
     }
 

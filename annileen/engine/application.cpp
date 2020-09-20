@@ -43,7 +43,7 @@ namespace annileen
 				| (m_Engine->getInput()->getMouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT) ? IMGUI_MBUT_RIGHT : 0)
 				| (m_Engine->getInput()->getMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE) ? IMGUI_MBUT_MIDDLE : 0);
 
-			m_Engine->getGui()->beginFrame(m_Engine->getInput()->getMousePosition(), mouseButton, m_Engine->getInput()->getMouseScroll().y, m_Engine->getWidth(), m_Engine->getHeight());
+			m_Engine->getGui()->beginFrame(m_Engine->getInput()->getMousePosition(), mouseButton, static_cast<int32_t>(m_Engine->getInput()->getMouseScroll().y), m_Engine->getWidth(), m_Engine->getHeight());
 
 			scene->update();
 
