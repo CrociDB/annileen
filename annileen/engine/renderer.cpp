@@ -308,6 +308,12 @@ namespace annileen
         material->submitUniforms();
 
         auto meshGroup = model->getMeshGroup();
+
+        if (meshGroup == nullptr)
+        {
+            return;
+        }
+
         for (auto& mesh : meshGroup->m_Meshes)
         {
             bgfx::setTransform(glm::value_ptr(model->getTransform().getModelMatrix()));

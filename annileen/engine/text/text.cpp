@@ -267,7 +267,14 @@ namespace annileen
 
 	Text::~Text()
 	{
-		ServiceProvider::getFontManager()->destroyFont(m_FontHandle);
-		ServiceProvider::getTextBufferManager()->destroyTextBuffer(m_TextBufferHandle);
+		if (isValid(m_FontHandle))
+		{
+			ServiceProvider::getFontManager()->destroyFont(m_FontHandle);
+		}
+
+		if (isValid(m_TextBufferHandle))
+		{
+			ServiceProvider::getTextBufferManager()->destroyTextBuffer(m_TextBufferHandle);
+		}
 	}
 }

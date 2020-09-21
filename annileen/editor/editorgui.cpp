@@ -321,22 +321,22 @@ namespace annileen
 		{
 			if (ImGui::BeginMenu("Model"))
 			{
-				drawNewSceneNodeContextMenu(sceneNode);
+				drawNewSceneNodeContextMenu<Model>(sceneNode, "New Model");
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Camera"))
 			{
-				drawNewSceneNodeContextMenu(sceneNode);
+				drawNewSceneNodeContextMenu<Camera>(sceneNode, "New Camera");
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Light"))
 			{
-				drawNewSceneNodeContextMenu(sceneNode);
+				drawNewSceneNodeContextMenu<Light>(sceneNode, "New Light");
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Text"))
 			{
-				drawNewSceneNodeContextMenu(sceneNode);
+				drawNewSceneNodeContextMenu<Text>(sceneNode, "New Text");
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenu();
@@ -348,26 +348,26 @@ namespace annileen
 		ImGui::EndPopup();		
 	}
 
-	void EditorGui::drawNewSceneNodeContextMenu(SceneNodePtr const sceneNode)
-	{
-		Scene* scene = sceneNode->getParentScene();
+	//void EditorGui::drawNewSceneNodeContextMenu(SceneNodePtr const sceneNode)
+	//{
+	//	Scene* scene = sceneNode->getParentScene();
 
-		if (ImGui::Selectable("Above"))
-		{
-			SceneNodePtr newSceneNode = new SceneNode(scene, "SceneNode");
-			sceneNode->getParent()->addChildBefore(newSceneNode, sceneNode);
-		}
-		if (ImGui::Selectable("As child"))
-		{	
-			SceneNodePtr newSceneNode = new SceneNode(scene, "SceneNode");			
-			sceneNode->addChild(newSceneNode);
-		}
-		if (ImGui::Selectable("Below"))
-		{
-			SceneNodePtr newSceneNode = new SceneNode(scene, "SceneNode");
-			sceneNode->getParent()->addChildAfter(newSceneNode, sceneNode);
-		}
-	}
+	//	if (ImGui::Selectable("Above"))
+	//	{
+	//		SceneNodePtr newSceneNode = new SceneNode(scene, "SceneNode");
+	//		sceneNode->getParent()->addChildBefore(newSceneNode, sceneNode);
+	//	}
+	//	if (ImGui::Selectable("As child"))
+	//	{	
+	//		SceneNodePtr newSceneNode = new SceneNode(scene, "SceneNode");			
+	//		sceneNode->addChild(newSceneNode);
+	//	}
+	//	if (ImGui::Selectable("Below"))
+	//	{
+	//		SceneNodePtr newSceneNode = new SceneNode(scene, "SceneNode");
+	//		sceneNode->getParent()->addChildAfter(newSceneNode, sceneNode);
+	//	}
+	//}
 
 	void EditorGui::drawConsoleWindow()
 	{
@@ -521,7 +521,15 @@ namespace annileen
 		}
 		if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			ImGui::Text("Name: %s", model->getMaterial()->getName());
+			std::shared_ptr<Material> material = model->getMaterial();
+			if (material != nullptr)
+			{
+				ImGui::Text("Name: %s", model->getMaterial()->getName());
+			}
+			else
+			{
+				ImGui::Text("Name: No material set");
+			}
 		}
 	}
 

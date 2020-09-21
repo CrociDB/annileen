@@ -43,7 +43,45 @@ namespace annileen
 		void drawTextModuleProperties(Text* text);
 
 		void drawSceneNodeContextMenu(SceneNodePtr const sceneNode);
-		void drawNewSceneNodeContextMenu(SceneNodePtr const sceneNode);
+		
+		template <class T>
+		void drawNewSceneNodeContextMenu(SceneNodePtr const sceneNode, std::string nodeName);
 		friend class ApplicationEditor;
 	};
+
+	
+	template <class T>
+	void EditorGui::drawNewSceneNodeContextMenu(SceneNodePtr const sceneNode, std::string nodeName)
+	{
+		Scene* scene = sceneNode->getParentScene();
+		SceneNodePtr newSceneNode = nullptr;
+
+		if (ImGui::Selectable("Above"))
+		{
+			newSceneNode = new SceneNode(scene, nodeName);
+			sceneNode->getParent()->addChildBefore(newSceneNode, sceneNode);
+		}
+		if (ImGui::Selectable("As child"))
+		{
+			newSceneNode = new SceneNode(scene, nodeName);
+			sceneNode->addChild(newSceneNode);
+		}
+		if (ImGui::Selectable("Below"))
+		{
+			newSceneNode = new SceneNode(scene, nodeName);
+			sceneNode->getParent()->addChildAfter(newSceneNode, sceneNode);
+		}
+
+		if (newSceneNode != nullptr)
+		{
+			SceneNodeModule* newModule = newSceneNode->addModule<T>();
+
+			// TODO: change text to not need this.
+			if constexpr (std::is_same<T, Text>::value)
+			{
+				Text* text = static_cast<Text*>(newModule);
+				text->init(false);
+			}
+		}
+	}
 }

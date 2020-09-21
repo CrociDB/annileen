@@ -173,17 +173,20 @@ namespace annileen
 
 			if (sceneNodeModule != nullptr)
 			{
-				if (moduleIt.first == typeid(Camera))
+				if (m_ParentScene != nullptr)
 				{
-					Camera* camera = static_cast<Camera*>(sceneNodeModule);
-					m_ParentScene->m_Cameras.remove(camera);
-					camera = nullptr;
-				}
-				else if (moduleIt.first == typeid(Light))
-				{
-					Light* light = static_cast<Light*>(sceneNodeModule);
-					m_ParentScene->m_Lights.remove(light);
-					light = nullptr;
+					if (moduleIt.first == typeid(Camera))
+					{
+						Camera* camera = static_cast<Camera*>(sceneNodeModule);
+						m_ParentScene->m_Cameras.remove(camera);
+						camera = nullptr;
+					}
+					else if (moduleIt.first == typeid(Light))
+					{
+						Light* light = static_cast<Light*>(sceneNodeModule);
+						m_ParentScene->m_Lights.remove(light);
+						light = nullptr;
+					}
 				}
 
 				delete sceneNodeModule;
