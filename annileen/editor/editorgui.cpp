@@ -21,6 +21,7 @@ namespace annileen
 		m_ShowConsoleWindow = true;
 		m_ShowSettingsWindow = false;
 		m_SelectedSceneNode = nullptr;
+		m_SceneNodeToBeRemoved = nullptr;
 	}
 
 	EditorGui::~EditorGui()
@@ -57,7 +58,7 @@ namespace annileen
 		
 		if (scene != nullptr)
 		{
-			if (m_ShowSceneHierarchyWindow) drawSceneHierarchyWindow(scene->getNodeList());
+			if (m_ShowSceneHierarchyWindow) drawSceneHierarchyWindow(scene->getRoot()->getChildren());
 			if (m_SelectedSceneNode != nullptr)
 			{
 				if(m_ShowSceneNodePropertiesWindow) drawSelectedNodePropertiesWindow();
@@ -66,6 +67,23 @@ namespace annileen
 
 		if (m_ShowConsoleWindow) drawConsoleWindow();
 		if (m_ShowSettingsWindow) drawSettingsWindow();
+
+		if (m_SceneNodeToBeRemoved != nullptr)
+		{
+			Scene* scene = m_SceneNodeToBeRemoved->getParentScene();
+
+			if (scene != nullptr)
+			{
+				if (m_SelectedSceneNode = m_SceneNodeToBeRemoved)
+				{
+					m_SelectedSceneNode = nullptr;
+				}
+
+				SceneNodePtr nodeParent = m_SceneNodeToBeRemoved->getParent();
+				nodeParent->removeChild(m_SceneNodeToBeRemoved);
+			}
+			m_SceneNodeToBeRemoved = nullptr;
+		}
 	}
 
 	void EditorGui::drawMainWindowToolbar()
@@ -168,7 +186,7 @@ namespace annileen
 		ImGui::End();
 	}
 
-	void EditorGui::drawSceneHierarchyWindow(const std::list<SceneNodePtr> sceneNodeList)
+	void EditorGui::drawSceneHierarchyWindow(const std::vector<SceneNodePtr> sceneNodeList)
 	{
 		ImGui::SetNextWindowPos(
 			ImVec2(10.0f, 270.0f)
@@ -258,6 +276,11 @@ namespace annileen
 	// TODO: this will be refactored to use queue or stack
 	void EditorGui::_drawTree(SceneNodePtr const sceneNode)
 	{
+		if (sceneNode == nullptr)
+		{
+			return;
+		}
+
 		static ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow |
 			ImGuiTreeNodeFlags_OpenOnDoubleClick |
 			ImGuiTreeNodeFlags_SpanAvailWidth;
@@ -266,12 +289,12 @@ namespace annileen
 
 		if (nodeChildren.empty())
 		{
-			// Using memory address as id, each sceneNode should have an id in the future though.
-			ImGui::PushID(sceneNode);
+			ImGui::PushID(sceneNode->getId());
 			if (ImGui::Selectable(sceneNode->name.c_str(), sceneNode == m_SelectedSceneNode))
 			{
 				m_SelectedSceneNode = sceneNode;
 			}
+			drawSceneNodeContextMenu(sceneNode);		
 			ImGui::PopID();
 		}
 		else
@@ -284,6 +307,65 @@ namespace annileen
 				}
 				ImGui::TreePop();
 			}
+		}
+	}
+
+	void EditorGui::drawSceneNodeContextMenu(SceneNodePtr const sceneNode)
+	{
+		if (!ImGui::BeginPopupContextItem())
+		{
+			return;
+		}
+		
+		if (ImGui::BeginMenu("Add Scene Node"))
+		{
+			if (ImGui::BeginMenu("Model"))
+			{
+				drawNewSceneNodeContextMenu(sceneNode);
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Camera"))
+			{
+				drawNewSceneNodeContextMenu(sceneNode);
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Light"))
+			{
+				drawNewSceneNodeContextMenu(sceneNode);
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Text"))
+			{
+				drawNewSceneNodeContextMenu(sceneNode);
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::MenuItem("Delete Scene Node"))
+		{
+			m_SceneNodeToBeRemoved = sceneNode;
+		}
+		ImGui::EndPopup();		
+	}
+
+	void EditorGui::drawNewSceneNodeContextMenu(SceneNodePtr const sceneNode)
+	{
+		Scene* scene = sceneNode->getParentScene();
+
+		if (ImGui::Selectable("Above"))
+		{
+			SceneNodePtr newSceneNode = new SceneNode(scene, "SceneNode");
+			sceneNode->getParent()->addChildBefore(newSceneNode, sceneNode);
+		}
+		if (ImGui::Selectable("As child"))
+		{	
+			SceneNodePtr newSceneNode = new SceneNode(scene, "SceneNode");			
+			sceneNode->addChild(newSceneNode);
+		}
+		if (ImGui::Selectable("Below"))
+		{
+			SceneNodePtr newSceneNode = new SceneNode(scene, "SceneNode");
+			sceneNode->getParent()->addChildAfter(newSceneNode, sceneNode);
 		}
 	}
 

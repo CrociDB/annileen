@@ -33,8 +33,12 @@ namespace annileen
 		Scene* m_ParentScene;
 
 		bool m_Active;
+		size_t m_Id;
 
 		std::unordered_map<std::type_index, SceneNodeModule*> m_Modules;
+
+		// TODO: this is temporary id, not safe, not ideal. Replace someday.
+		static size_t m_IdCount;
 
 	public:
 		std::string name = "SceneNode";
@@ -42,24 +46,29 @@ namespace annileen
 		void setParentScene(Scene* scene);
 		void setParent(SceneNodePtr node);
 		SceneNodePtr getParent();
+		Scene* getParentScene() { return m_ParentScene; }
 		std::vector<SceneNodePtr> getChildren();
 
 		void setAcive(bool active) { m_Active = active; }
 		bool getAcive() { return m_Active; }
 
+		size_t getId() { return m_Id; };
+
 		Transform& getTransform();
 
 		void addChild(SceneNodePtr node);
+		void addChildBefore(SceneNodePtr child, SceneNodePtr nodeAfter);
+		void addChildAfter(SceneNodePtr child, SceneNodePtr nodeBefore);
 		void removeChild(SceneNodePtr node);
 		std::vector<SceneNodePtr>::iterator findChild(SceneNodePtr node);
 		bool hasChild(SceneNodePtr node);
-		void _destroyNode(SceneNodePtr node);
-
+		
 		template <class T> T* getModule() const;
 		template <class T> T* addModule();
 		template <class T> bool removeModule();
 
 		SceneNode();
+		SceneNode(Scene* parentScene, std::string name);
 		~SceneNode();
 	};
 

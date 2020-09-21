@@ -209,8 +209,10 @@ SceneNodePtr Chunk::getSceneNode()
 {
     if (m_Node == nullptr)
     {
-        m_Node = Engine::getInstance()->getScene()->createNode("Chunk");
-        
+        Scene* scene = Engine::getInstance()->getScene();
+        m_Node =  new SceneNode(scene, "Chunk");
+        scene->getRoot()->addChild(m_Node);
+
         m_Model = m_Node->addModule<Model>();
         m_Model->init(m_MeshGroup, m_Material);
 

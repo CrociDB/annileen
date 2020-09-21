@@ -22,13 +22,15 @@ namespace annileen
 		bool m_ShowConsoleWindow;
 		bool m_ShowSettingsWindow;
 
-		SceneNode* m_SelectedSceneNode;
+		// These will probably become a list when we start allowing multiple selection.
+		SceneNode* m_SelectedSceneNode;		
+		SceneNode* m_SceneNodeToBeRemoved;
 
 		void initialize();
 		void render(Scene* scene);
 		void drawMainWindowToolbar();
 		void drawToolsWindow();
-		void drawSceneHierarchyWindow(const std::list<SceneNodePtr> sceneNodeList);
+		void drawSceneHierarchyWindow(const std::vector<SceneNodePtr> sceneNodeList);
 		void drawSelectedNodePropertiesWindow();
 		void drawConsoleWindow();
 		void drawSettingsWindow();
@@ -40,6 +42,8 @@ namespace annileen
 		void drawCameraModuleProperties(Camera* camera);
 		void drawTextModuleProperties(Text* text);
 
+		void drawSceneNodeContextMenu(SceneNodePtr const sceneNode);
+		void drawNewSceneNodeContextMenu(SceneNodePtr const sceneNode);
 		friend class ApplicationEditor;
 	};
 }

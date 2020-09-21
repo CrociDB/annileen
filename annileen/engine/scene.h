@@ -29,6 +29,9 @@ namespace annileen
         std::list<Camera*> m_Cameras;        
         Skybox* m_Skybox = nullptr;
 
+        void addNodeToList(SceneNodePtr node);
+        void removeNodeFromList(SceneNodePtr node);
+
         friend class SceneNode;
     public:
         Fog fog;
@@ -37,13 +40,11 @@ namespace annileen
         virtual void update() {};
 
         SceneNodePtr getRoot();
-        SceneNodePtr createNode(std::string name = "SceneNode");
-        void removeNode(SceneNodePtr node);
 
         void setSkybox(Skybox* skybox) { m_Skybox = skybox; }
         Skybox* getSkybox() const { return m_Skybox; }
 
-        void clearNodeList();
+        void clearNodes();
         std::list<SceneNodePtr>& getNodeList();
         std::list<Light*>& getLightList();
         std::list<Camera*>& getCameraList();

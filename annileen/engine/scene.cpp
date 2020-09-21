@@ -8,29 +8,23 @@ namespace annileen
         return m_Root;
     }
 
-    SceneNodePtr Scene::createNode(std::string name)
+    void Scene::addNodeToList(SceneNodePtr node)
     {
-        SceneNodePtr node = new SceneNode();
         m_Nodes.push_back(node);
-        node->name = name;
-        node->setParentScene(this);
-        node->setParent(m_Root);
-        return node;
     }
 
-    void Scene::removeNode(SceneNodePtr node)
+    void Scene::removeNodeFromList(SceneNodePtr node)
     {
         m_Nodes.remove(node);
-        delete node;
     }
 
-    void Scene::clearNodeList()
+    void Scene::clearNodes()
     {
-        /*for (auto node : m_Root->getChildren())
+        if (m_Root != nullptr)
         {
-            delete node;
-        }*/
-
+            delete m_Root;
+        }
+        m_Root = new SceneNode();
         m_Nodes.clear();
     }
 

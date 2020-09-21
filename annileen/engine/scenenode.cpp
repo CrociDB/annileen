@@ -5,9 +5,20 @@
 
 namespace annileen
 {
+	size_t SceneNode::m_IdCount = 0;
+
 	void SceneNode::setParentScene(Scene* scene)
 	{
-		m_ParentScene = scene;
+		if (m_ParentScene != nullptr)
+		{
+			m_ParentScene->removeNodeFromList(this);
+		}
+
+		if (scene != nullptr)
+		{
+			m_ParentScene = scene;
+			m_ParentScene->addNodeToList(this);
+		}
 	}
 
 	void SceneNode::setParent(SceneNodePtr node)
@@ -47,6 +58,50 @@ namespace annileen
 		m_Children.push_back(node);
 	}
 
+	void SceneNode::addChildBefore(SceneNodePtr child, SceneNodePtr nodeAfter)
+	{
+		if (nodeAfter == nullptr)
+		{
+			addChild(child);
+		}
+		else
+		{
+			auto nodeAfterIt = findChild(nodeAfter);
+
+			if (nodeAfterIt == m_Children.end())
+			{
+				addChild(child);
+			}
+			else
+			{
+				child->m_Parent = this;
+				m_Children.insert(nodeAfterIt, child);
+			}
+		}
+	}
+
+	void SceneNode::addChildAfter(SceneNodePtr child, SceneNodePtr nodeBefore)
+	{
+		if (nodeBefore == nullptr)
+		{
+			addChild(child);
+		}
+		else
+		{
+			auto nodeBeforeIt = findChild(nodeBefore);
+
+			if (nodeBeforeIt == m_Children.end())
+			{
+				addChild(child);
+			}
+			else
+			{
+				child->m_Parent = this;
+				m_Children.insert(std::next(nodeBeforeIt), child);
+			}
+		}
+	}
+
 	void SceneNode::removeChild(SceneNodePtr node)
 	{
 		if (node == nullptr)
@@ -58,8 +113,14 @@ namespace annileen
 
 		if (nodeIt != m_Children.end())
 		{
-			_destroyNode(node);
+			for (auto nodeChild : node->getChildren())
+			{
+				removeChild(nodeChild);
+			}
 			m_Children.erase(nodeIt);
+
+			delete node;
+			node = nullptr;
 		}
 	}
 
@@ -73,21 +134,38 @@ namespace annileen
 		return findChild(node) != m_Children.end();
 	}
 
-	void SceneNode::_destroyNode(SceneNodePtr node)
-	{
-		// TODO:
-	}
-
 	SceneNode::SceneNode() : m_Parent(nullptr), m_Active(true), m_ParentScene(nullptr)
 	{
+		m_Id = m_IdCount++;
 	}
+
+	SceneNode::SceneNode(Scene* parentScene, std::string name) : m_Parent(nullptr), m_Active(true), m_ParentScene(parentScene),
+		name(name)
+	{
+		m_Id = m_IdCount++;
+		if (m_ParentScene != nullptr)
+		{
+			m_ParentScene->addNodeToList(this);
+		}
+	}
+
 
 	SceneNode::~SceneNode()
 	{
-		/*for (auto children : m_Children)
+		if (m_ParentScene != nullptr)
 		{
-			delete children;
-		}*/
+			m_ParentScene->removeNodeFromList(this);
+		}
+
+		for (auto children : m_Children)
+		{
+			if (children != nullptr)
+			{
+				delete children;
+			}
+		}
+
+		m_Children.clear();
 	
 		for (auto moduleIt : m_Modules)
 		{
@@ -114,7 +192,8 @@ namespace annileen
 		}
 
 		m_Modules.clear();
-	}
 
-	
+		m_Parent = nullptr;
+		m_ParentScene = nullptr;
+	}
 }
