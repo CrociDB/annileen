@@ -43,7 +43,7 @@ void GameScene::buildMap()
     fog.enabled = 1.0f;
     fog.power = 1.3f;
 
-    SceneNodePtr lightNode = new SceneNode(this, "Light");
+    SceneNodePtr lightNode = createNode("Light");
     Light* light = lightNode->addModule<Light>();
 
     light->color = glm::vec3(1.0f, 1.0f, .8f);
@@ -51,14 +51,14 @@ void GameScene::buildMap()
     light->intensity = 0.8f;
     light->getTransform().rotate(glm::vec3(-40.0f, 0.0f, -40.0f));
 
-    SceneNodePtr cameraNode = new SceneNode(this, "Camera");
+    SceneNodePtr cameraNode = createNode("Camera");
 
     Camera* camera = cameraNode->addModule<Camera>();
     camera->fieldOfView = 60.0f;
     camera->nearClip = 0.1f;
     camera->farClip = 300.0f;
 
-    SceneNodePtr textNode = new SceneNode(this, "Text");
+    SceneNodePtr textNode = createNode("Text");
     Text* text = textNode->addModule<Text>();
     text->init(true, true);
 
@@ -69,7 +69,7 @@ void GameScene::buildMap()
     text->setStyle(Text::TextStyle::Background);
     text->setText("This is a Annileen\nUsing SDF");
 
-    SceneNodePtr textNode2 = new SceneNode(this, "Text2");
+    SceneNodePtr textNode2 = createNode("Text2");
     Text* text2 = textNode2->addModule<Text>();
     text2->init(false);
 
