@@ -44,7 +44,6 @@ void GameScene::buildMap()
     fog.power = 1.3f;
 
     SceneNodePtr lightNode = new SceneNode(this, "Light");
-    getRoot()->addChild(lightNode);
     Light* light = lightNode->addModule<Light>();
 
     light->color = glm::vec3(1.0f, 1.0f, .8f);
@@ -53,7 +52,6 @@ void GameScene::buildMap()
     light->getTransform().rotate(glm::vec3(-40.0f, 0.0f, -40.0f));
 
     SceneNodePtr cameraNode = new SceneNode(this, "Camera");
-    getRoot()->addChild(cameraNode);
 
     Camera* camera = cameraNode->addModule<Camera>();
     camera->fieldOfView = 60.0f;
@@ -61,7 +59,6 @@ void GameScene::buildMap()
     camera->farClip = 300.0f;
 
     SceneNodePtr textNode = new SceneNode(this, "Text");
-    getRoot()->addChild(textNode);
     Text* text = textNode->addModule<Text>();
     text->init(true, true);
 
@@ -73,7 +70,6 @@ void GameScene::buildMap()
     text->setText("This is a Annileen\nUsing SDF");
 
     SceneNodePtr textNode2 = new SceneNode(this, "Text2");
-    getRoot()->addChild(textNode2);
     Text* text2 = textNode2->addModule<Text>();
     text2->init(false);
 
@@ -132,11 +128,6 @@ void GameScene::removeFarthestChunk()
         removeChunk(chunk);
         delete chunk;
     }
-}
-
-void GameScene::clearChunks()
-{
-    clearNodes();
 }
 
 void GameScene::addChunk(Chunk* chunk)

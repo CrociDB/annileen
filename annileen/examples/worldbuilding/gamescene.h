@@ -30,7 +30,6 @@ private:
     void createChunkAt(int x, int z);
     void removeFarthestChunk();
 
-    void clearChunks();
     void addChunk(Chunk* chunk);
     void removeChunk(Chunk* chunk);
 public:

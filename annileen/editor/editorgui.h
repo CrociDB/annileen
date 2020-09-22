@@ -58,18 +58,20 @@ namespace annileen
 
 		if (ImGui::Selectable("Above"))
 		{
-			newSceneNode = new SceneNode(scene, nodeName);
-			sceneNode->getParent()->addChildBefore(newSceneNode, sceneNode);
+			newSceneNode = scene->createNode(nodeName);
+			newSceneNode->setParent(sceneNode->getParent());
+			newSceneNode->setSiblingPosition(sceneNode->getSiblingIterator());
 		}
 		if (ImGui::Selectable("As child"))
 		{
-			newSceneNode = new SceneNode(scene, nodeName);
-			sceneNode->addChild(newSceneNode);
+			newSceneNode = scene->createNode(nodeName);
+			newSceneNode->setParent(sceneNode);
 		}
 		if (ImGui::Selectable("Below"))
 		{
-			newSceneNode = new SceneNode(scene, nodeName);
-			sceneNode->getParent()->addChildAfter(newSceneNode, sceneNode);
+			newSceneNode = scene->createNode(nodeName);
+			newSceneNode->setParent(sceneNode->getParent());
+			newSceneNode->setSiblingPosition(sceneNode->getSiblingIterator() + 1);
 		}
 
 		if (newSceneNode != nullptr)

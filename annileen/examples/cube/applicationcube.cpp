@@ -26,7 +26,7 @@ private:
     annileen::Scene* init()
     {
         Scene* scene = new Scene();
-        getEngine()->setScene(scene);
+        //getEngine()->setScene(scene);
 
         annileen::Shader* shader = nullptr;
         if (ServiceProvider::getSettings()->shadows.enabled)
@@ -53,19 +53,19 @@ private:
         material->setName("ModelMaterial");
 
 
-        m_ModelNode = new SceneNode(scene, "Model");
+        m_ModelNode = scene->createNode("Model");
         ModelPtr model = m_ModelNode->addModule<Model>();
         model->init(ServiceProvider::getAssetManager()->loadMesh("bunny.obj"), material);
 
         m_ModelNode->getTransform().translate(glm::vec3(-1.0, -1.0, -1.0));
          
-        SceneNodePtr cameraNode = new SceneNode(scene, "Camera");
+        SceneNodePtr cameraNode = scene->createNode("Camera");
         Camera* camera = cameraNode->addModule<Camera>(); 
         camera->fieldOfView = 60.0f;
         camera->nearClip = 0.1f;
         camera->farClip = 300.0f;
         
-        SceneNodePtr lightNode = new SceneNode(scene, "Light");
+        SceneNodePtr lightNode = scene->createNode("Light");
         Light* light = lightNode->addModule<Light>();
 
         light->color = glm::vec3(1.0f, 1.0f, .8f);

@@ -79,9 +79,9 @@ namespace annileen
 					m_SelectedSceneNode = nullptr;
 				}
 
-				SceneNodePtr nodeParent = m_SceneNodeToBeRemoved->getParent();
-				nodeParent->removeChild(m_SceneNodeToBeRemoved);
+				scene->destroyNode(m_SceneNodeToBeRemoved);
 			}
+
 			m_SceneNodeToBeRemoved = nullptr;
 		}
 	}

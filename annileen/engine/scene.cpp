@@ -8,6 +8,19 @@ namespace annileen
         return m_Root;
     }
 
+    SceneNodePtr Scene::createNode(const std::string& name)
+    {
+        auto node = new SceneNode(name);
+        node->setParentScene(this);
+        node->setParent(getRoot());
+        return node;
+    }
+
+    void Scene::destroyNode(SceneNodePtr node)
+    {
+        delete node;
+    }
+
     void Scene::addNodeToList(SceneNodePtr node)
     {
         m_Nodes.push_back(node);
@@ -16,16 +29,6 @@ namespace annileen
     void Scene::removeNodeFromList(SceneNodePtr node)
     {
         m_Nodes.remove(node);
-    }
-
-    void Scene::clearNodes()
-    {
-        if (m_Root != nullptr)
-        {
-            delete m_Root;
-        }
-        m_Root = new SceneNode();
-        m_Nodes.clear();
     }
 
     std::list<SceneNodePtr>& Scene::getNodeList()
@@ -60,7 +63,7 @@ namespace annileen
     Scene::Scene() : fog()
     {
         //m_Camera = new Camera(60.0f, 0.1f, 300.0f);
-        m_Root = new SceneNode();
+        m_Root = new SceneNode("Root");
     }
 
     Scene::~Scene()

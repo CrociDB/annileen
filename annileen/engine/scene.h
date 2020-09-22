@@ -41,10 +41,12 @@ namespace annileen
 
         SceneNodePtr getRoot();
 
+        SceneNodePtr createNode(const std::string& name);
+        void destroyNode(SceneNodePtr node);
+
         void setSkybox(Skybox* skybox) { m_Skybox = skybox; }
         Skybox* getSkybox() const { return m_Skybox; }
 
-        void clearNodes();
         std::list<SceneNodePtr>& getNodeList();
         std::list<Light*>& getLightList();
         std::list<Camera*>& getCameraList();

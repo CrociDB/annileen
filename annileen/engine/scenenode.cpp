@@ -7,6 +7,19 @@ namespace annileen
 {
 	size_t SceneNode::m_IdCount = 0;
 
+	SceneNode::SceneNode(const std::string& name) : m_ParentScene(nullptr), m_Parent(nullptr), m_Active(true), name(name)
+	{
+		m_Id = m_IdCount++;
+	}
+
+	void SceneNode::deParent()
+	{
+		if (m_Parent != nullptr)
+			m_Parent->m_Children.erase(
+				std::remove(m_Parent->m_Children.begin(), m_Parent->m_Children.end(), this),
+				m_Parent->m_Children.end());
+	}
+
 	void SceneNode::setParentScene(Scene* scene)
 	{
 		if (m_ParentScene != nullptr)
@@ -23,12 +36,16 @@ namespace annileen
 
 	void SceneNode::setParent(SceneNodePtr node)
 	{
+		if (m_Parent == node) return;
+
+		deParent();
+
 		if (node != nullptr)
 			m_Parent = node;
 		else
 			m_Parent = m_ParentScene->getRoot();
 
-		m_Parent->m_Children.push_back(node);
+		m_Parent->m_Children.push_back(this);
 	}
 
 	SceneNodePtr SceneNode::getParent()
@@ -46,82 +63,28 @@ namespace annileen
 		return m_Transform;
 	}
 
-	void SceneNode::addChild(SceneNodePtr node)
+	void SceneNode::setSiblingIndex(size_t index)
 	{
-		if (node == nullptr || hasChild(node))
-		{
-			return;
-		}
-
-		node->m_Parent = this;
-
-		m_Children.push_back(node);
+		index = std::min(index, m_Parent->m_Children.size() - 1);
+		setSiblingPosition(m_Parent->m_Children.begin() + index);
 	}
 
-	void SceneNode::addChildBefore(SceneNodePtr child, SceneNodePtr nodeAfter)
+	void SceneNode::setSiblingPosition(std::vector<SceneNodePtr>::iterator& position)
 	{
-		if (nodeAfter == nullptr)
-		{
-			addChild(child);
-		}
-		else
-		{
-			auto nodeAfterIt = findChild(nodeAfter);
-
-			if (nodeAfterIt == m_Children.end())
-			{
-				addChild(child);
-			}
-			else
-			{
-				child->m_Parent = this;
-				m_Children.insert(nodeAfterIt, child);
-			}
-		}
+		std::rotate(position, getSiblingIterator(), m_Parent->m_Children.end());
 	}
 
-	void SceneNode::addChildAfter(SceneNodePtr child, SceneNodePtr nodeBefore)
+	std::vector<SceneNodePtr>::iterator SceneNode::getSiblingIterator()
 	{
-		if (nodeBefore == nullptr)
-		{
-			addChild(child);
-		}
-		else
-		{
-			auto nodeBeforeIt = findChild(nodeBefore);
-
-			if (nodeBeforeIt == m_Children.end())
-			{
-				addChild(child);
-			}
-			else
-			{
-				child->m_Parent = this;
-				m_Children.insert(std::next(nodeBeforeIt), child);
-			}
-		}
+		auto it = std::find(m_Parent->m_Children.begin(), m_Parent->m_Children.end(), this);
+		return it;
 	}
 
-	void SceneNode::removeChild(SceneNodePtr node)
+	size_t SceneNode::getSiblingIndex()
 	{
-		if (node == nullptr)
-		{
-			return;
-		}
-
-		std::vector<SceneNodePtr>::iterator nodeIt = findChild(node);
-
-		if (nodeIt != m_Children.end())
-		{
-			for (auto nodeChild : node->getChildren())
-			{
-				removeChild(nodeChild);
-			}
-			m_Children.erase(nodeIt);
-
-			delete node;
-			node = nullptr;
-		}
+		return std::distance(
+			m_Parent->m_Children.begin(),
+			std::find(m_Parent->m_Children.begin(), m_Parent->m_Children.end(), this));
 	}
 
 	std::vector<SceneNodePtr>::iterator SceneNode::findChild(SceneNodePtr node)
@@ -134,21 +97,6 @@ namespace annileen
 		return findChild(node) != m_Children.end();
 	}
 
-	SceneNode::SceneNode() : m_Parent(nullptr), m_Active(true), m_ParentScene(nullptr)
-	{
-		m_Id = m_IdCount++;
-	}
-
-	SceneNode::SceneNode(Scene* parentScene, std::string name) : m_Parent(nullptr), m_Active(true), m_ParentScene(parentScene),
-		name(name)
-	{
-		m_Id = m_IdCount++;
-		if (m_ParentScene != nullptr)
-		{
-			m_ParentScene->addNodeToList(this);
-		}
-	}
-
 
 	SceneNode::~SceneNode()
 	{
@@ -157,11 +105,11 @@ namespace annileen
 			m_ParentScene->removeNodeFromList(this);
 		}
 
-		for (auto children : m_Children)
+		for (auto child : m_Children)
 		{
-			if (children != nullptr)
+			if (child != nullptr)
 			{
-				delete children;
+				m_ParentScene->destroyNode(child);
 			}
 		}
 
@@ -193,6 +141,9 @@ namespace annileen
 				sceneNodeModule = nullptr;
 			}
 		}
+
+		deParent();
+		setParentScene(nullptr);
 
 		m_Modules.clear();
 

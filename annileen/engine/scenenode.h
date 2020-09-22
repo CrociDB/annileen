@@ -40,6 +40,12 @@ namespace annileen
 		// TODO: this is temporary id, not safe, not ideal. Replace someday.
 		static size_t m_IdCount;
 
+		void deParent();
+
+		SceneNode(const std::string& name);
+
+		friend class Scene;
+
 	public:
 		std::string name = "SceneNode";
 		
@@ -56,10 +62,12 @@ namespace annileen
 
 		Transform& getTransform();
 
-		void addChild(SceneNodePtr node);
-		void addChildBefore(SceneNodePtr child, SceneNodePtr nodeAfter);
-		void addChildAfter(SceneNodePtr child, SceneNodePtr nodeBefore);
-		void removeChild(SceneNodePtr node);
+		void setSiblingIndex(size_t index);
+		void setSiblingPosition(std::vector<SceneNodePtr>::iterator& position);
+
+		std::vector<SceneNodePtr>::iterator getSiblingIterator();
+		size_t getSiblingIndex();
+
 		std::vector<SceneNodePtr>::iterator findChild(SceneNodePtr node);
 		bool hasChild(SceneNodePtr node);
 		
@@ -67,8 +75,6 @@ namespace annileen
 		template <class T> T* addModule();
 		template <class T> bool removeModule();
 
-		SceneNode();
-		SceneNode(Scene* parentScene, std::string name);
 		~SceneNode();
 	};
 
