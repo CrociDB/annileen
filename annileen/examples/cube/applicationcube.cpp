@@ -53,19 +53,19 @@ private:
         material->setName("ModelMaterial");
 
 
-        m_ModelNode = scene->createNode("Model");
+        m_ModelNode = new SceneNode(scene, "Model");
         ModelPtr model = m_ModelNode->addModule<Model>();
         model->init(ServiceProvider::getAssetManager()->loadMesh("bunny.obj"), material);
 
         m_ModelNode->getTransform().translate(glm::vec3(-1.0, -1.0, -1.0));
          
-        SceneNodePtr cameraNode = scene->createNode("Camera");
+        SceneNodePtr cameraNode = new SceneNode(scene, "Camera");
         Camera* camera = cameraNode->addModule<Camera>(); 
         camera->fieldOfView = 60.0f;
         camera->nearClip = 0.1f;
         camera->farClip = 300.0f;
         
-        SceneNodePtr lightNode = scene->createNode("Light");
+        SceneNodePtr lightNode = new SceneNode(scene, "Light");
         Light* light = lightNode->addModule<Light>();
 
         light->color = glm::vec3(1.0f, 1.0f, .8f);
@@ -88,20 +88,6 @@ private:
 
     void update(float deltaTime)
     {
-        ImGui::SetNextWindowSize(ImVec2(300, 100), ImGuiCond_FirstUseEver);
-        ImGui::SetNextWindowPos(ImVec2(350, 50), ImGuiCond_FirstUseEver);
-        ImGui::Begin("Light", NULL, 0);
-
-        static float lightDir[3] = {
-            getEngine()->getScene()->getLightList().front()->getTransform().euler().x,
-            getEngine()->getScene()->getLightList().front()->getTransform().euler().y,
-            getEngine()->getScene()->getLightList().front()->getTransform().euler().z };
-
-        ImGui::DragFloat3("Pos", lightDir, .5);
-
-        ImGui::End();
-        getEngine()->getScene()->getLightList().front()->getTransform().euler((glm::vec3(lightDir[0], lightDir[1], lightDir[2])));
-
         m_ModelNode->getTransform().rotate(glm::vec3(0.0, 15.0 * deltaTime, 0.0));
 
         Camera* camera = getEngine()->getScene()->getCamera();
