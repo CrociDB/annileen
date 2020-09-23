@@ -237,6 +237,8 @@ namespace annileen
 		{
 			m_TextBufferHandle = textBufferManager->createTextBuffer(fontType, BufferType::Transient);
 		}
+
+		m_HasSubmittedOnce = false;
 	}
 
 	void Text::render(bgfx::ViewId viewId)
@@ -255,6 +257,46 @@ namespace annileen
 		if(!m_HasSubmittedOnce)
 		{ 
 			m_HasSubmittedOnce = true;
+		}
+	}
+
+	void Text::setStatic(bool isStatic)
+	{
+		if (isStatic != m_IsStatic)
+		{
+			uint32_t fontType = FONT_TYPE_ALPHA;
+			if (m_Sdf)
+			{
+				fontType = FONT_TYPE_DISTANCE;
+			}
+
+			TextBufferManager* textBufferManager = ServiceProvider::getTextBufferManager();
+
+			if (isValid(m_TextBufferHandle))
+			{
+				ServiceProvider::getTextBufferManager()->destroyTextBuffer(m_TextBufferHandle);
+			}
+
+			if (isStatic)
+			{
+				m_TextBufferHandle = textBufferManager->createTextBuffer(fontType, BufferType::Static);
+			}
+			else
+			{
+				m_TextBufferHandle = textBufferManager->createTextBuffer(fontType, BufferType::Transient);
+			}
+
+			m_IsStatic = isStatic;
+			m_HasSubmittedOnce = false;
+			setBackgroundColor(m_BackgroundColor);
+			setTextColor(m_TextColor);
+			setOverlineColor(m_OverlineColor);
+			setUnderlineColor(m_UnderlineColor);
+			setStrikeThroughColor(m_StrikeThroughColor);
+			setStyle(m_TextStyle);
+			textBufferManager->clearTextBuffer(m_TextBufferHandle);
+			textBufferManager->setPenPosition(m_TextBufferHandle, m_ScreenPosition.x, m_ScreenPosition.y);
+			textBufferManager->appendText(m_TextBufferHandle, m_FontHandle, m_Text.c_str());
 		}
 	}
 

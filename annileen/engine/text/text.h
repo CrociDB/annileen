@@ -43,12 +43,13 @@ namespace annileen
 
 		TextStyle m_TextStyle;
 	public:
-
 		bool enabled;
 
 		void init(bool isStatic, bool sdf = false);
 		
 		void render(bgfx::ViewId viewId);
+
+		void setStatic(bool isStatic);
 
 		bool isStatic() { return m_IsStatic; }
 

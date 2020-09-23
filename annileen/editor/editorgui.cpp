@@ -507,6 +507,13 @@ namespace annileen
 			return;
 		}
 
+		Settings* settings = ServiceProvider::getSettings();
+
+		if (ImGui::CollapsingHeader("Shadows", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::Checkbox("Enabled", &settings->shadows.enabled);
+		}
+
 		ImGui::End();
 	}
 
@@ -594,6 +601,10 @@ namespace annileen
 		}
 		if (ImGui::CollapsingHeader("Text", ImGuiTreeNodeFlags_DefaultOpen))
 		{
+			ImGui::Checkbox("Enabled", &text->enabled);
+			ImGui::Checkbox("Static", &staticText);
+			text->setStatic(staticText);
+			
 			Text::TextStyle textStyle = text->getStyle();
 
 			bool background = textStyle & Text::TextStyle::Background;
@@ -648,17 +659,14 @@ namespace annileen
 			{
 				text->setTextColor(textColor);
 			}
+	
+			std::string textContent = text->getText();
+		
+			ImGui::InputTextMultiline("Text", (char*) textContent.c_str(), textContent.capacity() + 1);
+			if (!staticText)
+			{
+				text->setText(textContent);
+			}
 		}
-
-		//const char* constTextContent = text->getText().c_str();
-		//char textContent[256] = "";
-		//strncpy(textContent, constTextContent, 256);
-
-		//ImGui::InputTextMultiline("Text", textContent, IM_ARRAYSIZE(textContent));
-
-		//if (strcmp(textContent, constTextContent) != 0)
-		//{
-		//	text->setText(textContent);
-		//}
 	}
 }

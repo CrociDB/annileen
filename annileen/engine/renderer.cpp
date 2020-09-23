@@ -255,11 +255,10 @@ namespace annileen
         {
             TextPtr text = sceneNode->getModule<Text>();
 
-            if (text == nullptr ) continue;
+            if (text == nullptr || !text->enabled ) continue;
 
             text->render(m_UIRenderView->getViewId());
         }
-
 
         if (m_ActiveCamera->clearType == CameraClearType::CameraClearSkybox)
         {
