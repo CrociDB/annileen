@@ -8,12 +8,11 @@ namespace annileen
 	{
 		FontManager* fontManager = ServiceProvider::getFontManager();
 		
-		// TODO: add fallback font.
-
+		// If font is not defined or valid, use font default.
 		if (!isValid(m_Font))
 		{
-			ANNILEEN_LOG_ERROR(LoggingChannel::Renderer, "Font cannot be created because font is not valid.");
-			return;
+			m_Font = ServiceProvider::getAssetManager()->loadFont(
+				ServiceProvider::getSettings()->getFontDefault())->getHandle();
 		}
 
 		if (isValid(m_FontHandle))
@@ -238,7 +237,29 @@ namespace annileen
 			m_TextBufferHandle = textBufferManager->createTextBuffer(fontType, BufferType::Transient);
 		}
 
-		m_HasSubmittedOnce = false;
+		m_HasSubmittedOnce = false;		
+	}
+
+	void Text::applyProperties()
+	{
+		TextBufferManager* textBufferManager = ServiceProvider::getTextBufferManager();
+
+		if (textBufferManager == nullptr || !isValid(m_TextBufferHandle) || !isValid(m_FontHandle))
+		{
+			ANNILEEN_LOG_ERROR(LoggingChannel::Renderer, "Properties cannot be applied because some handle is not valid.");
+			return;
+		}
+
+		setPixelSize(m_PixelSize);
+		setBackgroundColor(m_BackgroundColor);
+		setTextColor(m_TextColor);
+		setOverlineColor(m_OverlineColor);
+		setUnderlineColor(m_UnderlineColor);
+		setStrikeThroughColor(m_StrikeThroughColor);
+		setStyle(m_TextStyle);
+		textBufferManager->clearTextBuffer(m_TextBufferHandle);
+		textBufferManager->setPenPosition(m_TextBufferHandle, m_ScreenPosition.x, m_ScreenPosition.y);
+		textBufferManager->appendText(m_TextBufferHandle, m_FontHandle, m_Text.c_str());
 	}
 
 	void Text::render(bgfx::ViewId viewId)
@@ -264,47 +285,31 @@ namespace annileen
 	{
 		if (isStatic != m_IsStatic)
 		{
-			uint32_t fontType = FONT_TYPE_ALPHA;
-			if (m_Sdf)
-			{
-				fontType = FONT_TYPE_DISTANCE;
-			}
-
-			TextBufferManager* textBufferManager = ServiceProvider::getTextBufferManager();
-
-			if (isValid(m_TextBufferHandle))
-			{
-				ServiceProvider::getTextBufferManager()->destroyTextBuffer(m_TextBufferHandle);
-			}
-
-			if (isStatic)
-			{
-				m_TextBufferHandle = textBufferManager->createTextBuffer(fontType, BufferType::Static);
-			}
-			else
-			{
-				m_TextBufferHandle = textBufferManager->createTextBuffer(fontType, BufferType::Transient);
-			}
-
 			m_IsStatic = isStatic;
-			m_HasSubmittedOnce = false;
-			setBackgroundColor(m_BackgroundColor);
-			setTextColor(m_TextColor);
-			setOverlineColor(m_OverlineColor);
-			setUnderlineColor(m_UnderlineColor);
-			setStrikeThroughColor(m_StrikeThroughColor);
-			setStyle(m_TextStyle);
-			textBufferManager->clearTextBuffer(m_TextBufferHandle);
-			textBufferManager->setPenPosition(m_TextBufferHandle, m_ScreenPosition.x, m_ScreenPosition.y);
-			textBufferManager->appendText(m_TextBufferHandle, m_FontHandle, m_Text.c_str());
+			init(m_IsStatic, m_Sdf);
+			applyProperties();
 		}
 	}
+
+	void Text::setSdf(bool isSdf)
+	{
+		if (isSdf != m_Sdf)
+		{
+			m_Sdf = isSdf;
+			init(m_IsStatic, m_Sdf);
+			applyProperties();
+		}
+	}
+	
 
 	Text::Text() : m_IsStatic(false), enabled(true), m_HasSubmittedOnce(false), m_BackgroundColor(glm::vec3(1.0f)),
 		m_UnderlineColor(glm::vec3(1.0f)), m_TextColor(glm::vec3(1.0f)), m_OverlineColor(glm::vec3(1.0f)),
 		m_StrikeThroughColor(glm::vec3(1.0f)), m_TextStyle(TextStyle::Normal), m_FontHandle(BGFX_INVALID_HANDLE),
 		m_TextBufferHandle(BGFX_INVALID_HANDLE), m_Font(BGFX_INVALID_HANDLE), m_Sdf(false), m_ScreenPosition(glm::vec2(0.0f))
 	{
+		init(false);
+		setFont(ServiceProvider::getAssetManager()->loadFont(
+			ServiceProvider::getSettings()->getFontDefault())->getHandle());
 	}
 
 	Text::~Text()

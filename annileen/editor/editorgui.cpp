@@ -10,6 +10,7 @@
 #include <engine/text/text.h>
 #include <engine/material.h>
 
+#include <imgui-utils/imgui_stdlib.h>
 
 namespace annileen
 {
@@ -603,8 +604,17 @@ namespace annileen
 		{
 			ImGui::Checkbox("Enabled", &text->enabled);
 			ImGui::Checkbox("Static", &staticText);
-			text->setStatic(staticText);
-			
+			if (staticText != text->isStatic())
+			{
+				text->setStatic(staticText);
+			}
+			bool sdf = text->isSdf();
+			ImGui::Checkbox("SDF", &sdf);
+			if (sdf != text->isSdf())
+			{
+				text->setSdf(sdf);
+			}
+
 			Text::TextStyle textStyle = text->getStyle();
 
 			bool background = textStyle & Text::TextStyle::Background;
@@ -660,9 +670,16 @@ namespace annileen
 				text->setTextColor(textColor);
 			}
 	
+			int pixelSize = static_cast<int>(text->getPixelSize());
+			ImGui::SliderInt("Text Size", &pixelSize, 5, 127);
+			if (!staticText && pixelSize != static_cast<int>(text->getPixelSize()))
+			{
+				text->setPixelSize(static_cast<uint32_t>(pixelSize));
+			}
+
 			std::string textContent = text->getText();
-		
-			ImGui::InputTextMultiline("Text", (char*) textContent.c_str(), textContent.capacity() + 1);
+			
+			ImGui::InputTextMultiline("Text content", &textContent);
 			if (!staticText)
 			{
 				text->setText(textContent);

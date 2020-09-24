@@ -46,11 +46,14 @@ namespace annileen
 		bool enabled;
 
 		void init(bool isStatic, bool sdf = false);
+		void applyProperties();
 		
 		void render(bgfx::ViewId viewId);
 
 		void setStatic(bool isStatic);
+		void setSdf(bool isSdf);
 
+		bool isSdf() { return m_Sdf; }
 		bool isStatic() { return m_IsStatic; }
 
 		void setFont(TrueTypeHandle font);

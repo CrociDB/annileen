@@ -72,7 +72,8 @@ namespace annileen
         static void glfw_mouseCursorEnterCallback(GLFWwindow* window, int entered);
         static void glfw_mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
         static void glfw_joystickCallback(int jid, int event);
-
+        static void glfw_charCallback(GLFWwindow* window, unsigned int c);
+            
     public:
         int init(int width, int height, std::string assetfile, std::string applicationName);
 

@@ -15,6 +15,8 @@ namespace annileen
         void loadSettings();
         void saveSettings();
 
+        std::string m_FontDefault = "droidsans.ttf";
+
         friend class Engine;
     public:
         struct Shadows
@@ -24,5 +26,7 @@ namespace annileen
         };
 
         Shadows shadows;
+
+        std::string getFontDefault() { return m_FontDefault; }
     };
 }

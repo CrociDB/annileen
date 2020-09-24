@@ -77,13 +77,6 @@ namespace annileen
 		if (newSceneNode != nullptr)
 		{
 			SceneNodeModule* newModule = newSceneNode->addModule<T>();
-
-			// TODO: change text to not need this.
-			if constexpr (std::is_same<T, Text>::value)
-			{
-				Text* text = static_cast<Text*>(newModule);
-				text->init(false);
-			}
 		}
 	}
 }

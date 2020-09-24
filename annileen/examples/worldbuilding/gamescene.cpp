@@ -60,7 +60,8 @@ void GameScene::buildMap()
 
     SceneNodePtr textNode = createNode("Text");
     Text* text = textNode->addModule<Text>();
-    text->init(true, true);
+    text->setStatic(true);
+    text->setSdf(true);
 
     text->setFont(ServiceProvider::getAssetManager()->loadFont("droidsans.ttf")->getHandle());
     text->setScreenPosition(Engine::getInstance()->getWidth()- 300.0f, 200.0f);
@@ -71,7 +72,6 @@ void GameScene::buildMap()
 
     SceneNodePtr textNode2 = createNode("Text2");
     Text* text2 = textNode2->addModule<Text>();
-    text2->init(false);
 
     text2->setFont(ServiceProvider::getAssetManager()->loadFont("bleeding_cowboys.ttf")->getHandle());
     text2->setScreenPosition(Engine::getInstance()->getWidth() - 200.0f, 300.0f);
