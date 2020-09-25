@@ -23,6 +23,7 @@ namespace annileen
 		m_ShowSettingsWindow = false;
 		m_SelectedSceneNode = nullptr;
 		m_SceneNodeToBeRemoved = nullptr;
+		m_Mode = Editor;
 	}
 
 	EditorGui::~EditorGui()
@@ -49,6 +50,8 @@ namespace annileen
 		{
 			m_ConsoleLoggingChannelsList.push_back(logger->getLoggingChannelString(loggingChannel));
 		}
+
+		Engine::getInstance()->getInput()->m_Enabled = false;
 	}
 
 	void EditorGui::render(Scene* scene)
@@ -84,6 +87,21 @@ namespace annileen
 			}
 
 			m_SceneNodeToBeRemoved = nullptr;
+		}
+
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.MouseClicked[0] || io.MouseClicked[1] || io.MouseClicked[2])
+		{
+			if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) &&
+				!ImGui::IsAnyItemHovered())
+			{
+				ImGui::SetWindowFocus(NULL);
+				Engine::getInstance()->getInput()->m_Enabled = true;
+			}
+			else
+			{
+				Engine::getInstance()->getInput()->m_Enabled = false;
+			}
 		}
 	}
 

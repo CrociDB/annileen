@@ -10,6 +10,12 @@ namespace annileen
 
 	class EditorGui final
 	{
+		enum Mode
+		{
+			Editor,
+			Game
+		};
+
 		std::vector<const char*> m_ConsoleLoggingChannelsList;
 		std::vector<const char*> m_ConsoleLoggingLevelsList;
 
@@ -21,6 +27,8 @@ namespace annileen
 		bool m_ShowSceneNodePropertiesWindow;
 		bool m_ShowConsoleWindow;
 		bool m_ShowSettingsWindow;
+
+		Mode m_Mode;
 
 		// These will probably become a list when we start allowing multiple selection.
 		SceneNode* m_SelectedSceneNode;		

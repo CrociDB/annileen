@@ -75,20 +75,40 @@ namespace annileen
 
 	bool Input::getKey(int keycode) const
 	{
+		return _getKey(keycode) && m_Enabled;
+	}
+
+	bool Input::_getKey(int keycode) const
+	{
 		return this->m_Keymap.at(keycode).m_KeyValue;
 	}
 
 	bool Input::getKeyDown(int keycode) const
+	{
+		return _getKeyDown(keycode) && m_Enabled;
+	}
+
+	bool Input::_getKeyDown(int keycode) const
 	{
 		return this->m_Keymap.at(keycode).m_KeyValue && !this->m_Keymap.at(keycode).m_LastKeyValue;
 	}
 
 	bool Input::getKeyUp(int keycode) const
 	{
+		return _getKeyUp(keycode) && m_Enabled;
+	}
+
+	bool Input::_getKeyUp(int keycode) const
+	{
 		return !this->m_Keymap.at(keycode).m_KeyValue && this->m_Keymap.at(keycode).m_LastKeyValue;
 	}
 
 	bool Input::getMouseButtonDown(int button) const
+	{
+		return _getMouseButtonDown(button) && m_Enabled;
+	}
+
+	bool Input::_getMouseButtonDown(int button) const
 	{
 		button = glm::clamp(button, 0, 3);
 		return m_MouseButtons[button];
@@ -96,12 +116,47 @@ namespace annileen
 
 	glm::vec2 Input::getMousePosition() const
 	{
+		if (m_Enabled)
+		{
+			return _getMousePosition();
+		}
+
+		return glm::vec2(0);
+	}
+	
+	glm::vec2 Input::_getMousePosition() const
+	{
 		return m_MousePosition;
 	}
 
 	glm::vec2 Input::getMouseDelta() const
 	{
+		if (m_Enabled)
+		{
+			return _getMouseDelta();
+		}
+
+		return glm::vec2(0);
+	}
+
+	glm::vec2 Input::_getMouseDelta() const
+	{
 		return m_MouseDelta;
+	}
+
+	glm::vec2 Input::getMouseScroll() const
+	{
+		if (m_Enabled)
+		{
+			return _getMouseScroll();
+		}
+
+		return glm::vec2(0);
+	}
+
+	glm::vec2 Input::_getMouseScroll() const
+	{
+		return m_MouseScroll;
 	}
 
 	void Input::flushEvents()
@@ -141,11 +196,6 @@ namespace annileen
 		}
 	}
 
-	glm::vec2 Input::getMouseScroll() const
-	{
-		return m_MouseScroll;
-	}
-
 	void Input::_setMouseScroll(float x, float y)
 	{
 		m_MouseScroll.x += x;
@@ -160,6 +210,7 @@ namespace annileen
 		m_MousePosition.x = m_MousePosition.y = 0;
 		m_MouseDelta.x = m_MouseDelta.y = 0;
 		m_MouseScroll.x = m_MouseScroll.y = 0;
+		m_Enabled = true;
 	}
 
 	Input::~Input()

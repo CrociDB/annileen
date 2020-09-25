@@ -23,6 +23,21 @@ namespace annileen
 
 		void initKeymap();
 
+		bool m_Enabled;
+
+#ifdef _DEBUG
+		friend class EditorGui;
+#endif
+		friend class Application;
+
+		bool _getKey(int keycode) const;
+		bool _getKeyDown(int keycode) const;
+		bool _getKeyUp(int keycode) const;
+		bool _getMouseButtonDown(int button) const;
+		glm::vec2 _getMousePosition() const;
+		glm::vec2 _getMouseDelta() const;
+		glm::vec2 _getMouseScroll() const;
+
 	public:
 		bool getKey(int keycode) const;
 		bool getKeyDown(int keycode) const;
