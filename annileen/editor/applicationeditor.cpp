@@ -24,11 +24,11 @@ namespace annileen
 		ANNILEEN_LOG_INFO(LoggingChannel::General, "Initialized Editor GUI");	 	
 	}
 
-	void ApplicationEditor::updateEditorGui()
+	void ApplicationEditor::updateEditorGui(float deltaTime)
 	{
 		if (showEditorGui)
 		{
-			m_EditorGui->render(getEngine()->getScene());
+			m_EditorGui->render(getEngine()->getScene(), deltaTime);
 		}
 	}
 }

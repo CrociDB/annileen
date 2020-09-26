@@ -51,7 +51,7 @@ namespace annileen
 			update(dt);
 
 #ifdef _DEBUG
-			updateEditorGui();
+			updateEditorGui(dt);
 #endif
 
 			m_Engine->getGui()->endFrame();

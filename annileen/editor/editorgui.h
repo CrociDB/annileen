@@ -16,6 +16,18 @@ namespace annileen
 			Game
 		};
 
+		struct InputConfig
+		{
+			float mouseSpeed;
+			float movementSpeed;
+			float sensitivity;
+			float yaw;
+			float pitch;
+			int debugScreenActive;
+		};
+
+		InputConfig m_InputConfig;
+
 		std::vector<const char*> m_ConsoleLoggingChannelsList;
 		std::vector<const char*> m_ConsoleLoggingLevelsList;
 
@@ -28,6 +40,8 @@ namespace annileen
 		bool m_ShowConsoleWindow;
 		bool m_ShowSettingsWindow;
 
+		bool m_HasWindowFocused;
+
 		Mode m_Mode;
 
 		// These will probably become a list when we start allowing multiple selection.
@@ -35,7 +49,8 @@ namespace annileen
 		SceneNode* m_SceneNodeToBeRemoved;
 
 		void initialize();
-		void render(Scene* scene);
+		void processInput(Camera* camera, float deltaTime);
+		void render(Scene* scene, float deltaTime);
 		void drawMainWindowToolbar();
 		void drawToolsWindow();
 		void drawSceneHierarchyWindow(const std::vector<SceneNodePtr> sceneNodeList);

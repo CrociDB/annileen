@@ -25,9 +25,7 @@ namespace annileen
 
 		bool m_Enabled;
 
-#ifdef _DEBUG
 		friend class EditorGui;
-#endif
 		friend class Application;
 
 		bool _getKey(int keycode) const;

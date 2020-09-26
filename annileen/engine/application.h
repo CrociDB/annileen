@@ -26,7 +26,7 @@ namespace annileen
 #ifdef _DEBUG
 		friend class ApplicationEditor;
 		virtual void initializeEditorGui() = 0;
-		virtual void updateEditorGui() = 0;
+		virtual void updateEditorGui(float deltaTime) = 0;
 #endif
 
 	protected:

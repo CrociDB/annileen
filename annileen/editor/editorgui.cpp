@@ -24,6 +24,8 @@ namespace annileen
 		m_SelectedSceneNode = nullptr;
 		m_SceneNodeToBeRemoved = nullptr;
 		m_Mode = Editor;
+		m_HasWindowFocused = true;
+		m_InputConfig = { 3.0f, 2.8f, 18.0f, 0.0f, 0.0f, 0 };
 	}
 
 	EditorGui::~EditorGui()
@@ -54,8 +56,96 @@ namespace annileen
 		Engine::getInstance()->getInput()->m_Enabled = false;
 	}
 
-	void EditorGui::render(Scene* scene)
+	void EditorGui::processInput(Camera* camera, float deltaTime)
 	{
+		// TODO: It has to use editor camera if in editor mode
+
+		std::shared_ptr<Input> input = Engine::getInstance()->getInput();
+
+		if (m_Mode == Editor && !m_HasWindowFocused)
+		{
+			if (input->_getMouseButtonDown(1))
+			{
+				float movementSpeed = input->_getKey(GLFW_KEY_LEFT_SHIFT) ? 5.0 * m_InputConfig.mouseSpeed : m_InputConfig.mouseSpeed;
+
+				if (input->_getKey(GLFW_KEY_S))
+				{
+					camera->getTransform().translate(deltaTime * -movementSpeed * camera->getForward());
+				}
+				if (input->_getKey(GLFW_KEY_W))
+				{
+					camera->getTransform().translate(deltaTime * movementSpeed * camera->getForward());
+				}
+				if (input->_getKey(GLFW_KEY_A))
+				{
+					camera->getTransform().translate(deltaTime * movementSpeed * camera->getRight());
+				}
+				if (input->_getKey(GLFW_KEY_D))
+				{
+					camera->getTransform().translate(deltaTime * -movementSpeed * camera->getRight());
+				}
+				if (input->_getKey(GLFW_KEY_Q))
+				{
+					camera->getTransform().translate(deltaTime * -movementSpeed * glm::vec3(0.0f, 1.0f, 0.0f));
+				}
+				if (input->_getKey(GLFW_KEY_E))
+				{
+					camera->getTransform().translate(deltaTime * movementSpeed * glm::vec3(0.0f, 1.0f, 0.0f));
+				}
+			
+				// Camera mouse control
+				auto mouseDelta = input->_getMouseDelta();
+
+				m_InputConfig.yaw += mouseDelta.x * m_InputConfig.sensitivity * deltaTime;
+				m_InputConfig.pitch += -mouseDelta.y * m_InputConfig.sensitivity * deltaTime;
+				m_InputConfig.pitch = glm::clamp(m_InputConfig.pitch, -89.0f, 89.0f);
+				glm::vec3 cameraForward{
+				glm::cos(glm::radians(m_InputConfig.pitch)) * glm::cos(glm::radians(m_InputConfig.yaw)),
+				glm::sin(glm::radians(m_InputConfig.pitch)),
+				glm::cos(glm::radians(m_InputConfig.pitch)) * glm::sin(glm::radians(m_InputConfig.yaw))
+				};
+				camera->setForward(glm::normalize(cameraForward));
+			}
+
+			// Temporary
+			if (input->_getKeyDown(GLFW_KEY_ESCAPE))
+			{
+				Engine::getInstance()->terminate();
+			}
+		}
+
+		if (input->_getKeyDown(GLFW_KEY_F1))
+		{
+			m_InputConfig.debugScreenActive = (m_InputConfig.debugScreenActive + 1) % 6;
+			switch (m_InputConfig.debugScreenActive)
+			{
+			case 1:
+				bgfx::setDebug(BGFX_DEBUG_STATS);
+				break;
+			case 2:
+				bgfx::setDebug(BGFX_DEBUG_PROFILER);
+				break;
+			case 3:
+				bgfx::setDebug(BGFX_DEBUG_IFH);
+				break;
+			case 4:
+				bgfx::setDebug(BGFX_DEBUG_TEXT);
+				break;
+			case 5:
+				bgfx::setDebug(BGFX_DEBUG_WIREFRAME);
+				break;
+			case 0:
+			default:
+				bgfx::setDebug(BGFX_DEBUG_NONE);
+				break;
+			}
+		}
+	}
+
+	void EditorGui::render(Scene* scene, float deltaTime)
+	{
+		processInput(scene->getCamera(), deltaTime);
+
 		drawMainWindowToolbar();
 		
 		if (m_ShowToolsWindow) drawToolsWindow();
@@ -96,10 +186,12 @@ namespace annileen
 				!ImGui::IsAnyItemHovered())
 			{
 				ImGui::SetWindowFocus(NULL);
-				Engine::getInstance()->getInput()->m_Enabled = true;
+				m_HasWindowFocused = false;
+				Engine::getInstance()->getInput()->m_Enabled = true && m_Mode == Game;
 			}
 			else
 			{
+				m_HasWindowFocused = true;
 				Engine::getInstance()->getInput()->m_Enabled = false;
 			}
 		}
@@ -165,15 +257,28 @@ namespace annileen
 			, ImGuiCond_FirstUseEver
 		);
 		ImGui::SetNextWindowSize(
-			ImVec2(300.0f, 210.0f)
+			ImVec2(191.0f, 65.0f)
 			, ImGuiCond_FirstUseEver
 		);
 
-		if (!ImGui::Begin("Tools", &m_ShowToolsWindow))
+		if (!ImGui::Begin("Tools", &m_ShowToolsWindow, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar))
 		{
 			ImGui::End();
 			return;
 		}
+
+		if (ImGui::Button("Editor Mode"))
+		{
+			m_Mode = Editor;
+			//Engine::getInstance()->setMouseCapture(false);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Game Mode"))
+		{
+			m_Mode = Game;
+			//Engine::getInstance()->setMouseCapture(true);
+		}
+
 
 		//ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(3.0f, 3.0f));
 		//if (ImGui::Button(ICON_FA_REPEAT " Restart"))
