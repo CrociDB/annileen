@@ -10,10 +10,6 @@ namespace annileen
 	private:
 
 		void initAnnileen();
-
-		virtual Scene* init() = 0;
-		virtual void update(float deltaTime) = 0;
-		virtual void finish() = 0;
 		// TODO:
 		// physicsUpdate
 		// beforeRender
@@ -26,10 +22,14 @@ namespace annileen
 #ifdef _DEBUG
 		friend class ApplicationEditor;
 		virtual void initializeEditorGui() = 0;
-		virtual void updateEditorGui(float deltaTime) = 0;
+		virtual void editorUpdate(float deltaTime) = 0;
 #endif
 
 	protected:
+
+		virtual Scene* init() = 0;
+		virtual void finish() = 0;
+		virtual void update(float deltaTime) = 0;
 
 		void destroy();
 

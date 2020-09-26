@@ -14,13 +14,6 @@ using namespace annileen;
 ANNILEEN_APP_CLASS_DECLARATION(ApplicationCube)
 {
 private:
-    float m_Speed;
-    float m_MovementSpeed;
-    float m_Sensitivity;
-    float m_Pitch, m_Yaw;
-    bool m_CameraActive = false;
-    uint8_t m_DebugActive = 0;
-
     SceneNodePtr m_ModelNode = nullptr;
 
     annileen::Scene* init()
@@ -64,7 +57,8 @@ private:
         camera->fieldOfView = 60.0f;
         camera->nearClip = 0.1f;
         camera->farClip = 300.0f;
-        
+        camera->getTransform().translate(glm::vec3(-5.0f, 0.0f, -5.0f));
+        camera->setForward(m_ModelNode->getTransform().position() - camera->getTransform().position());
         SceneNodePtr lightNode = scene->createNode("Light");
         Light* light = lightNode->addModule<Light>();
 
@@ -72,16 +66,6 @@ private:
         light->type = LightType::Directional;
         light->intensity = 0.8f;
         light->getTransform().rotate(glm::vec3(-40.0f, 0.0f, -40.0f));
-
-        // Initialize Camera
-        m_Speed = 3.0f;
-        m_MovementSpeed = 2.8f;
-        m_Sensitivity = 18.0f;
-        m_Pitch = -6.0f;
-        m_Yaw = -128.0f;
-
-        m_CameraActive = false;
-        m_DebugActive = 0;
 
         return scene;
     }

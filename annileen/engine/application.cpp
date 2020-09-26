@@ -48,10 +48,10 @@ namespace annileen
 
 			scene->update();
 
-			update(dt);
-
 #ifdef _DEBUG
-			updateEditorGui(dt);
+			editorUpdate(dt);
+#else
+			update(dt);
 #endif
 
 			m_Engine->getGui()->endFrame();

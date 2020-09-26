@@ -24,8 +24,13 @@ namespace annileen
 		ANNILEEN_LOG_INFO(LoggingChannel::General, "Initialized Editor GUI");	 	
 	}
 
-	void ApplicationEditor::updateEditorGui(float deltaTime)
+	void ApplicationEditor::editorUpdate(float deltaTime)
 	{
+		if (m_EditorGui->m_Mode == EditorGui::Mode::Game)
+		{
+			update(deltaTime);
+		}
+
 		if (showEditorGui)
 		{
 			m_EditorGui->render(getEngine()->getScene(), deltaTime);

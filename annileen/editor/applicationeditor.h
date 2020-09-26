@@ -11,7 +11,7 @@ namespace annileen
 		EditorGui *m_EditorGui;
 
 		virtual void initializeEditorGui();
-		virtual void updateEditorGui(float deltaTime);
+		virtual void editorUpdate(float deltaTime);
 	public:
 
 		bool showEditorGui;
