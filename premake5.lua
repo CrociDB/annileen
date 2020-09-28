@@ -158,7 +158,7 @@ project "example-worldbuilding"
 		PERLINNOISE_DIR
 	}
 	debugdir "."
-	links { "bgfx", "bimg", "bx", "imgui", "annileen", "glfw", "assimp" }
+	links { "bgfx", "bimg", "bx", "annileen", "glfw", "assimp", "imgui" }
 	filter "configurations:Release"
 		defines "NDEBUG"
 		optimize "Full"
@@ -203,7 +203,7 @@ project "example-cube"
 		PERLINNOISE_DIR
 	}
 	debugdir "."
-	links { "bgfx", "bimg", "bx", "annileen", "imgui", "glfw", "assimp" }
+	links { "annileen", "bgfx", "bimg", "bx", "glfw", "assimp", "imgui" }
 	filter "configurations:Release"
 		defines "NDEBUG"
 		optimize "Full"

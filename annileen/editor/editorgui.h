@@ -4,6 +4,8 @@
 #include <vector>
 #include <engine/scenenode.h>
 
+#include <dear-imgui/imgui.h>
+
 namespace annileen
 {
 	class SceneNode;
