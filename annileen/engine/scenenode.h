@@ -63,7 +63,7 @@ namespace annileen
 		Transform& getTransform();
 
 		void setSiblingIndex(size_t index);
-		void setSiblingPosition(std::vector<SceneNodePtr>::iterator& position);
+		void setSiblingPosition(std::vector<SceneNodePtr>::iterator position);
 
 		std::vector<SceneNodePtr>::iterator getSiblingIterator();
 		size_t getSiblingIndex();

@@ -69,7 +69,7 @@ namespace annileen
 		setSiblingPosition(m_Parent->m_Children.begin() + index);
 	}
 
-	void SceneNode::setSiblingPosition(std::vector<SceneNodePtr>::iterator& position)
+	void SceneNode::setSiblingPosition(std::vector<SceneNodePtr>::iterator position)
 	{
 		std::rotate(position, getSiblingIterator(), m_Parent->m_Children.end());
 	}
