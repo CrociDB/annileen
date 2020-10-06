@@ -2,65 +2,81 @@
 
 namespace annileen
 {
-	Logger* ServiceProvider::m_LoggerService = nullptr;
-	AssetManager* ServiceProvider::m_AssetManagerService = nullptr;
-	Settings* ServiceProvider::m_SettingsService = nullptr;
-	FontManager* ServiceProvider::m_FontManager = nullptr;
-	TextBufferManager* ServiceProvider::m_TextBufferManager = nullptr;
+	Logger* ServiceProvider::s_LoggerService = nullptr;
+	AssetManager* ServiceProvider::s_AssetManagerService = nullptr;
+	Settings* ServiceProvider::s_SettingsService = nullptr;
+	FontManager* ServiceProvider::s_FontManager = nullptr;
+	TextBufferManager* ServiceProvider::s_TextBufferManager = nullptr;
+	SceneManager* ServiceProvider::s_SceneManager = nullptr;
 
 	void ServiceProvider::provideLogger(Logger* logger)
 	{
-		m_LoggerService = logger;
+		s_LoggerService = logger;
 	}
 
 	Logger* ServiceProvider::getLogger()
 	{
-		return m_LoggerService;
+		return s_LoggerService;
 	}
 
 	void ServiceProvider::provideAssetManager(AssetManager* assetManager)
 	{
-		m_AssetManagerService = assetManager;
+		s_AssetManagerService = assetManager;
 	}
 
 	AssetManager* ServiceProvider::getAssetManager()
 	{
-		return m_AssetManagerService;
+		return s_AssetManagerService;
 	}
 
 	void ServiceProvider::provideSettings(Settings* settings)
 	{
-		m_SettingsService = settings;
+		s_SettingsService = settings;
 	}
 
 	Settings* ServiceProvider::getSettings()
 	{
-		return m_SettingsService;
+		return s_SettingsService;
 	}
 
 	void ServiceProvider::provideFontManager(FontManager* fontManager)
 	{
-		m_FontManager = fontManager;
+		s_FontManager = fontManager;
 
-		if (m_TextBufferManager != nullptr)
+		if (s_TextBufferManager != nullptr)
 		{
-			delete m_TextBufferManager;
-			m_TextBufferManager = nullptr;
+			delete s_TextBufferManager;
+			s_TextBufferManager = nullptr;
 		}
 
-		if (m_FontManager != nullptr)
+		if (s_FontManager != nullptr)
 		{
-			m_TextBufferManager = new TextBufferManager(m_FontManager);
+			s_TextBufferManager = new TextBufferManager(s_FontManager);
 		}
 	}
 
 	FontManager* ServiceProvider::getFontManager()
 	{
-		return m_FontManager;
+		return s_FontManager;
 	}
 
 	TextBufferManager* ServiceProvider::getTextBufferManager()
 	{
-		return m_TextBufferManager;
+		return s_TextBufferManager;
+	}
+
+	void ServiceProvider::provideSceneManager(SceneManager* sceneManager)
+	{
+		if (s_SceneManager != nullptr)
+		{
+			delete s_SceneManager;
+		}
+
+		s_SceneManager = sceneManager;
+	}
+	
+	SceneManager* ServiceProvider::getSceneManager()
+	{
+		return s_SceneManager;
 	}
 }

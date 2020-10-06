@@ -43,6 +43,8 @@ namespace annileen
     class Engine final
     {
     private:
+        static Engine* s_Instance;
+
         GLFWwindow* m_Window;
         int m_Width, m_Height;
         std::string m_ApplicationName;
@@ -105,6 +107,7 @@ namespace annileen
         static void releaseMem(void* _ptr, void* _userData);
         static bx::DefaultAllocator* getAllocator() { return &getInstance()->s_Allocator; }
         static Engine* getInstance();
+        static void destroy();
         ~Engine();
     };
 

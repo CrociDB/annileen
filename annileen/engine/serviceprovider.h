@@ -6,6 +6,7 @@
 #include <engine/settings.h>
 #include <engine/text/fontmanager.h>
 #include <engine/text/textbuffermanager.h>
+#include <engine/scene/scenemanager.h>
 
 namespace annileen
 {
@@ -20,11 +21,12 @@ namespace annileen
 		ServiceProvider() {}
 
 		//static Audio* m_audioService;
-		static Logger* m_LoggerService;
-		static AssetManager* m_AssetManagerService;
-		static Settings* m_SettingsService;
-		static FontManager* m_FontManager;
-		static TextBufferManager* m_TextBufferManager;
+		static Logger* s_LoggerService;
+		static AssetManager* s_AssetManagerService;
+		static Settings* s_SettingsService;
+		static FontManager* s_FontManager;
+		static TextBufferManager* s_TextBufferManager;
+		static SceneManager* s_SceneManager;
 
 	public:
 		ServiceProvider(const ServiceProvider&) = delete;
@@ -49,5 +51,8 @@ namespace annileen
 		static void provideFontManager(FontManager* fontManager);
 		static FontManager* getFontManager();
 		static TextBufferManager* getTextBufferManager();
+
+		static void provideSceneManager(SceneManager* sceneManager);
+		static SceneManager* getSceneManager();
 	};
 }

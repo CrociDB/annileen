@@ -65,5 +65,6 @@ namespace annileen
 	void Application::destroy()
 	{
 		finish();
+		Engine::destroy();
 	}
 }

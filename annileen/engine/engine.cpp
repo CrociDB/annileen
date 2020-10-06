@@ -11,6 +11,7 @@ namespace annileen
 {
     // Initialize static variables
     bool Engine::m_Running = true;
+    Engine* Engine::s_Instance = nullptr;
 
     void Engine::glfw_errorCallback(int error, const char* description)
     {
@@ -327,14 +328,17 @@ namespace annileen
 
     Engine* Engine::getInstance()
     {
-	    static Engine* instance = nullptr;
-
-	    if (instance == nullptr)
+        if (s_Instance == nullptr)
 	    {
-		    instance = new Engine();
+            s_Instance = new Engine();
 	    }
 
-	    return instance;
+	    return s_Instance;
+    }
+
+    void Engine::destroy()
+    {
+        delete s_Instance;
     }
 
     Engine::~Engine()
@@ -370,6 +374,12 @@ namespace annileen
         if (m_Gui != nullptr)
         {
             delete m_Gui;
+        }
+
+        SceneManager* sceneManager = ServiceProvider::getSceneManager();
+        if (sceneManager != nullptr)
+        {
+            delete sceneManager;
         }
 
         m_Uniform.destroy();
