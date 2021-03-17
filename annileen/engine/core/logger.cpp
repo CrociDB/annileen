@@ -118,6 +118,10 @@ namespace annileen
 		return messages;
 	}
 
+	void Logger::clearMessages() noexcept
+	{
+		m_MessagesBuffer.clear();
+	}
 
 	Logger::~Logger()
 	{

@@ -168,11 +168,8 @@ namespace annileen
 
 			if (scene != nullptr)
 			{
-				if (m_SelectedSceneNode = m_SceneNodeToBeRemoved)
-				{
-					m_SelectedSceneNode = nullptr;
-				}
-
+				m_SelectedSceneNode = nullptr;
+				
 				scene->destroyNode(m_SceneNodeToBeRemoved);
 			}
 
@@ -327,10 +324,19 @@ namespace annileen
 			return;
 		}
 
+		ImGuiTextFilter Filter;
+		Filter.Draw("Filter");
+
+		ImGui::Separator();
+
+		ImGui::BeginChild("HierarchyScrollingRegion", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
+
 		for (auto sceneNode : sceneNodeList)
 		{
 			_drawTree(sceneNode);
 		}
+
+		ImGui::EndChild();
 
 		ImGui::End();
 	}
@@ -418,13 +424,22 @@ namespace annileen
 			{
 				m_SelectedSceneNode = sceneNode;
 			}
-			drawSceneNodeContextMenu(sceneNode);		
 			ImGui::PopID();
+			drawSceneNodeContextMenu(sceneNode);		
 		}
 		else
 		{
-			if (ImGui::TreeNodeEx(sceneNode->name.c_str(), node_flags))
+			ImGui::PushID(sceneNode->getId());
+			bool nodeOpen = ImGui::TreeNodeEx(sceneNode->name.c_str(), node_flags);
+			if (ImGui::IsItemClicked())
 			{
+				m_SelectedSceneNode = sceneNode;
+			}
+			ImGui::PopID();
+			if(nodeOpen)
+			{
+				drawSceneNodeContextMenu(sceneNode);
+
 				for (auto childNode : nodeChildren)
 				{
 					_drawTree(childNode);
@@ -510,8 +525,11 @@ namespace annileen
 			return;
 		}
 
+		Logger* logger = ServiceProvider::getLogger();
+
 		if (ImGui::SmallButton("Clear")) 
 		{ 
+			logger->clearMessages();
 		}
 		ImGui::SameLine();
 		
@@ -566,28 +584,35 @@ namespace annileen
 
 		std::vector<Logger::Message> messages;
 
-		Logger* logger = ServiceProvider::getLogger();
 		
 		if (levelOptionId != 0 && channelOptionId == 0)
 		{
-			messages = ServiceProvider::getLogger()->getMessagesAtLevel(logger->getLoggingLevelsList()[static_cast<int>(levelOptionId)-1]);
+			messages = logger->getMessagesAtLevel(logger->getLoggingLevelsList()[(size_t)levelOptionId - 1]);
 		}
 		else if (levelOptionId == 0 && channelOptionId != 0)
 		{
-			messages = ServiceProvider::getLogger()->getMessagesAtChannel(logger->getLoggingChannelsList()[static_cast<int>(channelOptionId) - 1]);
+			messages = logger->getMessagesAtChannel(logger->getLoggingChannelsList()[(size_t)channelOptionId - 1]);
 		}
 		else if (levelOptionId != 0 && channelOptionId != 0)
 		{
-			messages = ServiceProvider::getLogger()->getMessages(logger->getLoggingLevelsList()[static_cast<int>(levelOptionId) - 1], logger->getLoggingChannelsList()[static_cast<int>(channelOptionId) - 1]);
+			messages = logger->getMessages(logger->getLoggingLevelsList()[(size_t)levelOptionId - 1], logger->getLoggingChannelsList()[(size_t)channelOptionId - 1]);
 		}
 		else
 		{
-			messages = ServiceProvider::getLogger()->getAllMessages();
+			messages = logger->getAllMessages();
 		}
 
 		ImVec4 infoColor = ImVec4(1, 1, 1, 1);
 		ImVec4 errorColor = ImVec4(1, 0, 0, 1);
 		ImVec4 warningColor = ImVec4(1, 1, 0, 1);
+
+		const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
+		ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footer_height_to_reserve), false, ImGuiWindowFlags_HorizontalScrollbar);
+		//if (ImGui::BeginPopupContextWindow())
+		//{
+		//	//if (ImGui::Selectable("Clear")) ClearLog();
+		//	ImGui::EndPopup();
+		//}
 
 		for (int messageId = static_cast<int>(messages.size()) - 1; messageId >= 0; --messageId)
 		{
@@ -603,6 +628,7 @@ namespace annileen
 			ImGui::PopStyleColor();
 		}
 
+		ImGui::EndChild();
 		ImGui::Separator();
 	
 		char InputBuf[256]; // hard coded for testing, will be changed

@@ -30,14 +30,14 @@
 
 namespace annileen
 {
-	enum class LoggingMode
+	enum class LoggingMode : int
 	{
 		Console = 0x01,
 		File = 0x02
 	};
 	ANNILEEN_ENABLE_BITMASK_OPERATORS(LoggingMode)
 
-	enum class LoggingLevel
+	enum class LoggingLevel : int
 	{
 		Info = 0x01,
 		Warning = 0x02,
@@ -45,7 +45,7 @@ namespace annileen
 	};
 	ANNILEEN_ENABLE_BITMASK_OPERATORS(LoggingLevel)
 
-	enum class LoggingChannel
+	enum class LoggingChannel : int
 	{
 		Core = 0x01,
 		Renderer = 0x02,
@@ -123,6 +123,7 @@ namespace annileen
 		std::vector<Message> getMessagesAtChannel(LoggingChannel channel) noexcept;
 		std::vector<Message> getMessages(LoggingLevel level, LoggingChannel channel) noexcept;
 		std::vector<Message> getAllMessages() noexcept;
+		void clearMessages() noexcept;
 
 		// will be instantiated by Engine
 		Logger();
