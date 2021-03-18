@@ -419,11 +419,13 @@ namespace annileen
 
 		if (nodeChildren.empty())
 		{
+			ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
 			ImGui::PushID(sceneNode->getId());
 			if (ImGui::Selectable(sceneNode->name.c_str(), sceneNode == m_SelectedSceneNode))
 			{
 				m_SelectedSceneNode = sceneNode;
 			}
+			ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
 			ImGui::PopID();
 			drawSceneNodeContextMenu(sceneNode);		
 		}
