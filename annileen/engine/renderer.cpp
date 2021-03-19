@@ -210,6 +210,7 @@ namespace annileen
         // Clear backbuffer and shadowmap framebuffer at beginning.
         bgfx::setViewClear(m_SceneRenderView->getViewId(), BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 
             convert_color_vec3_uint32(m_ActiveCamera->clearColor), 1.0f, 0);
+        bgfx::touch(m_SceneRenderView->getViewId());
 
         m_Uniform.setVec3Uniform("u_viewPos", m_ActiveCamera->getTransform().position());
 
