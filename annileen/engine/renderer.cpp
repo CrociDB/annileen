@@ -95,29 +95,12 @@ namespace annileen
         m_UIRenderView = RenderView::getRenderView(RenderView::UI);
     }
 
-    void Renderer::setActiveCamera(Camera* camera)
+    void Renderer::render(Scene* scene, Camera* camera)
     {
-        m_ActiveCamera = camera;
-        // TODO: update setup
-    }
-
-    void Renderer::setScene(Scene* scene)
-    {
-        m_Scene = scene;   
-    }
-
-    void Renderer::render()
-    {
-        if (m_ActiveCamera == nullptr || !m_ActiveCamera->enabled)
-        {
-            // TODO: show black screen with 'no camera' msg
-            return;
-        }
-
         Light* mainLightForShadows = nullptr;
         
         // Set light properties and get first light that generate shadows to be main light for shadows.
-        for (const auto& light : m_Scene->getLightList())
+        for (const auto& light : scene->getLightList())
         {
             if (light->type == LightType::Directional)
             {
@@ -142,7 +125,7 @@ namespace annileen
             if (mainLightForShadows->type == LightType::Directional)
             {
 				lightView = glm::lookAt(mainLightForShadows->getTransform().getForward(), glm::vec3(0, 0, 0), mainLightForShadows->getTransform().getUp());
-                lightView = glm::translate(lightView, -m_ActiveCamera->getTransform().position());
+                lightView = glm::translate(lightView, -camera->getTransform().position());
             }
             else
             {
@@ -177,11 +160,11 @@ namespace annileen
 
             mtxShadow = mtxCrop * lightProj * lightView;
 
-            for (auto sceneNode : m_Scene->getNodeList())
+            for (auto sceneNode : scene->getNodeList())
             {
                 ModelPtr model = sceneNode->getModule<Model>();
 
-                if (model == nullptr || !sceneNode->getAcive() || !model->enabled) continue;
+                if (model == nullptr || !sceneNode->getActive() || !model->enabled) continue;
 
                 if (ServiceProvider::getSettings()->shadows.enabled && model->castShadows)
                 {
@@ -195,30 +178,30 @@ namespace annileen
 
         // Setup fog
         glm::vec3 settings{
-            m_Scene->fog.distance,
-            m_Scene->fog.power,
-            m_Scene->fog.enabled,
+            scene->fog.distance,
+            scene->fog.power,
+            scene->fog.enabled,
         };
         m_Uniform.setVec3Uniform("u_fogSettings", settings);
-        m_Uniform.setVec3Uniform("u_fogColor", m_Scene->fog.color);
+        m_Uniform.setVec3Uniform("u_fogColor", scene->fog.color);
 
         // Setup camera
-        m_ActiveCamera->updateMatrices();
-        bgfx::setViewTransform(m_SceneRenderView->getViewId(), m_ActiveCamera->getViewMatrixFloatArray(), m_ActiveCamera->getProjectionMatrixFloatArray());
+        camera->updateMatrices();
+        bgfx::setViewTransform(m_SceneRenderView->getViewId(), camera->getViewMatrixFloatArray(), camera->getProjectionMatrixFloatArray());
         bgfx::setViewRect(m_SceneRenderView->getViewId(), 0, 0, Engine::getInstance()->getWidth(), Engine::getInstance()->getHeight());
 
         // Clear backbuffer and shadowmap framebuffer at beginning.
         bgfx::setViewClear(m_SceneRenderView->getViewId(), BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 
-            convert_color_vec3_uint32(m_ActiveCamera->clearColor), 1.0f, 0);
+            convert_color_vec3_uint32(camera->clearColor), 1.0f, 0);
         bgfx::touch(m_SceneRenderView->getViewId());
 
-        m_Uniform.setVec3Uniform("u_viewPos", m_ActiveCamera->getTransform().position());
+        m_Uniform.setVec3Uniform("u_viewPos", camera->getTransform().position());
 
-        for (auto sceneNode : m_Scene->getNodeList())
+        for (auto sceneNode : scene->getNodeList())
         {
             ModelPtr model = sceneNode->getModule<Model>();
 
-            if (model == nullptr || model->getMeshGroup() == nullptr || !sceneNode->getAcive() || !model->enabled) continue;
+            if (model == nullptr || model->getMeshGroup() == nullptr || !sceneNode->getActive() || !model->enabled) continue;
 
             if (ServiceProvider::getSettings()->shadows.enabled && model->receiveShadows)
             {
@@ -252,22 +235,22 @@ namespace annileen
         bgfx::setViewTransform(m_UIRenderView->getViewId(), view, ortho);
         bgfx::setViewRect(m_UIRenderView->getViewId(), 0, 0, Engine::getInstance()->getWidth(), Engine::getInstance()->getHeight());
         
-        for (auto sceneNode : m_Scene->getNodeList())
+        for (auto sceneNode : scene->getNodeList())
         {
             TextPtr text = sceneNode->getModule<Text>();
 
-            if (text == nullptr || !text->enabled ) continue;
+            if (!sceneNode->getActive() || text == nullptr || !text->enabled ) continue;
 
             text->render(m_UIRenderView->getViewId());
         }
 
-        if (m_ActiveCamera->clearType == CameraClearType::CameraClearSkybox)
+        if (camera->clearType == CameraClearType::CameraClearSkybox)
         {
-            if (m_Scene->getSkybox() != nullptr)
+            if (scene->getSkybox() != nullptr)
             {
                 bgfx::setViewRect(m_SkyboxRenderView->getViewId(), 0, 0, Engine::getInstance()->getWidth(), Engine::getInstance()->getHeight());
-                bgfx::setViewTransform(m_SkyboxRenderView->getViewId(), m_ActiveCamera->getViewRotationMatrixFloatArray(), m_ActiveCamera->getProjectionMatrixFloatArray());
-                renderSkybox(m_SkyboxRenderView->getViewId(), m_ActiveCamera, m_Scene->getSkybox());
+                bgfx::setViewTransform(m_SkyboxRenderView->getViewId(), camera->getViewRotationMatrixFloatArray(), camera->getProjectionMatrixFloatArray());
+                renderSkybox(m_SkyboxRenderView->getViewId(), camera, scene->getSkybox());
             }
             else
             {

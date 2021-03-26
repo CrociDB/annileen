@@ -19,6 +19,7 @@ namespace annileen
 		virtual ~SceneNodeModule() {}
 
 		Transform& getTransform();
+		SceneNode* getSceneNode();
 	};
 
 	typedef SceneNodeModule* SceneNodeModulePtr;

@@ -8,6 +8,7 @@ namespace annileen
 	size_t SceneNode::m_IdCount = 0;
 
 	SceneNode::SceneNode(const std::string& name) : m_ParentScene(nullptr), m_Parent(nullptr), m_Active(true), name(name)
+		, m_Internal(false)
 	{
 		m_Id = m_IdCount++;
 	}
@@ -61,6 +62,20 @@ namespace annileen
 	Transform& SceneNode::getTransform()
 	{
 		return m_Transform;
+	}
+
+	bool SceneNode::getActive() 
+	{ 
+		SceneNode* currentNode = this;
+		while (currentNode != nullptr)
+		{
+			if (currentNode->m_Active == false)
+			{
+				return false;
+			}
+			currentNode = currentNode->m_Parent;
+		}
+		return true; 
 	}
 
 	void SceneNode::setSiblingIndex(size_t index)

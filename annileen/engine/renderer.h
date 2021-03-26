@@ -32,8 +32,6 @@ namespace annileen
         Uniform m_Uniform;
 
         Shadow* m_Shadow;
-        Camera* m_ActiveCamera;
-        Scene* m_Scene;
 
         RenderView* m_SceneRenderView;
         RenderView* m_ShadowRenderView;
@@ -48,10 +46,7 @@ namespace annileen
     public:
         void init(Engine* engine);
 
-        void setActiveCamera(Camera* camera);
-        void setScene(Scene* scene);
-
-        void render();
+        void render(Scene* scene, Camera* camera);
 
         void initFrame(Scene* scene);
 

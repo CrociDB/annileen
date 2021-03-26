@@ -50,13 +50,11 @@ namespace annileen
     {
         for (auto camera : m_Cameras)
         {
-            if (camera->enabled)
+            if (camera->getSceneNode()->getActive() && camera->enabled)
             {
                 return camera;
             }
         }
-
-        ANNILEEN_LOG_ERROR(LoggingChannel::General, "Cannot find an active camera in the scene.");
         return nullptr;
     }
 

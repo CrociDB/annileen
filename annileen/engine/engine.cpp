@@ -3,6 +3,7 @@
 #include <engine/serviceprovider.h>
 #include <engine/core/logger.h>
 #include <engine/renderview.h>
+#include <engine/camera.h>
 #include <sstream>
 #include <bx/math.h>
 #include <glm.hpp>
@@ -254,7 +255,6 @@ namespace annileen
     void Engine::setScene(Scene* scene)
     {
         m_CurrentScene = scene;
-        m_Renderer->setScene(m_CurrentScene);
     }
 
     bool Engine::run()
@@ -305,12 +305,11 @@ namespace annileen
         }
     }
 
-    void Engine::renderFrame()
+    void Engine::render(Camera* replacementCamera)
     {
         if (m_CurrentScene != nullptr)
         {
-            m_Renderer->setActiveCamera(m_CurrentScene->getCamera());            
-            m_Renderer->render();            
+            m_Renderer->render(m_CurrentScene, replacementCamera);            
         }
 
         bgfx::frame();

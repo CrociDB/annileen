@@ -9,9 +9,12 @@ namespace annileen
 	{
 	private:
 		EditorGui *m_EditorGui;
+		Camera* m_EditorCamera;
 
 		virtual void initializeEditorGui();
 		virtual void editorUpdate(float deltaTime);
+		virtual void render();
+
 	public:
 
 		bool showEditorGui;

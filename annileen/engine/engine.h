@@ -102,7 +102,7 @@ namespace annileen
 
         void setMouseCapture(bool value);
         void checkInputEvents();
-        void renderFrame();
+        void render(Camera* replacementCamera);
 
         static void releaseMem(void* _ptr, void* _userData);
         static bx::DefaultAllocator* getAllocator() { return &getInstance()->s_Allocator; }

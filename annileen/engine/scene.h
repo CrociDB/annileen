@@ -1,5 +1,4 @@
-#ifndef _SCENE_H_
-#define _SCENE_H_
+#pragma once
 
 #include <iostream>
 #include <list>
@@ -28,7 +27,7 @@ namespace annileen
         std::list<Light*> m_Lights;
         std::list<Camera*> m_Cameras;        
         Skybox* m_Skybox = nullptr;
-
+        
         void addNodeToList(SceneNodePtr node);
         void removeNodeFromList(SceneNodePtr node);
 
@@ -56,5 +55,3 @@ namespace annileen
         ~Scene();
     };
 }
-
-#endif

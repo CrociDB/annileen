@@ -23,6 +23,11 @@ namespace annileen
 	// TODO: move this kind of defs to separate header
 	typedef SceneNode* SceneNodePtr;
 	
+	enum SceneNodeFlags
+	{
+		SceneNodeFlags_Hide = 1
+	};
+
 	class SceneNode final
 	{
 
@@ -33,6 +38,8 @@ namespace annileen
 		Scene* m_ParentScene;
 
 		bool m_Active;
+		// Flag used internally to identify system scene nodes.
+		bool m_Internal;
 		size_t m_Id;
 
 		std::unordered_map<std::type_index, SceneNodeModule*> m_Modules;
@@ -45,18 +52,25 @@ namespace annileen
 		SceneNode(const std::string& name);
 
 		friend class Scene;
+		friend class Application;
+		friend class ApplicationEditor;
 
 	public:
+		int flags = 0;
 		std::string name = "SceneNode";
 		
+		// TODO: change this to use string hash.
+		std::string tag = "";
+		//int hashedTag = 0;
+
 		void setParentScene(Scene* scene);
 		void setParent(SceneNodePtr node);
 		SceneNodePtr getParent();
 		Scene* getParentScene() { return m_ParentScene; }
 		std::vector<SceneNodePtr> getChildren();
 
-		void setAcive(bool active) { m_Active = active; }
-		bool getAcive() { return m_Active; }
+		void setActive(bool active) { m_Active = active; }
+		bool getActive();
 
 		size_t getId() { return m_Id; };
 
@@ -116,14 +130,17 @@ namespace annileen
 
 		module->m_SceneNode = this;
 
-		// "if constexpr" is a C++17 thing.
-		if constexpr (std::is_same<T, Camera>::value)
+		if (!m_Internal)
 		{
-			m_ParentScene->m_Cameras.push_back(module);
-		}
-		else if constexpr (std::is_same<T, Light>::value)
-		{
-			m_ParentScene->m_Lights.push_back(module);
+			// "if constexpr" is a C++17 thing.
+			if constexpr (std::is_same<T, Camera>::value)
+			{
+				m_ParentScene->m_Cameras.push_back(module);
+			}
+			else if constexpr (std::is_same<T, Light>::value)
+			{
+				m_ParentScene->m_Lights.push_back(module);
+			}
 		}
 
 		return module;
@@ -146,13 +163,16 @@ namespace annileen
 		{
 			module->m_SceneNode = nullptr;
 
-			if constexpr (std::is_same<T, Camera>::value)
+			if (!m_Internal)
 			{
-				m_ParentScene->m_Cameras.remove(module);
-			}
-			else if constexpr (std::is_same<T, Light>::value)
-			{
-				m_ParentScene->m_Lights.remove(module);
+				if constexpr (std::is_same<T, Camera>::value)
+				{
+					m_ParentScene->m_Cameras.remove(module);
+				}
+				else if constexpr (std::is_same<T, Light>::value)
+				{
+					m_ParentScene->m_Lights.remove(module);
+				}
 			}
 
 			delete module;

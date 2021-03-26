@@ -9,6 +9,7 @@
 #include <engine/light.h>
 #include <engine/text/text.h>
 #include <engine/material.h>
+#include <engine/renderer.h>
 
 #include <imgui-utils/imgui_stdlib.h>
 
@@ -58,8 +59,6 @@ namespace annileen
 
 	void EditorGui::processInput(Camera* camera, float deltaTime)
 	{
-		// TODO: It has to use editor camera if in editor mode
-
 		std::shared_ptr<Input> input = Engine::getInstance()->getInput();
 
 		if (m_Mode == Editor && !m_HasWindowFocused)
@@ -144,8 +143,6 @@ namespace annileen
 
 	void EditorGui::render(Scene* scene, float deltaTime)
 	{
-		processInput(scene->getCamera(), deltaTime);
-
 		drawMainWindowToolbar();
 		
 		if (m_ShowToolsWindow) drawToolsWindow();
@@ -358,6 +355,11 @@ namespace annileen
 			return;
 		}
 
+		bool isNodeActive = m_SelectedSceneNode->getActive();
+		ImGui::Checkbox("", &isNodeActive);
+		m_SelectedSceneNode->setActive(isNodeActive);
+		ImGui::SameLine();
+		ImGui::Text(m_SelectedSceneNode->name.c_str());
 
 		Text* text = m_SelectedSceneNode->getModule<Text>();
 
@@ -406,7 +408,9 @@ namespace annileen
 	// TODO: this will be refactored to use queue or stack
 	void EditorGui::_drawTree(SceneNodePtr const sceneNode)
 	{
-		if (sceneNode == nullptr)
+
+		if (sceneNode == nullptr || 
+			((sceneNode->flags & SceneNodeFlags_Hide) == SceneNodeFlags_Hide))
 		{
 			return;
 		}

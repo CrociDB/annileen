@@ -15,4 +15,8 @@ namespace annileen
 
 		return m_SceneNode->getTransform();
 	}
+	SceneNode* SceneNodeModule::getSceneNode()
+	{
+		return m_SceneNode;
+	}
 }
