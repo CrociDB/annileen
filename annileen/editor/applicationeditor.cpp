@@ -21,7 +21,7 @@ namespace annileen
 	{
 		m_EditorGui->initialize();
 
-		SceneNodePtr cameraNode = m_Engine->getScene()->createNode("Editor Camera");
+		SceneNodePtr cameraNode = getEngine()->getScene()->createNode("Editor Camera");
 		cameraNode->m_Internal = true;
 		m_EditorCamera = cameraNode->addModule<Camera>();
 		m_EditorCamera->fieldOfView = 60.0f;
@@ -58,7 +58,7 @@ namespace annileen
 		}
 		else
 		{
-			m_Engine->render(m_EditorCamera);
+			getEngine()->render(m_EditorCamera);
 		}
 	}
 }

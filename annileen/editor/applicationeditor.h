@@ -13,7 +13,9 @@ namespace annileen
 
 		virtual void initializeEditorGui();
 		virtual void editorUpdate(float deltaTime);
-		virtual void render();
+	
+	protected:
+		void render() override;
 
 	public:
 

@@ -28,13 +28,13 @@ namespace annileen
 		virtual void initializeEditorGui() = 0;
 		virtual void editorUpdate(float deltaTime) = 0;
 #endif
-		virtual void render();
 
 	protected:
 
 		virtual Scene* init() = 0;
 		virtual void finish() = 0;
 		virtual void update(float deltaTime) = 0;
+		virtual void render();
 		
 		void destroy();
 
