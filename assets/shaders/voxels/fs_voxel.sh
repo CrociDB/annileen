@@ -71,7 +71,7 @@ void main()
 	normal = normalize(normal);
 
 	vec4 tex = texture2D(s_mainTex, v_texcoord0);
-	vec3 ambient = 0.4 * vec3(1.0, 1.0, 1.0);
+	vec3 ambient = 0.1 * vec3(1.0, 1.0, 1.0);
 
 	vec3 viewDist = (u_viewPos - v_position.xyz);
 	vec3 viewDir = normalize(viewDist);
@@ -98,6 +98,10 @@ void main()
 	#endif
 
 	finalColor = mix(finalColor, u_fogColor.xyz, clamp(pow(length(viewDist) / u_fogSettings.x, u_fogSettings.y), 0.0, 1.0) * u_fogSettings.z);
+
+	float gamma = 2.2;
+	finalColor.rgb = finalColor.rgb / (finalColor.rgb + vec3(1.0));
+    finalColor.rgb = pow(finalColor.rgb, vec3(1.0/gamma));
 
 	gl_FragColor = vec4(finalColor, 1.0);
 }
