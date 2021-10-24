@@ -25,14 +25,23 @@ def build_texture(texturefile, dest, options, force=False):
         print(f" {bcolors.WARNING}- SKIPPED{bcolors.ENDC}")
         return True, tools.path_leaf(texturefile), output_file
 
-    mipmap = '-m 1' if descriptor['mipmap'] else ''
+    d_normalmap = 'normalmap' in descriptor and descriptor['normalmap']
+    d_gamma_linear = 'gamma' in descriptor and descriptor['gamma'] == 'linear'
 
-    command = "%s -f %s -o %s %s -t ETC2" % (
+    mipmap = '-m 1' if descriptor['mipmap'] else ''
+    gamma_linear = '--linear' if d_normalmap or d_gamma_linear else ''
+    normalmap = '-n' if d_normalmap else ''
+
+    command = "%s -f %s -o %s %s -t ETC2 %s %s" % (
         bgfx_texturec,
         texturefile,
         output_file,
         mipmap,
+        gamma_linear,
+        normalmap
     )
+
+    print(command)
 
     success = False
     if not os.system(command):
@@ -70,11 +79,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=f'{bcolors.SUCCESS}Annileen Texture Tools{bcolors.ENDC}')
     parser.add_argument('-t', '--texture', nargs='*', help='compiles the texture specified')
     parser.add_argument('-a', '--all', action='store_true', help='compiles all the available textures')
-    parser.add_argument('-v', '--view', nargs=1, help='view the specified mesh')
+    parser.add_argument('-f', '--force', action='store_true', help='force compiling all textures')
+    parser.add_argument('-v', '--view', nargs=1, help='view the specified texture')
     args = parser.parse_args()
 
     if args.all:
-        build_all()
+        build_all(args.force)
     elif args.texture != None:
         _build_texture(args.texture[0], " ".join(args.texture[1:]))
     elif args.view != None:

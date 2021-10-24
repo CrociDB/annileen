@@ -1,2 +1,3 @@
 mipmap = true
 filter = "point"
+gamma = 'gamma'

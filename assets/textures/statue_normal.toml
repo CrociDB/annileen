@@ -1,2 +1,3 @@
 mipmap = false
 filter = "linear"
+normalmap = true

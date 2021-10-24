@@ -57,7 +57,9 @@ font_types = ["ttf", "otf"]
 
 texture_descriptor_schema = {
     'mipmap': False,
-    'filter': 'linear'
+    'filter': 'linear', # 'linear', 'point'
+    'gamma': 'gamma', # 'gamma', 'linear'
+    'normalmap': False
 }
 
 mesh_descriptor_schema = {
