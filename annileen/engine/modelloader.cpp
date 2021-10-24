@@ -18,7 +18,8 @@ namespace annileen
 		Assimp::Importer importer;
 		
 		uint32_t flags = aiProcess_Triangulate
-			| aiProcess_FlipUVs;
+			| aiProcess_FlipUVs
+			| aiProcess_CalcTangentSpace;
 
 		if (descriptor.m_Normals == MeshDescriptor::Normals::GenerateSmooth) flags |= aiProcess_GenSmoothNormals;
 
@@ -79,6 +80,11 @@ namespace annileen
 				v.m_Normal.x = aiMesh->mNormals[i].x;
 				v.m_Normal.y = aiMesh->mNormals[i].y;
 				v.m_Normal.z = aiMesh->mNormals[i].z;
+
+				v.m_Tangent.x = aiMesh->mTangents[i].x;
+				v.m_Tangent.y = aiMesh->mTangents[i].y;
+				v.m_Tangent.z = aiMesh->mTangents[i].z;
+
 				v.m_HasNormal = true;
 			}
 			else

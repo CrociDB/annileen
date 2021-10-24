@@ -12,10 +12,15 @@ namespace annileen
 			glm::vec3 p3 = m_Vertices[m_Indices[i + 2]].m_Position;
 
 			glm::vec3 n = glm::normalize(glm::cross(glm::normalize(p2 - p1), glm::normalize(p3 - p1)));
+			glm::vec3 t = glm::normalize(glm::cross(glm::normalize(p2 - p1), n));
 
 			m_Vertices[m_Indices[i]].m_Normal = n;
 			m_Vertices[m_Indices[i + 1]].m_Normal = n;
 			m_Vertices[m_Indices[i + 2]].m_Normal = n;
+
+			m_Vertices[m_Indices[i]].m_Tangent = t;
+			m_Vertices[m_Indices[i + 1]].m_Tangent = t;
+			m_Vertices[m_Indices[i + 2]].m_Tangent = t;
 
 			m_Vertices[m_Indices[i]].m_HasNormal = true;
 			m_Vertices[m_Indices[i + 1]].m_HasNormal = true;
@@ -37,7 +42,11 @@ namespace annileen
 			.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float);
 
 		if (vertexUV) vlayout.add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float);
-		if (vertexNormal) vlayout.add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float);
+		if (vertexNormal)
+		{
+			vlayout.add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float);
+			vlayout.add(bgfx::Attrib::Tangent, 3, bgfx::AttribType::Float);
+		}
 
 		vlayout.end();
 
@@ -60,6 +69,10 @@ namespace annileen
 				vertexData.push_back((float)v.m_Normal.x);
 				vertexData.push_back((float)v.m_Normal.y);
 				vertexData.push_back((float)v.m_Normal.z);
+
+				vertexData.push_back((float)v.m_Tangent.x);
+				vertexData.push_back((float)v.m_Tangent.y);
+				vertexData.push_back((float)v.m_Tangent.z);
 			}
 
 		}

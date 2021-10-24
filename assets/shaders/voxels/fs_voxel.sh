@@ -1,4 +1,5 @@
 SAMPLER2D(s_mainTex,  0);
+SAMPLER2D(s_mainNormal,  2);
 
 void main()
 {

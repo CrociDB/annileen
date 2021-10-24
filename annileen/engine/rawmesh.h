@@ -13,6 +13,7 @@ namespace annileen
 	{
 		glm::vec3 m_Position;
 		glm::vec3 m_Normal;
+		glm::vec3 m_Tangent;
 		glm::vec2 m_UV;
 
 		bool m_HasNormal;
