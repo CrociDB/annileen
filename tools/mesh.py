@@ -45,10 +45,10 @@ def build_mesh(meshfile, dest, options, force=False):
     return success, tools.path_leaf(meshfile), output_file
 
 
-def _build_mesh(meshname, options):
+def _build_mesh(meshname, options, force=False):
     filepath = glob.glob(os.path.join(models_path, meshname), recursive=True)
     if filepath != None and len(filepath) == 1:
-        build_mesh(filepath[0], models_build_path, options)
+        build_mesh(filepath[0], models_build_path, options, force)
     else:
         print(f"{bcolors.ERROR}[ERROR]{bcolors.ENDC} File '{meshname}' not found.")
 

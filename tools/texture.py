@@ -41,7 +41,7 @@ def build_texture(texturefile, dest, options, force=False):
         normalmap
     )
 
-    print(command)
+    #print(command)
 
     success = False
     if not os.system(command):
@@ -52,10 +52,10 @@ def build_texture(texturefile, dest, options, force=False):
     return success, tools.path_leaf(texturefile), output_file
 
 
-def _build_texture(meshname, options):
+def _build_texture(meshname, options, force=False):
     filepath = glob.glob(os.path.join(texture_path, meshname), recursive=True)
     if filepath != None and len(filepath) == 1:
-        build_texture(filepath[0], texture_build_path, options)
+        build_texture(filepath[0], texture_build_path, options, force)
     else:
         print(f"{bcolors.ERROR}[ERROR]{bcolors.ENDC} File '{meshname}' not found.")
 

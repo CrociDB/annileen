@@ -49,7 +49,7 @@ root_dir = "assets"
 build_dir = "build_assets"
 descriptor_file = "assets.toml"
 
-shader_types = ["vs", "fs"]
+shader_types = ["vs", "fs", "sh"]
 mesh_types = ["obj", "gltf", "glb"]
 texture_types = ["bmp", "dds", "exr", "gif", "jpg", "hdr", "ktx", "png", "psd", "pvr", "tga"]
 cubemap_types = ["toml"]

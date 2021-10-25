@@ -45,10 +45,10 @@ def build_font(fontfile, dest, options, force=False):
     return success, tools.path_leaf(fontfile), output_file
 
 
-def _build_font(fontname, options):
+def _build_font(fontname, options, force=False):
     filepath = glob.glob(os.path.join(font_path, fontname), recursive=True)
     if filepath != None and len(filepath) == 1:
-        build_font(filepath[0], font_build_path, options)
+        build_font(filepath[0], font_build_path, options, force)
     else:
         print(f"{bcolors.ERROR}[ERROR]{bcolors.ENDC} File '{fontname}' not found.")
 

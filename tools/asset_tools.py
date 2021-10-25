@@ -2,6 +2,9 @@ import os
 import shutil
 import sys
 import argparse
+import time
+
+from watchdog.observers import Observer
 
 import tools
 from tools import bcolors
@@ -10,6 +13,7 @@ import mesh
 import texture
 import cubemap
 import font
+import asset_watchdog
 
 asset_descriptor = {
     'asset': {}
@@ -80,14 +84,41 @@ def check_required_dir():
             return False
     return True
 
+def watch_filesystem():
+    build_assets = os.path.join(os.getcwd(), tools.build_dir)
+    origin_assets = os.path.join(os.getcwd(), tools.root_dir)
+
+    event_handler = asset_watchdog.WatchdogHandler()
+    observer = Observer()
+    observer.schedule(event_handler, origin_assets, recursive=True)
+    observer.start()
+
+    print(f'{tools.bcolors.OKBLUE}WATCHING ASSETS AT:{tools.bcolors.ENDC} {origin_assets}\n')
+
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        observer.stop()
+
+    observer.join()
+
+    print(f'\n{tools.bcolors.OKBLUE}Finished.{tools.bcolors.ENDC}\n')
+
+## MAIN
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=f'{bcolors.SUCCESS}Annileen Asset Tools{bcolors.ENDC}')
+    parser.add_argument('-w', '--watch', help='watch for asset changes and automatically build them', action='store_true')
     parser.add_argument('-f', '--force', help='force rebuild of all assets', action='store_true')
     parser.add_argument('-p', '--platform', help='compiles the mesh specified', choices=tools.available_platforms, default='auto')
     parser.add_argument('-s', '--shader', help='shader model', choices=tools.available_shader_models, default='auto')
     args = parser.parse_args()
     
-
     if check_required_dir():
         ensure_build_dir()
-        build_assets(args.platform, args.shader, args.force)
+
+        if args.watch:
+            watch_filesystem()
+        else:
+            build_assets(args.platform, args.shader, args.force)

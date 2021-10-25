@@ -81,10 +81,10 @@ def _build_strip_texture(sides, tmp_filepah):
     dst.save(tmp_filepah)
     return True
 
-def _build_cubemap(cubemap, options):
+def _build_cubemap(cubemap, options, force=False):
     filepath = glob.glob(os.path.join(cubemap_path, cubemap), recursive=True)
     if filepath != None and len(filepath) == 1:
-     build_cubemap(filepath[0], cubemap_build_path, options)
+        build_cubemap(filepath[0], cubemap_build_path, options, force)
     else:
         print(f"{bcolors.ERROR}[ERROR]{bcolors.ENDC} File '{cubemap}' not found.")
 

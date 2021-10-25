@@ -56,7 +56,7 @@ def build_shader(shaderfile, dest, options, platform, model, force=False):
 
 
 def _build_shader(shadername, options, platform, model, force):
-    filepath = glob.glob(os.path.join(shader_path, shadername), recursive=True)
+    filepath = glob.glob(os.path.join(shader_path, '**', shadername), recursive=True)
     if filepath != None and len(filepath) == 1:
         build_shader(filepath[0], shader_build_path, options, platform, model, force)
     else:
@@ -64,7 +64,11 @@ def _build_shader(shadername, options, platform, model, force):
 
 
 def build_all(platform, model, force=False):
-    shaders = reduce(lambda x, y : x + y, [glob.glob(os.path.join(shader_path, "**", "*." + filetype), recursive=True) for filetype in tools.shader_types])
+    # removing `SH` type because it's just a shader library
+    shader_types = tools.shader_types.copy()
+    shader_types.remove('sh')
+
+    shaders = reduce(lambda x, y : x + y, [glob.glob(os.path.join(shader_path, "**", "*." + filetype), recursive=True) for filetype in shader_types])
     return [build_shader(shaderfile, shader_build_path, "", platform, model, force) for shaderfile in shaders]
 
 if __name__ == '__main__':

@@ -12,7 +12,7 @@ It's still on an early stage of development, but already supports:
 ## Dependencies
 
  - premake5
- - python3 / pip3
+ - python 3.8 / pip3
 
 ## Build
 
