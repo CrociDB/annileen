@@ -74,6 +74,10 @@ It will generate a `build_assets` folder in the project root and will also creat
 
 All the other the specific tools will accept an asset name, no need to include the full path of the file, it will find the asset within the `asset` folder and build it to its corresponding built folder, but **note**: it will not update the `assets.toml` descriptor file. 
 
+### Watchdog
+
+Run `python tools/asset_tools.py -w` to launch a service that will keep watching for asset changes and will recompile it automatically.
+
 ### Shader Tool
 
 ```
@@ -129,16 +133,17 @@ optional arguments:
 python tools/texture.py
 ```
 ```
-usage: texture.py [-h] [-t [TEXTURE [TEXTURE ...]]] [-a] [-v VIEW]
+usage: texture.py [-h] [-t [TEXTURE ...]] [-a] [-f] [-v VIEW]
 
 Annileen Texture Tools
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
-  -t [TEXTURE [TEXTURE ...]], --texture [TEXTURE [TEXTURE ...]]
+  -t [TEXTURE ...], --texture [TEXTURE ...]
                         compiles the texture specified
   -a, --all             compiles all the available textures
-  -v VIEW, --view VIEW  view the specified mesh
+  -f, --force           force compiling all textures
+  -v VIEW, --view VIEW  view the specified texture
 ```
 
 ### Cubemap Tool
