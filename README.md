@@ -5,16 +5,21 @@
 This is a toy 3D game engine created for study purposes. It's written in C++ and uses **bgfx** for rendering. Currently runs on **Windows** and **Linux** and supports **OpenGL 2.1**, **DirectX 9**, **DirectX 11**, **DirectX 12** and **Vulkan**.
 
 It's still on an early stage of development, but already supports:
- - Minecraft-style voxels
+ - asset management
+ - 3d model loading
+ - basic blinn-phong shading
+ - shadow maps
+ - simple scene editor
+ - minecraft-style voxels
 
 ![Annileen](screenshot/annileen.jpg)
 
-## Dependencies
+# Dependencies
 
  - premake5
  - python 3.8 / pip3
 
-## Build
+# Build
 
 First of all, update all submodules and download Python dependencies:
 
@@ -23,7 +28,7 @@ git submodule init && git submodule update
 python -m pip install -r tools/requirements.txt
 ```
 
-### Windows
+## Windows
 
 Generate the Visual Studio solution:
 
@@ -41,7 +46,7 @@ python tools/asset_tools.py
 
 Now you can run the projects on Visual Studio.
 
-### Linux
+## Linux
 
 Install dependecies:
 
@@ -57,12 +62,12 @@ make
 python tools/asset_tools.py
 ```
 
-### Mac OS
+## Mac OS
 
 Still in development.
 
 
-## Asset Tools
+# Asset Tools
 
 In order to build all the assets available at the `./assets` folder, run:
 
@@ -78,7 +83,7 @@ All the other the specific tools will accept an asset name, no need to include t
 
 Run `python tools/asset_tools.py -w` to launch a service that will keep watching for asset changes and will recompile it automatically.
 
-### Shader Tool
+## Shader Tool
 
 ```
 python tools/shader.py
@@ -108,7 +113,7 @@ If no `platform` is specified, it will build for tre host platform. The default 
  - Metal: `metal`
 
 
-### Mesh Tool
+## Mesh Tool
 
 ```
 python tools/mesh.py
@@ -127,7 +132,7 @@ optional arguments:
   -v VIEW, --view VIEW  view the specified mesh
 ```
 
-### Texture Tool
+## Texture Tool
 
 ```
 python tools/texture.py
@@ -146,7 +151,7 @@ options:
   -v VIEW, --view VIEW  view the specified texture
 ```
 
-### Cubemap Tool
+## Cubemap Tool
 
 ```
 python tools/cubemap.py
@@ -165,7 +170,7 @@ optional arguments:
 ```
 
 
-### Font Tool
+## Font Tool
 
 ```
 python tools/font.py
@@ -181,6 +186,10 @@ optional arguments:
                         compiles the font specified
   -a, --all             compiles all the available fonts
 ```
+
+# Running
+
+When built, the project will generate binaries for the examples. Simply run the example binaries from the root directory.
 
 # Contributors
 
