@@ -12,7 +12,7 @@ namespace annileen
 		if (!isValid(m_Font))
 		{
 			m_Font = ServiceProvider::getAssetManager()->loadFont(
-				ServiceProvider::getSettings()->getFontDefault())->getHandle();
+				ServiceProvider::getSettings()->getData()->defaultFont)->getHandle();
 		}
 
 		if (isValid(m_FontHandle))
@@ -309,7 +309,7 @@ namespace annileen
 	{
 		init(false);
 		setFont(ServiceProvider::getAssetManager()->loadFont(
-			ServiceProvider::getSettings()->getFontDefault())->getHandle());
+			ServiceProvider::getSettings()->getData()->defaultFont)->getHandle());
 	}
 
 	Text::~Text()

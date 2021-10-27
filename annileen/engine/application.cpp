@@ -9,7 +9,7 @@ namespace annileen
 	void Application::initAnnileen()
 	{
 		m_Engine = annileen::Engine::getInstance();
-		m_Engine->init(1920, 1080, "build_assets/assets.toml", m_ApplicationName);
+		m_Engine->init(1920, 1080, "build_assets/assets.toml", "build_assets/settings.toml", m_ApplicationName);
 	}
 
 	int Application::run(std::string applicationName)

@@ -100,12 +100,24 @@ namespace annileen
     }
 
 
-    int Engine::init(int width, int height, std::string assetfile, std::string applicationName)
+    int Engine::init(int width, int height, const std::string& assetfile, const std::string& settingsfile, std::string applicationName)
     {
         m_Width = width;
         m_Height = height;
         m_ApplicationName = applicationName;
 
+        // Initialize services
+        Logger* logger = new Logger();
+        ServiceProvider::provideLogger(logger);
+
+        AssetManager* assetManager = new AssetManager(assetfile);
+        ServiceProvider::provideAssetManager(assetManager);
+
+        Settings* settings = new Settings();
+        settings->loadSettings(settingsfile);
+        ServiceProvider::provideSettings(settings);
+        
+        // Initialize GLFW
         glfwSetErrorCallback(&Engine::glfw_errorCallback);
         if (!glfwInit())
             return 1;
@@ -123,10 +135,11 @@ namespace annileen
         //glfwSetCursorEnterCallback(m_Window, glfw_mouseCursorEnterCallback);
         //glfwSetJoystickCallback(glwf_joystickCallback);
 
+        // Initialize BGFX
         bgfx::renderFrame();
 
         bgfx::Init init;
-        init.type = bgfx::RendererType::OpenGL;
+        init.type = settings->getBGFXRendererType();
     #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
         init.platformData.ndt = glfwGetX11Display();
         init.platformData.nwh = (void*)(uintptr_t)glfwGetX11Window(m_Window);
@@ -143,15 +156,6 @@ namespace annileen
         if (!bgfx::init(init))
             return 1;
 
-        // Initialize services
-        Logger* logger = new Logger();
-        ServiceProvider::provideLogger(logger);
-
-        AssetManager* assetManager = new AssetManager(assetfile);
-        ServiceProvider::provideAssetManager(assetManager);
-
-        Settings* settings = new Settings();
-        ServiceProvider::provideSettings(settings);
 
         // TODO: Get parameter from settings.
         FontManager* fontManager = new FontManager(512);

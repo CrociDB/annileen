@@ -27,6 +27,10 @@ def build_assets(platform, shader_model, force=False):
     build_fonts(platform, force)
 
     descriptor_path = tools.save_descriptor(asset_descriptor)
+
+    print(f'{tools.bcolors.OKBLUE}IMPORTING SETTINGS{tools.bcolors.ENDC}')
+    tools.copy_settings()
+
     print(f'\n{tools.bcolors.OKBLUE}ASSET DESCRIPTOR WRITTEN AT: {tools.bcolors.ENDC}{tools.bcolors.BOLD}{descriptor_path}{tools.bcolors.ENDC}') 
 
 def build_shaders(platform, shader_model, force=False):

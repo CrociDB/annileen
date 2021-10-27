@@ -20,7 +20,6 @@
 
 namespace annileen
 {
-
     // Template for enums that allow for bitwise operations, need to find a better 
     template<typename Enum>
     struct EnableBitMaskOperators

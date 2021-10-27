@@ -148,7 +148,6 @@ namespace annileen
 	}
 
 	// Load functions
-
 	Shader* AssetManager::loadShader(const std::string& vertex, const std::string& fragment)
 	{
 		std::string vertexfragment = vertex + fragment;

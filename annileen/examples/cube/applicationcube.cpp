@@ -22,7 +22,7 @@ private:
         //getEngine()->setScene(scene);
 
         annileen::Shader* shader = nullptr;
-        if (ServiceProvider::getSettings()->shadows.enabled)
+        if (ServiceProvider::getSettings()->getData()->shadows.enabled)
         {
             shader = ServiceProvider::getAssetManager()->loadShader("voxel_shadow.vs", "voxel_shadow.fs");
         }

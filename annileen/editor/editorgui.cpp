@@ -667,7 +667,7 @@ namespace annileen
 
 		if (ImGui::CollapsingHeader("Shadows", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			ImGui::Checkbox("Enabled", &settings->shadows.enabled);
+			ImGui::Checkbox("Enabled", &settings->getData()->shadows.enabled);
 		}
 
 		ImGui::End();

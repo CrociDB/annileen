@@ -77,7 +77,7 @@ namespace annileen
         static void glfw_charCallback(GLFWwindow* window, unsigned int c);
             
     public:
-        int init(int width, int height, std::string assetfile, std::string applicationName);
+        int init(int width, int height, const std::string& assetfile, const std::string& settingsfile, std::string applicationName);
 
         std::shared_ptr<Input> getInput(); 
         Gui* getGui();

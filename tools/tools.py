@@ -2,6 +2,8 @@ import os
 import sys
 import ntpath
 
+from shutil import copyfile
+
 import toml
 
 class bcolors:
@@ -48,6 +50,7 @@ available_shader_models = [
 root_dir = "assets"
 build_dir = "build_assets"
 descriptor_file = "assets.toml"
+settings_file = "settings.toml"
 
 shader_types = ["vs", "fs", "sh"]
 mesh_types = ["obj", "gltf", "glb"]
@@ -65,6 +68,17 @@ texture_descriptor_schema = {
 mesh_descriptor_schema = {
     'normals': 'auto' # 'auto', 'generate', 'generate_soft'
 }
+
+def copy_settings():
+    source = os.path.join('.', root_dir, settings_file)
+    dest = os.path.join('.', build_dir, settings_file)
+    copy = copyfile(source, dest)
+
+    if copy:
+        print(f" {bcolors.SUCCESS}- Settings imported: {dest}{bcolors.ENDC}")
+    else:
+        print(f" {bcolors.ERROR}- Problem importing settings: {dest}{bcolors.ENDC}")
+
 
 def save_descriptor(descriptor):
     descriptor_path = os.path.join('.', build_dir, descriptor_file)

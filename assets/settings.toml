@@ -1,0 +1,6 @@
+renderer = "opengl"
+font = "droidsans.ttf"
+
+[shadows]
+enabled = true
+shadowMapSize = 2048

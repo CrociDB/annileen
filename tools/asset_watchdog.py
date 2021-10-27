@@ -32,6 +32,11 @@ def reimport_file(file):
     _, pure_filename = ntpath.split(file)
     extension = tools.path_leaf(pure_filename.split('.')[1])
 
+    if pure_filename == tools.settings_file:
+        print(f'   reimporting settings...')
+        tools.copy_settings()
+        return
+
     if extension == 'toml':
         file, extension = get_original_file(file)
 
