@@ -69,15 +69,39 @@ mesh_descriptor_schema = {
     'normals': 'auto' # 'auto', 'generate', 'generate_soft'
 }
 
-def copy_settings():
+def get_shadermodel_by_renderer(renderer):
+    if renderer == "directx11": return "s_4_0"
+    if renderer == "directx12": return "s_4_0"
+    if renderer == "vulkan": return "spirv"
+    if renderer == "metal": return "metal"
+    return "120"
+
+# this returns if the renderer changed and what the renderer is
+def import_settings():
     source = os.path.join('.', root_dir, settings_file)
     dest = os.path.join('.', build_dir, settings_file)
+
+    f = open(source, 'r')
+    source_settings = toml.load(f)
+    f.close()
+
+    renderer_changed = False
+
+    # check if renderer changed, useful for watchdog to recompile shaders
+    if os.path.exists(dest):
+        f = open(dest, 'r')
+        dest_settings = toml.load(f)
+        f.close()
+        if source_settings['renderer'] != dest_settings['renderer']: renderer_changed = True
+
     copy = copyfile(source, dest)
 
     if copy:
         print(f" {bcolors.SUCCESS}- Settings imported: {dest}{bcolors.ENDC}")
     else:
         print(f" {bcolors.ERROR}- Problem importing settings: {dest}{bcolors.ENDC}")
+
+    return renderer_changed, source_settings['renderer']
 
 
 def save_descriptor(descriptor):

@@ -20,6 +20,9 @@ asset_descriptor = {
 }
 
 def build_assets(platform, shader_model, force=False):
+    p = tools.get_platform() if platform == 'auto' else platform
+    print(f'\n{tools.bcolors.OKBLUE}BUILDING FOR PLATFORM: "{p}" AND SHADER MODEL "{shader_model}"{tools.bcolors.BOLD}{tools.bcolors.ENDC}\n') 
+    
     build_shaders(platform, shader_model, force)
     build_textures(platform, force)
     build_meshes(platform, force)
@@ -27,10 +30,6 @@ def build_assets(platform, shader_model, force=False):
     build_fonts(platform, force)
 
     descriptor_path = tools.save_descriptor(asset_descriptor)
-
-    print(f'{tools.bcolors.OKBLUE}IMPORTING SETTINGS{tools.bcolors.ENDC}')
-    tools.copy_settings()
-
     print(f'\n{tools.bcolors.OKBLUE}ASSET DESCRIPTOR WRITTEN AT: {tools.bcolors.ENDC}{tools.bcolors.BOLD}{descriptor_path}{tools.bcolors.ENDC}') 
 
 def build_shaders(platform, shader_model, force=False):
@@ -125,4 +124,10 @@ if __name__ == '__main__':
         if args.watch:
             watch_filesystem()
         else:
-            build_assets(args.platform, args.shader, args.force)
+            print(f'{tools.bcolors.OKBLUE}IMPORTING SETTINGS{tools.bcolors.ENDC}')
+            _, renderer = tools.import_settings()
+
+            if args.shader == 'auto':
+                build_assets(args.platform, tools.get_shadermodel_by_renderer(renderer), True)
+            else:
+                build_assets(args.platform, args.shader, args.force)

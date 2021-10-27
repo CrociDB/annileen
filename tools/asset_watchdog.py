@@ -34,7 +34,12 @@ def reimport_file(file):
 
     if pure_filename == tools.settings_file:
         print(f'   reimporting settings...')
-        tools.copy_settings()
+        renderer_changed, renderer = tools.import_settings()
+
+        if renderer_changed:
+            print(f'   renderer type changed, reimporting everything...')
+            asset_tools.build_assets(tools.get_platform(), tools.get_shadermodel_by_renderer(renderer), True)
+
         return
 
     if extension == 'toml':
