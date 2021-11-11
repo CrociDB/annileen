@@ -10,6 +10,10 @@ void main()
 	normal.x = -normal.x;
 	normal = normalize(normal);
 
+	mat3 tbn = mat3(v_tangent, v_bitangent, normal);
+	normal = texture2D(s_mainNormal, v_texcoord0).rgb;
+	normal = normalize(tbn * normal);
+
 	vec4 tex = texture2D(s_mainTex, v_texcoord0);
 	vec3 ambient = 0.1 * vec3(1.0, 1.0, 1.0);
 

@@ -46,11 +46,31 @@ private:
         material->setName("ModelMaterial");
 
 
-        m_ModelNode = scene->createNode("Model");
-        ModelPtr model = m_ModelNode->addModule<Model>();
-        model->init(ServiceProvider::getAssetManager()->loadMesh("bunny.obj"), material);
+        // Statue Decoration
+        auto normalmap = ServiceProvider::getAssetManager()->loadTexture("statue_decoration_normal.jpg");
+        auto texture = ServiceProvider::getAssetManager()->loadTexture("statue_decoration.jpg");
+        //material->addTexture("s_mainTex", texture, 0);
+        material->addTexture("s_mainNormal", normalmap, 2);
 
+        m_ModelNode = scene->createNode("Statue");
+        ModelPtr model = m_ModelNode->addModule<Model>();
+        model->init(ServiceProvider::getAssetManager()->loadMesh("statue_decoration.obj"), material);
         m_ModelNode->getTransform().translate(glm::vec3(-1.0, -1.0, -1.0));
+        m_ModelNode->getTransform().scale(glm::vec3(.1, .1, .1));
+
+        // Angel Statue
+        std::shared_ptr<Material> material1 = std::make_shared<Material>();
+        material1->addShaderPass(shaderPass);
+        material1->setName("ModelMaterial1");
+
+        auto normalmap1 = ServiceProvider::getAssetManager()->loadTexture("statue_normal.jpg");
+        material1->addTexture("s_mainNormal", normalmap1, 2);
+
+        auto node1 = scene->createNode("AngelStatue");
+        ModelPtr model1 = node1->addModule<Model>();
+        model1->init(ServiceProvider::getAssetManager()->loadMesh("statue.obj"), material1);
+        node1->getTransform().translate(glm::vec3(-15.0, -1.0, -1.0));
+        node1->getTransform().scale(glm::vec3(.07, .07, .07));
          
         SceneNodePtr cameraNode = scene->createNode("Camera");
         Camera* camera = cameraNode->addModule<Camera>(); 
