@@ -687,7 +687,7 @@ namespace annileen
 			std::shared_ptr<Material> material = model->getMaterial();
 			if (material != nullptr)
 			{
-				ImGui::Text("Name: %s", model->getMaterial()->getName());
+				ImGui::Text("Name: %s", model->getMaterial()->getName().c_str());
 			}
 			else
 			{
