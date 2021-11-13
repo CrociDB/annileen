@@ -682,18 +682,8 @@ namespace annileen
 			ImGui::Checkbox("Cast Shadows", &model->castShadows);
 			ImGui::Checkbox("Receive Shadows", &model->receiveShadows);
 		}
-		if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			std::shared_ptr<Material> material = model->getMaterial();
-			if (material != nullptr)
-			{
-				ImGui::Text("Name: %s", model->getMaterial()->getName().c_str());
-			}
-			else
-			{
-				ImGui::Text("Name: No material set");
-			}
-		}
+
+		drawModelMaterialProperties(model->getMaterial());
 	}
 
 	void EditorGui::drawLightModuleProperties(Light* light)
@@ -838,6 +828,25 @@ namespace annileen
 			if (!staticText)
 			{
 				text->setText(textContent);
+			}
+		}
+	}
+
+	void EditorGui::drawModelMaterialProperties(std::shared_ptr<Material> material)
+	{
+		if (!material) return;
+
+		if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::Text("Name: %s", material->getName().c_str());
+
+			if (ImGui::CollapsingHeader("Uniforms", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				for (auto& [k, v]:material->getSerializedUniforms())
+				{
+					ImGui::Spacing();
+					ImGui::Checkbox(k.c_str(), &v.m_Active);
+				}
 			}
 		}
 	}

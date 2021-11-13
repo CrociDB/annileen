@@ -84,7 +84,7 @@ namespace annileen
 
         for (const auto& [k, v] : m_SerializedUniforms)
         {
-            if (!v.m_Active) continue;
+            if (!v.m_Active || v.m_Data == nullptr) continue;
 
             if (v.m_Type == ShaderUniformType::Texture)
                 uniform->setTextureUniform(k, v.m_Texture, v.m_RegisterId);

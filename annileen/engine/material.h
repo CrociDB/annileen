@@ -20,6 +20,7 @@ namespace annileen
         ShaderUniformType m_Type;
         union
         {
+            void* m_Data;
             Texture* m_Texture;
             Cubemap* m_Cubemap;
         };
@@ -49,6 +50,11 @@ namespace annileen
         // Setting Uniforms
         void setTexture(const char* name, Texture* texture);
         void setCubemap(const char* name, Cubemap* cubemap);
+
+        inline std::map<std::string, MaterialSerializedUniform>& getSerializedUniforms()
+        {
+            return m_SerializedUniforms;
+        }
 
         void submitUniforms();
 

@@ -66,6 +66,7 @@ namespace annileen
 		void drawLightModuleProperties(Light* light);
 		void drawCameraModuleProperties(Camera* camera);
 		void drawTextModuleProperties(Text* text);
+		void drawModelMaterialProperties(std::shared_ptr<Material> material);
 
 		void drawSceneNodeContextMenu(SceneNodePtr const sceneNode);
 		

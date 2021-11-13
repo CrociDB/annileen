@@ -49,7 +49,7 @@ private:
         // Statue Decoration
         auto normalmap = ServiceProvider::getAssetManager()->loadTexture("statue_decoration_normal.jpg");
         auto texture = ServiceProvider::getAssetManager()->loadTexture("statue_decoration.jpg");
-        //material->setTexture("s_mainTex", texture);
+        material->setTexture("s_mainTex", texture);
         material->setTexture("s_mainNormal", normalmap);
 
         m_ModelNode = scene->createNode("Statue");
