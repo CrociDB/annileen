@@ -24,6 +24,7 @@ namespace annileen
 
 		void loadAssetTable(const std::string& assetfile);
 		AssetType getType(const std::string& typetext);
+		bgfx::UniformType::Enum getUniformType(const std::string& typetext);
 		AssetTableEntry* getAssetEntry(const std::string& assetname);
 
 		void unloadAssets();
@@ -38,13 +39,14 @@ namespace annileen
 
 	public:
 		// Asset loading functions
-		Shader* loadShader(const std::string& vertex, const std::string& fragment);
+		Shader* loadShader(const std::string& basename);
 		Texture* loadTexture(const std::string& tex);
 		Cubemap* loadCubemap(const std::string& name);
 		MeshGroup* loadMesh(const std::string& name);
 		Font* loadFont(const std::string& name);
 
 		// Asset descriptor loading functions
+		ShaderDcescritor loadShaderDescriptor(AssetTableEntry* asset);
 		TextureDescriptor loadTextureDescriptor(AssetTableEntry* asset);
 		MeshDescriptor loadMeshDescriptor(AssetTableEntry* asset);
 		CubemapDescriptor loadCubemapDescriptor(AssetTableEntry* asset);

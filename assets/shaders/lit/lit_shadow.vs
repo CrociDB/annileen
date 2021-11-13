@@ -3,5 +3,5 @@ $output v_position, v_texcoord0, v_normal, v_tangent, v_bitangent, v_shadowcoord
  
 #include <bgfx_shader.sh>
 
-#define SHADOW_ENABLED 0
-#include "vs_voxel.sh"
+#define SHADOW_ENABLED 1
+#include "vs_lit.sh"

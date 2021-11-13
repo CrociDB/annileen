@@ -22,6 +22,8 @@ def build_shader(shaderfile, dest, options, platform, model, force=False):
     print(f" - Compiling {bcolors.UNDERLINE}'{shaderfile}'{bcolors.ENDC}")
     output_file = os.path.join(dest, tools.path_leaf(shaderfile))
 
+    descriptor_filename, descriptor = tools.load_asset_descriptor(shaderfile, tools.shader_descriptor_schema)
+
     if not force and not tools.check_should_build(output_file, shaderfile): 
         print(f" {bcolors.WARNING}- SKIPPED{bcolors.ENDC}")
         return True, tools.path_leaf(shaderfile), output_file
@@ -51,6 +53,7 @@ def build_shader(shaderfile, dest, options, platform, model, force=False):
     if not os.system(command):
         success = True
         print(f" {bcolors.SUCCESS}- Shader compiled: {output_file}{bcolors.ENDC}")
+        tools.save_built_asset_descriptor(output_file, descriptor)
 
     return success, tools.path_leaf(shaderfile), output_file
 

@@ -9,7 +9,7 @@ namespace annileen
 {
 	void Skybox::createModel()
 	{
-		Shader* shader = ServiceProvider::getAssetManager()->loadShader("skybox.vs", "skybox.fs");
+		Shader* shader = ServiceProvider::getAssetManager()->loadShader("skybox");
 		std::shared_ptr<Material> material = std::make_shared<Material>();
 		
 		std::shared_ptr<ShaderPass> shaderPass = std::make_shared<ShaderPass>();

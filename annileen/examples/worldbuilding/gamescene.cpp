@@ -12,15 +12,14 @@ void GameScene::buildMap()
 {
     auto texture = ServiceProvider::getAssetManager()->loadTexture("blocks.png");
 
-    Shader* shader = nullptr;
-
-    if (ServiceProvider::getSettings()->shadows.enabled)
+    annileen::Shader* shader = nullptr;
+    if (ServiceProvider::getSettings()->getData()->shadows.enabled)
     {
-        shader = ServiceProvider::getAssetManager()->loadShader("voxel_shadow.vs", "voxel_shadow.fs");
+        shader = ServiceProvider::getAssetManager()->loadShader("lit_shadow");
     }
     else
     {
-        shader = ServiceProvider::getAssetManager()->loadShader("voxel_noshadow.vs", "voxel_noshadow.fs");
+        shader = ServiceProvider::getAssetManager()->loadShader("lit_noshadow");
     }
 
     std::shared_ptr<ShaderPass> shaderPass = std::make_shared<ShaderPass>();

@@ -1,6 +1,9 @@
 #pragma once
 
 #include <iostream>
+#include <vector>
+
+#include <bgfx/bgfx.h>
 
 namespace annileen
 {
@@ -27,6 +30,13 @@ namespace annileen
 		AssetObject* m_Asset;
 	};
 
+	struct ShaderAvailableUniform
+	{
+		std::string m_UniformName;
+		bgfx::UniformType::Enum m_Type;
+		uint8_t m_Position;
+	};
+
 	// Asset descriptors
 	struct TextureDescriptor
 	{
@@ -50,6 +60,11 @@ namespace annileen
 		};
 
 		Normals m_Normals;
+	};
+
+	struct ShaderDcescritor
+	{
+		std::vector<ShaderAvailableUniform> m_AvailableUniforms;
 	};
 
 	// TOML asset types

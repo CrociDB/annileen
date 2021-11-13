@@ -43,6 +43,18 @@ namespace annileen
 		return AssetType::Undefined;
 	}
 
+	bgfx::UniformType::Enum AssetManager::getUniformType(const std::string& typetext)
+	{
+		std::string copy = typetext.c_str();
+		std::transform(copy.begin(), copy.end(), copy.begin(),
+			[](unsigned char c) { return std::tolower(c); });
+
+		if (copy.compare("sampler2d")) return bgfx::UniformType::Sampler;
+		if (copy.compare("mat3")) return bgfx::UniformType::Mat3;
+		if (copy.compare("mat4")) return bgfx::UniformType::Mat4;
+		return bgfx::UniformType::Vec4;
+	}
+
 	AssetTableEntry* AssetManager::getAssetEntry(const std::string& assetname)
 	{
 		assert(m_Assets.count(assetname) != 0 && "Trying to load an asset that does not exist.");
@@ -148,20 +160,21 @@ namespace annileen
 	}
 
 	// Load functions
-	Shader* AssetManager::loadShader(const std::string& vertex, const std::string& fragment)
+	Shader* AssetManager::loadShader(const std::string& basename)
 	{
-		std::string vertexfragment = vertex + fragment;
-		if (m_Assets.count(vertexfragment) != 0)
+		std::string vertex = basename + ".vs";
+		std::string fragment = basename + ".fs";
+
+		auto entry = getAssetEntry(vertex);
+		if (entry->m_Loaded)
 		{
-			auto entry = getAssetEntry(vertexfragment);
-			if (entry->m_Loaded)
-			{
-				return static_cast<Shader*>(entry->m_Asset);
-			}
+			return static_cast<Shader*>(entry->m_Asset);
 		}
 
 		// TODO: store both handles somewhere, otherwise it will compile both shaders everytime
 		// there's a new combination of vertex+shader.
+
+		auto descriptor = loadShaderDescriptor(entry);
 
 		auto vertexShaderData = loadBinaryFile(getAssetEntry(vertex)->m_Filepath);
 		bgfx::ShaderHandle vertexHandle = bgfx::createShader(vertexShaderData);
@@ -173,14 +186,11 @@ namespace annileen
 
 		Shader* shader = new Shader();
 		shader->init(programHandle);
+		shader->setAvailableShaders(descriptor.m_AvailableUniforms);
 
-		m_Assets[vertexfragment] = AssetTableEntry {
-			"",
-			AssetType::Shader,
-			true,
-			dynamic_cast<AssetObject*>(shader)
-		};
-	
+		entry->m_Asset = dynamic_cast<AssetObject*>(shader);
+		entry->m_Loaded = true;
+
 		return shader;
 	}
 
@@ -255,6 +265,33 @@ namespace annileen
 		entry->m_Asset = static_cast<AssetObject*>(font);
 		entry->m_Loaded = true;
 		return font;
+	}
+
+	ShaderDcescritor AssetManager::loadShaderDescriptor(AssetTableEntry* asset)
+	{
+		ShaderDcescritor descriptor;
+
+		auto shaderdescriptor = asset->m_Filepath.substr(0, asset->m_Filepath.find_last_of(".")) + ".toml";
+		auto data = toml::parse(shaderdescriptor);
+
+		// Uniforms
+		auto uniforms = toml::find(data, "uniforms").as_array();
+		auto size = uniforms.size();
+		descriptor.m_AvailableUniforms.resize(size);
+
+		int i = 0;
+		for (const auto& v : uniforms)
+		{
+			ShaderAvailableUniform uniform = {
+				toml::find(v, "name").as_string(),
+				getUniformType(toml::find(v, "type").as_string()),
+				toml::find(v, "pos").as_integer()
+			};
+
+			descriptor.m_AvailableUniforms.at(i++) = uniform;
+		}
+
+		return descriptor;
 	}
 
 	TextureDescriptor AssetManager::loadTextureDescriptor(AssetTableEntry* asset)

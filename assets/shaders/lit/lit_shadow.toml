@@ -1,0 +1,9 @@
+[[uniforms]]
+name = "s_mainTex"
+type = "SAMPLER2D"
+pos = 0
+
+[[uniforms]]
+name = "s_mainNormal"
+type = "SAMPLER2D"
+pos = 2

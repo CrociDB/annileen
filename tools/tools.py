@@ -69,6 +69,10 @@ mesh_descriptor_schema = {
     'normals': 'auto' # 'auto', 'generate', 'generate_soft'
 }
 
+shader_descriptor_schema = {
+    'uniforms': []
+}
+
 def get_shadermodel_by_renderer(renderer):
     if renderer == "directx11": return "s_4_0"
     if renderer == "directx12": return "s_4_0"

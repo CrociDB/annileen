@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "asset.h"
 
@@ -17,10 +18,17 @@ namespace annileen
     private:
         bgfx::ProgramHandle m_ProgramHandle;
 
+        std::vector<ShaderAvailableUniform> m_AvailableUniforms;
+
     public:
         void init(bgfx::ProgramHandle handle);
 
-        bgfx::ProgramHandle getProgram() { return m_ProgramHandle; }
+        inline void setAvailableShaders(std::vector<ShaderAvailableUniform> availableUniform) 
+        { 
+            m_AvailableUniforms = availableUniform;
+        }
+
+        inline bgfx::ProgramHandle getProgram() { return m_ProgramHandle; }
 
         Shader();
         ~Shader();
