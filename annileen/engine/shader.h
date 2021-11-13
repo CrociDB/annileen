@@ -28,6 +28,11 @@ namespace annileen
             m_AvailableUniforms = availableUniform;
         }
 
+        inline const std::vector<ShaderAvailableUniform>& getAvailableShaders()
+        {
+            return m_AvailableUniforms;
+        }
+
         inline bgfx::ProgramHandle getProgram() { return m_ProgramHandle; }
 
         Shader();

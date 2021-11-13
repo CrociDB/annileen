@@ -49,8 +49,8 @@ private:
         // Statue Decoration
         auto normalmap = ServiceProvider::getAssetManager()->loadTexture("statue_decoration_normal.jpg");
         auto texture = ServiceProvider::getAssetManager()->loadTexture("statue_decoration.jpg");
-        //material->addTexture("s_mainTex", texture, 0);
-        material->addTexture("s_mainNormal", normalmap, 2);
+        //material->setTexture("s_mainTex", texture);
+        material->setTexture("s_mainNormal", normalmap);
 
         m_ModelNode = scene->createNode("Statue");
         ModelPtr model = m_ModelNode->addModule<Model>();
@@ -64,7 +64,7 @@ private:
         material1->setName("ModelMaterial1");
 
         auto normalmap1 = ServiceProvider::getAssetManager()->loadTexture("statue_normal.jpg");
-        material1->addTexture("s_mainNormal", normalmap1, 2);
+        material1->setTexture("s_mainNormal", normalmap1);
 
         auto node1 = scene->createNode("AngelStatue");
         ModelPtr model1 = node1->addModule<Model>();

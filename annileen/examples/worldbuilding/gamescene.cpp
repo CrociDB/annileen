@@ -33,7 +33,7 @@ void GameScene::buildMap()
         | UINT64_C(0));
 
     m_BlockMaterial = std::make_shared<Material>();
-    m_BlockMaterial->addTexture("s_mainTex", texture, 0);
+    m_BlockMaterial->setTexture("s_mainTex", texture);
     m_BlockMaterial->addShaderPass(shaderPass);
     m_BlockMaterial->setName("BlockMaterial");
 

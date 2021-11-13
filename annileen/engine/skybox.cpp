@@ -21,7 +21,7 @@ namespace annileen
 			| 0);
 		
 		material->addShaderPass(shaderPass);
-		material->addCubemap("s_texCube", m_Cubemap, 0);
+		material->setCubemap("s_texCube", m_Cubemap);
 
 		bgfx::VertexLayout vlayout;
 		vlayout.begin()

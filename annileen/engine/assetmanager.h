@@ -24,7 +24,7 @@ namespace annileen
 
 		void loadAssetTable(const std::string& assetfile);
 		AssetType getType(const std::string& typetext);
-		bgfx::UniformType::Enum getUniformType(const std::string& typetext);
+		ShaderUniformType getUniformType(const std::string& typetext);
 		AssetTableEntry* getAssetEntry(const std::string& assetname);
 
 		void unloadAssets();

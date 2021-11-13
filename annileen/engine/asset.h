@@ -30,10 +30,19 @@ namespace annileen
 		AssetObject* m_Asset;
 	};
 
+	enum class ShaderUniformType
+	{
+		Texture,
+		Cubemap,
+		Mat3,
+		Mat4,
+		Vec4
+	};
+
 	struct ShaderAvailableUniform
 	{
 		std::string m_UniformName;
-		bgfx::UniformType::Enum m_Type;
+		ShaderUniformType m_Type;
 		uint8_t m_Position;
 	};
 

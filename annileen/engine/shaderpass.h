@@ -15,8 +15,12 @@ namespace annileen
 
         Shader* getShader() const noexcept;
 
-        void setState(uint64_t state) { m_State = state; }
-        uint64_t getState() { return m_State; }
+        inline void setState(uint64_t state) { m_State = state; }
+        inline uint64_t getState() { return m_State; }
+        inline const std::vector<ShaderAvailableUniform>& getShaderAvailableUniforms()
+        {
+            return m_Shader->getAvailableShaders();
+        }
 
         ShaderPass();
         ~ShaderPass();

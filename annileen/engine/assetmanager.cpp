@@ -37,22 +37,23 @@ namespace annileen
 
 	AssetType AssetManager::getType(const std::string& typetext)
 	{
-		if (typetext.compare("shader")) return AssetType::Shader;
-		if (typetext.compare("texture")) return AssetType::Texture;
-		if (typetext.compare("mesh")) return AssetType::Model;
+		if (typetext.compare("shader") == 0) return AssetType::Shader;
+		if (typetext.compare("texture") == 0) return AssetType::Texture;
+		if (typetext.compare("mesh") == 0) return AssetType::Model;
 		return AssetType::Undefined;
 	}
 
-	bgfx::UniformType::Enum AssetManager::getUniformType(const std::string& typetext)
+	ShaderUniformType AssetManager::getUniformType(const std::string& typetext)
 	{
 		std::string copy = typetext.c_str();
 		std::transform(copy.begin(), copy.end(), copy.begin(),
 			[](unsigned char c) { return std::tolower(c); });
 
-		if (copy.compare("sampler2d")) return bgfx::UniformType::Sampler;
-		if (copy.compare("mat3")) return bgfx::UniformType::Mat3;
-		if (copy.compare("mat4")) return bgfx::UniformType::Mat4;
-		return bgfx::UniformType::Vec4;
+		if (copy.compare("texture") == 0) return ShaderUniformType::Texture;
+		if (copy.compare("cubemap") == 0) return ShaderUniformType::Cubemap;
+		if (copy.compare("mat3") == 0) return ShaderUniformType::Mat3;
+		if (copy.compare("mat4") == 0) return ShaderUniformType::Mat4;
+		return ShaderUniformType::Vec4;
 	}
 
 	AssetTableEntry* AssetManager::getAssetEntry(const std::string& assetname)

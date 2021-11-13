@@ -1,9 +1,9 @@
 [[uniforms]]
 name = "s_mainTex"
-type = "SAMPLER2D"
+type = "texture"
 pos = 0
 
 [[uniforms]]
 name = "s_mainNormal"
-type = "SAMPLER2D"
+type = "texture"
 pos = 2

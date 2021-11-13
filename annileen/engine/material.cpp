@@ -12,6 +12,12 @@ namespace annileen
     void Material::addShaderPass(std::shared_ptr<ShaderPass> shaderPass)
     {
         m_ShaderPasses.push_back(shaderPass);
+
+        auto shaderAvailableUniforms = shaderPass->getShaderAvailableUniforms();
+        for (const auto& availableUniform : shaderAvailableUniforms)
+        {
+            addTexture(availableUniform.m_UniformName.c_str(), nullptr, availableUniform.m_Position, false);
+        }
     }
     
     void Material::removeShaderPass(std::shared_ptr<ShaderPass> shaderPass)
@@ -38,28 +44,52 @@ namespace annileen
         return m_ShaderPasses.size();
     }
 
-    void Material::addTexture(const char* name, Texture* texture, uint8_t registerId)
+    // Uniforms
+
+    void Material::addTexture(const char* name, Texture* texture, uint8_t registerId, bool active)
     {
-        m_Textures[name] = std::make_pair(registerId, texture);
+        MaterialSerializedUniform serializedUniform;
+        serializedUniform.m_RegisterId = registerId;
+        serializedUniform.m_Type = ShaderUniformType::Texture;
+        serializedUniform.m_Texture = texture;
+        serializedUniform.m_Active = active;
+        m_SerializedUniforms[name] = serializedUniform;
     }
 
-    void Material::addCubemap(const char* name, Cubemap* cubemap, uint8_t registerId)
+    void Material::addCubemap(const char* name, Cubemap* cubemap, uint8_t registerId, bool active)
     {
-        m_Cubemaps[name] = std::make_pair(registerId, cubemap);
+        MaterialSerializedUniform serializedUniform;
+        serializedUniform.m_RegisterId = registerId;
+        serializedUniform.m_Type = ShaderUniformType::Texture;
+        serializedUniform.m_Cubemap = cubemap;
+        serializedUniform.m_Active = active;
+        m_SerializedUniforms[name] = serializedUniform;
+    }
+
+    void Material::setTexture(const char* name, Texture* texture)
+    {
+        m_SerializedUniforms[name].m_Texture = texture;
+        m_SerializedUniforms[name].m_Active = true;
+    }
+
+    void Material::setCubemap(const char* name, Cubemap* cubemap)
+    {
+        m_SerializedUniforms[name].m_Cubemap = cubemap;
+        m_SerializedUniforms[name].m_Active = true;
     }
 
     void Material::submitUniforms()
     {
         auto uniform = Engine::getInstance()->getUniform();
 
-        for (const auto& [k, v] : m_Textures)
+        for (const auto& [k, v] : m_SerializedUniforms)
         {
-            uniform->setTextureUniform(k, v.second, v.first);
-        }
+            if (!v.m_Active) continue;
 
-        for (const auto& [k, v] : m_Cubemaps)
-        {
-            uniform->setCubemapUniform(k, v.second, v.first);
+            if (v.m_Type == ShaderUniformType::Texture)
+                uniform->setTextureUniform(k, v.m_Texture, v.m_RegisterId);
+            else if (v.m_Type == ShaderUniformType::Cubemap)
+                uniform->setCubemapUniform(k, v.m_Cubemap, v.m_RegisterId);
         }
     }
 
