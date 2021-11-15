@@ -23,7 +23,7 @@ namespace annileen
 		Text* m_NoCameraText;
 
 // ApplicationEditor has to be able to inject the editor gui stuff
-#ifdef _DEBUG
+#ifdef _ANNILEEN_COMPILER_EDITOR
 		friend class ApplicationEditor;
 		virtual void initializeEditorGui() = 0;
 		virtual void editorUpdate(float deltaTime) = 0;

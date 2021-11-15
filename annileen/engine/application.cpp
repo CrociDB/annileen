@@ -31,7 +31,7 @@ namespace annileen
 		scene->start();
 		m_Engine->setScene(scene);
 
-#ifdef _DEBUG
+#ifdef _ANNILEEN_COMPILER_EDITOR
 		initializeEditorGui();
 #endif
 
@@ -72,7 +72,7 @@ namespace annileen
 
 			scene->update();
 
-#ifdef _DEBUG
+#ifdef _ANNILEEN_COMPILER_EDITOR
 			editorUpdate(dt);
 #else
 			update(dt);

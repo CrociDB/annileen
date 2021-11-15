@@ -6,7 +6,7 @@
         return __app__->run(__ApplicationName); \
     }
 
-#ifdef _DEBUG
+#ifdef _ANNILEEN_COMPILER_EDITOR
 #ifdef ANNILEEN_APPLICATION
     #include <editor/applicationeditor.h>
 #endif
@@ -16,7 +16,7 @@
     #include <engine/application.h>
 #endif
     #define ANNILEEN_APP_CLASS_DECLARATION(__ApplicationClassName) class __ApplicationClassName : public annileen::Application
-#endif // DEBUG
+#endif // _ANNILEEN_COMPILER_EDITOR
 
 namespace annileen
 {

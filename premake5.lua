@@ -28,17 +28,22 @@ newoption {
 solution "annileen-engine"
 	location(BUILD_DIR)
 	startproject "example-worldbuilding"
-	configurations { "Release", "Debug" }
+	configurations { "Release", "ReleaseEditor", "Debug" }
 	if os.is64bit() and not os.istarget("windows") then
 		platforms "x86_64"
 	else
 		platforms { "x86", "x86_64" }
 	end
+	filter "configurations:ReleaseEditor"
+		defines "NDEBUG"
+		defines "_ANNILEEN_COMPILER_EDITOR"
+		optimize "Full"
 	filter "configurations:Release"
 		defines "NDEBUG"
 		optimize "Full"
 	filter "configurations:Debug*"
 		defines "_DEBUG"
+		defines "_ANNILEEN_COMPILER_EDITOR"
 		optimize "Debug"
 		symbols "On"
 	filter "platforms:x86"
@@ -159,12 +164,17 @@ project "example-worldbuilding"
 	}
 	debugdir "."
 	links { "bgfx", "bimg", "bx", "annileen", "glfw", "assimp", "imgui" }
+	filter "configurations:ReleaseEditor"
+		links {"annileen-editor"}
+		defines "NDEBUG"
+		defines "_ANNILEEN_COMPILER_EDITOR"
+		optimize "Full"
 	filter "configurations:Release"
 		defines "NDEBUG"
 		optimize "Full"
 	filter "configurations:Debug*"
-		links {"annileen-editor"}
 		defines "_DEBUG"
+		defines "_ANNILEEN_COMPILER_EDITOR"
 		optimize "Debug"
 		symbols "On"
 	filter "system:windows"
@@ -204,12 +214,18 @@ project "example-cube"
 	}
 	debugdir "."
 	links { "annileen", "bgfx", "bimg", "bx", "glfw", "assimp", "imgui" }
+	filter "configurations:ReleaseEditor"
+		links {"annileen-editor"}
+		defines "NDEBUG"
+		defines "_ANNILEEN_COMPILER_EDITOR"
+		optimize "Full"
 	filter "configurations:Release"
 		defines "NDEBUG"
 		optimize "Full"
 	filter "configurations:Debug*"
 		links {"annileen-editor"}
 		defines "_DEBUG"
+		defines "_ANNILEEN_COMPILER_EDITOR"
 		optimize "Debug"
 		symbols "On"
 	filter "system:windows"
