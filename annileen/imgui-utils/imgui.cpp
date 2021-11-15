@@ -9,8 +9,20 @@
 #include <bx/math.h>
 #include <bx/timer.h>
 #include <dear-imgui/imgui.h>
+#include <dear-imgui/imgui_internal.h>
 
 #include "imgui.h"
+
+//#define USE_ENTRY 1
+
+#ifndef USE_ENTRY
+#	define USE_ENTRY 0
+#endif // USE_ENTRY
+
+#if USE_ENTRY
+#	include "../entry/entry.h"
+#	include "../entry/input.h"
+#endif // USE_ENTRY
 
 #include "vs_ocornut_imgui.bin.h"
 #include "fs_ocornut_imgui.bin.h"
@@ -21,6 +33,20 @@
 #include "robotomono_regular.ttf.h"
 #include "icons_kenney.ttf.h"
 #include "icons_font_awesome.ttf.h"
+
+/// Returns true if both internal transient index and vertex buffer have
+/// enough space.
+///
+/// @param[in] _numVertices Number of vertices.
+/// @param[in] _layout Vertex layout.
+/// @param[in] _numIndices Number of indices.
+///
+inline bool checkAvailTransientBuffers(uint32_t _numVertices, const bgfx::VertexLayout& _layout, uint32_t _numIndices)
+{
+	return _numVertices == bgfx::getAvailTransientVertexBuffer(_numVertices, _layout)
+		&& (0 == _numIndices || _numIndices == bgfx::getAvailTransientIndexBuffer(_numIndices))
+		;
+}
 
 static const bgfx::EmbeddedShader s_embeddedShaders[] =
 {
@@ -48,28 +74,15 @@ static FontRangeMerge s_fontRangeMerge[] =
 static void* memAlloc(size_t _size, void* _userData);
 static void memFree(void* _ptr, void* _userData);
 
-
-/// Returns true if both internal transient index and vertex buffer have
-/// enough space.
-///
-/// @param[in] _numVertices Number of vertices.
-/// @param[in] _layout Vertex layout.
-/// @param[in] _numIndices Number of indices.
-///
-inline bool checkAvailTransientBuffers(uint32_t _numVertices, const bgfx::VertexLayout& _layout, uint32_t _numIndices)
-{
-	return _numVertices == bgfx::getAvailTransientVertexBuffer(_numVertices, _layout)
-		&& (0 == _numIndices || _numIndices == bgfx::getAvailTransientIndexBuffer(_numIndices))
-		;
-}
-
 struct OcornutImguiContext
 {
 	void render(ImDrawData* _drawData)
 	{
-		const ImGuiIO& io = ImGui::GetIO();
-		const float width  = io.DisplaySize.x;
-		const float height = io.DisplaySize.y;
+		// Avoid rendering when minimized, scale coordinates for retina displays (screen coordinates != framebuffer coordinates)
+		int fb_width = (int)(_drawData->DisplaySize.x * _drawData->FramebufferScale.x);
+		int fb_height = (int)(_drawData->DisplaySize.y * _drawData->FramebufferScale.y);
+		if (fb_width <= 0 || fb_height <= 0)
+			return;
 
 		bgfx::setViewName(m_viewId, "ImGui");
 		bgfx::setViewMode(m_viewId, bgfx::ViewMode::Sequential);
@@ -77,10 +90,18 @@ struct OcornutImguiContext
 		const bgfx::Caps* caps = bgfx::getCaps();
 		{
 			float ortho[16];
-			bx::mtxOrtho(ortho, 0.0f, width, height, 0.0f, 0.0f, 1000.0f, 0.0f, caps->homogeneousDepth);
+			float x = _drawData->DisplayPos.x;
+			float y = _drawData->DisplayPos.y;
+			float width = _drawData->DisplaySize.x;
+			float height = _drawData->DisplaySize.y;
+
+			bx::mtxOrtho(ortho, x, x + width, y + height, y, 0.0f, 1000.0f, 0.0f, caps->homogeneousDepth);
 			bgfx::setViewTransform(m_viewId, NULL, ortho);
 			bgfx::setViewRect(m_viewId, 0, 0, uint16_t(width), uint16_t(height) );
 		}
+
+		const ImVec2 clipPos   = _drawData->DisplayPos;       // (0,0) unless using multi-viewports
+		const ImVec2 clipScale = _drawData->FramebufferScale; // (1,1) unless using retina display which are often (2,2)
 
 		// Render command lists
 		for (int32_t ii = 0, num = _drawData->CmdListsCount; ii < num; ++ii)
@@ -99,13 +120,15 @@ struct OcornutImguiContext
 			}
 
 			bgfx::allocTransientVertexBuffer(&tvb, numVertices, m_layout);
-			bgfx::allocTransientIndexBuffer(&tib, numIndices);
+			bgfx::allocTransientIndexBuffer(&tib, numIndices, sizeof(ImDrawIdx) == 4);
 
 			ImDrawVert* verts = (ImDrawVert*)tvb.data;
 			bx::memCopy(verts, drawList->VtxBuffer.begin(), numVertices * sizeof(ImDrawVert) );
 
 			ImDrawIdx* indices = (ImDrawIdx*)tib.data;
 			bx::memCopy(indices, drawList->IdxBuffer.begin(), numIndices * sizeof(ImDrawIdx) );
+
+			bgfx::Encoder* encoder = bgfx::begin();
 
 			uint32_t offset = 0;
 			for (const ImDrawCmd* cmd = drawList->CmdBuffer.begin(), *cmdEnd = drawList->CmdBuffer.end(); cmd != cmdEnd; ++cmd)
@@ -145,22 +168,37 @@ struct OcornutImguiContext
 						state |= BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA);
 					}
 
-					const uint16_t xx = uint16_t(bx::max(cmd->ClipRect.x, 0.0f) );
-					const uint16_t yy = uint16_t(bx::max(cmd->ClipRect.y, 0.0f) );
-					bgfx::setScissor(xx, yy
-						, uint16_t(bx::min(cmd->ClipRect.z, 65535.0f)-xx)
-						, uint16_t(bx::min(cmd->ClipRect.w, 65535.0f)-yy)
-						);
+					// Project scissor/clipping rectangles into framebuffer space
+					ImVec4 clipRect;
+					clipRect.x = (cmd->ClipRect.x - clipPos.x) * clipScale.x;
+					clipRect.y = (cmd->ClipRect.y - clipPos.y) * clipScale.y;
+					clipRect.z = (cmd->ClipRect.z - clipPos.x) * clipScale.x;
+					clipRect.w = (cmd->ClipRect.w - clipPos.y) * clipScale.y;
 
-					bgfx::setState(state);
-					bgfx::setTexture(0, s_tex, th);
-					bgfx::setVertexBuffer(0, &tvb, 0, numVertices);
-					bgfx::setIndexBuffer(&tib, offset, cmd->ElemCount);
-					bgfx::submit(m_viewId, program);
+					if (clipRect.x <  fb_width
+					&&  clipRect.y <  fb_height
+					&&  clipRect.z >= 0.0f
+					&&  clipRect.w >= 0.0f)
+					{
+						const uint16_t xx = uint16_t(bx::max(clipRect.x, 0.0f) );
+						const uint16_t yy = uint16_t(bx::max(clipRect.y, 0.0f) );
+						encoder->setScissor(xx, yy
+								, uint16_t(bx::min(clipRect.z, 65535.0f)-xx)
+								, uint16_t(bx::min(clipRect.w, 65535.0f)-yy)
+								);
+
+						encoder->setState(state);
+						encoder->setTexture(0, s_tex, th);
+						encoder->setVertexBuffer(0, &tvb, 0, numVertices);
+						encoder->setIndexBuffer(&tib, offset, cmd->ElemCount);
+						encoder->submit(m_viewId, program);
+					}
 				}
 
 				offset += cmd->ElemCount;
 			}
+
+			bgfx::end(encoder);
 		}
 	}
 
@@ -189,6 +227,52 @@ struct OcornutImguiContext
 		io.IniFilename = NULL;
 
 		setupStyle(true);
+
+#if USE_ENTRY
+		io.KeyMap[ImGuiKey_Tab]        = (int)entry::Key::Tab;
+		io.KeyMap[ImGuiKey_LeftArrow]  = (int)entry::Key::Left;
+		io.KeyMap[ImGuiKey_RightArrow] = (int)entry::Key::Right;
+		io.KeyMap[ImGuiKey_UpArrow]    = (int)entry::Key::Up;
+		io.KeyMap[ImGuiKey_DownArrow]  = (int)entry::Key::Down;
+		io.KeyMap[ImGuiKey_PageUp]     = (int)entry::Key::PageUp;
+		io.KeyMap[ImGuiKey_PageDown]   = (int)entry::Key::PageDown;
+		io.KeyMap[ImGuiKey_Home]       = (int)entry::Key::Home;
+		io.KeyMap[ImGuiKey_End]        = (int)entry::Key::End;
+		io.KeyMap[ImGuiKey_Insert]     = (int)entry::Key::Insert;
+		io.KeyMap[ImGuiKey_Delete]     = (int)entry::Key::Delete;
+		io.KeyMap[ImGuiKey_Backspace]  = (int)entry::Key::Backspace;
+		io.KeyMap[ImGuiKey_Space]      = (int)entry::Key::Space;
+		io.KeyMap[ImGuiKey_Enter]      = (int)entry::Key::Return;
+		io.KeyMap[ImGuiKey_Escape]     = (int)entry::Key::Esc;
+		io.KeyMap[ImGuiKey_A]          = (int)entry::Key::KeyA;
+		io.KeyMap[ImGuiKey_C]          = (int)entry::Key::KeyC;
+		io.KeyMap[ImGuiKey_V]          = (int)entry::Key::KeyV;
+		io.KeyMap[ImGuiKey_X]          = (int)entry::Key::KeyX;
+		io.KeyMap[ImGuiKey_Y]          = (int)entry::Key::KeyY;
+		io.KeyMap[ImGuiKey_Z]          = (int)entry::Key::KeyZ;
+
+		io.ConfigFlags |= 0
+			| ImGuiConfigFlags_NavEnableGamepad
+			| ImGuiConfigFlags_NavEnableKeyboard
+			;
+
+		io.NavInputs[ImGuiNavInput_Activate]    = (int)entry::Key::GamepadA;
+		io.NavInputs[ImGuiNavInput_Cancel]      = (int)entry::Key::GamepadB;
+//		io.NavInputs[ImGuiNavInput_Input]       = (int)entry::Key::;
+//		io.NavInputs[ImGuiNavInput_Menu]        = (int)entry::Key::;
+		io.NavInputs[ImGuiNavInput_DpadLeft]    = (int)entry::Key::GamepadLeft;
+		io.NavInputs[ImGuiNavInput_DpadRight]   = (int)entry::Key::GamepadRight;
+		io.NavInputs[ImGuiNavInput_DpadUp]      = (int)entry::Key::GamepadUp;
+		io.NavInputs[ImGuiNavInput_DpadDown]    = (int)entry::Key::GamepadDown;
+//		io.NavInputs[ImGuiNavInput_LStickLeft]  = (int)entry::Key::;
+//		io.NavInputs[ImGuiNavInput_LStickRight] = (int)entry::Key::;
+//		io.NavInputs[ImGuiNavInput_LStickUp]    = (int)entry::Key::;
+//		io.NavInputs[ImGuiNavInput_LStickDown]  = (int)entry::Key::;
+//		io.NavInputs[ImGuiNavInput_FocusPrev]   = (int)entry::Key::;
+//		io.NavInputs[ImGuiNavInput_FocusNext]   = (int)entry::Key::;
+//		io.NavInputs[ImGuiNavInput_TweakSlow]   = (int)entry::Key::;
+//		io.NavInputs[ImGuiNavInput_TweakFast]   = (int)entry::Key::;
+#endif // USE_ENTRY
 
 		bgfx::RendererType::Enum type = bgfx::getRendererType();
 		m_program = bgfx::createProgram(
@@ -324,6 +408,17 @@ struct OcornutImguiContext
 		io.MouseWheel = (float)(_scroll - m_lastScroll);
 		m_lastScroll = _scroll;
 
+#if USE_ENTRY
+		uint8_t modifiers = inputGetModifiersState();
+		io.KeyShift = 0 != (modifiers & (entry::Modifier::LeftShift | entry::Modifier::RightShift) );
+		io.KeyCtrl  = 0 != (modifiers & (entry::Modifier::LeftCtrl  | entry::Modifier::RightCtrl ) );
+		io.KeyAlt   = 0 != (modifiers & (entry::Modifier::LeftAlt   | entry::Modifier::RightAlt  ) );
+		for (int32_t ii = 0; ii < (int32_t)entry::Key::Count; ++ii)
+		{
+			io.KeysDown[ii] = inputGetKeyState(entry::Key::Enum(ii) );
+		}
+#endif // USE_ENTRY
+
 		ImGui::NewFrame();
 
 		ImGuizmo::BeginFrame();
@@ -389,6 +484,21 @@ namespace ImGui
 	{
 		PushFont(s_ctx.m_font[_font]);
 	}
+
+	void PushEnabled(bool _enabled)
+	{
+		extern void PushItemFlag(int option, bool enabled);
+		PushItemFlag(ImGuiItemFlags_Disabled, !_enabled);
+		PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * (_enabled ? 1.0f : 0.5f) );
+	}
+
+	void PopEnabled()
+	{
+		extern void PopItemFlag();
+		PopItemFlag();
+		PopStyleVar();
+	}
+
 } // namespace ImGui
 
 BX_PRAGMA_DIAGNOSTIC_IGNORED_MSVC(4505); // error C4505: '' : unreferenced local function has been removed

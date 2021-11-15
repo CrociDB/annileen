@@ -6,7 +6,7 @@
 
 #include <engine/text/fontmanager.h>
 
-BGFX_HANDLE(TextBufferHandle);
+BGFX_HANDLE(TextBufferHandle)
 
 #define MAX_TEXT_BUFFER_COUNT 64
 
@@ -55,6 +55,13 @@ public:
 	void setUnderlineColor(TextBufferHandle _handle, uint32_t _rgba = 0x000000FF);
 	void setStrikeThroughColor(TextBufferHandle _handle, uint32_t _rgba = 0x000000FF);
 
+	void setOutlineWidth(TextBufferHandle _handle, float _outlineWidth = 3.0f);
+	void setOutlineColor(TextBufferHandle _handle, uint32_t _rgba = 0x000000FF);
+
+	void setDropShadowOffset(TextBufferHandle _handle, float _u, float _v);
+	void setDropShadowColor(TextBufferHandle _handle, uint32_t _rgba = 0x000000FF);
+	void setDropShadowSoftener(TextBufferHandle _handle, float smoother = 1.0f);
+
 	void setPenPosition(TextBufferHandle _handle, float _x, float _y);
 
 	/// Append an ASCII/utf-8 string to the buffer using current pen position and color.
@@ -87,7 +94,14 @@ private:
 	FontManager* m_fontManager;
 	bgfx::VertexLayout m_vertexLayout;
 	bgfx::UniformHandle s_texColor;
+	bgfx::UniformHandle u_dropShadowColor;
+	bgfx::UniformHandle u_params;
 	bgfx::ProgramHandle m_basicProgram;
 	bgfx::ProgramHandle m_distanceProgram;
 	bgfx::ProgramHandle m_distanceSubpixelProgram;
+	bgfx::ProgramHandle m_distanceOutlineProgram;
+	bgfx::ProgramHandle m_distanceOutlineImageProgram;
+	bgfx::ProgramHandle m_distanceDropShadowProgram;
+	bgfx::ProgramHandle m_distanceDropShadowImageProgram;
+	bgfx::ProgramHandle m_distanceOutlineDropShadowImageProgram;
 };

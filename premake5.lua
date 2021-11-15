@@ -36,13 +36,15 @@ solution "annileen-engine"
 	end
 	filter "configurations:ReleaseEditor"
 		defines "NDEBUG"
+		defines "BX_CONFIG_DEBUG"
 		defines "_ANNILEEN_COMPILER_EDITOR"
 		optimize "Full"
-	filter "configurations:Release"
+		filter "configurations:Release"
 		defines "NDEBUG"
 		optimize "Full"
-	filter "configurations:Debug*"
+		filter "configurations:Debug*"
 		defines "_DEBUG"
+		defines "BX_CONFIG_DEBUG"
 		defines "_ANNILEEN_COMPILER_EDITOR"
 		optimize "Debug"
 		symbols "On"
@@ -111,6 +113,7 @@ project "annileen"
 		path.join(ANNILEEN_DIR, "engine/scene/*"),	
 		path.join(ANNILEEN_DIR, "imgui-utils/*"),
 		path.join(BIMG_DIR, "src/image_decode.cpp"),
+		path.join(BIMG_DIR, "3rdparty/tinyexr/deps/miniz/miniz.c"),
 
 	}
 	includedirs
@@ -122,7 +125,9 @@ project "annileen"
 		path.join(GLFW_DIR, "include"),
 		path.join(GLM_DIR, "glm"),
 		path.join(BGFX_DIR, "3rdparty"),
+		path.join(BGFX_DIR, "3rdparty"),
 		path.join(BIMG_DIR, "3rdparty"),
+		path.join(BIMG_DIR, "3rdparty/tinyexr/deps/miniz"),
 		path.join(ANNILEEN_DIR, "resources/imgui"),
 		path.join(FMT_DIR, "include"),
 		path.join(ASSIMP_DIR, "include"),
@@ -292,7 +297,8 @@ project "bimg"
 		path.join(BIMG_DIR, "src/image_gnf.cpp"),
 		path.join(BIMG_DIR, "src/image_decode.cpp"),
 		path.join(BIMG_DIR, "src/*.cpp"),
-		path.join(BIMG_DIR, "3rdparty/astc-codec/src/decoder/*.cc")
+		path.join(BIMG_DIR, "3rdparty/astc-codec/src/decoder/*.cc"),
+		path.join(BIMG_DIR, "3rdparty/tinyexr/deps/miniz/miniz.c"),
 	}
 	includedirs
 	{
@@ -301,7 +307,8 @@ project "bimg"
 		path.join(BIMG_DIR, "3rdparty/astc-codec"),
 		path.join(BIMG_DIR, "3rdparty/astc-codec/include"),
 		path.join(BIMG_DIR, "3rdparty/iqa/include"),
-		path.join(BIMG_DIR, "3rdparty/")
+		path.join(BIMG_DIR, "3rdparty/"),
+		path.join(BIMG_DIR, "3rdparty/tinyexr/deps/miniz/"),
 	}
 	setBxCompat()
 
