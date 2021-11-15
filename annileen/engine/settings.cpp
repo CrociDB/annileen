@@ -32,10 +32,10 @@ namespace annileen
 
 	AnnileenRenderer Settings::parseRenderer(const std::string& rendererStr)
 	{
-		if (rendererStr.compare("directx11")) return AnnileenRenderer::DirectX11;
-		if (rendererStr.compare("directx12")) return AnnileenRenderer::DirectX12;
-		if (rendererStr.compare("vulkan")) return AnnileenRenderer::Vulkan;
-		if (rendererStr.compare("metal")) return AnnileenRenderer::Metal;
+		if (rendererStr.compare("directx11") == 0) return AnnileenRenderer::DirectX11;
+		if (rendererStr.compare("directx12") == 0) return AnnileenRenderer::DirectX12;
+		if (rendererStr.compare("vulkan") == 0) return AnnileenRenderer::Vulkan;
+		if (rendererStr.compare("metal") == 0) return AnnileenRenderer::Metal;
 		return AnnileenRenderer::OpenGL;
 	}
 
