@@ -12,7 +12,7 @@ void main()
 
 	mat3 tbn = mat3(v_tangent, v_bitangent, normal);
 	normal = texture2D(s_mainNormal, v_texcoord0).rgb;
-	normal = normalize(tbn * normal);
+	normal = normalize(mul(tbn, normal));
 
 	vec4 tex = texture2D(s_mainTex, v_texcoord0);
 	vec3 ambient = 0.1 * vec3(1.0, 1.0, 1.0);
@@ -43,9 +43,9 @@ void main()
 
 	finalColor = mix(finalColor, u_fogColor.xyz, clamp(pow(length(viewDist) / u_fogSettings.x, u_fogSettings.y), 0.0, 1.0) * u_fogSettings.z);
 
-	float gamma = 2.2;
-	finalColor.rgb = finalColor.rgb / (finalColor.rgb + vec3(1.0));
-    finalColor.rgb = pow(finalColor.rgb, vec3(1.0/gamma));
+	float gamma = 1.0 / 2.2;
+	finalColor.rgb = finalColor.rgb / (finalColor.rgb + vec3(1.0, 1.0, 1.0));
+    finalColor.rgb = pow(finalColor.rgb, vec3(gamma, gamma, gamma));
 
 	gl_FragColor = vec4(finalColor, 1.0);
 }
