@@ -12,7 +12,9 @@ namespace annileen
 		Undefined,
 		Shader,
 		Texture,
-		Model
+		Model,
+		Cubemap,
+		Font
 	};
 
 	struct AssetObject

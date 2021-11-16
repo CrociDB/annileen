@@ -10,16 +10,16 @@ using namespace annileen;
 
 void GameScene::buildMap()
 {
-    auto texture = ServiceProvider::getAssetManager()->loadTexture("blocks.png");
+    auto texture = ServiceProvider::getAssetManager()->getTexture("blocks.png");
 
     annileen::Shader* shader = nullptr;
     if (ServiceProvider::getSettings()->getData()->shadows.enabled)
     {
-        shader = ServiceProvider::getAssetManager()->loadShader("lit_shadow");
+        shader = ServiceProvider::getAssetManager()->getShader("lit_shadow");
     }
     else
     {
-        shader = ServiceProvider::getAssetManager()->loadShader("lit_noshadow");
+        shader = ServiceProvider::getAssetManager()->getShader("lit_noshadow");
     }
 
     std::shared_ptr<ShaderPass> shaderPass = std::make_shared<ShaderPass>();
@@ -62,7 +62,7 @@ void GameScene::buildMap()
     text->setStatic(true);
     text->setSdf(true);
 
-    text->setFont(ServiceProvider::getAssetManager()->loadFont("droidsans.ttf")->getHandle());
+    text->setFont(ServiceProvider::getAssetManager()->getFont("droidsans.ttf")->getHandle());
     text->setScreenPosition(Engine::getInstance()->getWidth()- 300.0f, 200.0f);
     text->setTextColor(glm::vec3(1, 0, 0));
     text->setBackgroundColor(glm::vec3(0.5));
@@ -72,13 +72,13 @@ void GameScene::buildMap()
     SceneNodePtr textNode2 = createNode("Text2");
     Text* text2 = textNode2->addModule<Text>();
 
-    text2->setFont(ServiceProvider::getAssetManager()->loadFont("bleeding_cowboys.ttf")->getHandle());
+    text2->setFont(ServiceProvider::getAssetManager()->getFont("bleeding_cowboys.ttf")->getHandle());
     text2->setScreenPosition(Engine::getInstance()->getWidth() - 200.0f, 300.0f);
     text2->setTextColor(glm::vec3(0, 1, 0));
     text2->setStyle(Text::TextStyle::StrikeThrough);
     text2->setText("OH YEAH");
 
-    auto cubemap = ServiceProvider::getAssetManager()->loadCubemap("skybox.toml");
+    auto cubemap = ServiceProvider::getAssetManager()->getCubemap("skybox.toml");
     auto skybox = new Skybox(cubemap);
     this->setSkybox(skybox);
 

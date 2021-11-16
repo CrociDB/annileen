@@ -46,6 +46,8 @@ namespace annileen
 		if (typetext.compare("shader") == 0) return AssetType::Shader;
 		if (typetext.compare("texture") == 0) return AssetType::Texture;
 		if (typetext.compare("mesh") == 0) return AssetType::Model;
+		if (typetext.compare("cubemap") == 0) return AssetType::Cubemap;
+		if (typetext.compare("font") == 0) return AssetType::Font;
 		return AssetType::Undefined;
 	}
 
@@ -65,6 +67,12 @@ namespace annileen
 	AssetTableEntry* AssetManager::getAssetEntry(const std::string& assetname)
 	{
 		assert(m_Assets.count(assetname) != 0 && "Trying to load an asset that does not exist.");
+		return &m_Assets.at(assetname);
+	}
+
+	AssetTableEntry* AssetManager::getAssetEntryIfExists(const std::string& assetname)
+	{
+		if (m_Assets.count(assetname) == 0) return nullptr;
 		return &m_Assets.at(assetname);
 	}
 
@@ -163,7 +171,75 @@ namespace annileen
 
 	void AssetManager::assetModified(const std::string& path, AssetFileStatus status)
 	{
-		ANNILEEN_LOG(LoggingLevel::Info, LoggingChannel::Asset, path);
+		// Let's only deal with modified files for now
+		if (status == AssetFileStatus::Modified)
+		{
+			// First we get the name of the asset
+			auto asset_name = path.substr(path.find_last_of("/\\") + 1);
+
+			auto entry = getAssetEntryIfExists(asset_name);
+			if (entry == nullptr) return;
+
+			ANNILEEN_LOG(LoggingLevel::Info, LoggingChannel::Asset, asset_name);
+			if (entry->m_Type == AssetType::Shader)
+			{
+				loadAsset(entry);
+			}
+		}
+	}
+
+	void AssetManager::loadAsset(AssetTableEntry* asset)
+	{
+		switch (asset->m_Type)
+		{
+			case AssetType::Shader:
+				loadAssetShader(asset);
+				break;
+			default:
+				return;
+		}
+	}
+
+	void AssetManager::loadAssetShader(AssetTableEntry* asset)
+	{
+		auto asset_name = asset->m_Filepath.substr(asset->m_Filepath.find_last_of("/\\") + 1);
+		std::string::size_type const p(asset_name.find_last_of('.'));
+		auto file_without_extension = asset_name.substr(0, p);
+		auto extension = asset_name.substr(p, asset_name.length());
+
+		// Need to get both shaders
+		AssetTableEntry* vert = asset;
+		AssetTableEntry* frag = asset;
+		if (extension.compare(".vs") == 0) frag = getAssetEntry(file_without_extension.append(".fs"));
+		else vert = getAssetEntry(file_without_extension.append(".vs"));
+
+		auto descriptor = loadShaderDescriptor(asset);
+
+		auto vertexShaderData = loadBinaryFile(vert->m_Filepath);
+		bgfx::ShaderHandle vertexHandle = bgfx::createShader(vertexShaderData);
+
+		auto fragmentShaderData = loadBinaryFile(frag->m_Filepath);
+		bgfx::ShaderHandle fragmentHandle = bgfx::createShader(fragmentShaderData);
+
+		bgfx::ProgramHandle programHandle = bgfx::createProgram(vertexHandle, fragmentHandle, true);
+
+		// Let's use only vertex shader to store the final shader
+		if (!vert->m_Loaded)
+		{
+			auto shader = new Shader();
+			shader->init(programHandle);
+			shader->setAvailableShaders(descriptor.m_AvailableUniforms);
+
+			vert->m_Asset = dynamic_cast<AssetObject*>(shader);
+			vert->m_Loaded = true;
+		}
+		else
+		{
+			auto shader = static_cast<Shader*>(vert->m_Asset);
+			shader->destroy();
+			shader->init(programHandle);
+			shader->setAvailableShaders(descriptor.m_AvailableUniforms);
+		}
 	}
 
 	AssetManager::~AssetManager()
@@ -187,41 +263,20 @@ namespace annileen
 	}
 
 	// Load functions
-	Shader* AssetManager::loadShader(const std::string& basename)
+	Shader* AssetManager::getShader(const std::string& basename)
 	{
 		std::string vertex = basename + ".vs";
-		std::string fragment = basename + ".fs";
 
 		auto entry = getAssetEntry(vertex);
-		if (entry->m_Loaded)
+		if (!entry->m_Loaded)
 		{
-			return static_cast<Shader*>(entry->m_Asset);
+			loadAssetShader(entry);
 		}
-
-		// TODO: store both handles somewhere, otherwise it will compile both shaders everytime
-		// there's a new combination of vertex+shader.
-
-		auto descriptor = loadShaderDescriptor(entry);
-
-		auto vertexShaderData = loadBinaryFile(getAssetEntry(vertex)->m_Filepath);
-		bgfx::ShaderHandle vertexHandle = bgfx::createShader(vertexShaderData);
-
-		auto fragmentShaderData = loadBinaryFile(getAssetEntry(fragment)->m_Filepath);
-		bgfx::ShaderHandle fragmentHandle = bgfx::createShader(fragmentShaderData);
-
-		bgfx::ProgramHandle programHandle = bgfx::createProgram(vertexHandle, fragmentHandle, true);
-
-		Shader* shader = new Shader();
-		shader->init(programHandle);
-		shader->setAvailableShaders(descriptor.m_AvailableUniforms);
-
-		entry->m_Asset = dynamic_cast<AssetObject*>(shader);
-		entry->m_Loaded = true;
-
-		return shader;
+		
+		return static_cast<Shader*>(entry->m_Asset);
 	}
 
-	Texture* AssetManager::loadTexture(const std::string& tex)
+	Texture* AssetManager::getTexture(const std::string& tex)
 	{
 		auto entry = getAssetEntry(tex);
 		if (entry->m_Loaded)
@@ -242,7 +297,7 @@ namespace annileen
 		return texture;
 	}
 
-	Cubemap* AssetManager::loadCubemap(const std::string& name)
+	Cubemap* AssetManager::getCubemap(const std::string& name)
 	{
 		auto entry = getAssetEntry(name);
 		if (entry->m_Loaded)
@@ -263,7 +318,7 @@ namespace annileen
 		return cubemap;
 	}
 
-	MeshGroup* AssetManager::loadMesh(const std::string& name)
+	MeshGroup* AssetManager::getMesh(const std::string& name)
 	{
 		auto entry = getAssetEntry(name);
 		if (entry->m_Loaded)
@@ -280,7 +335,7 @@ namespace annileen
 		return meshGroup;
 	}
 
-	Font* AssetManager::loadFont(const std::string& name)
+	Font* AssetManager::getFont(const std::string& name)
 	{
 		auto entry = getAssetEntry(name);
 		if (entry->m_Loaded)

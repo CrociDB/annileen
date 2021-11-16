@@ -24,11 +24,11 @@ private:
         annileen::Shader* shader = nullptr;
         if (ServiceProvider::getSettings()->getData()->shadows.enabled)
         {
-            shader = ServiceProvider::getAssetManager()->loadShader("lit_shadow");
+            shader = ServiceProvider::getAssetManager()->getShader("lit_shadow");
         }
         else
         {
-            shader = ServiceProvider::getAssetManager()->loadShader("lit_noshadow");
+            shader = ServiceProvider::getAssetManager()->getShader("lit_noshadow");
         }
 
         std::shared_ptr<ShaderPass> shaderPass = std::make_shared<ShaderPass>();
@@ -47,14 +47,14 @@ private:
 
 
         // Statue Decoration
-        auto normalmap = ServiceProvider::getAssetManager()->loadTexture("statue_decoration_normal.jpg");
-        auto texture = ServiceProvider::getAssetManager()->loadTexture("statue_decoration.jpg");
+        auto normalmap = ServiceProvider::getAssetManager()->getTexture("statue_decoration_normal.jpg");
+        auto texture = ServiceProvider::getAssetManager()->getTexture("statue_decoration.jpg");
         material->setTexture("s_mainTex", texture);
         material->setTexture("s_mainNormal", normalmap);
 
         m_ModelNode = scene->createNode("Statue");
         ModelPtr model = m_ModelNode->addModule<Model>();
-        model->init(ServiceProvider::getAssetManager()->loadMesh("statue_decoration.obj"), material);
+        model->init(ServiceProvider::getAssetManager()->getMesh("statue_decoration.obj"), material);
         m_ModelNode->getTransform().translate(glm::vec3(-1.0, -1.0, -1.0));
         m_ModelNode->getTransform().scale(glm::vec3(.1, .1, .1));
 
@@ -63,12 +63,12 @@ private:
         material1->addShaderPass(shaderPass);
         material1->setName("ModelMaterial1");
 
-        auto normalmap1 = ServiceProvider::getAssetManager()->loadTexture("statue_normal.jpg");
+        auto normalmap1 = ServiceProvider::getAssetManager()->getTexture("statue_normal.jpg");
         material1->setTexture("s_mainNormal", normalmap1);
 
         auto node1 = scene->createNode("AngelStatue");
         ModelPtr model1 = node1->addModule<Model>();
-        model1->init(ServiceProvider::getAssetManager()->loadMesh("statue.obj"), material1);
+        model1->init(ServiceProvider::getAssetManager()->getMesh("statue.obj"), material1);
         node1->getTransform().translate(glm::vec3(-15.0, -1.0, -1.0));
         node1->getTransform().scale(glm::vec3(.07, .07, .07));
          

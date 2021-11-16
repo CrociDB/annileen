@@ -22,6 +22,7 @@ namespace annileen
 
     public:
         void init(bgfx::ProgramHandle handle);
+        void destroy();
 
         inline void setAvailableShaders(std::vector<ShaderAvailableUniform> availableUniform) 
         { 

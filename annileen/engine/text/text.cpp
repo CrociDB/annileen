@@ -11,7 +11,7 @@ namespace annileen
 		// If font is not defined or valid, use font default.
 		if (!isValid(m_Font))
 		{
-			m_Font = ServiceProvider::getAssetManager()->loadFont(
+			m_Font = ServiceProvider::getAssetManager()->getFont(
 				ServiceProvider::getSettings()->getData()->defaultFont)->getHandle();
 		}
 
@@ -308,7 +308,7 @@ namespace annileen
 		m_TextBufferHandle(BGFX_INVALID_HANDLE), m_Font(BGFX_INVALID_HANDLE), m_Sdf(false), m_ScreenPosition(glm::vec2(0.0f))
 	{
 		init(false);
-		setFont(ServiceProvider::getAssetManager()->loadFont(
+		setFont(ServiceProvider::getAssetManager()->getFont(
 			ServiceProvider::getSettings()->getData()->defaultFont)->getHandle());
 	}
 

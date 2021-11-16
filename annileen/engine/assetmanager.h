@@ -29,6 +29,7 @@ namespace annileen
 		AssetType getType(const std::string& typetext);
 		ShaderUniformType getUniformType(const std::string& typetext);
 		AssetTableEntry* getAssetEntry(const std::string& assetname);
+		AssetTableEntry* getAssetEntryIfExists(const std::string& assetname);
 
 		void unloadAssets();
 
@@ -36,6 +37,9 @@ namespace annileen
 		std::tuple<bgfx::TextureHandle, bgfx::TextureInfo, bimg::ImageContainer*> loadTextureData(const std::string& file, const TextureDescriptor& descriptor);
 
 		void assetModified(const std::string& path, AssetFileStatus status);
+
+		void loadAsset(AssetTableEntry* asset);
+		void loadAssetShader(AssetTableEntry* asset);
 
 		AssetManager(const std::string& assetfile);
 		~AssetManager();
@@ -46,11 +50,11 @@ namespace annileen
 		void updateAssetWatcher();
 
 		// Asset loading functions
-		Shader* loadShader(const std::string& basename);
-		Texture* loadTexture(const std::string& tex);
-		Cubemap* loadCubemap(const std::string& name);
-		MeshGroup* loadMesh(const std::string& name);
-		Font* loadFont(const std::string& name);
+		Shader* getShader(const std::string& basename);
+		Texture* getTexture(const std::string& tex);
+		Cubemap* getCubemap(const std::string& name);
+		MeshGroup* getMesh(const std::string& name);
+		Font* getFont(const std::string& name);
 
 		// Asset descriptor loading functions
 		ShaderDcescritor loadShaderDescriptor(AssetTableEntry* asset);
