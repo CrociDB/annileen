@@ -42,6 +42,8 @@ namespace annileen
 		bool m_ShowConsoleWindow;
 		bool m_ShowSettingsWindow;
 
+		bool m_AssetHotreload;
+
 		bool m_HasWindowFocused;
 
 		Mode m_Mode;

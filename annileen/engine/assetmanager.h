@@ -8,6 +8,8 @@
 #include <bgfx/bgfx.h>
 #include <toml.hpp>
 
+#include <engine/assetwatcher.h>
+
 #include <engine/asset.h>
 #include <engine/shader.h>
 #include <engine/texture.h>
@@ -21,6 +23,7 @@ namespace annileen
 	{
 	private:
 		std::map<std::string, AssetTableEntry> m_Assets;
+		AssetWatcher* m_Watcher;
 
 		void loadAssetTable(const std::string& assetfile);
 		AssetType getType(const std::string& typetext);
@@ -32,12 +35,16 @@ namespace annileen
 		const bgfx::Memory* loadBinaryFile(const std::string& filename);
 		std::tuple<bgfx::TextureHandle, bgfx::TextureInfo, bimg::ImageContainer*> loadTextureData(const std::string& file, const TextureDescriptor& descriptor);
 
+		void assetModified(const std::string& path, AssetFileStatus status);
+
 		AssetManager(const std::string& assetfile);
 		~AssetManager();
 
 		friend class Engine;
 
 	public:
+		void updateAssetWatcher();
+
 		// Asset loading functions
 		Shader* loadShader(const std::string& basename);
 		Texture* loadTexture(const std::string& tex);

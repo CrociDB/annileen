@@ -1,5 +1,7 @@
 #include <bx/file.h>
 
+#include "core/logger.h"
+
 #include "engine.h"
 #include "assetmanager.h"
 #include "modelloader.h"
@@ -11,6 +13,10 @@ namespace annileen
 		try
 		{
 			loadAssetTable(assetfile);
+
+			size_t pos = assetfile.find_last_of("\\/");
+			auto path = std::string::npos == pos ? "" : assetfile.substr(0, pos);
+			m_Watcher = new AssetWatcher(path);
 		}
 		catch (const std::runtime_error&)
 		{
@@ -155,9 +161,29 @@ namespace annileen
 		return std::make_tuple(handle, info, imageContainer);
 	}
 
+	void AssetManager::assetModified(const std::string& path, AssetFileStatus status)
+	{
+		ANNILEEN_LOG(LoggingLevel::Info, LoggingChannel::Asset, path);
+	}
+
 	AssetManager::~AssetManager()
 	{
+		delete m_Watcher;
 		unloadAssets();
+	}
+
+	void AssetManager::updateAssetWatcher()
+	{
+		m_Watcher->update();
+		if (m_Watcher->hasModified())
+		{
+			for (auto& [f, s] : m_Watcher->getModified())
+			{
+				assetModified(f, s);
+			}
+
+			m_Watcher->resetModified();
+		}
 	}
 
 	// Load functions

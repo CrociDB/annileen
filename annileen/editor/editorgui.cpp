@@ -27,6 +27,8 @@ namespace annileen
 		m_Mode = Editor;
 		m_HasWindowFocused = true;
 		m_InputConfig = { 3.0f, 2.8f, 18.0f, 0.0f, 0.0f, 0 };
+
+		m_AssetHotreload = true;
 	}
 
 	EditorGui::~EditorGui()
@@ -208,12 +210,13 @@ namespace annileen
 				}
 				ImGui::EndMenu();
 			}
-			//if (ImGui::BeginMenu("Edit"))
-			//{
-			//	if (ImGui::MenuItem("Undo", "CTRL+Z", false, false)) {}
-			//	if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item			
-			//	ImGui::EndMenu();
-			//}
+			if (ImGui::BeginMenu("Edit"))
+			{
+				//if (ImGui::MenuItem("Undo", "CTRL+Z", false, false)) {}
+				//if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item			
+				ImGui::MenuItem("Asset Hotreload", nullptr, &m_AssetHotreload);
+				ImGui::EndMenu();
+			}
 			/*if (ImGui::BeginMenu("Tools"))
 			{
 				if (ImGui::MenuItem("Generate Assets", 0, false, false)) {}
@@ -272,7 +275,6 @@ namespace annileen
 			m_Mode = Game;
 			//Engine::getInstance()->setMouseCapture(true);
 		}
-
 
 		//ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(3.0f, 3.0f));
 		//if (ImGui::Button(ICON_FA_REPEAT " Restart"))

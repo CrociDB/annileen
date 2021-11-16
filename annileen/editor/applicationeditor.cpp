@@ -48,6 +48,10 @@ namespace annileen
 		{
 			m_EditorGui->render(getEngine()->getScene(), deltaTime);
 		}
+		if (m_EditorGui->m_AssetHotreload)
+		{
+			ServiceProvider::getAssetManager()->updateAssetWatcher();
+		}
 	}
 
 	void ApplicationEditor::render()
