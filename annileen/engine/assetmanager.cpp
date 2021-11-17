@@ -180,10 +180,10 @@ namespace annileen
 			auto entry = getAssetEntryIfExists(asset_name);
 			if (entry == nullptr) return;
 
-			ANNILEEN_LOG(LoggingLevel::Info, LoggingChannel::Asset, asset_name);
 			if (entry->m_Type == AssetType::Shader)
 			{
 				loadAsset(entry);
+				ANNILEEN_LOG(LoggingLevel::Info, LoggingChannel::Asset, fmt::format("Assed reloaded: {}", asset_name));
 			}
 		}
 	}
