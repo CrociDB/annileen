@@ -291,7 +291,7 @@ namespace annileen
 	void EditorGui::drawToolsWindow()
 	{
 		ImGui::SetNextWindowPos(
-			ImVec2(10.0f, 50.0f)
+			ImVec2(10.0f, 35.0f)
 			, ImGuiCond_FirstUseEver
 		);
 		ImGui::SetNextWindowSize(
@@ -349,12 +349,14 @@ namespace annileen
 
 	void EditorGui::drawSceneHierarchyWindow(const std::vector<SceneNodePtr> sceneNodeList)
 	{
+		ImGuiIO& io = ImGui::GetIO();
+
 		ImGui::SetNextWindowPos(
-			ImVec2(10.0f, 270.0f)
+			ImVec2(10.0f, 110.0f)
 			, ImGuiCond_FirstUseEver
 		);
 		ImGui::SetNextWindowSize(
-			ImVec2(300.0f, 410.0f)
+			ImVec2(300.0f, io.DisplaySize.y - 320.0f)
 			, ImGuiCond_FirstUseEver
 		);
 
@@ -383,12 +385,14 @@ namespace annileen
 
 	void annileen::EditorGui::drawSelectedNodePropertiesWindow(Camera* camera)
 	{
+		ImGuiIO& io = ImGui::GetIO();
+
 		ImGui::SetNextWindowPos(
-			ImVec2(320.0f, 270.0f)
+			ImVec2(io.DisplaySize.x - 310.0f, 35.0f)
 			, ImGuiCond_FirstUseEver
 		);
 		ImGui::SetNextWindowSize(
-			ImGui::GetContentRegionAvail()
+			ImVec2(300.0f, io.DisplaySize.y - 245.0f)
 			, ImGuiCond_FirstUseEver
 		);
 
@@ -434,7 +438,6 @@ namespace annileen
 
 		if (m_Mode == Editor)
 		{
-			ImGuiIO& io = ImGui::GetIO();
 			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 
 			glm::mat4 transformMatrix(1.0f);
@@ -598,12 +601,14 @@ namespace annileen
 
 	void EditorGui::drawConsoleWindow()
 	{
+		ImGuiIO& io = ImGui::GetIO();
+
 		ImGui::SetNextWindowPos(
-			ImVec2(10.0f, 820.0f)
+			ImVec2(10.0f, io.DisplaySize.y - 200.0f)
 			, ImGuiCond_FirstUseEver
 		);
 		ImGui::SetNextWindowSize(
-			ImVec2(900.0f, 180.0f)
+			ImVec2(io.DisplaySize.x - 20.0f, 190.0f)
 			, ImGuiCond_FirstUseEver
 		);
 
