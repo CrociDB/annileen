@@ -46,7 +46,7 @@ namespace annileen
 		}
 		if (showEditorGui)
 		{
-			m_EditorGui->render(getEngine()->getScene(), deltaTime);
+			m_EditorGui->render(getEngine()->getScene(), m_EditorCamera, deltaTime);
 		}
 		if (m_EditorGui->m_AssetHotreload)
 		{

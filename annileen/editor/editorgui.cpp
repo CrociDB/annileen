@@ -2,8 +2,8 @@
 #include <engine/engine.h>
 #include <imgui-utils/imgui.h>
 #include <glm.hpp>
+#include <gtx/matrix_decompose.hpp>
 #include <engine/core/logger.h>
-
 #include <engine/model.h>
 #include <engine/camera.h>
 #include <engine/light.h>
@@ -25,6 +25,8 @@ namespace annileen
 		m_SelectedSceneNode = nullptr;
 		m_SceneNodeToBeRemoved = nullptr;
 		m_Mode = Editor;
+		m_HandleMode = ViewHandleMode::Local;
+		m_HandleOperation = ViewHandleOperation::Move;
 		m_HasWindowFocused = true;
 		m_InputConfig = { 3.0f, 2.8f, 18.0f, 0.0f, 0.0f, 0 };
 
@@ -143,10 +145,22 @@ namespace annileen
 		}
 	}
 
-	void EditorGui::render(Scene* scene, float deltaTime)
+	void EditorGui::render(Scene* scene, Camera* camera, float deltaTime)
 	{
+		ImGuizmo::BeginFrame();
+		ImGuizmo::Enable(m_Mode == Editor);
+
 		drawMainWindowToolbar();
 		
+		if (m_Mode == Editor)
+		{
+			glm::mat4 mat(1.0);
+			ImGuizmo::DrawGrid(
+				camera->getViewMatrixFloatArray(),
+				camera->getProjectionMatrixFloatArray(),
+				glm::value_ptr(mat), 10.0f);
+		}
+
 		if (m_ShowToolsWindow) drawToolsWindow();
 		
 		if (scene != nullptr)
@@ -154,7 +168,7 @@ namespace annileen
 			if (m_ShowSceneHierarchyWindow) drawSceneHierarchyWindow(scene->getRoot()->getChildren());
 			if (m_SelectedSceneNode != nullptr)
 			{
-				if(m_ShowSceneNodePropertiesWindow) drawSelectedNodePropertiesWindow();
+				if(m_ShowSceneNodePropertiesWindow) drawSelectedNodePropertiesWindow(camera);
 			}
 		}
 
@@ -214,6 +228,33 @@ namespace annileen
 			{
 				//if (ImGui::MenuItem("Undo", "CTRL+Z", false, false)) {}
 				//if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item			
+				//ImGui::Separator();
+
+				bool move = m_HandleOperation == ViewHandleOperation::Move;
+				bool rotate = m_HandleOperation == ViewHandleOperation::Rotate;
+				bool scale = m_HandleOperation == ViewHandleOperation::Scale;
+
+				if (ImGui::MenuItem("Move object", nullptr, &move))
+					m_HandleOperation = ViewHandleOperation::Move;
+				if (ImGui::MenuItem("Rotate object", nullptr, &rotate))
+					m_HandleOperation = ViewHandleOperation::Rotate;
+				if (ImGui::MenuItem("Scale object", nullptr, &scale))
+					m_HandleOperation = ViewHandleOperation::Scale;
+
+				ImGui::Separator();
+
+				if (m_HandleMode == ViewHandleMode::World)
+				{
+					if (ImGui::MenuItem("World Mode", nullptr, false))
+						m_HandleMode = ViewHandleMode::Local;
+				}
+				else
+				{
+					if (ImGui::MenuItem("Local Mode", nullptr, false))
+						m_HandleMode = ViewHandleMode::World;
+				}
+
+				ImGui::Separator();
 				ImGui::MenuItem("Asset Hotreload", nullptr, &m_AssetHotreload);
 				ImGui::EndMenu();
 			}
@@ -340,7 +381,7 @@ namespace annileen
 		ImGui::End();
 	}
 
-	void annileen::EditorGui::drawSelectedNodePropertiesWindow()
+	void annileen::EditorGui::drawSelectedNodePropertiesWindow(Camera* camera)
 	{
 		ImGui::SetNextWindowPos(
 			ImVec2(320.0f, 270.0f)
@@ -362,47 +403,86 @@ namespace annileen
 		m_SelectedSceneNode->setActive(isNodeActive);
 		ImGui::SameLine();
 		ImGui::Text(m_SelectedSceneNode->name.c_str());
+		if (ImGui::Button("Focus"))
+		{
+			// Focus object: make camera look at the object
+		}
 
 		Text* text = m_SelectedSceneNode->getModule<Text>();
 
-		if (text == nullptr)
-		{
-			if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
-			{
-				auto position = m_SelectedSceneNode->getTransform().position();
-				ImGui::DragFloat3("Position", glm::value_ptr(position), 0.01F);
-				m_SelectedSceneNode->getTransform().position(position);
-
-				auto rotationEuler = m_SelectedSceneNode->getTransform().euler();
-				ImGui::DragFloat3("Rotation", glm::value_ptr(rotationEuler), 0.01F);
-				m_SelectedSceneNode->getTransform().euler(rotationEuler);
-
-				auto scale = m_SelectedSceneNode->getTransform().scale();
-				ImGui::DragFloat3("Scale", glm::value_ptr(scale), 0.01F);
-				m_SelectedSceneNode->getTransform().scale(scale);
-			}
-		}
-		else
+		if (text != nullptr)
 		{
 			drawTextModuleProperties(text);
+			return;
 		}
 
-		Model* model = m_SelectedSceneNode->getModule<Model>();
-		if (model != nullptr)
+		// Transform
+		if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			drawModelModuleProperties(model);
+			auto position = m_SelectedSceneNode->getTransform().position();
+			ImGui::DragFloat3("Position", glm::value_ptr(position), 0.01F);
+			m_SelectedSceneNode->getTransform().position(position);
+
+			auto rotationEuler = m_SelectedSceneNode->getTransform().euler();
+			ImGui::DragFloat3("Rotation", glm::value_ptr(rotationEuler), 0.01F);
+			m_SelectedSceneNode->getTransform().euler(rotationEuler);
+
+			auto scale = m_SelectedSceneNode->getTransform().scale();
+			ImGui::DragFloat3("Scale", glm::value_ptr(scale), 0.01F);
+			m_SelectedSceneNode->getTransform().scale(scale);
 		}
 
-		Camera* camera = m_SelectedSceneNode->getModule<Camera>();
-		if (camera != nullptr)
+		if (m_Mode == Editor)
 		{
-			drawCameraModuleProperties(camera);
+			ImGuiIO& io = ImGui::GetIO();
+			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+
+			glm::mat4 transformMatrix(1.0f);
+			if (m_HandleMode == ViewHandleMode::Local)
+			{
+				transformMatrix = m_SelectedSceneNode->getTransform().getModelMatrix();
+			}
+
+			auto imguizmoOperation = m_HandleOperation == ViewHandleOperation::Move ? ImGuizmo::TRANSLATE :
+				(m_HandleOperation == ViewHandleOperation::Rotate ? ImGuizmo::ROTATE : ImGuizmo::SCALE);
+			auto imguizmoMode = m_HandleMode == ViewHandleMode::Local ? ImGuizmo::LOCAL : ImGuizmo::WORLD;
+
+			ImGuizmo::DrawCube(
+				camera->getViewMatrixFloatArray(),
+				camera->getProjectionMatrixFloatArray(),
+				glm::value_ptr(transformMatrix));
+
+			ImGuizmo::Manipulate(
+				camera->getViewMatrixFloatArray(),
+				camera->getProjectionMatrixFloatArray(),
+				imguizmoOperation,
+				imguizmoMode,
+				glm::value_ptr(transformMatrix));
+
+			if (m_HandleMode == ViewHandleMode::Local)
+				m_SelectedSceneNode->getTransform().setModelMatrix(transformMatrix);
+			else
+				m_SelectedSceneNode->getTransform().applyModelMatrix(transformMatrix);
 		}
 
-		Light* light = m_SelectedSceneNode->getModule<Light>();
-		if (light != nullptr)
+
+		// Modules
+		Model* modModel = m_SelectedSceneNode->getModule<Model>();
+		if (modModel != nullptr)
 		{
-			drawLightModuleProperties(light);
+			drawModelModuleProperties(modModel);
+		}
+
+		Camera* modCamera = m_SelectedSceneNode->getModule<Camera>();
+		if (modCamera != nullptr)
+		{
+			drawCameraModuleProperties(modCamera);
+		}
+
+		Light* modLight = m_SelectedSceneNode->getModule<Light>();
+		if (modLight != nullptr)
+		{
+			drawLightModuleProperties(modLight);
 		}
 		ImGui::End();
 	}

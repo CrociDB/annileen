@@ -18,6 +18,19 @@ namespace annileen
 			Game
 		};
 
+		enum class ViewHandleOperation
+		{
+			Move,
+			Rotate,
+			Scale
+		};
+
+		enum class ViewHandleMode
+		{
+			Local,
+			World
+		};
+
 		struct InputConfig
 		{
 			float mouseSpeed;
@@ -35,6 +48,9 @@ namespace annileen
 
 		EditorGui();
 		~EditorGui();
+
+		ViewHandleMode m_HandleMode;
+		ViewHandleOperation m_HandleOperation;
 
 		bool m_ShowToolsWindow;
 		bool m_ShowSceneHierarchyWindow;
@@ -54,11 +70,11 @@ namespace annileen
 
 		void initialize();
 		void processInput(Camera* camera, float deltaTime);
-		void render(Scene* scene, float deltaTime);
+		void render(Scene* scene, Camera* camera, float deltaTime);
 		void drawMainWindowToolbar();
 		void drawToolsWindow();
 		void drawSceneHierarchyWindow(const std::vector<SceneNodePtr> sceneNodeList);
-		void drawSelectedNodePropertiesWindow();
+		void drawSelectedNodePropertiesWindow(Camera* camera);
 		void drawConsoleWindow();
 		void drawSettingsWindow();
 		void _drawTree(SceneNodePtr const sceneNode);

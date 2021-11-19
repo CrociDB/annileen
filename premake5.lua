@@ -97,6 +97,7 @@ project "annileen-editor"
 		path.join(ANNILEEN_DIR, "resources/imgui"),	
 		path.join(FMT_DIR, "include"),
 		path.join(ASSIMP_DIR, "include"),
+		path.join(BGFX_DIR, "3rdparty/dear-imgui/widgets"),
 		TOML11_DIR,
 		PERLINNOISE_DIR
 	}	

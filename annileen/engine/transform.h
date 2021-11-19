@@ -24,12 +24,14 @@ namespace annileen
         inline glm::quat rotation() { return computeQuaternion(); }
         inline glm::vec3 euler() const { return m_RotationEuler; }
 
-        void scale(const glm::vec3& scale) { m_Scale = scale; }
-        void position(const glm::vec3& position) { m_Position = position; }
-        void euler(const glm::vec3& euler) { m_RotationEuler = euler; }
-        void rotation(const glm::quat& rotation) { m_RotationQuat = rotation; }
+        inline void scale(const glm::vec3& scale) { m_Scale = scale; }
+        inline void position(const glm::vec3& position) { m_Position = position; }
+        inline void euler(const glm::vec3& euler) { m_RotationEuler = euler; }
+        inline void rotation(const glm::quat& rotation) { euler(glm::degrees(glm::eulerAngles(rotation))); }
 
         glm::mat4 getModelMatrix();
+        void setModelMatrix(const glm::mat4& matrix);
+        void applyModelMatrix(const glm::mat4& matrix);
         
         void translate(const glm::vec3& pos, bool local = true);
 

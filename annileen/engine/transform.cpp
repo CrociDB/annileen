@@ -1,4 +1,7 @@
 #include "transform.h"
+#include "core/logger.h"
+
+#include <gtx/matrix_decompose.hpp>
 
 namespace annileen
 {
@@ -14,6 +17,34 @@ namespace annileen
         matrix = glm::scale(matrix, m_Scale);
 
         return matrix;
+    }
+
+    void Transform::setModelMatrix(const glm::mat4& matrix)
+    {
+        glm::vec3 scale;
+        glm::quat rotation;
+        glm::vec3 position;
+        glm::vec3 skew;
+        glm::vec4 perspective;
+        glm::decompose(matrix, scale, rotation, position, skew, perspective);
+
+        this->position(position);
+        this->scale(scale);
+        this->rotation(rotation);
+    }
+
+    void Transform::applyModelMatrix(const glm::mat4& matrix)
+    {
+        glm::vec3 scale;
+        glm::quat rotation;
+        glm::vec3 translation;
+        glm::vec3 skew;
+        glm::vec4 perspective;
+        glm::decompose(matrix, scale, rotation, translation, skew, perspective);
+
+        //this->scaleBy(scale);
+        this->translate(translation);
+        this->rotate(rotation);
     }
 
     glm::quat Transform::computeQuaternion()
