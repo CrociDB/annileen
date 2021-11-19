@@ -28,6 +28,12 @@
 #define ANNILEEN_LOGF_ERROR(_log_channel, _log_message, ...) \
 	ServiceProvider::getLogger()->logFormat(_log_channel, LoggingLevel::Error, __FILE__, __LINE__, _log_message, __VA_ARGS__);
 
+#define ANNI_LOG(_log_message) \
+	ANNILEEN_LOG(annileen::LoggingLevel::Info, annileen::LoggingChannel::General, _log_message, __FILE__, __LINE__)
+
+#define ANNI_ERROR(_log_message) \
+	ANNILEEN_LOG(annileen::LoggingLevel::Error, annileen::LoggingChannel::General, _log_message, __FILE__, __LINE__)
+
 namespace annileen
 {
 	enum class LoggingMode : int
