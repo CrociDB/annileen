@@ -145,7 +145,7 @@ def check_should_build(output, input, descriptor=None):
     if not os.path.isfile(output): return True
     f = os.path.getmtime(output) < os.path.getmtime(input)
     d = True
-    if descriptor != None: f = os.path.getmtime(output) < os.path.getmtime(descriptor)
+    if descriptor != None and os.path.isfile(descriptor): f = os.path.getmtime(output) < os.path.getmtime(descriptor)
 
     return f and d
 
