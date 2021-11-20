@@ -44,7 +44,16 @@ available_shader_models = [
     'metal',
     'pssl',
     'spirv',
-    '120'
+    '120',
+    '130',
+    '140',
+    '150',
+    '330',
+    '400',
+    '410',
+    '420',
+    '430',
+    '440',
 ]
 
 root_dir = "assets"
@@ -78,7 +87,7 @@ def get_shadermodel_by_renderer(renderer):
     if renderer == "directx12": return "s_4_0"
     if renderer == "vulkan": return "spirv"
     if renderer == "metal": return "metal"
-    return "120"
+    return "410"
 
 # this returns if the renderer changed and what the renderer is
 def import_settings():
