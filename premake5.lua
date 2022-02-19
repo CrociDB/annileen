@@ -352,15 +352,24 @@ project "glfw"
 	files
 	{
 		path.join(GLFW_DIR, "include/GLFW/*.h"),
-		path.join(GLFW_DIR, "src/context.c"),
-		path.join(GLFW_DIR, "src/egl_context.*"),
-		path.join(GLFW_DIR, "src/init.c"),
-		path.join(GLFW_DIR, "src/input.c"),
-		path.join(GLFW_DIR, "src/internal.h"),
-		path.join(GLFW_DIR, "src/monitor.c"),
-		path.join(GLFW_DIR, "src/osmesa_context.*"),
-		path.join(GLFW_DIR, "src/vulkan.c"),
-		path.join(GLFW_DIR, "src/window.c"),
+    	path.join(GLFW_DIR, "src/internal.h"),
+    	path.join(GLFW_DIR, "src/platform.h"),
+    	path.join(GLFW_DIR, "src/mappings.h"),
+    	path.join(GLFW_DIR, "src/context.c"),
+    	path.join(GLFW_DIR, "src/init.c"),
+    	path.join(GLFW_DIR, "src/input.c"),
+    	path.join(GLFW_DIR, "src/monitor.c"),
+    	path.join(GLFW_DIR, "src/platform.c"),
+    	path.join(GLFW_DIR, "src/vulkan.c"),
+    	path.join(GLFW_DIR, "src/window.c"),
+    	path.join(GLFW_DIR, "src/egl_context.c"),
+    	path.join(GLFW_DIR, "src/osmesa_context.c"),
+    	path.join(GLFW_DIR, "src/null_platform.h"),
+    	path.join(GLFW_DIR, "src/null_joystick.h"),
+    	path.join(GLFW_DIR, "src/null_init.c"),
+    	path.join(GLFW_DIR, "src/null_monitor.c"),
+    	path.join(GLFW_DIR, "src/null_window.c"),
+    	path.join(GLFW_DIR, "src/null_joystick.c"),
 	}
 	includedirs { path.join(GLFW_DIR, "include") }
 	filter "system:windows"
