@@ -141,9 +141,9 @@ project "annileen"
 		TOML11_DIR,
 		PERLINNOISE_DIR
 	}
-	configuration "windows"
+	filter "system:windows"
 		prebuildcommands { "%{os.getcwd()}/tools/win-tools/run_asset_tools.bat" }
-	configuration "not windows"
+	filter "system:not windows"
 		prebuildcommands { "%{_OPTIONS[\"python\"]} %{os.getcwd()}/tools/asset_tools.py" }
 	setBxCompat()
 
