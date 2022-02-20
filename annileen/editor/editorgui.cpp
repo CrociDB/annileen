@@ -30,6 +30,8 @@ namespace annileen
 		m_HasWindowFocused = true;
 		m_InputConfig = { 3.0f, 2.8f, 18.0f, 0.0f, 0.0f, 0 };
 
+		m_RenderSkybox = true;
+
 		m_AssetHotreload = true;
 	}
 
@@ -258,6 +260,13 @@ namespace annileen
 				ImGui::MenuItem("Asset Hotreload", nullptr, &m_AssetHotreload);
 				ImGui::EndMenu();
 			}
+
+			if (ImGui::BeginMenu("View"))
+			{
+				if (ImGui::MenuItem("Render Skybox", nullptr, &m_RenderSkybox)) {}
+				ImGui::EndMenu();
+			}
+
 			/*if (ImGui::BeginMenu("Tools"))
 			{
 				if (ImGui::MenuItem("Generate Assets", 0, false, false)) {}
