@@ -33,9 +33,10 @@ void GameScene::buildMap()
         | UINT64_C(0));
 
     m_BlockMaterial = std::make_shared<Material>();
-    m_BlockMaterial->setTexture("s_mainTex", texture);
     m_BlockMaterial->addShaderPass(shaderPass);
     m_BlockMaterial->setName("BlockMaterial");
+    
+    m_BlockMaterial->setTexture("s_mainTex", texture);
 
     fog.color = glm::vec3(0.823f, 0.705f, 0.513f);
     fog.distance = 150.0f;
