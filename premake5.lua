@@ -425,6 +425,8 @@ project "imgui"
 		path.join(BX_DIR, "3rdparty"),
 		path.join(BX_DIR, "include")
 	}
+	filter "action:vs*"
+		defines "_CRT_SECURE_NO_WARNINGS"
 	setBxCompat()
 
 project "PerlinNoise"
