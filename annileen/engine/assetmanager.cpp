@@ -357,6 +357,8 @@ namespace annileen
 		auto data = toml::parse(shaderdescriptor);
 
 		// Uniforms
+		if (!data.contains("uniforms")) return descriptor;
+
 		auto uniforms = toml::find(data, "uniforms").as_array();
 		auto size = uniforms.size();
 		descriptor.m_AvailableUniforms.resize(size);
