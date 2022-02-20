@@ -171,9 +171,6 @@ namespace annileen
                     renderSceneNode(m_ShadowRenderView->getViewId(), model, m_Shadow->material);
                 }
             }
-
-            m_Uniform.setTextureUniform("s_shadowMap", m_Shadow->texture, m_Shadow->textureRegisterId);
-            m_Shadow->material->submitUniforms();
         }
 
         // Setup fog
@@ -206,7 +203,8 @@ namespace annileen
             if (ServiceProvider::getSettings()->getData()->shadows.enabled && model->receiveShadows)
             {
                 lightMtx = mtxShadow * sceneNode->getTransform().getModelMatrix();
-                m_Uniform.setMat4Uniform("u_lightMtx", lightMtx);                
+                m_Uniform.setMat4Uniform("u_lightMtx", lightMtx);   
+                m_Uniform.setTextureUniform("s_shadowMap", m_Shadow->texture, m_Shadow->textureRegisterId);
             }
 
             renderSceneNode(m_SceneRenderView->getViewId(), model, model->getMaterial());

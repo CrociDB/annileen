@@ -4,6 +4,11 @@ type = "texture"
 pos = 0
 
 [[uniforms]]
+name = "s_shadowMap"
+type = "texture"
+pos = 1
+
+[[uniforms]]
 name = "s_mainNormal"
 type = "texture"
 pos = 2
