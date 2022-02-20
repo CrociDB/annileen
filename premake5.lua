@@ -185,6 +185,7 @@ project "example-worldbuilding"
 		defines "NDEBUG"
 		optimize "Full"
 	filter "configurations:Debug*"
+		links {"annileen-editor"}
 		defines "_DEBUG"
 		defines "_ANNILEEN_COMPILER_EDITOR"
 		optimize "Debug"
