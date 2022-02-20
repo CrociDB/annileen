@@ -16,12 +16,14 @@ namespace annileen
     class Shader : public AssetObject
     {
     private:
+        bool m_Initialized;
+
         bgfx::ProgramHandle m_ProgramHandle;
 
         std::vector<ShaderAvailableUniform> m_AvailableUniforms;
 
     public:
-        void init(bgfx::ProgramHandle handle);
+        void setHandle(bgfx::ProgramHandle handle);
         void destroy();
 
         inline void setAvailableShaders(std::vector<ShaderAvailableUniform> availableUniform) 

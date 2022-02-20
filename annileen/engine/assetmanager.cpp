@@ -178,7 +178,7 @@ namespace annileen
 			auto asset_name = path.substr(path.find_last_of("/\\") + 1);
 
 			auto entry = getAssetEntryIfExists(asset_name);
-			if (entry == nullptr) return;
+			if (entry == nullptr || !entry->m_Loaded) return;
 
 			if (entry->m_Type == AssetType::Shader)
 			{
@@ -227,7 +227,7 @@ namespace annileen
 		if (!vert->m_Loaded)
 		{
 			auto shader = new Shader();
-			shader->init(programHandle);
+			shader->setHandle(programHandle);
 			shader->setAvailableShaders(descriptor.m_AvailableUniforms);
 
 			vert->m_Asset = dynamic_cast<AssetObject*>(shader);
@@ -237,7 +237,7 @@ namespace annileen
 		{
 			auto shader = static_cast<Shader*>(vert->m_Asset);
 			shader->destroy();
-			shader->init(programHandle);
+			shader->setHandle(programHandle);
 			shader->setAvailableShaders(descriptor.m_AvailableUniforms);
 		}
 	}
