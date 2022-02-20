@@ -60,6 +60,9 @@ def build_shader(shaderfile, dest, options, platform, model, force=False):
         print(f" {bcolors.SUCCESS}- Shader compiled for `{model}`: {output_file}{bcolors.ENDC}")
         tools.save_built_asset_descriptor(output_file, descriptor)
 
+    if not success:
+        raise Exception(f"Shader '{shaderfile}' was not built due to a compilation error.")
+
     return success, tools.path_leaf(shaderfile), output_file
 
 
@@ -79,6 +82,7 @@ def build_all(platform, model, force=False):
     shaders = reduce(lambda x, y : x + y, [glob.glob(os.path.join(shader_path, "**", "*." + filetype), recursive=True) for filetype in shader_types])
     return [build_shader(shaderfile, shader_build_path, "", platform, model, force) for shaderfile in shaders]
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=f'{bcolors.SUCCESS}Annileen Shader Tools{bcolors.ENDC}')
     parser.add_argument('-s', '--shader', nargs='*', help='compiles the shader specified')
@@ -88,9 +92,12 @@ if __name__ == '__main__':
     parser.add_argument('-m', '--model', help='shader model', choices=tools.available_shader_models, default='auto')
     args = parser.parse_args()
 
-    if args.all:
-        build_all(args.platform, args.model, args.force)
-    elif args.shader != None:
-        _build_shader(args.shader[0], " ".join(args.shader[1:]), args.platform, args.model, args.force)
-    else:
-        parser.print_help()
+    try:
+        if args.all:
+                build_all(args.platform, args.model, args.force)
+        elif args.shader != None:
+            _build_shader(args.shader[0], " ".join(args.shader[1:]), args.platform, args.model, args.force)
+        else:
+            parser.print_help()
+    except Exception as e:
+        print(f"{bcolors.ERROR}{e}{bcolors.ENDC}")

@@ -89,6 +89,9 @@ class WatchdogHandler(FileSystemEventHandler):
             print(f' - file created: {bcolors.UNDERLINE}\'{event.src_path}\'{bcolors.ENDC}. it will be ignored, run a full asset import for new files')
         elif event.event_type == 'modified':
             print(f' {bcolors.HEADER}- file modified:{bcolors.HEADER} {bcolors.UNDERLINE}\'{event.src_path}\'{bcolors.ENDC}')
-            reimport_file(event.src_path)
+            try:
+                reimport_file(event.src_path)
+            except Exception as e:
+                print(f"{bcolors.ERROR} {bcolors.BOLD}[ERROR]{bcolors.ENDC} Failed asset reimport. Error message: \n\t {bcolors.ERROR}- {bcolors.UNDERLINE}{e}{bcolors.ENDC}")
     
         print('\n')

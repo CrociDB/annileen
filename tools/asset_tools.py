@@ -127,7 +127,11 @@ if __name__ == '__main__':
             print(f'{tools.bcolors.OKBLUE}IMPORTING SETTINGS{tools.bcolors.ENDC}')
             _, renderer = tools.import_settings()
 
-            if args.shader == 'auto':
-                build_assets(args.platform, tools.get_shadermodel_by_renderer(renderer), True)
-            else:
-                build_assets(args.platform, args.shader, args.force)
+            try:
+                if args.shader == 'auto':
+                    build_assets(args.platform, tools.get_shadermodel_by_renderer(renderer), True)
+                else:
+                    build_assets(args.platform, args.shader, args.force)
+            except Exception as e:
+                print(f"{bcolors.ERROR} {bcolors.BOLD}[ERROR]{bcolors.ENDC} Asset failing importing. Error message: \n\t {bcolors.ERROR}- {bcolors.UNDERLINE}{e}{bcolors.ENDC}")
+                    
