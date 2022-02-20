@@ -15,7 +15,7 @@ namespace annileen
 			loadAssetTable(assetfile);
 
 			size_t pos = assetfile.find_last_of("\\/");
-			auto path = std::string::npos == pos ? "" : assetfile.substr(0, pos);
+			auto& path = std::string::npos == pos ? "" : assetfile.substr(0, pos);
 			m_Watcher = new AssetWatcher(path);
 		}
 		catch (const std::runtime_error&)
@@ -27,7 +27,7 @@ namespace annileen
 	void AssetManager::loadAssetTable(const std::string& assetfile)
 	{
 		auto data = toml::parse(assetfile);
-		auto assettable = toml::find(data, "asset").as_table();
+		auto& assettable = toml::find(data, "asset").as_table();
 		for (const auto& [k, v] : assettable)
 		{
 			AssetTableEntry aseet {
@@ -359,7 +359,7 @@ namespace annileen
 		// Uniforms
 		if (!data.contains("uniforms")) return descriptor;
 
-		auto uniforms = toml::find(data, "uniforms").as_array();
+		auto& uniforms = toml::find(data, "uniforms").as_array();
 		auto size = uniforms.size();
 		descriptor.m_AvailableUniforms.resize(size);
 
@@ -393,7 +393,7 @@ namespace annileen
 		auto assetfile = asset->m_Filepath.substr(0, asset->m_Filepath.find_last_of(".")) + ".toml";
 		auto data = toml::parse(assetfile);
 
-		auto normalsValue = toml::find(data, "normals").as_string();
+		auto& normalsValue = toml::find(data, "normals").as_string();
 		auto normals = MeshDescriptor::Normals::Auto;
 
 		if (normalsValue == "generate") normals = MeshDescriptor::Normals::Generate;
@@ -406,9 +406,9 @@ namespace annileen
 
 	CubemapDescriptor AssetManager::loadCubemapDescriptor(AssetTableEntry* asset)
 	{
-		auto assetfile = asset->m_Filepath;
+		auto& assetfile = asset->m_Filepath;
 		auto data = toml::parse(assetfile);
-		const auto cubemap = toml::find(data, "cubemap");
+		const auto& cubemap = toml::find(data, "cubemap");
 		return {
 			cubemap.at("strip_file").as_string(),
 		};
