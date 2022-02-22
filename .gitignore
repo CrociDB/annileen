@@ -1,6 +1,5 @@
 build*
 .vs
-premake5.exe
 tools/__pycache__
 .vscode/
 temp/
