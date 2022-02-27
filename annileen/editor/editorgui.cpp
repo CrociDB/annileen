@@ -412,10 +412,9 @@ namespace annileen
 		}
 
 		bool isNodeActive = m_SelectedSceneNode->getActive();
-		ImGui::Checkbox("", &isNodeActive);
+		ImGui::Checkbox(m_SelectedSceneNode->name.c_str(), &isNodeActive);
 		m_SelectedSceneNode->setActive(isNodeActive);
 		ImGui::SameLine();
-		ImGui::Text(m_SelectedSceneNode->name.c_str());
 		if (ImGui::Button("Focus"))
 		{
 			// Focus object: make camera look at the object
@@ -458,11 +457,6 @@ namespace annileen
 			auto imguizmoOperation = m_HandleOperation == ViewHandleOperation::Move ? ImGuizmo::TRANSLATE :
 				(m_HandleOperation == ViewHandleOperation::Rotate ? ImGuizmo::ROTATE : ImGuizmo::SCALE);
 			auto imguizmoMode = m_HandleMode == ViewHandleMode::Local ? ImGuizmo::LOCAL : ImGuizmo::WORLD;
-
-			ImGuizmo::DrawCube(
-				camera->getViewMatrixFloatArray(),
-				camera->getProjectionMatrixFloatArray(),
-				glm::value_ptr(transformMatrix));
 
 			ImGuizmo::Manipulate(
 				camera->getViewMatrixFloatArray(),

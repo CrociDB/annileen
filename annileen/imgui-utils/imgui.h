@@ -1,6 +1,6 @@
 /*
- * Copyright 2011-2021 Branimir Karadzic. All rights reserved.
- * License: https://github.com/bkaradzic/bgfx#license-bsd-2-clause
+ * Copyright 2011-2022 Branimir Karadzic. All rights reserved.
+ * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
 #ifndef IMGUI_H_HEADER_GUARD
@@ -18,8 +18,8 @@
 inline uint32_t imguiRGBA(uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a = 255)
 {
 	return 0
-		| (uint32_t(_r) <<  0)
-		| (uint32_t(_g) <<  8)
+		| (uint32_t(_r) << 0)
+		| (uint32_t(_g) << 8)
 		| (uint32_t(_b) << 16)
 		| (uint32_t(_a) << 24)
 		;
@@ -46,8 +46,8 @@ namespace ImGui
 	{
 		union { struct { bgfx::TextureHandle handle; uint8_t flags; uint8_t mip; } s; ImTextureID id; } tex;
 		tex.s.handle = _handle;
-		tex.s.flags  = _flags;
-		tex.s.mip    = _mip;
+		tex.s.flags = _flags;
+		tex.s.mip = _mip;
 		return tex.id;
 	}
 
@@ -56,11 +56,11 @@ namespace ImGui
 		, uint8_t _flags
 		, uint8_t _mip
 		, const ImVec2& _size
-		, const ImVec2& _uv0       = ImVec2(0.0f, 0.0f)
-		, const ImVec2& _uv1       = ImVec2(1.0f, 1.0f)
-		, const ImVec4& _tintCol   = ImVec4(1.0f, 1.0f, 1.0f, 1.0f)
+		, const ImVec2& _uv0 = ImVec2(0.0f, 0.0f)
+		, const ImVec2& _uv1 = ImVec2(1.0f, 1.0f)
+		, const ImVec4& _tintCol = ImVec4(1.0f, 1.0f, 1.0f, 1.0f)
 		, const ImVec4& _borderCol = ImVec4(0.0f, 0.0f, 0.0f, 0.0f)
-		)
+	)
 	{
 		Image(toId(_handle, _flags, _mip), _size, _uv0, _uv1, _tintCol, _borderCol);
 	}
@@ -68,11 +68,11 @@ namespace ImGui
 	// Helper function for passing bgfx::TextureHandle to ImGui::Image.
 	inline void Image(bgfx::TextureHandle _handle
 		, const ImVec2& _size
-		, const ImVec2& _uv0       = ImVec2(0.0f, 0.0f)
-		, const ImVec2& _uv1       = ImVec2(1.0f, 1.0f)
-		, const ImVec4& _tintCol   = ImVec4(1.0f, 1.0f, 1.0f, 1.0f)
+		, const ImVec2& _uv0 = ImVec2(0.0f, 0.0f)
+		, const ImVec2& _uv1 = ImVec2(1.0f, 1.0f)
+		, const ImVec4& _tintCol = ImVec4(1.0f, 1.0f, 1.0f, 1.0f)
 		, const ImVec4& _borderCol = ImVec4(0.0f, 0.0f, 0.0f, 0.0f)
-		)
+	)
 	{
 		Image(_handle, IMGUI_FLAGS_ALPHA_BLEND, 0, _size, _uv0, _uv1, _tintCol, _borderCol);
 	}
@@ -82,12 +82,12 @@ namespace ImGui
 		, uint8_t _flags
 		, uint8_t _mip
 		, const ImVec2& _size
-		, const ImVec2& _uv0     = ImVec2(0.0f, 0.0f)
-		, const ImVec2& _uv1     = ImVec2(1.0f, 1.0f)
-		, int _framePadding      = -1
-		, const ImVec4& _bgCol   = ImVec4(0.0f, 0.0f, 0.0f, 0.0f)
+		, const ImVec2& _uv0 = ImVec2(0.0f, 0.0f)
+		, const ImVec2& _uv1 = ImVec2(1.0f, 1.0f)
+		, int _framePadding = -1
+		, const ImVec4& _bgCol = ImVec4(0.0f, 0.0f, 0.0f, 0.0f)
 		, const ImVec4& _tintCol = ImVec4(1.0f, 1.0f, 1.0f, 1.0f)
-		)
+	)
 	{
 		return ImageButton(toId(_handle, _flags, _mip), _size, _uv0, _uv1, _framePadding, _bgCol, _tintCol);
 	}
@@ -95,12 +95,12 @@ namespace ImGui
 	// Helper function for passing bgfx::TextureHandle to ImGui::ImageButton.
 	inline bool ImageButton(bgfx::TextureHandle _handle
 		, const ImVec2& _size
-		, const ImVec2& _uv0     = ImVec2(0.0f, 0.0f)
-		, const ImVec2& _uv1     = ImVec2(1.0f, 1.0f)
-		, int _framePadding      = -1
-		, const ImVec4& _bgCol   = ImVec4(0.0f, 0.0f, 0.0f, 0.0f)
+		, const ImVec2& _uv0 = ImVec2(0.0f, 0.0f)
+		, const ImVec2& _uv1 = ImVec2(1.0f, 1.0f)
+		, int _framePadding = -1
+		, const ImVec4& _bgCol = ImVec4(0.0f, 0.0f, 0.0f, 0.0f)
 		, const ImVec4& _tintCol = ImVec4(1.0f, 1.0f, 1.0f, 1.0f)
-		)
+	)
 	{
 		return ImageButton(_handle, IMGUI_FLAGS_ALPHA_BLEND, 0, _size, _uv0, _uv1, _framePadding, _bgCol, _tintCol);
 	}
@@ -108,7 +108,7 @@ namespace ImGui
 	///
 	inline void NextLine()
 	{
-		SetCursorPosY(GetCursorPosY() + GetTextLineHeightWithSpacing() );
+		SetCursorPosY(GetCursorPosY() + GetTextLineHeightWithSpacing());
 	}
 
 	///
@@ -118,7 +118,7 @@ namespace ImGui
 			|| ImGui::IsAnyItemActive()
 			|| ImGui::IsAnyItemHovered()
 			|| ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)
-//			|| ImGuizmo::IsOver()
+			//			|| ImGuizmo::IsOver()
 			;
 	}
 

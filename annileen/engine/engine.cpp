@@ -3,10 +3,12 @@
 #include <engine/serviceprovider.h>
 #include <engine/core/logger.h>
 #include <engine/renderview.h>
+#include <engine/core/glfw_imgui_utils.h>
 #include <engine/camera.h>
 #include <sstream>
 #include <bx/math.h>
 #include <glm.hpp>
+
 
 namespace annileen
 {
@@ -32,18 +34,23 @@ namespace annileen
 
         ImGuiIO& io = ImGui::GetIO();
         if (action == GLFW_PRESS)
-            io.KeysDown[key] = true;
+            io.AddKeyEvent(ANNI_GLFW_KEY_TO_IMGUI(key), true);
         if (action == GLFW_RELEASE)
-            io.KeysDown[key] = false;
+            io.AddKeyEvent(ANNI_GLFW_KEY_TO_IMGUI(key), false);
 
         // Modifiers are not reliable across systems
-        io.KeyCtrl = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
-        io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
-        io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
+        io.KeyCtrl =    ImGui::IsKeyDown(ANNI_GLFW_KEY_TO_IMGUI(GLFW_KEY_LEFT_CONTROL)) || 
+                        ImGui::IsKeyDown(ANNI_GLFW_KEY_TO_IMGUI(GLFW_KEY_RIGHT_CONTROL));
+        io.KeyShift =   ImGui::IsKeyDown(ANNI_GLFW_KEY_TO_IMGUI(GLFW_KEY_LEFT_SHIFT)) ||
+                        ImGui::IsKeyDown(ANNI_GLFW_KEY_TO_IMGUI(GLFW_KEY_RIGHT_SHIFT));
+        io.KeyAlt =     ImGui::IsKeyDown(ANNI_GLFW_KEY_TO_IMGUI(GLFW_KEY_LEFT_ALT)) ||
+                        ImGui::IsKeyDown(ANNI_GLFW_KEY_TO_IMGUI(GLFW_KEY_RIGHT_ALT));
+
 #ifdef _WIN32
         io.KeySuper = false;
 #else
-        io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
+        io.KeySuper =   ImGui::IsKeyDown(ANNI_GLFW_KEY_TO_IMGUI(GLFW_KEY_LEFT_SUPER)) ||
+                        ImGui::IsKeyDown(ANNI_GLFW_KEY_TO_IMGUI(GLFW_KEY_RIGHT_SUPER));
 #endif
     }
 
@@ -177,25 +184,6 @@ namespace annileen
         ImGuiIO& io = ImGui::GetIO();
         io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;         // We can honor GetMouseCursor() values (optional)
         io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;          // We can honor io.WantSetMousePos requests (optional, rarely used)
-
-        // Keyboard mapping. ImGui will use those indices to peek into the io.KeysDown[] array.
-        io.KeyMap[ImGuiKey_Enter] = GLFW_KEY_ENTER;
-        io.KeyMap[ImGuiKey_Escape] = GLFW_KEY_ESCAPE;
-        io.KeyMap[ImGuiKey_Backspace] = GLFW_KEY_BACKSPACE;
-        io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB;
-        io.KeyMap[ImGuiKey_Space] = GLFW_KEY_SPACE;
-
-        io.KeyMap[ImGuiKey_RightArrow] = GLFW_KEY_RIGHT;
-        io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
-        io.KeyMap[ImGuiKey_DownArrow] = GLFW_KEY_DOWN;
-        io.KeyMap[ImGuiKey_UpArrow] = GLFW_KEY_UP;
-
-        io.KeyMap[ImGuiKey_A] = GLFW_KEY_A;
-        io.KeyMap[ImGuiKey_C] = GLFW_KEY_C;
-        io.KeyMap[ImGuiKey_V] = GLFW_KEY_V;
-        io.KeyMap[ImGuiKey_X] = GLFW_KEY_X;
-        io.KeyMap[ImGuiKey_Y] = GLFW_KEY_Y;
-        io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
 
         return 0;
     }
