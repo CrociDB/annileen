@@ -6,7 +6,11 @@
 #include <bx/allocator.h>
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
+
 #include <GLFW/glfw3.h>
+// GLFW will include xserver headers in Linux and it defines macro `None`. So including
+// this math header before fixes the redefinition of this macro.
+#include <bx/math.h>
 #if BX_PLATFORM_LINUX
 #define GLFW_EXPOSE_NATIVE_X11
 #elif BX_PLATFORM_WINDOWS
