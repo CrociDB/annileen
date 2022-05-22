@@ -15,7 +15,7 @@ namespace annileen
 			loadAssetTable(assetfile);
 
 			size_t pos = assetfile.find_last_of("\\/");
-			auto& path = std::string::npos == pos ? "" : assetfile.substr(0, pos);
+			auto path = std::string::npos == pos ? "" : assetfile.substr(0, pos);
 			m_Watcher = new AssetWatcher(path);
 		}
 		catch (const std::runtime_error&)
