@@ -20,8 +20,10 @@ newoption {
 	allowed = {
 	   { "python3",    "Python3 - whatever one installed in the system" },
 	   { "python3.6",  "force Python3.6" },
-	   { "python3.7",  "force Python3.6" },
-	   { "echo",  "ignore python" }
+	   { "python3.7",  "force Python3.7" },
+	   { "python3.8",  "force Python3.8" },
+	   { "python3.9",  "force Python3.9" },
+	   { "python3.10",  "force Python3.10" },
 	}
  }
 
@@ -145,7 +147,9 @@ project "annileen"
 	filter "system:windows"
 		prebuildcommands { "%{os.getcwd()}/tools/win-tools/run_asset_tools.bat" }
 	filter "system:not windows"
-		prebuildcommands { "%{_OPTIONS[\"python\"]} %{os.getcwd()}/tools/asset_tools.py" }
+		if _OPTIONS['python'] then
+			prebuildcommands { "%{_OPTIONS[\"python\"]} %{os.getcwd()}/tools/asset_tools.py" }
+		end
 	setBxCompat()
 
 project "example-worldbuilding"
