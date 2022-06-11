@@ -24,6 +24,11 @@ namespace annileen
 	}
 
 
+	void Uniform::resetUniformList()
+	{
+		m_Uniforms.clear();
+	}
+
 	bgfx::UniformHandle Uniform::getSamplerUniformHandle(const std::string& uniformname)
 	{
 		return getOrCreateUniform(uniformname, bgfx::UniformType::Sampler);

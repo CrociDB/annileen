@@ -26,6 +26,8 @@ namespace annileen
 		bgfx::UniformHandle getOrCreateUniform(const std::string& uniformname, bgfx::UniformType::Enum uniformtype);
 
 	public:
+		void resetUniformList();
+
 		bgfx::UniformHandle getSamplerUniformHandle(const std::string& uniformname);
 		bgfx::UniformHandle getVec4UniformHandle(const std::string& uniformname);
 		bgfx::UniformHandle getSMat3UniformHandle(const std::string& uniformname);
