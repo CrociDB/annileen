@@ -34,6 +34,9 @@
 #define ANNI_ERROR(_log_message) \
 	ANNILEEN_LOG(annileen::LoggingLevel::Error, annileen::LoggingChannel::General, _log_message, __FILE__, __LINE__)
 
+#define ANNI_ASSERT(_condition,_log_message) \
+	if (!_condition) { ANNI_ERROR(_log_message); exit(-1); }
+
 namespace annileen
 {
 	enum class LoggingMode : int
