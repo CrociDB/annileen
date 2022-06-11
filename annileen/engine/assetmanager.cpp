@@ -217,11 +217,14 @@ namespace annileen
 
 		auto vertexShaderData = loadBinaryFile(vert->m_Filepath);
 		bgfx::ShaderHandle vertexHandle = bgfx::createShader(vertexShaderData);
+		ANNI_ASSERT(__anni_check_shader_program(&vertexHandle), "ERROR LOADING VERTEX SHADER");
 
 		auto fragmentShaderData = loadBinaryFile(frag->m_Filepath);
 		bgfx::ShaderHandle fragmentHandle = bgfx::createShader(fragmentShaderData);
+		ANNI_ASSERT(__anni_check_shader_program(&fragmentHandle), "ERROR LOADING FRAGMENT SHADER");
 
 		bgfx::ProgramHandle programHandle = bgfx::createProgram(vertexHandle, fragmentHandle, true);
+		ANNI_ASSERT(__anni_check_shader_program(&programHandle), "ERROR CREATING SHADER PROGRAM");
 
 		// Let's use only vertex shader to store the final shader
 		if (!vert->m_Loaded)

@@ -62,4 +62,9 @@ namespace annileen
 		MeshDescriptor loadMeshDescriptor(AssetTableEntry* asset);
 		CubemapDescriptor loadCubemapDescriptor(AssetTableEntry* asset);
 	};
+
+	inline bool __anni_check_shader_program(void* handle)
+	{
+		return *((uint16_t*)handle) != 65535;
+	}
 }
