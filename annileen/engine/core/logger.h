@@ -29,10 +29,10 @@
 	ServiceProvider::getLogger()->logFormat(_log_channel, LoggingLevel::Error, __FILE__, __LINE__, _log_message, __VA_ARGS__);
 
 #define ANNI_LOG(_log_message) \
-	ANNILEEN_LOG(annileen::LoggingLevel::Info, annileen::LoggingChannel::General, _log_message, __FILE__, __LINE__)
+	ANNILEEN_LOG(annileen::LoggingLevel::Info, annileen::LoggingChannel::General, _log_message)
 
 #define ANNI_ERROR(_log_message) \
-	ANNILEEN_LOG(annileen::LoggingLevel::Error, annileen::LoggingChannel::General, _log_message, __FILE__, __LINE__)
+	ANNILEEN_LOG(annileen::LoggingLevel::Error, annileen::LoggingChannel::General, _log_message)
 
 #define ANNI_ASSERT(_condition,_log_message) \
 	if (!_condition) { ANNI_ERROR(_log_message); exit(-1); }
