@@ -55,6 +55,11 @@ namespace annileen
 		friend class Application;
 		friend class ApplicationEditor;
 
+		void addCameraModule(Camera* camera);
+		void addLightModule(Light* light);
+		void removeCameraModule(Camera* camera);
+		void removeLightModule(Light* light);
+
 	public:
 		int flags = 0;
 		std::string name = "SceneNode";
@@ -132,14 +137,13 @@ namespace annileen
 
 		if (!m_Internal)
 		{
-			// "if constexpr" is a C++17 thing.
 			if constexpr (std::is_same<T, Camera>::value)
 			{
-				m_ParentScene->m_Cameras.push_back(module);
+				addCameraModule(module);
 			}
 			else if constexpr (std::is_same<T, Light>::value)
 			{
-				m_ParentScene->m_Lights.push_back(module);
+				addLightModule(module);
 			}
 		}
 
@@ -167,11 +171,11 @@ namespace annileen
 			{
 				if constexpr (std::is_same<T, Camera>::value)
 				{
-					m_ParentScene->m_Cameras.remove(module);
+					removeCameraModule(module);
 				}
 				else if constexpr (std::is_same<T, Light>::value)
 				{
-					m_ParentScene->m_Lights.remove(module);
+					removeLightModule(module);
 				}
 			}
 

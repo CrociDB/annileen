@@ -183,7 +183,7 @@ namespace annileen
 			if (entry->m_Type == AssetType::Shader)
 			{
 				loadAsset(entry);
-				ANNILEEN_LOG(LoggingLevel::Info, LoggingChannel::Asset, fmt::format("Assed reloaded: {}", asset_name));
+				ANNILEEN_LOG(LoggingLevel::Info, LoggingChannel::Asset, std::format("Assed reloaded: {}", asset_name));
 			}
 		}
 	}

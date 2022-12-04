@@ -3,10 +3,9 @@
 #include <string>
 #include <list>
 #include <vector>
-#define FMT_HEADER_ONLY
-#include <fmt/format.h>
 #include <engine/core/file.h>
 #include <engine/serviceprovider.h>
+#include <format>
 
 #define ANNILEEN_LOG_FILE "annileen-log.txt"
 
@@ -78,7 +77,7 @@ namespace annileen
 		template <typename S, typename... Args>
 		inline void logFormat(LoggingChannel channel, LoggingLevel level, std::string fileName, int line, const S& format_str, Args&&... args)
 		{
-			std::string message = fmt::format(format_str, args...);
+			std::string message = std::vformat(format_str, std::make_format_args(args...));
 			log(channel, level, message, fileName, line);
 		}
 	

@@ -112,6 +112,25 @@ namespace annileen
 		return findChild(node) != m_Children.end();
 	}
 
+	void SceneNode::addCameraModule(Camera* camera)
+	{
+		m_ParentScene->m_Cameras.push_back(camera);
+	}
+
+	void SceneNode::addLightModule(Light* light)
+	{
+		m_ParentScene->m_Lights.push_back(light);
+	}
+
+	void SceneNode::removeCameraModule(Camera* camera)
+	{
+		m_ParentScene->m_Cameras.remove(camera);							
+	}
+
+	void SceneNode::removeLightModule(Light* light)
+	{
+		m_ParentScene->m_Lights.remove(light);
+	}
 
 	SceneNode::~SceneNode()
 	{

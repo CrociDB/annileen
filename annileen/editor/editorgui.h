@@ -90,35 +90,17 @@ namespace annileen
 
 		void drawSceneNodeContextMenu(SceneNodePtr const sceneNode);
 		
+		SceneNodePtr drawSceneNode(SceneNodePtr const sceneNode, std::string nodeName);
+
 		template <class T>
 		void drawNewSceneNodeContextMenu(SceneNodePtr const sceneNode, std::string nodeName);
 		friend class ApplicationEditor;
 	};
 
-	
 	template <class T>
 	void EditorGui::drawNewSceneNodeContextMenu(SceneNodePtr const sceneNode, std::string nodeName)
 	{
-		Scene* scene = sceneNode->getParentScene();
-		SceneNodePtr newSceneNode = nullptr;
-
-		if (ImGui::Selectable("Above"))
-		{
-			newSceneNode = scene->createNode(nodeName);
-			newSceneNode->setParent(sceneNode->getParent());
-			newSceneNode->setSiblingPosition(sceneNode->getSiblingIterator());
-		}
-		if (ImGui::Selectable("As child"))
-		{
-			newSceneNode = scene->createNode(nodeName);
-			newSceneNode->setParent(sceneNode);
-		}
-		if (ImGui::Selectable("Below"))
-		{
-			newSceneNode = scene->createNode(nodeName);
-			newSceneNode->setParent(sceneNode->getParent());
-			newSceneNode->setSiblingPosition(sceneNode->getSiblingIterator() + 1);
-		}
+		SceneNodePtr newSceneNode = drawSceneNode(sceneNode, nodeName);
 
 		if (newSceneNode != nullptr)
 		{

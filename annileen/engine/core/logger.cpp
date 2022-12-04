@@ -1,7 +1,6 @@
 #include <engine/core/logger.h>
 #include <sstream>
-#include <fmt/format.h>
-#include <fmt/color.h>
+#include <format>
 #include <list>
 
 namespace annileen
@@ -27,11 +26,11 @@ namespace annileen
 	{
 		std::stringstream composedMessage;
 
-		composedMessage << fmt::format("[{0}] [{1}] ", getLoggingLevelString(level), getLoggingChannelString(channel));
+		composedMessage << std::format("[{0}] [{1}] ", getLoggingLevelString(level), getLoggingChannelString(channel));
 
 		if (!fileName.empty())
 		{
-			composedMessage << fmt::format("Filename: {0} ({1}) ",fileName, line);
+			composedMessage << std::format("Filename: {0} ({1}) ",fileName, line);
 		}
 			
 		composedMessage << message;
@@ -54,6 +53,9 @@ namespace annileen
 
 		if ((m_Mode & LoggingMode::Console) == LoggingMode::Console)
 		{
+			std::cout << std::format("--- ANNILEEN-LOG --- {0}\n", newMessage.m_Message);
+			
+			/*
 			switch (level)
 			{
 			case LoggingLevel::Error:
@@ -65,7 +67,7 @@ namespace annileen
 			case LoggingLevel::Info:
 				fmt::print("--- ANNILEEN-LOG --- {0}\n", newMessage.m_Message);
 				break;
-			}
+			}*/
 		}
 	}
 

@@ -940,4 +940,30 @@ namespace annileen
 			}
 		}
 	}
+
+	SceneNodePtr EditorGui::drawSceneNode(SceneNodePtr const sceneNode, std::string nodeName)
+	{
+		Scene* scene = sceneNode->getParentScene();
+		SceneNodePtr newSceneNode = nullptr;
+
+		if (ImGui::Selectable("Above"))
+		{
+			newSceneNode = scene->createNode(nodeName);
+			newSceneNode->setParent(sceneNode->getParent());
+			newSceneNode->setSiblingPosition(sceneNode->getSiblingIterator());
+		}
+		if (ImGui::Selectable("As child"))
+		{
+			newSceneNode = scene->createNode(nodeName);
+			newSceneNode->setParent(sceneNode);
+		}
+		if (ImGui::Selectable("Below"))
+		{
+			newSceneNode = scene->createNode(nodeName);
+			newSceneNode->setParent(sceneNode->getParent());
+			newSceneNode->setSiblingPosition(sceneNode->getSiblingIterator() + 1);
+		}
+
+		return newSceneNode;
+	}
 }
