@@ -1,5 +1,4 @@
-#ifndef _DATA_H_
-#define _DATA_H_
+#pragma once
 
 const int DATA_CUBE_TEX_SIZE[] = { 5, 2 };
 
@@ -163,5 +162,3 @@ const float DATA_CUBE_NORMALS[6][18] = {
      0.0f,  1.0f,  0.0f,
      0.0f,  1.0f,  0.0f }
 };
-
-#endif
