@@ -97,7 +97,7 @@ namespace annileen
 		{
 			if (input->_getMouseButtonDown(1))
 			{
-				float movementSpeed = input->_getKey(GLFW_KEY_LEFT_SHIFT) ? 5.0 * m_InputConfig.mouseSpeed : m_InputConfig.mouseSpeed;
+				float movementSpeed = input->_getKey(GLFW_KEY_LEFT_SHIFT) ? 5.0f * m_InputConfig.mouseSpeed : m_InputConfig.mouseSpeed;
 
 				if (input->_getKey(GLFW_KEY_S))
 				{
@@ -538,7 +538,7 @@ namespace annileen
 		if (nodeChildren.empty())
 		{
 			ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
-			ImGui::PushID(sceneNode->getId());
+			ImGui::PushID(static_cast<int>(sceneNode->getId()));
 			if (ImGui::Selectable(sceneNode->name.c_str(), sceneNode == m_SelectedSceneNode))
 			{
 				m_SelectedSceneNode = sceneNode;
@@ -549,7 +549,7 @@ namespace annileen
 		}
 		else
 		{
-			ImGui::PushID(sceneNode->getId());
+			ImGui::PushID(static_cast<int>(sceneNode->getId()));
 			bool nodeOpen = ImGui::TreeNodeEx(sceneNode->name.c_str(), node_flags);
 			if (ImGui::IsItemClicked())
 			{

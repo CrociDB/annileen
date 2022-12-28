@@ -171,7 +171,7 @@ namespace annileen
 		size_t size = file.tellg();
 		file.seekg(0, std::ios::beg);
 
-		const bgfx::Memory* mem = bgfx::alloc(size + 1);
+		const bgfx::Memory* mem = bgfx::alloc(static_cast<uint32_t>(size + 1));
 		file.read((char*)mem->data, size);
 		file.close();
 
@@ -438,10 +438,10 @@ namespace annileen
 		int i = 0;
 		for (const auto& v : uniforms)
 		{
-			ShaderAvailableUniform uniform = {
+			ShaderAvailableUniform uniform {
 				toml::find(v, "name").as_string(),
 				getUniformType(toml::find(v, "type").as_string()),
-				toml::find(v, "pos").as_integer()
+				static_cast<uint8_t>(toml::find(v, "pos").as_integer())
 			};
 
 			descriptor.m_AvailableUniforms.at(i++) = uniform;

@@ -72,7 +72,7 @@ namespace annileen
 		auto shadows = toml::find(data, "shadows").as_table();
 
 		m_Data.shadows.enabled = shadows.at("enabled").as_boolean();
-		m_Data.shadows.shadowMapSize = shadows.at("shadowMapSize").as_integer();
+		m_Data.shadows.shadowMapSize = static_cast<uint16_t>(shadows.at("shadowMapSize").as_integer());
 	}
 
 	void Settings::saveSettings()

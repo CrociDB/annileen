@@ -120,8 +120,8 @@ namespace annileen
 		memcpy(indexData, m_Indices.data(), m_Indices.size() * sizeof(uint32_t));
 
 		mesh->init(
-			bgfx::makeRef(meshData, vertexData.size() * sizeof(float), Allocators::releaseMem), 
+			bgfx::makeRef(meshData, static_cast<uint32_t>(vertexData.size() * sizeof(float)), Allocators::releaseMem), 
 			vlayout,
-			bgfx::makeRef(indexData, m_Indices.size() * sizeof(uint32_t), Allocators::releaseMem));
+			bgfx::makeRef(indexData, static_cast<uint32_t>(m_Indices.size() * sizeof(uint32_t)), Allocators::releaseMem));
  	}
 }

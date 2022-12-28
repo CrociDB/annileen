@@ -245,8 +245,8 @@ namespace annileen
 
 	void Input::_setMouseDelta(int x, int y)
 	{
-		m_MouseDelta.x = x;
-		m_MouseDelta.y = y;
+		m_MouseDelta.x = static_cast<float>(x);
+		m_MouseDelta.y = static_cast<float>(y);
 	}
 
 	void Input::_setMouseButton(int button, bool status)

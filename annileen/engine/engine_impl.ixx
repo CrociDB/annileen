@@ -85,7 +85,7 @@ namespace annileen
 
     void Engine::glfw_mouseCursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
     {
-        getInstance()->getInput()->_setMousePosition(xpos, ypos);
+        getInstance()->getInput()->_setMousePosition(static_cast<float>(xpos), static_cast<float>(ypos));
     }
 
     void Engine::glfw_mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
@@ -114,7 +114,7 @@ namespace annileen
 
     void Engine::glfw_mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
     {
-        getInstance()->getInput()->_setMouseScroll(xoffset, yoffset);
+        getInstance()->getInput()->_setMouseScroll(static_cast<float>(xoffset), static_cast<float>(yoffset));
     }
 
     void Engine::glfw_joystickCallback(int jid, int event)
@@ -195,7 +195,8 @@ namespace annileen
         m_Time.timeScale = 1.0f;
 
         m_Running = true;
-        m_Time.deltaTime = m_Time.unscaledDeltaTime = m_Time.time = 0;
+        m_Time.deltaTime = m_Time.unscaledDeltaTime = 0.0f;
+        m_Time.time = 0;
 
         m_Gui = new Gui();
 
@@ -249,7 +250,7 @@ namespace annileen
 
     int Engine::getFPS() const
     {
-        return 1.0f / m_Time.deltaTime;
+        return static_cast<int> (1.0f / m_Time.deltaTime);
     }
 
     annileen::Time Engine::getTime()
@@ -265,7 +266,7 @@ namespace annileen
     bool Engine::run()
     {
         double time = glfwGetTime();
-        m_Time.unscaledDeltaTime = time - m_Time.time;
+        m_Time.unscaledDeltaTime = static_cast<float>(time - m_Time.time);
         m_Time.deltaTime = m_Time.unscaledDeltaTime * m_Time.timeScale;
         m_Time.time = time;
 
