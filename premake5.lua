@@ -105,6 +105,7 @@ project "annileen-editor"
 		TOML11_DIR,
 		PERLINNOISE_DIR
 	}	
+	links { "annileen" }
 	filter "action:vs*"
 		defines "_CRT_SECURE_NO_WARNINGS"
 	setBxCompat()
