@@ -20,4 +20,6 @@ namespace annileen
 	typedef SceneNode* SceneNodePtr;
 	typedef SceneNodeModule* SceneNodeModulePtr;
 	typedef Model* ModelPtr;
+	typedef Camera* CameraPtr;
+	typedef Text* TextPtr;
 }
