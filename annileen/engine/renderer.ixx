@@ -7,9 +7,8 @@ module;
 #include <gtc/type_ptr.hpp>
 #include <bgfx/bgfx.h>
 
-#include "engine/forward_decl.h"
-
-#include "engine/core/logger.h"
+#include <engine/forward_decl.h>
+#include <engine/core/logger.h>
 
 export module renderer;
 
@@ -18,7 +17,6 @@ import shaderpass;
 import material;
 import mesh;
 import text;
-import engine;
 import renderview;
 import uniform;
 import skybox;
@@ -43,11 +41,12 @@ export namespace annileen
     class Renderer
     {
     private:
-        Engine* m_Engine;
-        const bgfx::Caps* m_Capabilities;
+        int m_ScreenWidth;
+        int m_ScreenHeight;
+        const bgfx::Caps* m_Capabilities{ nullptr };
         const bgfx::ViewId m_ViewId = 0;
 
-        Shadow* m_Shadow;
+        Shadow* m_Shadow{ nullptr };
 
         RenderView* m_SceneRenderView;
         RenderView* m_ShadowRenderView;
@@ -60,7 +59,7 @@ export namespace annileen
         void renderSceneNode(bgfx::ViewId viewId, ModelPtr model, std::shared_ptr<Material> material);
 
     public:
-        void init(Engine* engine);
+        void init(int screenWidth, int screenHeight);
 
         void render(Scene* scene, Camera* camera);
 
@@ -68,21 +67,16 @@ export namespace annileen
 
         const bgfx::Caps* getCapabilities() const;
 
-        bool useShadows;
+        bool useShadows{ false };
 
-        Renderer();
-        ~Renderer();
+        Renderer() = default;
+        ~Renderer() = default;
     };
 }
 
 
 namespace annileen
 {
-    Renderer::Renderer() : useShadows(false), m_Engine(nullptr), m_Capabilities(nullptr), m_Shadow(nullptr)
-    {
-    }
-
-
     void Renderer::initializeShadows()
     {
         m_Shadow = new Shadow();
@@ -142,9 +136,10 @@ namespace annileen
         m_Shadow->textureRegisterId = 1;
     }
 
-    void Renderer::init(Engine* engine)
+    void Renderer::init(int screenWidth, int screenHeight)
     {
-        m_Engine = engine;
+        m_ScreenWidth = screenWidth;
+        m_ScreenHeight = screenHeight;
 
         m_Capabilities = bgfx::getCaps();
 
@@ -251,9 +246,9 @@ namespace annileen
         Uniform::setVec3Uniform("u_fogColor", scene->fog.color);
 
         // Setup camera
-        camera->updateMatrices();
+        camera->updateMatrices(m_ScreenWidth, m_ScreenHeight);
         bgfx::setViewTransform(m_SceneRenderView->getViewId(), camera->getViewMatrixFloatArray(), camera->getProjectionMatrixFloatArray());
-        bgfx::setViewRect(m_SceneRenderView->getViewId(), 0, 0, Engine::getInstance()->getWidth(), Engine::getInstance()->getHeight());
+        bgfx::setViewRect(m_SceneRenderView->getViewId(), 0, 0, m_ScreenWidth, m_ScreenHeight);
 
         // Clear backbuffer and shadowmap framebuffer at beginning.
         bgfx::setViewClear(m_SceneRenderView->getViewId(), BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 
@@ -290,8 +285,8 @@ namespace annileen
         bx::mtxOrtho(
             ortho
             , centering
-            , Engine::getInstance()->getWidth() + centering
-            , Engine::getInstance()->getHeight() + centering
+            , m_ScreenWidth + centering
+            , m_ScreenHeight + centering
             , centering
             , 0.0f
             , 100.0f
@@ -299,7 +294,7 @@ namespace annileen
             , m_Capabilities->homogeneousDepth
         );
         bgfx::setViewTransform(m_UIRenderView->getViewId(), view, ortho);
-        bgfx::setViewRect(m_UIRenderView->getViewId(), 0, 0, Engine::getInstance()->getWidth(), Engine::getInstance()->getHeight());
+        bgfx::setViewRect(m_UIRenderView->getViewId(), 0, 0, m_ScreenWidth, m_ScreenHeight);
         
         for (auto sceneNode : scene->getNodeList())
         {
@@ -314,7 +309,7 @@ namespace annileen
         {
             if (scene->getSkybox() != nullptr)
             {
-                bgfx::setViewRect(m_SkyboxRenderView->getViewId(), 0, 0, Engine::getInstance()->getWidth(), Engine::getInstance()->getHeight());
+                bgfx::setViewRect(m_SkyboxRenderView->getViewId(), 0, 0, m_ScreenWidth, m_ScreenHeight);
                 bgfx::setViewTransform(m_SkyboxRenderView->getViewId(), camera->getViewRotationMatrixFloatArray(), camera->getProjectionMatrixFloatArray());
                 renderSkybox(m_SkyboxRenderView->getViewId(), camera, scene->getSkybox());
             }
@@ -327,7 +322,7 @@ namespace annileen
 
     void Renderer::initFrame(Scene* scene)
     {
-        scene->getCamera()->updateMatrices();
+        scene->getCamera()->updateMatrices(m_ScreenWidth, m_ScreenHeight);
     }
 
     void Renderer::renderSkybox(bgfx::ViewId viewId, Camera* camera, Skybox* skybox)
@@ -383,9 +378,5 @@ namespace annileen
     const bgfx::Caps* Renderer::getCapabilities() const
     {
         return m_Capabilities;
-    }
-   
-    Renderer::~Renderer()
-    {
-    }
+    } 
 }

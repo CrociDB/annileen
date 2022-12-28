@@ -9,7 +9,6 @@ module;
 export module camera;
 
 import transform;
-import engine;
 import scenenodemodule;
 
 export namespace annileen
@@ -43,7 +42,7 @@ export namespace annileen
         CameraClearType clearType;
         glm::vec3 clearColor;
 
-        void updateMatrices();
+        void updateMatrices(int screenWidth, int screenHeight);
 
         void setForward(const glm::vec3& forward);
 
@@ -69,7 +68,7 @@ export namespace annileen
 
 namespace annileen
 {
-    void Camera::updateMatrices()
+    void Camera::updateMatrices(int screenWidth, int screenHeight)
     {
         m_ViewMatrix = glm::mat4(1.0f);
         glm::mat4 rotate = glm::lookAt(
@@ -82,7 +81,7 @@ namespace annileen
         m_ProjectionMatrix = glm::mat4(1.0f);
         m_ProjectionMatrix = glm::perspective(
             glm::radians(fieldOfView),
-            (float)Engine::getInstance()->getWidth() / (float)Engine::getInstance()->getHeight(),
+            static_cast<float>(screenWidth) / static_cast<float>(screenHeight),
             nearClip,
             farClip);
 
