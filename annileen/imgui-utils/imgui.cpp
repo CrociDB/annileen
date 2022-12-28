@@ -8,7 +8,13 @@
 #include <bx/allocator.h>
 #include <bx/math.h>
 #include <bx/timer.h>
+
+#pragma warning( push )
+ // Suppressing strcpy warning
+#pragma warning( disable : 4996)
 #include <dear-imgui/imgui.h>
+#pragma	warning( pop )
+
 #include <dear-imgui/imgui_internal.h>
 
 #include "imgui.h"

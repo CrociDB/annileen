@@ -6,6 +6,10 @@
 #ifndef IMGUI_H_HEADER_GUARD
 #define IMGUI_H_HEADER_GUARD
 
+#pragma warning( push )
+// Suppressing strcpy warning
+#pragma warning( disable : 4996)
+
 #include <bgfx/bgfx.h>
 #include <dear-imgui/imgui.h>
 #include <iconfontheaders/icons_kenney.h>
@@ -129,5 +133,7 @@ namespace ImGui
 	void PopEnabled();
 
 } // namespace ImGui
+
+#pragma warning( pop )
 
 #endif // IMGUI_H_HEADER_GUARD

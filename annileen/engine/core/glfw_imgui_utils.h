@@ -1,6 +1,11 @@
 #pragma once
 
+#pragma warning( push )
+// Suppressing strcpy warning
+#pragma warning( disable : 4996)
 #include <dear-imgui/imgui.h>
+#pragma warning( pop )
+
 #include <GLFW/glfw3.h>
 
 #define ANNI_GLFW_KEY_TO_IMGUI(X) __getImGuiKeyFromGLFW(X)
