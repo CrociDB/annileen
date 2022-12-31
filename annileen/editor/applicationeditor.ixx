@@ -55,7 +55,7 @@ namespace annileen
 	{
 		m_EditorGui->initialize();
 
-		SceneNodePtr cameraNode = getEngine()->getScene()->createNode("Editor Camera");
+		SceneNodePtr cameraNode = getEngine()->getSceneManager()->getScene()->createNode("Editor Camera");
 		cameraNode->m_Internal = true;
 		m_EditorCamera = cameraNode->addModule<Camera>();
 		m_EditorCamera->fieldOfView = 60.0f;
@@ -80,14 +80,14 @@ namespace annileen
 		}
 		if (showEditorGui)
 		{
-			m_EditorGui->render(getEngine()->getScene(), m_EditorCamera, deltaTime);
+			m_EditorGui->render(getEngine()->getSceneManager()->getScene(), m_EditorCamera, deltaTime);
 		}
 		if (m_EditorGui->m_AssetHotreload)
 		{
 			ServiceProvider::getAssetManager()->updateAssetWatcher();
 		}
 
-		if (m_EditorGui->m_RenderSkybox && getEngine()->getScene()->getSkybox() != nullptr)
+		if (m_EditorGui->m_RenderSkybox && getEngine()->getSceneManager()->getScene()->getSkybox() != nullptr)
 			m_EditorCamera->clearType = CameraClearType::CameraClearSkybox;
 		else
 			m_EditorCamera->clearType = CameraClearType::CameraClearColor;

@@ -37,6 +37,7 @@ import serviceprovider;
 import renderer;
 import uniform;
 import gui;
+import scenemanager;
 
 export namespace annileen
 {
@@ -63,11 +64,10 @@ export namespace annileen
         static bool m_Running;
 
         Gui* m_Gui;
+        SceneManager* m_SceneManager;
 
         Time m_Time;
         uint8_t m_TargetFPS;
-
-        Scene* m_CurrentScene = nullptr;
 
         Engine();
 
@@ -88,6 +88,7 @@ export namespace annileen
         Gui* getGui();
         Renderer* getRenderer();
         Uniform* getUniform();
+        SceneManager* getSceneManager();
         GLFWwindow* getGLFWWindow();
 
         uint16_t getWidth() const;
@@ -98,9 +99,6 @@ export namespace annileen
 
         int getFPS() const;
         Time getTime();
-
-        void setScene(Scene* scene);
-        Scene* getScene() { return m_CurrentScene; }
 
         bool run();
         void terminate();
@@ -270,6 +268,7 @@ namespace annileen
             return 1;
 
         Font::initializeFontManager();
+        m_SceneManager = new SceneManager();
 
         m_Renderer = new Renderer();
         m_Renderer->init(m_Width, m_Height);
@@ -303,6 +302,11 @@ namespace annileen
     Renderer* Engine::getRenderer()
     {
         return m_Renderer;
+    }
+
+    SceneManager* Engine::getSceneManager()
+    {
+        return m_SceneManager;
     }
 
     GLFWwindow* Engine::getGLFWWindow()
@@ -339,11 +343,6 @@ namespace annileen
     annileen::Time Engine::getTime()
     {
         return m_Time;
-    }
-
-    void Engine::setScene(Scene* scene)
-    {
-        m_CurrentScene = scene;
     }
 
     bool Engine::run()
@@ -396,9 +395,10 @@ namespace annileen
 
     void Engine::render(Camera* replacementCamera)
     {
-        if (m_CurrentScene != nullptr)
+        Scene* scene = m_SceneManager->getScene();
+        if (scene != nullptr)
         {
-            m_Renderer->render(m_CurrentScene, replacementCamera);
+            m_Renderer->render(scene, replacementCamera);
         }
 
         bgfx::frame();
@@ -430,30 +430,22 @@ namespace annileen
 
         AssetManager* assetManager = ServiceProvider::getAssetManager();
         ServiceProvider::provideAssetManager(nullptr);
-        if (assetManager != nullptr)
-        {
-            delete assetManager;
-        }
+        delete assetManager;
+        assetManager = nullptr;
 
         Settings* settings = ServiceProvider::getSettings();
         ServiceProvider::provideSettings(nullptr);
-        if (settings != nullptr)
-        {
-            delete settings;
-        }
+        
+        delete settings;
+        settings = nullptr;
 
         Font::destroyFontManager();
 
-        if (m_Gui != nullptr)
-        {
-            delete m_Gui;
-        }
+        delete m_Gui;
+        m_Gui = nullptr;
 
-        SceneManager* sceneManager = ServiceProvider::getSceneManager();
-        if (sceneManager != nullptr)
-        {
-            delete sceneManager;
-        }
+        delete m_SceneManager;
+        m_SceneManager = nullptr;
 
         Uniform::destroy();
         bgfx::shutdown();

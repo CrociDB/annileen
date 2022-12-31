@@ -79,7 +79,7 @@ export namespace annileen
 		std::vector<const char*> m_ConsoleLoggingLevelsList;
 
 		EditorGui();
-		~EditorGui();
+		~EditorGui() = default;
 
 		ViewHandleMode m_HandleMode;
 		ViewHandleOperation m_HandleOperation;
@@ -161,11 +161,6 @@ namespace annileen
 		m_RenderSkybox = true;
 
 		m_AssetHotreload = true;
-	}
-
-	EditorGui::~EditorGui()
-	{
-
 	}
 
 	void EditorGui::initialize()

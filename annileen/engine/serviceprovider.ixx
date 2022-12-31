@@ -5,7 +5,6 @@ export module serviceprovider;
 //import audio;
 import assetmanager;
 import settings;
-import scenemanager;
 
 export namespace annileen
 {
@@ -18,7 +17,6 @@ export namespace annileen
 		//static Audio* m_audioService;
 		static AssetManager* s_AssetManagerService;
 		static Settings* s_SettingsService;
-		static SceneManager* s_SceneManager;
 
 	public:
 		ServiceProvider(const ServiceProvider&) = delete;
@@ -36,9 +34,6 @@ export namespace annileen
 
 		static void provideSettings(Settings* settings);
 		static Settings* getSettings();
-
-		static void provideSceneManager(SceneManager* sceneManager);
-		static SceneManager* getSceneManager();
 	};
 }
 
@@ -46,7 +41,6 @@ namespace annileen
 {
 	AssetManager* ServiceProvider::s_AssetManagerService = nullptr;
 	Settings* ServiceProvider::s_SettingsService = nullptr;
-	SceneManager* ServiceProvider::s_SceneManager = nullptr;
 
 	void ServiceProvider::provideAssetManager(AssetManager* assetManager)
 	{
@@ -66,20 +60,5 @@ namespace annileen
 	Settings* ServiceProvider::getSettings()
 	{
 		return s_SettingsService;
-	}
-
-	void ServiceProvider::provideSceneManager(SceneManager* sceneManager)
-	{
-		if (s_SceneManager != nullptr)
-		{
-			delete s_SceneManager;
-		}
-
-		s_SceneManager = sceneManager;
-	}
-	
-	SceneManager* ServiceProvider::getSceneManager()
-	{
-		return s_SceneManager;
 	}
 }

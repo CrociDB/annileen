@@ -277,7 +277,7 @@ annileen::SceneNodePtr Chunk::getSceneNode()
 {
     if (m_Node == nullptr)
     {
-        annileen::Scene* scene = annileen::Engine::getInstance()->getScene();
+        annileen::Scene* scene = annileen::Engine::getInstance()->getSceneManager()->getScene();
         m_Node = scene->createNode("Chunk");
 
         m_Model = m_Node->addModule<annileen::Model>();

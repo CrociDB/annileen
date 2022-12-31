@@ -26,6 +26,7 @@ export module application;
 import text;
 import engine;
 import camera;
+import scenemanager;
 import scene;
 import scenenode;
 import input;
@@ -77,13 +78,13 @@ export namespace annileen
 			}
 	
 			scene->start();
-			m_Engine->setScene(scene);
+			getEngine()->getSceneManager()->setScene(scene);
 	
 	#ifdef _ANNILEEN_COMPILER_EDITOR
 			initializeEditorGui();
 	#endif
 	
-			SceneNodePtr cameraNode = m_Engine->getScene()->createNode("No camera");
+			SceneNodePtr cameraNode = getEngine()->getSceneManager()->getScene()->createNode("No camera");
 			cameraNode->m_Internal = true;
 			m_NoCamera = cameraNode->addModule<Camera>();
 			m_NoCamera->fieldOfView = 60.0f;
@@ -94,7 +95,7 @@ export namespace annileen
 			m_NoCamera->clearColor = glm::vec3(0, 0, 0);
 			cameraNode->flags = SceneNodeFlags_Hide;
 			
-			SceneNodePtr TextNode = m_Engine->getScene()->createNode("No camera text");
+			SceneNodePtr TextNode = getEngine()->getSceneManager()->getScene()->createNode("No camera text");
 			TextNode->m_Internal = true;
 			m_NoCameraText = TextNode->addModule<Text>();
 			m_NoCameraText->setStatic(true);
@@ -146,7 +147,7 @@ export namespace annileen
 
 		virtual void render()
 		{
-			Camera* camera = getEngine()->getScene()->getCamera();
+			Camera* camera = getEngine()->getSceneManager()->getScene()->getCamera();
 			if (camera == nullptr)
 			{
 				m_NoCamera->getSceneNode()->setActive(true);
