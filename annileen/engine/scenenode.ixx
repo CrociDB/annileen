@@ -7,7 +7,7 @@ module;
 #include <typeindex>
 #include <typeinfo>
 #include <memory>
-#include "engine/forward_decl.h"
+#include <engine/forward_decl.h>
 
 export module scenenode;
 
@@ -27,7 +27,6 @@ export namespace annileen
 		Transform m_Transform;
 		std::vector<SceneNodePtr> m_Children;
 		SceneNodePtr m_Parent;
-		Scene* m_ParentScene;
 
 		bool m_Active;
 		// Flag used internally to identify system scene nodes.
@@ -44,13 +43,9 @@ export namespace annileen
 		SceneNode(const std::string& name);
 
 		friend class Scene;
+		friend class SceneManager;
 		friend class Application;
 		friend class ApplicationEditor;
-
-		void addCameraModule(Camera* camera);
-		void addLightModule(Light* light);
-		void removeCameraModule(Camera* camera);
-		void removeLightModule(Light* light);
 
 	public:
 		int flags = 0;
@@ -60,10 +55,8 @@ export namespace annileen
 		std::string tag = "";
 		//int hashedTag = 0;
 
-		void setParentScene(Scene* scene);
 		void setParent(SceneNodePtr node);
 		SceneNodePtr getParent();
-		Scene* getParentScene() { return m_ParentScene; }
 		std::vector<SceneNodePtr> getChildren();
 
 		void setActive(bool active) { m_Active = active; }
@@ -82,100 +75,100 @@ export namespace annileen
 		std::vector<SceneNodePtr>::iterator findChild(SceneNodePtr node);
 		bool hasChild(SceneNodePtr node);
 
-		template <class T> T* getModule() const;
-		template <class T> T* addModule();
-		template <class T> bool removeModule();
-
-		~SceneNode();
+		~SceneNode() = default;
 	};
+}
 
-	// Template implementations
+namespace annileen
+{
+	size_t SceneNode::m_IdCount = 0;
 
-	template <class T>
-	T* SceneNode::getModule() const
+	SceneNode::SceneNode(const std::string& name) : m_Parent(nullptr), m_Active(true), name(name)
+		, m_Internal(false)
 	{
-		auto moduleIt = m_Modules.find(typeid(T));
-
-		if (moduleIt != m_Modules.end())
-		{
-			return static_cast<T*>(moduleIt->second);
-		}
-
-		return nullptr;
+		m_Id = m_IdCount++;
 	}
 
-	template <class T>
-	T* SceneNode::addModule()
+	void SceneNode::deParent()
 	{
-		if (!std::is_base_of<SceneNodeModule, T>::value)
-		{
-			//ANNILEEN_LOGF_ERROR(LoggingChannel::General, "\"{0}\" cannot be added because it is not a module.", typeid(T).name());
-			return nullptr;
-		}
-
-		auto moduleIt = m_Modules.find(typeid(T));
-
-		if (moduleIt != m_Modules.end())
-		{
-			//ANNILEEN_LOG_ERROR(LoggingChannel::General, "This SceneNode has a Module of this type already. Remove the existing module before adding a new one of the same type.");
-			return nullptr;
-		}
-
-		T* module = new T();
-
-		m_Modules[typeid(T)] = static_cast<SceneNodeModulePtr>(module);
-
-		module->m_SceneNode = this;
-
-		if (!m_Internal)
-		{
-			if constexpr (std::is_same<T, Camera>::value)
-			{
-				addCameraModule(module);
-			}
-			else if constexpr (std::is_same<T, Light>::value)
-			{
-				addLightModule(module);
-			}
-		}
-
-		return module;
+		if (m_Parent != nullptr)
+			m_Parent->m_Children.erase(
+				std::remove(m_Parent->m_Children.begin(), m_Parent->m_Children.end(), this),
+				m_Parent->m_Children.end());
 	}
 
-	template <class T>
-	bool SceneNode::removeModule()
+	void SceneNode::setParent(SceneNodePtr node)
 	{
-		auto moduleIt = m_Modules.find(typeid(T));
+		if (m_Parent == node) return;
+		if (node == nullptr) return;
 
-		if (moduleIt == m_Modules.end())
+		deParent();
+
+		m_Parent = node;
+
+		m_Parent->m_Children.push_back(this);
+	}
+
+	SceneNodePtr SceneNode::getParent()
+	{
+		return m_Parent;
+	}
+
+	std::vector<SceneNodePtr> SceneNode::getChildren()
+	{
+		return m_Children;
+	}
+
+	Transform& SceneNode::getTransform()
+	{
+		return m_Transform;
+	}
+
+	bool SceneNode::getActive()
+	{
+		SceneNode* currentNode = this;
+		while (currentNode != nullptr)
 		{
-			//ANNILEEN_LOG_ERROR(LoggingChannel::General, "This SceneNode does not have a Module of this type.");
-			return false;
-		}
-
-		T* module = static_cast<T*>(moduleIt->second);
-
-		if (module != nullptr)
-		{
-			module->m_SceneNode = nullptr;
-
-			if (!m_Internal)
+			if (currentNode->m_Active == false)
 			{
-				if constexpr (std::is_same<T, Camera>::value)
-				{
-					removeCameraModule(module);
-				}
-				else if constexpr (std::is_same<T, Light>::value)
-				{
-					removeLightModule(module);
-				}
+				return false;
 			}
-
-			delete module;
+			currentNode = currentNode->m_Parent;
 		}
-
-		m_Modules.erase(moduleIt);
-
 		return true;
+	}
+
+	void SceneNode::setSiblingIndex(size_t index)
+	{
+		index = std::min(index, m_Parent->m_Children.size() - 1);
+		setSiblingPosition(m_Parent->m_Children.begin() + index);
+	}
+
+	void SceneNode::setSiblingPosition(std::vector<SceneNodePtr>::iterator position)
+	{
+		std::rotate(position, getSiblingIterator(), m_Parent->m_Children.end());
+	}
+
+	std::vector<SceneNodePtr>::iterator SceneNode::getSiblingIterator()
+	{
+		auto it = std::find(m_Parent->m_Children.begin(), m_Parent->m_Children.end(), this);
+		return it;
+	}
+
+	size_t SceneNode::getSiblingIndex()
+	{
+		return std::distance(
+			m_Parent->m_Children.begin(),
+			std::find(m_Parent->m_Children.begin(), m_Parent->m_Children.end(), this));
+	}
+
+	std::vector<SceneNodePtr>::iterator SceneNode::findChild(SceneNodePtr node)
+	{
+		return std::find(m_Children.begin(), m_Children.end(), node);
+	}
+
+	bool SceneNode::hasChild(SceneNodePtr node)
+	{
+		return findChild(node) != m_Children.end();
 	}
 }

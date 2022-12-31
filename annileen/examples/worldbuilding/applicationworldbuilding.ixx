@@ -9,6 +9,7 @@ module;
 export module applicationworldbuilding;
 
 import gamescene;
+import scenemanager;
 
 export ANNILEEN_APP_CLASS_DECLARATION(ApplicationWorldBuilding)
 {
@@ -31,7 +32,7 @@ public:
 
 annileen::Scene* ApplicationWorldBuilding::init()
 {
-	GameScene* scene = new GameScene();
+	GameScene* scene = annileen::SceneManager::getInstance()->createScene<GameScene>();
 
 	// Initialize Camera
 	m_Speed = 3.0f;

@@ -64,7 +64,6 @@ export namespace annileen
         static bool m_Running;
 
         Gui* m_Gui;
-        SceneManager* m_SceneManager;
 
         Time m_Time;
         uint8_t m_TargetFPS;
@@ -88,7 +87,6 @@ export namespace annileen
         Gui* getGui();
         Renderer* getRenderer();
         Uniform* getUniform();
-        SceneManager* getSceneManager();
         GLFWwindow* getGLFWWindow();
 
         uint16_t getWidth() const;
@@ -268,7 +266,6 @@ namespace annileen
             return 1;
 
         Font::initializeFontManager();
-        m_SceneManager = new SceneManager();
 
         m_Renderer = new Renderer();
         m_Renderer->init(m_Width, m_Height);
@@ -302,11 +299,6 @@ namespace annileen
     Renderer* Engine::getRenderer()
     {
         return m_Renderer;
-    }
-
-    SceneManager* Engine::getSceneManager()
-    {
-        return m_SceneManager;
     }
 
     GLFWwindow* Engine::getGLFWWindow()
@@ -395,7 +387,7 @@ namespace annileen
 
     void Engine::render(Camera* replacementCamera)
     {
-        Scene* scene = m_SceneManager->getScene();
+        Scene* scene = SceneManager::getInstance()->getScene();
         if (scene != nullptr)
         {
             m_Renderer->render(scene, replacementCamera);
@@ -443,9 +435,6 @@ namespace annileen
 
         delete m_Gui;
         m_Gui = nullptr;
-
-        delete m_SceneManager;
-        m_SceneManager = nullptr;
 
         Uniform::destroy();
         bgfx::shutdown();

@@ -39,6 +39,7 @@ import scenenode;
 import input;
 import settings;
 import serviceprovider;
+import scenemanager;
 
 export namespace annileen
 {
@@ -136,7 +137,9 @@ export namespace annileen
 
 		if (newSceneNode != nullptr)
 		{
-			SceneNodeModule* newModule = newSceneNode->addModule<T>();
+			SceneNodeModule* newModule = SceneManager::getInstance()->addModule<T>(
+				SceneManager::getInstance()->getScene(),
+				newSceneNode);
 		}
 	}
 }
@@ -300,13 +303,13 @@ namespace annileen
 
 		if (m_SceneNodeToBeRemoved != nullptr)
 		{
-			Scene* scene = m_SceneNodeToBeRemoved->getParentScene();
+			Scene* scene = SceneManager::getInstance()->getScene();
 
 			if (scene != nullptr)
 			{
 				m_SelectedSceneNode = nullptr;
 
-				scene->destroyNode(m_SceneNodeToBeRemoved);
+				SceneManager::getInstance()->destroySceneNode(scene, m_SceneNodeToBeRemoved);
 			}
 
 			m_SceneNodeToBeRemoved = nullptr;
@@ -327,7 +330,7 @@ namespace annileen
 				m_HasWindowFocused = true;
 				Engine::getInstance()->getInput()->m_Enabled = false;
 			}
-		}
+		}	
 	}
 
 	void EditorGui::drawMainWindowToolbar()
@@ -541,11 +544,12 @@ namespace annileen
 			// Focus object: make camera look at the object
 		}
 
-		Text* text = m_SelectedSceneNode->getModule<Text>();
+		Text* text = SceneManager::getInstance()->getModule<Text>(m_SelectedSceneNode);
 
 		if (text != nullptr)
 		{
 			drawTextModuleProperties(text);
+			ImGui::End();
 			return;
 		}
 
@@ -594,19 +598,19 @@ namespace annileen
 
 
 		// Modules
-		Model* modModel = m_SelectedSceneNode->getModule<Model>();
+		Model* modModel = SceneManager::getInstance()->getModule<Model>(m_SelectedSceneNode);
 		if (modModel != nullptr)
 		{
 			drawModelModuleProperties(modModel);
 		}
 
-		Camera* modCamera = m_SelectedSceneNode->getModule<Camera>();
+		Camera* modCamera = SceneManager::getInstance()->getModule<Camera>(m_SelectedSceneNode);
 		if (modCamera != nullptr)
 		{
 			drawCameraModuleProperties(modCamera);
 		}
 
-		Light* modLight = m_SelectedSceneNode->getModule<Light>();
+		Light* modLight = SceneManager::getInstance()->getModule<Light>(m_SelectedSceneNode);
 		if (modLight != nullptr)
 		{
 			drawLightModuleProperties(modLight);
@@ -1062,7 +1066,7 @@ namespace annileen
 
 	SceneNodePtr EditorGui::drawSceneNode(SceneNodePtr const sceneNode, std::string nodeName)
 	{
-		Scene* scene = sceneNode->getParentScene();
+		Scene* scene = SceneManager::getInstance()->getScene();
 		SceneNodePtr newSceneNode = nullptr;
 
 		if (ImGui::Selectable("Above"))

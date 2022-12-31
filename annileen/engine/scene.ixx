@@ -34,7 +34,12 @@ export namespace annileen
         void addNodeToList(SceneNodePtr node);
         void removeNodeFromList(SceneNodePtr node);
 
+        friend class SceneManager;
         friend class SceneNode;
+
+    protected:
+        Scene();
+        virtual ~Scene();
     public:
         Fog fog;
 
@@ -43,8 +48,7 @@ export namespace annileen
 
         SceneNodePtr getRoot();
 
-        SceneNodePtr createNode(const std::string& name);
-        void destroyNode(SceneNodePtr node);
+        SceneNodePtr createNode(const std::string& name);       
 
         void setSkybox(Skybox* skybox) { m_Skybox = skybox; }
         Skybox* getSkybox() const { return m_Skybox; }
@@ -53,9 +57,6 @@ export namespace annileen
         std::list<Light*>& getLightList();
         std::list<Camera*>& getCameraList();
         Camera* getCamera();
-
-        Scene();
-        ~Scene();
     };
 }
 
@@ -69,14 +70,9 @@ namespace annileen
     SceneNodePtr Scene::createNode(const std::string& name)
     {
         auto node = new SceneNode(name);
-        node->setParentScene(this);
+        m_Nodes.push_back(node);
         node->setParent(getRoot());
         return node;
-    }
-
-    void Scene::destroyNode(SceneNodePtr node)
-    {
-        delete node;
     }
 
     void Scene::addNodeToList(SceneNodePtr node)

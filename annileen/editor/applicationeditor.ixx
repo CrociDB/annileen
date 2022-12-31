@@ -9,7 +9,7 @@ export module applicationeditor;
 
 import editorgui;
 import application;
-import editorgui;
+import scenemanager;
 import scenenode;
 import serviceprovider;
 
@@ -21,8 +21,8 @@ export namespace annileen
 		EditorGui* m_EditorGui;
 		Camera* m_EditorCamera;
 
-		virtual void initializeEditorGui();
-		virtual void editorUpdate(float deltaTime);
+		virtual void initializeEditorGui(Scene* scene);
+		virtual void editorUpdate(Scene* scene, float deltaTime);
 
 	protected:
 		void render() override;
@@ -51,13 +51,13 @@ namespace annileen
 		}
 	}
 
-	void ApplicationEditor::initializeEditorGui()
+	void ApplicationEditor::initializeEditorGui(Scene* scene)
 	{
 		m_EditorGui->initialize();
-
-		SceneNodePtr cameraNode = getEngine()->getSceneManager()->getScene()->createNode("Editor Camera");
+		
+		SceneNodePtr cameraNode = scene->createNode("Editor Camera");
 		cameraNode->m_Internal = true;
-		m_EditorCamera = cameraNode->addModule<Camera>();
+		m_EditorCamera = SceneManager::getInstance()->addModule<Camera>(scene, cameraNode);
 		m_EditorCamera->fieldOfView = 60.0f;
 		m_EditorCamera->nearClip = 0.1f;
 		m_EditorCamera->farClip = 300.0f;
@@ -68,7 +68,7 @@ namespace annileen
 		ANNILEEN_LOG_INFO(LoggingChannel::General, "Initialized Editor GUI");	 	
 	}
 
-	void ApplicationEditor::editorUpdate(float deltaTime)
+	void ApplicationEditor::editorUpdate(Scene* scene, float deltaTime)
 	{
 		if (m_EditorGui->m_Mode == EditorGui::Mode::Game)
 		{
@@ -80,14 +80,14 @@ namespace annileen
 		}
 		if (showEditorGui)
 		{
-			m_EditorGui->render(getEngine()->getSceneManager()->getScene(), m_EditorCamera, deltaTime);
+			m_EditorGui->render(scene, m_EditorCamera, deltaTime);
 		}
 		if (m_EditorGui->m_AssetHotreload)
 		{
 			ServiceProvider::getAssetManager()->updateAssetWatcher();
 		}
 
-		if (m_EditorGui->m_RenderSkybox && getEngine()->getSceneManager()->getScene()->getSkybox() != nullptr)
+		if (m_EditorGui->m_RenderSkybox && scene->getSkybox() != nullptr)
 			m_EditorCamera->clearType = CameraClearType::CameraClearSkybox;
 		else
 			m_EditorCamera->clearType = CameraClearType::CameraClearColor;

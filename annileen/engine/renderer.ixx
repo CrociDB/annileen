@@ -21,6 +21,7 @@ import renderview;
 import uniform;
 import skybox;
 import light;
+import scenemanager;
 import scene;
 import transform;
 import camera;
@@ -225,7 +226,7 @@ namespace annileen
 
             for (auto sceneNode : scene->getNodeList())
             {
-                ModelPtr model = sceneNode->getModule<Model>();
+                ModelPtr model = SceneManager::getInstance()->getModule<Model>(sceneNode);
 
                 if (model == nullptr || !sceneNode->getActive() || !model->enabled) continue;
 
@@ -259,7 +260,7 @@ namespace annileen
 
         for (auto sceneNode : scene->getNodeList())
         {
-            ModelPtr model = sceneNode->getModule<Model>();
+            ModelPtr model = SceneManager::getInstance()->getModule<Model>(sceneNode);
 
             if (model == nullptr || model->getMeshGroup() == nullptr || !sceneNode->getActive() || !model->enabled) continue;
 
@@ -298,7 +299,7 @@ namespace annileen
         
         for (auto sceneNode : scene->getNodeList())
         {
-            TextPtr text = sceneNode->getModule<Text>();
+            TextPtr text = SceneManager::getInstance()->getModule<Text>(sceneNode);
 
             if (!sceneNode->getActive() || text == nullptr || !text->enabled ) continue;
 

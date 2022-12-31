@@ -15,6 +15,7 @@ export module chunk;
 import engine;
 import mesh;
 import allocators;
+import scenemanager;
 import scene;
 import scenenode;
 import model;
@@ -67,7 +68,7 @@ public:
     void setMaterial(std::shared_ptr<Material> material) { m_Material = material; }
 
     void generateGrid();
-    SceneNodePtr getSceneNode();
+    SceneNodePtr getSceneNode(Scene* scene);
 
     Chunk(int wx, int wz);
     ~Chunk();
@@ -273,14 +274,13 @@ void Chunk::generateGrid()
     generateMesh();
 }
 
-annileen::SceneNodePtr Chunk::getSceneNode()
+annileen::SceneNodePtr Chunk::getSceneNode(Scene* scene)
 {
     if (m_Node == nullptr)
     {
-        annileen::Scene* scene = annileen::Engine::getInstance()->getSceneManager()->getScene();
         m_Node = scene->createNode("Chunk");
 
-        m_Model = m_Node->addModule<annileen::Model>();
+        m_Model = annileen::SceneManager::getInstance()->addModule<annileen::Model>(scene, m_Node);
         m_Model->init(m_MeshGroup, m_Material);
 
         m_Node->getTransform().position(glm::vec3(

@@ -16,6 +16,7 @@ export namespace annileen
 		// Reference to scene node where module is attached.
 		SceneNode* m_SceneNode;
 
+		friend class SceneManager;
 		friend class SceneNode;
 
 	public:

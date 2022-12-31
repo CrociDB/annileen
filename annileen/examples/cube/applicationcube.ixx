@@ -11,6 +11,7 @@ module;
 
 export module applicationcube;
 
+import scenemanager;
 import scene;
 import scenenode;
 import shaderpass;
@@ -42,7 +43,7 @@ public:
 
 Scene* ApplicationCube::init()
 {
-    Scene* scene = new Scene();
+    Scene* scene = SceneManager::getInstance()->createScene<Scene>();
     //getEngine()->setScene(scene);
 
     annileen::Shader* shader = nullptr;
@@ -77,7 +78,7 @@ Scene* ApplicationCube::init()
     material->setTexture("s_mainNormal", normalmap);
 
     m_ModelNode = scene->createNode("Statue");
-    ModelPtr model = m_ModelNode->addModule<Model>();
+    ModelPtr model = SceneManager::getInstance()->addModule<Model>(scene, m_ModelNode);
     model->init(ServiceProvider::getAssetManager()->getMesh("statue_decoration.obj"), material);
     m_ModelNode->getTransform().translate(glm::vec3(-1.0, -1.0, -1.0));
     m_ModelNode->getTransform().scale(glm::vec3(.1, .1, .1));
@@ -91,20 +92,20 @@ Scene* ApplicationCube::init()
     material1->setTexture("s_mainNormal", normalmap1);
 
     auto node1 = scene->createNode("AngelStatue");
-    ModelPtr model1 = node1->addModule<Model>();
+    ModelPtr model1 = SceneManager::getInstance()->addModule<Model>(scene, node1);
     model1->init(ServiceProvider::getAssetManager()->getMesh("statue.obj"), material1);
     node1->getTransform().translate(glm::vec3(-15.0, -1.0, -1.0));
     node1->getTransform().scale(glm::vec3(.07, .07, .07));
 
     SceneNodePtr cameraNode = scene->createNode("Camera");
-    Camera* camera = cameraNode->addModule<Camera>();
+    Camera* camera = SceneManager::getInstance()->addModule<Camera>(scene, cameraNode);
     camera->fieldOfView = 60.0f;
     camera->nearClip = 0.1f;
     camera->farClip = 300.0f;
     camera->getTransform().translate(glm::vec3(-5.0f, 0.0f, -5.0f));
     camera->setForward(m_ModelNode->getTransform().position() - camera->getTransform().position());
     SceneNodePtr lightNode = scene->createNode("Light");
-    Light* light = lightNode->addModule<Light>();
+    Light* light = SceneManager::getInstance()->addModule<Light>(scene, lightNode);
 
     light->color = glm::vec3(1.0f, 1.0f, .8f);
     light->type = LightType::Directional;

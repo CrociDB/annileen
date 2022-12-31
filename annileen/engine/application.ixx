@@ -50,8 +50,8 @@ export namespace annileen
 	// ApplicationEditor has to be able to inject the editor gui stuff
 	#ifdef _ANNILEEN_COMPILER_EDITOR
 		friend class ApplicationEditor;
-		virtual void initializeEditorGui() = 0;
-		virtual void editorUpdate(float deltaTime) = 0;
+		virtual void initializeEditorGui(Scene* scene) = 0;
+		virtual void editorUpdate(Scene* scene, float deltaTime) = 0;
 	#endif
 
 	private:
@@ -78,15 +78,14 @@ export namespace annileen
 			}
 	
 			scene->start();
-			getEngine()->getSceneManager()->setScene(scene);
 	
 	#ifdef _ANNILEEN_COMPILER_EDITOR
-			initializeEditorGui();
+			initializeEditorGui(scene);
 	#endif
 	
-			SceneNodePtr cameraNode = getEngine()->getSceneManager()->getScene()->createNode("No camera");
+			SceneNodePtr cameraNode = scene->createNode("No camera");
 			cameraNode->m_Internal = true;
-			m_NoCamera = cameraNode->addModule<Camera>();
+			m_NoCamera = SceneManager::getInstance()->addModule<Camera>(scene, cameraNode);
 			m_NoCamera->fieldOfView = 60.0f;
 			m_NoCamera->nearClip = 0.01f;
 			m_NoCamera->farClip = 0.02f;
@@ -95,15 +94,15 @@ export namespace annileen
 			m_NoCamera->clearColor = glm::vec3(0, 0, 0);
 			cameraNode->flags = SceneNodeFlags_Hide;
 			
-			SceneNodePtr TextNode = getEngine()->getSceneManager()->getScene()->createNode("No camera text");
-			TextNode->m_Internal = true;
-			m_NoCameraText = TextNode->addModule<Text>();
+			SceneNodePtr textNode = scene->createNode("No camera text");
+			textNode->m_Internal = true;
+			m_NoCameraText = SceneManager::getInstance()->addModule<Text>(scene, textNode);
 			m_NoCameraText->setStatic(true);
 			m_NoCameraText->setScreenPosition(Engine::getInstance()->getWidth()/2.0f - 100.0f, Engine::getInstance()->getHeight()/2.0f);
 			m_NoCameraText->setTextColor(glm::vec3(1, 1, 1));
 			m_NoCameraText->setStyle(Text::TextStyle::Normal);
 			m_NoCameraText->setText("No Camera");
-			TextNode->setParent(cameraNode);
+			textNode->setParent(cameraNode);
 	
 			cameraNode->setActive(false);
 	
@@ -122,7 +121,7 @@ export namespace annileen
 				scene->update();
 	
 	#ifdef _ANNILEEN_COMPILER_EDITOR
-				editorUpdate(dt);
+				editorUpdate(scene, dt);
 	#else
 				update(dt);
 	#endif
@@ -147,7 +146,7 @@ export namespace annileen
 
 		virtual void render()
 		{
-			Camera* camera = getEngine()->getSceneManager()->getScene()->getCamera();
+			Camera* camera = SceneManager::getInstance()->getScene()->getCamera();
 			if (camera == nullptr)
 			{
 				m_NoCamera->getSceneNode()->setActive(true);

@@ -26,6 +26,7 @@ import camera;
 import scene;
 import material;
 import chunk;
+import scenemanager;
 
 using namespace annileen;
 
@@ -47,6 +48,7 @@ private:
 
     void addChunk(Chunk* chunk);
     void removeChunk(Chunk* chunk);
+    
 public:
     void buildMap();
 
@@ -54,8 +56,7 @@ public:
     void update() override;
 
     GameScene() = default;
-    ~GameScene() = default;
-
+    virtual ~GameScene() = default;
 };
 
 void GameScene::buildMap()
@@ -94,7 +95,7 @@ void GameScene::buildMap()
     fog.power = 1.3f;
 
     SceneNodePtr lightNode = createNode("Light");
-    Light* light = lightNode->addModule<Light>();
+    Light* light = SceneManager::getInstance()->addModule<Light>(this, lightNode);
 
     light->color = glm::vec3(1.0f, 1.0f, .8f);
     light->type = LightType::Directional;
@@ -103,13 +104,13 @@ void GameScene::buildMap()
 
     SceneNodePtr cameraNode = createNode("Camera");
 
-    Camera* camera = cameraNode->addModule<Camera>();
+    Camera* camera = SceneManager::getInstance()->addModule<Camera>(this, cameraNode);
     camera->fieldOfView = 60.0f;
     camera->nearClip = 0.1f;
     camera->farClip = 300.0f;
 
     SceneNodePtr textNode = createNode("Text");
-    Text* text = textNode->addModule<Text>();
+    Text* text = SceneManager::getInstance()->addModule<Text>(this, textNode);
     text->setStatic(true);
     text->setSdf(true);
 
@@ -121,7 +122,7 @@ void GameScene::buildMap()
     text->setText("This is a Annileen\nUsing SDF");
 
     SceneNodePtr textNode2 = createNode("Text2");
-    Text* text2 = textNode2->addModule<Text>();
+    Text* text2 = SceneManager::getInstance()->addModule<Text>(this, textNode2);
 
     text2->setFont(ServiceProvider::getAssetManager()->getFont("bleeding_cowboys.ttf")->getHandle());
     text2->setScreenPosition(Engine::getInstance()->getWidth() - 200.0f, 300.0f);
@@ -162,7 +163,7 @@ void GameScene::removeFarthestChunk()
             continue;
         }
 
-        auto d = glm::abs(glm::length(cameraPos - c.second->getSceneNode()->getTransform().position()));
+        auto d = glm::abs(glm::length(cameraPos - c.second->getSceneNode(this)->getTransform().position()));
         if (dist < d)
         {
             k = true;
@@ -183,12 +184,12 @@ void GameScene::removeFarthestChunk()
 void GameScene::addChunk(Chunk* chunk)
 {
     // Get it, so it gets built
-    chunk->getSceneNode();
+    chunk->getSceneNode(this);
 }
 
 void GameScene::removeChunk(Chunk* chunk)
 {
-    SceneNode* node = chunk->getSceneNode();
+    SceneNode* node = chunk->getSceneNode(this);
     if (node != nullptr)
     {
         delete node;
