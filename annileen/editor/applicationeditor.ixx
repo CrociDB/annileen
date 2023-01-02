@@ -53,7 +53,7 @@ namespace annileen
 
 	void ApplicationEditor::initializeEditorGui(Scene* scene)
 	{
-		m_EditorGui->initialize();
+		m_EditorGui->initialize(m_Engine);
 		
 		SceneNodePtr cameraNode = scene->createNode("Editor Camera");
 		cameraNode->m_Internal = true;

@@ -81,7 +81,7 @@ export namespace annileen
         static void glfw_charCallback(GLFWwindow* window, unsigned int c);
 
     public:
-        int init(int width, int height, const std::string& assetfile, const std::string& settingsfile, std::string applicationName);
+        int init(const std::string& assetfile, const std::string& settingsfile, std::string applicationName);
 
         std::shared_ptr<Input> getInput();
         Gui* getGui();
@@ -209,15 +209,12 @@ namespace annileen
     }
 
 
-    int Engine::init(int width, int height, const std::string& assetfile, const std::string& settingsfile, std::string applicationName)
+    int Engine::init(const std::string& assetfile, const std::string& settingsfile, std::string applicationName)
     {
-        m_Width = width;
-        m_Height = height;
         m_ApplicationName = applicationName;
 
         // Initialize services
         Logger::initialize();
-
 
         AssetManager* assetManager = new AssetManager(assetfile);
         ServiceProvider::provideAssetManager(assetManager);
@@ -225,6 +222,9 @@ namespace annileen
         Settings* settings = new Settings();
         settings->loadSettings(settingsfile);
         ServiceProvider::provideSettings(settings);
+
+        m_Width = static_cast<uint16_t>(settings->getData()->windowResolution.x);
+        m_Height = static_cast<uint16_t>(settings->getData()->windowResolution.y);
 
         // Initialize GLFW
         glfwSetErrorCallback(&Engine::glfw_errorCallback);

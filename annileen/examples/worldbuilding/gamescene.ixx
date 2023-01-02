@@ -114,8 +114,9 @@ void GameScene::buildMap()
     text->setStatic(true);
     text->setSdf(true);
 
+    float screenWidth = static_cast<float>(ServiceProvider::getSettings()->getData()->windowResolution.x);
     text->setFont(ServiceProvider::getAssetManager()->getFont("droidsans.ttf")->getHandle());
-    text->setScreenPosition(Engine::getInstance()->getWidth() - 300.0f, 200.0f);
+    text->setScreenPosition(screenWidth - 300.0f, 200.0f);
     text->setTextColor(glm::vec3(1, 0, 0));
     text->setBackgroundColor(glm::vec3(0.5));
     text->setStyle(Text::TextStyle::Background);
@@ -125,7 +126,7 @@ void GameScene::buildMap()
     Text* text2 = SceneManager::getInstance()->addModule<Text>(this, textNode2);
 
     text2->setFont(ServiceProvider::getAssetManager()->getFont("bleeding_cowboys.ttf")->getHandle());
-    text2->setScreenPosition(Engine::getInstance()->getWidth() - 200.0f, 300.0f);
+    text2->setScreenPosition(screenWidth - 200.0f, 300.0f);
     text2->setTextColor(glm::vec3(0, 1, 0));
     text2->setStyle(Text::TextStyle::StrikeThrough);
     text2->setText("OH YEAH");

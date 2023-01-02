@@ -37,15 +37,15 @@ export namespace annileen
 	class Application
 	{
 	public:
-		Application() : m_Engine(nullptr), m_NoCamera(nullptr), m_NoCameraText(nullptr) {}
-		~Application() {}
+		Application() = default;
+		virtual ~Application() = default;
 
-		Engine* m_Engine;
-		std::string m_ApplicationName;
+		Engine* m_Engine{ nullptr };
+		std::string m_ApplicationName{ "" };
 
-		Camera* m_NoCamera;
-		// This is temporary, the scenenode should be actiaved/deactivated instead.
-		Text* m_NoCameraText;
+		Camera* m_NoCamera{ nullptr };
+		// This is temporary, the scenenode should be activated/deactivated instead.
+		Text* m_NoCameraText{ nullptr };
 
 	// ApplicationEditor has to be able to inject the editor gui stuff
 	#ifdef _ANNILEEN_COMPILER_EDITOR
@@ -55,84 +55,10 @@ export namespace annileen
 	#endif
 
 	private:
-		void initAnnileen()
-		{
-			m_Engine = annileen::Engine::getInstance();
-			m_Engine->init(1920, 1080, "build_assets/assets.toml", "build_assets/settings.toml", m_ApplicationName);
-		}
+		void initAnnileen();
 
 	public:
-		int run(std::string applicationName)
-		{
-			m_ApplicationName = applicationName;
-	
-			initAnnileen();
-	
-			annileen::Scene* scene = init();
-	
-			// Put assert for scene nullptr once we have our assert class
-			if (scene == nullptr)
-			{
-				std::cerr << "Ops. Scene is null!" << std::endl;
-				return 1;
-			}
-	
-			scene->start();
-	
-	#ifdef _ANNILEEN_COMPILER_EDITOR
-			initializeEditorGui(scene);
-	#endif
-	
-			SceneNodePtr cameraNode = scene->createNode("No camera");
-			cameraNode->m_Internal = true;
-			m_NoCamera = SceneManager::getInstance()->addModule<Camera>(scene, cameraNode);
-			m_NoCamera->fieldOfView = 60.0f;
-			m_NoCamera->nearClip = 0.01f;
-			m_NoCamera->farClip = 0.02f;
-			m_NoCamera->getTransform().translate(glm::vec3(-5.0f, 0.0f, -5.0f));
-			m_NoCamera->setForward(glm::vec3(0, 0, 1));
-			m_NoCamera->clearColor = glm::vec3(0, 0, 0);
-			cameraNode->flags = SceneNodeFlags_Hide;
-			
-			SceneNodePtr textNode = scene->createNode("No camera text");
-			textNode->m_Internal = true;
-			m_NoCameraText = SceneManager::getInstance()->addModule<Text>(scene, textNode);
-			m_NoCameraText->setStatic(true);
-			m_NoCameraText->setScreenPosition(Engine::getInstance()->getWidth()/2.0f - 100.0f, Engine::getInstance()->getHeight()/2.0f);
-			m_NoCameraText->setTextColor(glm::vec3(1, 1, 1));
-			m_NoCameraText->setStyle(Text::TextStyle::Normal);
-			m_NoCameraText->setText("No Camera");
-			textNode->setParent(cameraNode);
-	
-			cameraNode->setActive(false);
-	
-			while (m_Engine->run())
-			{
-				auto dt = m_Engine->getTime().deltaTime;
-				m_Engine->checkInputEvents();
-	
-				uint8_t mouseButton = (m_Engine->getInput()->_getMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) ? IMGUI_MBUT_LEFT : 0)
-					| (m_Engine->getInput()->_getMouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT) ? IMGUI_MBUT_RIGHT : 0)
-					| (m_Engine->getInput()->_getMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE) ? IMGUI_MBUT_MIDDLE : 0);
-	
-				m_Engine->getGui()->beginFrame(m_Engine->getInput()->_getMousePosition(), mouseButton, static_cast<int32_t>(m_Engine->getInput()->_getMouseScroll().y), 
-					m_Engine->getWidth(), m_Engine->getHeight());
-	
-				scene->update();
-	
-	#ifdef _ANNILEEN_COMPILER_EDITOR
-				editorUpdate(scene, dt);
-	#else
-				update(dt);
-	#endif
-	
-				m_Engine->getGui()->endFrame();
-	
-				render();
-			}
-
-			return 0;
-		}
+		int run(const std::string& applicationName);
 
 	protected:
 		virtual Scene* init() = 0;
@@ -144,25 +70,109 @@ export namespace annileen
 			return m_Engine;
 		}
 
-		virtual void render()
+		virtual void render();
+		void destroy();
+	};
+}
+
+namespace annileen
+{
+	void Application::initAnnileen()
+	{
+		m_Engine = annileen::Engine::getInstance();
+		m_Engine->init("build_assets/assets.toml", "build_assets/settings.toml", m_ApplicationName);
+	}
+
+	int Application::run(const std::string& applicationName)
+	{
+		m_ApplicationName = std::move(applicationName);
+
+		initAnnileen();
+
+		annileen::Scene* scene = init();
+
+		// Put assert for scene nullptr once we have our assert class
+		if (scene == nullptr)
 		{
-			Camera* camera = SceneManager::getInstance()->getScene()->getCamera();
-			if (camera == nullptr)
-			{
-				m_NoCamera->getSceneNode()->setActive(true);
-				m_Engine->render(m_NoCamera);	
-				m_NoCamera->getSceneNode()->setActive(false);
-			}
-			else
-			{
-				m_Engine->render(camera);
-			}
+			std::cerr << "Ops. Scene is null!" << std::endl;
+			return 1;
 		}
 
-		void destroy()
+		scene->start();
+
+#ifdef _ANNILEEN_COMPILER_EDITOR
+		initializeEditorGui(scene);
+#endif
+
+		SceneNodePtr cameraNode = scene->createNode("No camera");
+		cameraNode->m_Internal = true;
+		m_NoCamera = SceneManager::getInstance()->addModule<Camera>(scene, cameraNode);
+		m_NoCamera->fieldOfView = 60.0f;
+		m_NoCamera->nearClip = 0.01f;
+		m_NoCamera->farClip = 0.02f;
+		m_NoCamera->getTransform().translate(glm::vec3(-5.0f, 0.0f, -5.0f));
+		m_NoCamera->setForward(glm::vec3(0, 0, 1));
+		m_NoCamera->clearColor = glm::vec3(0, 0, 0);
+		cameraNode->flags = SceneNodeFlags_Hide;
+
+		SceneNodePtr textNode = scene->createNode("No camera text");
+		textNode->m_Internal = true;
+		m_NoCameraText = SceneManager::getInstance()->addModule<Text>(scene, textNode);
+		m_NoCameraText->setStatic(true);
+		m_NoCameraText->setScreenPosition(m_Engine->getWidth() / 2.0f - 100.0f, m_Engine->getHeight() / 2.0f);
+		m_NoCameraText->setTextColor(glm::vec3(1, 1, 1));
+		m_NoCameraText->setStyle(Text::TextStyle::Normal);
+		m_NoCameraText->setText("No Camera");
+		textNode->setParent(cameraNode);
+
+		cameraNode->setActive(false);
+
+		while (m_Engine->run())
 		{
-			finish();
-			Engine::destroy();
+			auto dt = m_Engine->getTime().deltaTime;
+			m_Engine->checkInputEvents();
+
+			uint8_t mouseButton = (m_Engine->getInput()->_getMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) ? IMGUI_MBUT_LEFT : 0)
+				| (m_Engine->getInput()->_getMouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT) ? IMGUI_MBUT_RIGHT : 0)
+				| (m_Engine->getInput()->_getMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE) ? IMGUI_MBUT_MIDDLE : 0);
+
+			m_Engine->getGui()->beginFrame(m_Engine->getInput()->_getMousePosition(), mouseButton, static_cast<int32_t>(m_Engine->getInput()->_getMouseScroll().y),
+				m_Engine->getWidth(), m_Engine->getHeight());
+
+			scene->update();
+
+#ifdef _ANNILEEN_COMPILER_EDITOR
+			editorUpdate(scene, dt);
+#else
+			update(dt);
+#endif
+
+			m_Engine->getGui()->endFrame();
+
+			render();
 		}
-	};
+
+		return 0;
+	}
+
+	void Application::render()
+	{
+		Camera* camera = SceneManager::getInstance()->getScene()->getCamera();
+		if (camera == nullptr)
+		{
+			m_NoCamera->getSceneNode()->setActive(true);
+			m_Engine->render(m_NoCamera);
+			m_NoCamera->getSceneNode()->setActive(false);
+		}
+		else
+		{
+			m_Engine->render(camera);
+		}
+	}
+
+	void Application::destroy()
+	{
+		finish();
+		Engine::destroy();
+	}
 }

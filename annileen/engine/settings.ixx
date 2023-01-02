@@ -3,6 +3,7 @@ module;
 #include <toml.hpp>
 #include <iostream>
 #include <bgfx/bgfx.h>
+#include <glm.hpp>
 
 export module settings;
 
@@ -27,13 +28,14 @@ export namespace annileen
 	{
 		AnnileenRenderer renderer;
 		Setting_Shadows shadows;
-		std::string defaultFont = "droidsans.ttf";
+		std::string defaultFont{ "droidsans.ttf" };
+		glm::ivec2 windowResolution{0,0};
 	};
 
 	class Settings final
 	{
 	private:
-		Settings();
+		Settings() = default;
 		~Settings();
 
 		void loadSettings(const std::string& filename);
@@ -53,10 +55,6 @@ export namespace annileen
 
 namespace annileen
 {
-	Settings::Settings()
-	{
-	}
-
 	Settings::~Settings()
 	{
 		saveSettings();
@@ -69,10 +67,15 @@ namespace annileen
 		m_Data.renderer = parseRenderer(toml::find<std::string>(data, "renderer"));
 		m_Data.defaultFont = toml::find<std::string>(data, "font");
 
-		auto shadows = toml::find(data, "shadows").as_table();
+		auto& shadows = toml::find(data, "shadows").as_table();
 
 		m_Data.shadows.enabled = shadows.at("enabled").as_boolean();
 		m_Data.shadows.shadowMapSize = static_cast<uint16_t>(shadows.at("shadowMapSize").as_integer());
+
+		auto& windowResolution = toml::find(data, "windowResolution").as_table();
+
+		m_Data.windowResolution.x = static_cast<int>(windowResolution.at("windowWidth").as_integer());
+		m_Data.windowResolution.y = static_cast<int>(windowResolution.at("windowHeight").as_integer());
 	}
 
 	void Settings::saveSettings()

@@ -43,7 +43,6 @@ import scenemanager;
 
 export namespace annileen
 {
-	
 	class EditorGui final
 	{
 		enum Mode
@@ -74,36 +73,33 @@ export namespace annileen
 			float pitch;
 			int debugScreenActive;
 		};
-		InputConfig m_InputConfig;
+		InputConfig m_InputConfig{3.0f, 2.8f, 18.0f, 0.0f, 0.0f, 0};
 
 		std::vector<const char*> m_ConsoleLoggingChannelsList;
 		std::vector<const char*> m_ConsoleLoggingLevelsList;
 
-		EditorGui();
+		EditorGui() = default;
 		~EditorGui() = default;
 
-		ViewHandleMode m_HandleMode;
-		ViewHandleOperation m_HandleOperation;
+		ViewHandleMode m_HandleMode{ ViewHandleMode::Local };
+		ViewHandleOperation m_HandleOperation{ ViewHandleOperation::Move };
 
-		bool m_ShowToolsWindow;
-		bool m_ShowSceneHierarchyWindow;
-		bool m_ShowSceneNodePropertiesWindow;
-		bool m_ShowConsoleWindow;
-		bool m_ShowSettingsWindow;
-
-		bool m_RenderSkybox;
-
-		bool m_AssetHotreload;
-
-		bool m_HasWindowFocused;
-
-		Mode m_Mode;
+		Engine* m_Engine{ nullptr };		
+		bool m_ShowToolsWindow{ true };
+		bool m_ShowSceneHierarchyWindow{ true };
+		bool m_ShowSceneNodePropertiesWindow{ true };
+		bool m_ShowConsoleWindow{ true };
+		bool m_ShowSettingsWindow{ false };
+		bool m_RenderSkybox{ true };
+		bool m_AssetHotreload{ true };
+		bool m_HasWindowFocused{ true };
+		Mode m_Mode{ Editor };
 
 		// These will probably become a list when we start allowing multiple selection.
-		SceneNode* m_SelectedSceneNode;
-		SceneNode* m_SceneNodeToBeRemoved;
+		SceneNode* m_SelectedSceneNode{ nullptr };
+		SceneNode* m_SceneNodeToBeRemoved{ nullptr };
 
-		void initialize();
+		void initialize(Engine* engine);
 		void processInput(Camera* camera, float deltaTime);
 		void render(Scene* scene, Camera* camera, float deltaTime);
 		void drawMainWindowToolbar();
@@ -146,28 +142,9 @@ export namespace annileen
 
 namespace annileen
 {
-	EditorGui::EditorGui()
+	void EditorGui::initialize(Engine* engine)
 	{
-		m_ShowToolsWindow = true;
-		m_ShowSceneHierarchyWindow = true;
-		m_ShowSceneNodePropertiesWindow = true;
-		m_ShowConsoleWindow = true;
-		m_ShowSettingsWindow = false;
-		m_SelectedSceneNode = nullptr;
-		m_SceneNodeToBeRemoved = nullptr;
-		m_Mode = Editor;
-		m_HandleMode = ViewHandleMode::Local;
-		m_HandleOperation = ViewHandleOperation::Move;
-		m_HasWindowFocused = true;
-		m_InputConfig = { 3.0f, 2.8f, 18.0f, 0.0f, 0.0f, 0 };
-
-		m_RenderSkybox = true;
-
-		m_AssetHotreload = true;
-	}
-
-	void EditorGui::initialize()
-	{
+		m_Engine = engine;
 		/*std::vector<LoggingLevel> loggingLevelsList = Logger::getLoggingLevelsList();
 
 		m_ConsoleLoggingLevelsList.push_back("All");
@@ -184,12 +161,12 @@ namespace annileen
 			m_ConsoleLoggingChannelsList.push_back(Logger::getLoggingChannelString(loggingChannel));
 		}
 
-		Engine::getInstance()->getInput()->m_Enabled = false;*/
+		m_Engine->getInput()->m_Enabled = false;*/
 	}
 
 	void EditorGui::processInput(Camera* camera, float deltaTime)
 	{
-		std::shared_ptr<Input> input = Engine::getInstance()->getInput();
+		std::shared_ptr<Input> input = m_Engine->getInput();
 
 		if (m_Mode == Editor && !m_HasWindowFocused)
 		{
@@ -239,7 +216,7 @@ namespace annileen
 			// Temporary
 			if (input->_getKeyDown(GLFW_KEY_ESCAPE))
 			{
-				Engine::getInstance()->terminate();
+				m_Engine->terminate();
 			}
 		}
 
@@ -323,12 +300,12 @@ namespace annileen
 			{
 				ImGui::SetWindowFocus(NULL);
 				m_HasWindowFocused = false;
-				Engine::getInstance()->getInput()->m_Enabled = true && m_Mode == Game;
+				m_Engine->getInput()->m_Enabled = true && m_Mode == Game;
 			}
 			else
 			{
 				m_HasWindowFocused = true;
-				Engine::getInstance()->getInput()->m_Enabled = false;
+				m_Engine->getInput()->m_Enabled = false;
 			}
 		}	
 	}
@@ -346,7 +323,7 @@ namespace annileen
 				//ImGui::Separator();
 				if (ImGui::MenuItem("Exit", 0, false, true))
 				{
-					Engine::getInstance()->terminate();
+					m_Engine->terminate();
 				}
 				ImGui::EndMenu();
 			}
@@ -441,13 +418,13 @@ namespace annileen
 		if (ImGui::Button("Editor Mode"))
 		{
 			m_Mode = Editor;
-			//Engine::getInstance()->setMouseCapture(false);
+			//m_Engine->setMouseCapture(false);
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Game Mode"))
 		{
 			m_Mode = Game;
-			//Engine::getInstance()->setMouseCapture(true);
+			//m_Engine->setMouseCapture(true);
 		}
 
 		//ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(3.0f, 3.0f));

@@ -4,3 +4,7 @@ font = "droidsans.ttf"
 [shadows]
 enabled = true
 shadowMapSize = 2048
+
+[windowResolution]
+windowWidth = 1920
+windowHeight = 1080
