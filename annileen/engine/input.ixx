@@ -3,6 +3,7 @@ module;
 #include <GLFW/glfw3.h>
 #include <map>
 #include <glm.hpp>
+#include <iostream>
 
 export module input;
 
@@ -276,5 +277,7 @@ namespace annileen
 
 	Input::~Input()
 	{
+		// TODO: remove
+		std::cout << "Input destroyed" << std::endl;
 	}
 }

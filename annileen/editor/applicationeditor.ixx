@@ -32,7 +32,7 @@ export namespace annileen
 		bool showEditorGui;
 
 		ApplicationEditor();
-		~ApplicationEditor();
+		virtual ~ApplicationEditor();
 	};
 }
 

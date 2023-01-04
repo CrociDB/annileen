@@ -34,7 +34,7 @@ private:
 
     void update(float deltaTime);
 
-    void finish() {}
+    void finish() override {}
 
 public:
     ApplicationCube() {}

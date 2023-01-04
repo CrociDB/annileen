@@ -2,6 +2,7 @@ module;
 
 #include "glm.hpp"
 #include <memory>
+#include <iostream>
 
 #define ANNILEEN_APPLICATION
 #include <engine/definitions.h>
@@ -22,8 +23,8 @@ private:
 	uint8_t m_DebugActive = 0;
 
 	annileen::Scene* init() override;
-	void update(float deltaTime) override {}
-	void finish() override {}
+	void update(float deltaTime) override {}	
+	void finish() override {};
 	
 public:
 	ApplicationWorldBuilding() = default;

@@ -53,22 +53,20 @@ export namespace annileen
     {
     private:
         static Engine* s_Instance;
-
-        GLFWwindow* m_Window;
-        int m_Width, m_Height;
-        std::string m_ApplicationName;
-
-        std::shared_ptr<Input> m_Input;
-
-        Renderer* m_Renderer;
         static bool m_Running;
 
-        Gui* m_Gui;
-
+        int m_Width, m_Height;
+        std::string m_ApplicationName;
         Time m_Time;
         uint8_t m_TargetFPS;
 
-        Engine();
+        GLFWwindow* m_Window{};
+        Input m_Input{};
+
+        std::unique_ptr<Renderer> m_Renderer{ nullptr };
+        std::unique_ptr<Gui> m_Gui{ nullptr };
+
+        Engine() = default;
 
         // GLFW Callbacks
         static void glfw_errorCallback(int error, const char* description);
@@ -81,26 +79,21 @@ export namespace annileen
         static void glfw_charCallback(GLFWwindow* window, unsigned int c);
 
     public:
-        int init(const std::string& assetfile, const std::string& settingsfile, std::string applicationName);
-
-        std::shared_ptr<Input> getInput();
-        Gui* getGui();
-        Renderer* getRenderer();
-        Uniform* getUniform();
-        GLFWwindow* getGLFWWindow();
+        Input& getInput();
+        Gui* const getGui();
+        Renderer* const getRenderer();
+        GLFWwindow* const getGLFWWindow();
 
         uint16_t getWidth() const;
         uint16_t getHeight() const;
 
+        int init(const std::string& assetfile, const std::string& settingsfile, std::string applicationName);
         void setWindowTitle(std::string title);
         void setFPSLock(uint8_t fps);
-
         int getFPS() const;
         Time getTime();
-
         bool run();
         void terminate();
-
         void setMouseCapture(bool value);
         void checkInputEvents();
         void render(Camera* replacementCamera);
@@ -109,7 +102,6 @@ export namespace annileen
         static void destroy();
         ~Engine();
     };
-
 }
 
 namespace annileen
@@ -127,11 +119,11 @@ namespace annileen
     {
         if (action == GLFW_PRESS)
         {
-            getInstance()->getInput()->_setKeyDown(key, true);
+            getInstance()->getInput()._setKeyDown(key, true);
         }
         else if (action == GLFW_RELEASE)
         {
-            getInstance()->getInput()->_setKeyDown(key, false);
+            getInstance()->getInput()._setKeyDown(key, false);
         }
 
         ImGuiIO& io = ImGui::GetIO();
@@ -164,18 +156,18 @@ namespace annileen
 
     void Engine::glfw_mouseCursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
     {
-        getInstance()->getInput()->_setMousePosition(static_cast<float>(xpos), static_cast<float>(ypos));
+        getInstance()->getInput()._setMousePosition(static_cast<float>(xpos), static_cast<float>(ypos));
     }
 
     void Engine::glfw_mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
     {
         if (action == GLFW_PRESS)
         {
-            getInstance()->getInput()->_setMouseButton(button, true);
+            getInstance()->getInput()._setMouseButton(button, true);
         }
         else if (action == GLFW_RELEASE)
         {
-            getInstance()->getInput()->_setMouseButton(button, false);
+            getInstance()->getInput()._setMouseButton(button, false);
         }
     }
 
@@ -193,7 +185,7 @@ namespace annileen
 
     void Engine::glfw_mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
     {
-        getInstance()->getInput()->_setMouseScroll(static_cast<float>(xoffset), static_cast<float>(yoffset));
+        getInstance()->getInput()._setMouseScroll(static_cast<float>(xoffset), static_cast<float>(yoffset));
     }
 
     void Engine::glfw_joystickCallback(int jid, int event)
@@ -207,7 +199,6 @@ namespace annileen
             // The joystick was disconnected
         }
     }
-
 
     int Engine::init(const std::string& assetfile, const std::string& settingsfile, std::string applicationName)
     {
@@ -267,7 +258,7 @@ namespace annileen
 
         Font::initializeFontManager();
 
-        m_Renderer = new Renderer();
+        m_Renderer = std::make_unique<Renderer>();
         m_Renderer->init(m_Width, m_Height);
 
         m_TargetFPS = 60;
@@ -277,7 +268,7 @@ namespace annileen
         m_Time.deltaTime = m_Time.unscaledDeltaTime = 0.0f;
         m_Time.time = 0;
 
-        m_Gui = new Gui();
+        m_Gui = std::make_unique<Gui>();
 
         ImGuiIO& io = ImGui::GetIO();
         io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;         // We can honor GetMouseCursor() values (optional)
@@ -286,22 +277,22 @@ namespace annileen
         return 0;
     }
 
-    std::shared_ptr<Input> Engine::getInput()
+    Input& Engine::getInput()
     {
         return m_Input;
     }
 
-    Gui* Engine::getGui()
+    Gui* const Engine::getGui()
     {
-        return m_Gui;
+        return m_Gui.get();
     }
 
-    Renderer* Engine::getRenderer()
+    Renderer* const Engine::getRenderer()
     {
-        return m_Renderer;
+        return m_Renderer.get();
     }
 
-    GLFWwindow* Engine::getGLFWWindow()
+    GLFWwindow* const Engine::getGLFWWindow()
     {
         return m_Window;
     }
@@ -373,7 +364,7 @@ namespace annileen
 
     void Engine::checkInputEvents()
     {
-        m_Input->flushEvents();
+        m_Input.flushEvents();
         glfwPollEvents();
         int oldWidth = m_Width;
         int oldHeight = m_Height;
@@ -394,11 +385,6 @@ namespace annileen
         }
 
         bgfx::frame();
-    }
-
-    Engine::Engine()
-    {
-        m_Input = std::make_shared<Input>();
     }
 
     Engine* Engine::getInstance()
@@ -427,17 +413,22 @@ namespace annileen
 
         Settings* settings = ServiceProvider::getSettings();
         ServiceProvider::provideSettings(nullptr);
-        
         delete settings;
         settings = nullptr;
 
-        Font::destroyFontManager();
-
-        delete m_Gui;
-        m_Gui = nullptr;
+        //TODO: destroy fonts before font manager
+        //Font::destroyFontManager();
 
         Uniform::destroy();
+
+        // Force GUI destruction. It has to happen before bgfx shutdown.
+        m_Gui.reset();
+
         bgfx::shutdown();
+
         glfwTerminate();
+
+        // TODO: remove
+        std::cout << "Engine destroyed" << std::endl;
     }
 }

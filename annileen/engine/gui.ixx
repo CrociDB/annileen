@@ -7,6 +7,7 @@ module;
 #pragma warning( pop )
 
 #include <glm.hpp>
+#include <iostream>
 
 export module gui;
 
@@ -18,9 +19,9 @@ export namespace annileen
 		void beginFrame(glm::vec2 mousePos, uint8_t mouseButton, int32_t mouseScroll, uint16_t width, uint16_t height);
 		void endFrame();
 
-	private:
 		Gui();
 		~Gui();
+	private:
 
 		friend class Engine;
 	};
@@ -46,5 +47,6 @@ namespace annileen
 	Gui::~Gui()
 	{
 		imguiDestroy();
+		std::cout << "GUI destroyed." << std::endl;
 	}
 }

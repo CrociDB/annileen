@@ -166,41 +166,41 @@ namespace annileen
 
 	void EditorGui::processInput(Camera* camera, float deltaTime)
 	{
-		std::shared_ptr<Input> input = m_Engine->getInput();
+		Input &input = m_Engine->getInput();
 
 		if (m_Mode == Editor && !m_HasWindowFocused)
 		{
-			if (input->_getMouseButtonDown(1))
+			if (input._getMouseButtonDown(1))
 			{
-				float movementSpeed = input->_getKey(GLFW_KEY_LEFT_SHIFT) ? 5.0f * m_InputConfig.mouseSpeed : m_InputConfig.mouseSpeed;
+				float movementSpeed = input._getKey(GLFW_KEY_LEFT_SHIFT) ? 5.0f * m_InputConfig.mouseSpeed : m_InputConfig.mouseSpeed;
 
-				if (input->_getKey(GLFW_KEY_S))
+				if (input._getKey(GLFW_KEY_S))
 				{
 					camera->getTransform().translate(deltaTime * -movementSpeed * camera->getForward());
 				}
-				if (input->_getKey(GLFW_KEY_W))
+				if (input._getKey(GLFW_KEY_W))
 				{
 					camera->getTransform().translate(deltaTime * movementSpeed * camera->getForward());
 				}
-				if (input->_getKey(GLFW_KEY_A))
+				if (input._getKey(GLFW_KEY_A))
 				{
 					camera->getTransform().translate(deltaTime * movementSpeed * camera->getRight());
 				}
-				if (input->_getKey(GLFW_KEY_D))
+				if (input._getKey(GLFW_KEY_D))
 				{
 					camera->getTransform().translate(deltaTime * -movementSpeed * camera->getRight());
 				}
-				if (input->_getKey(GLFW_KEY_Q))
+				if (input._getKey(GLFW_KEY_Q))
 				{
 					camera->getTransform().translate(deltaTime * -movementSpeed * glm::vec3(0.0f, 1.0f, 0.0f));
 				}
-				if (input->_getKey(GLFW_KEY_E))
+				if (input._getKey(GLFW_KEY_E))
 				{
 					camera->getTransform().translate(deltaTime * movementSpeed * glm::vec3(0.0f, 1.0f, 0.0f));
 				}
 
 				// Camera mouse control
-				auto mouseDelta = input->_getMouseDelta();
+				auto mouseDelta = input._getMouseDelta();
 
 				m_InputConfig.yaw += mouseDelta.x * m_InputConfig.sensitivity * deltaTime;
 				m_InputConfig.pitch += -mouseDelta.y * m_InputConfig.sensitivity * deltaTime;
@@ -214,13 +214,13 @@ namespace annileen
 			}
 
 			// Temporary
-			if (input->_getKeyDown(GLFW_KEY_ESCAPE))
+			if (input._getKeyDown(GLFW_KEY_ESCAPE))
 			{
 				m_Engine->terminate();
 			}
 		}
 
-		if (input->_getKeyDown(GLFW_KEY_F1))
+		if (input._getKeyDown(GLFW_KEY_F1))
 		{
 			m_InputConfig.debugScreenActive = (m_InputConfig.debugScreenActive + 1) % 6;
 			switch (m_InputConfig.debugScreenActive)
@@ -300,12 +300,12 @@ namespace annileen
 			{
 				ImGui::SetWindowFocus(NULL);
 				m_HasWindowFocused = false;
-				m_Engine->getInput()->m_Enabled = true && m_Mode == Game;
+				m_Engine->getInput().m_Enabled = true && m_Mode == Game;
 			}
 			else
 			{
 				m_HasWindowFocused = true;
-				m_Engine->getInput()->m_Enabled = false;
+				m_Engine->getInput().m_Enabled = false;
 			}
 		}	
 	}

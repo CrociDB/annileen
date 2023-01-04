@@ -71,7 +71,11 @@ export namespace annileen
         bool useShadows{ false };
 
         Renderer() = default;
-        ~Renderer() = default;
+        ~Renderer()
+        {
+            //TODO: remove
+            std::cout << "Renderer destroyed." << std::endl;
+        };
     };
 }
 

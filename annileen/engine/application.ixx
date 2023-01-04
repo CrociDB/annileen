@@ -38,7 +38,7 @@ export namespace annileen
 	{
 	public:
 		Application() = default;
-		virtual ~Application() = default;
+		virtual ~Application();
 
 		Engine* m_Engine{ nullptr };
 		std::string m_ApplicationName{ "" };
@@ -56,7 +56,7 @@ export namespace annileen
 
 	private:
 		void initAnnileen();
-
+		
 	public:
 		int run(const std::string& applicationName);
 
@@ -71,7 +71,6 @@ export namespace annileen
 		}
 
 		virtual void render();
-		void destroy();
 	};
 }
 
@@ -132,11 +131,11 @@ namespace annileen
 			auto dt = m_Engine->getTime().deltaTime;
 			m_Engine->checkInputEvents();
 
-			uint8_t mouseButton = (m_Engine->getInput()->_getMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) ? IMGUI_MBUT_LEFT : 0)
-				| (m_Engine->getInput()->_getMouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT) ? IMGUI_MBUT_RIGHT : 0)
-				| (m_Engine->getInput()->_getMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE) ? IMGUI_MBUT_MIDDLE : 0);
+			uint8_t mouseButton = (m_Engine->getInput()._getMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) ? IMGUI_MBUT_LEFT : 0)
+				| (m_Engine->getInput()._getMouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT) ? IMGUI_MBUT_RIGHT : 0)
+				| (m_Engine->getInput()._getMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE) ? IMGUI_MBUT_MIDDLE : 0);
 
-			m_Engine->getGui()->beginFrame(m_Engine->getInput()->_getMousePosition(), mouseButton, static_cast<int32_t>(m_Engine->getInput()->_getMouseScroll().y),
+			m_Engine->getGui()->beginFrame(m_Engine->getInput()._getMousePosition(), mouseButton, static_cast<int32_t>(m_Engine->getInput()._getMouseScroll().y),
 				m_Engine->getWidth(), m_Engine->getHeight());
 
 			scene->update();
@@ -151,6 +150,8 @@ namespace annileen
 
 			render();
 		}
+
+		finish();
 
 		return 0;
 	}
@@ -170,9 +171,8 @@ namespace annileen
 		}
 	}
 
-	void Application::destroy()
+	Application::~Application()
 	{
-		finish();
 		Engine::destroy();
 	}
 }
