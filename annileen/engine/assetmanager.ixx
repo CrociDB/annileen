@@ -47,12 +47,13 @@ export namespace annileen
 		void loadAsset(AssetTableEntry* asset);
 		void loadAssetShader(AssetTableEntry* asset);
 
-		AssetManager(const std::string& assetfile);
-		~AssetManager();
 
 		friend class Engine;
 
 	public:
+		AssetManager(const std::string& assetfile);
+		~AssetManager();
+
 		void updateAssetWatcher();
 
 		// Asset loading functions
@@ -318,6 +319,9 @@ namespace annileen
 	{
 		delete m_Watcher;
 		unloadAssets();
+
+		// TODO: remove
+		std::cout << "AssetManager destroyed." << std::endl;
 	}
 
 	void AssetManager::updateAssetWatcher()

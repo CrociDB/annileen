@@ -38,6 +38,7 @@ import renderer;
 import uniform;
 import gui;
 import scenemanager;
+import settings;
 
 export namespace annileen
 {
@@ -65,7 +66,9 @@ export namespace annileen
 
         std::unique_ptr<Renderer> m_Renderer{ nullptr };
         std::unique_ptr<Gui> m_Gui{ nullptr };
-
+        std::unique_ptr<AssetManager> m_AssetManager{ nullptr };
+        std::unique_ptr<Settings> m_Settings{ nullptr };
+        
         Engine() = default;
 
         // GLFW Callbacks
@@ -207,15 +210,15 @@ namespace annileen
         // Initialize services
         Logger::initialize();
 
-        AssetManager* assetManager = new AssetManager(assetfile);
-        ServiceProvider::provideAssetManager(assetManager);
+        m_AssetManager = std::make_unique<AssetManager>(assetfile);
+        ServiceProvider::provideAssetManager(m_AssetManager.get());
 
-        Settings* settings = new Settings();
-        settings->loadSettings(settingsfile);
-        ServiceProvider::provideSettings(settings);
+        m_Settings = std::make_unique<Settings>();
+        ServiceProvider::provideSettings(m_Settings.get());
+        m_Settings->loadSettings(settingsfile);
 
-        m_Width = static_cast<uint16_t>(settings->getData()->windowResolution.x);
-        m_Height = static_cast<uint16_t>(settings->getData()->windowResolution.y);
+        m_Width = static_cast<uint16_t>(m_Settings->getData()->windowResolution.x);
+        m_Height = static_cast<uint16_t>(m_Settings->getData()->windowResolution.y);
 
         // Initialize GLFW
         glfwSetErrorCallback(&Engine::glfw_errorCallback);
@@ -239,7 +242,7 @@ namespace annileen
         bgfx::renderFrame();
 
         bgfx::Init init;
-        init.type = settings->getBGFXRendererType();
+        init.type = m_Settings->getBGFXRendererType();
 #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
         init.platformData.ndt = glfwGetX11Display();
         init.platformData.nwh = (void*)(uintptr_t)glfwGetX11Window(m_Window);
@@ -406,15 +409,10 @@ namespace annileen
     {
         Logger::destroy();
 
-        AssetManager* assetManager = ServiceProvider::getAssetManager();
         ServiceProvider::provideAssetManager(nullptr);
-        delete assetManager;
-        assetManager = nullptr;
-
-        Settings* settings = ServiceProvider::getSettings();
         ServiceProvider::provideSettings(nullptr);
-        delete settings;
-        settings = nullptr;
+
+        m_AssetManager.reset();
 
         //TODO: destroy fonts before font manager
         //Font::destroyFontManager();

@@ -35,8 +35,6 @@ export namespace annileen
 	class Settings final
 	{
 	private:
-		Settings() = default;
-		~Settings();
 
 		void loadSettings(const std::string& filename);
 		void saveSettings();
@@ -45,6 +43,9 @@ export namespace annileen
 
 		friend class Engine;
 	public:
+		Settings() = default;
+		~Settings();
+
 		SettingsData m_Data;
 
 		bgfx::RendererType::Enum getBGFXRendererType();
@@ -58,6 +59,9 @@ namespace annileen
 	Settings::~Settings()
 	{
 		saveSettings();
+
+		// TODO: remove
+		std::cout << "Settings destroyed." << std::endl;
 	}
 
 	void Settings::loadSettings(const std::string& filename)
