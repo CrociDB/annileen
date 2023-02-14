@@ -88,7 +88,7 @@ namespace annileen
 
 		initAnnileen();
 
-		annileen::Scene* scene = init();
+		std::unique_ptr<annileen::Scene> scene{ init() };
 
 		// Put assert for scene nullptr once we have our assert class
 		if (scene == nullptr)
@@ -100,12 +100,12 @@ namespace annileen
 		scene->start();
 
 #ifdef _ANNILEEN_COMPILER_EDITOR
-		initializeEditorGui(scene);
+		initializeEditorGui(scene.get());
 #endif
 
 		SceneNodePtr cameraNode = scene->createNode("No camera");
 		cameraNode->m_Internal = true;
-		m_NoCamera = SceneManager::getInstance()->addModule<Camera>(scene, cameraNode);
+		m_NoCamera = SceneManager::getInstance()->addModule<Camera>(scene.get(), cameraNode);
 		m_NoCamera->fieldOfView = 60.0f;
 		m_NoCamera->nearClip = 0.01f;
 		m_NoCamera->farClip = 0.02f;
@@ -116,7 +116,7 @@ namespace annileen
 
 		SceneNodePtr textNode = scene->createNode("No camera text");
 		textNode->m_Internal = true;
-		m_NoCameraText = SceneManager::getInstance()->addModule<Text>(scene, textNode);
+		m_NoCameraText = SceneManager::getInstance()->addModule<Text>(scene.get(), textNode);
 		m_NoCameraText->setStatic(true);
 		m_NoCameraText->setScreenPosition(m_Engine->getWidth() / 2.0f - 100.0f, m_Engine->getHeight() / 2.0f);
 		m_NoCameraText->setTextColor(glm::vec3(1, 1, 1));
@@ -131,17 +131,20 @@ namespace annileen
 			auto dt = m_Engine->getTime().deltaTime;
 			m_Engine->checkInputEvents();
 
-			uint8_t mouseButton = (m_Engine->getInput()._getMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) ? IMGUI_MBUT_LEFT : 0)
-				| (m_Engine->getInput()._getMouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT) ? IMGUI_MBUT_RIGHT : 0)
-				| (m_Engine->getInput()._getMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE) ? IMGUI_MBUT_MIDDLE : 0);
+			uint8_t mouseButton = (m_Engine->getInput()->_getMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) ? IMGUI_MBUT_LEFT : 0)
+				| (m_Engine->getInput()->_getMouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT) ? IMGUI_MBUT_RIGHT : 0)
+				| (m_Engine->getInput()->_getMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE) ? IMGUI_MBUT_MIDDLE : 0);
 
-			m_Engine->getGui()->beginFrame(m_Engine->getInput()._getMousePosition(), mouseButton, static_cast<int32_t>(m_Engine->getInput()._getMouseScroll().y),
+			m_Engine->getGui()->beginFrame(
+				m_Engine->getInput()->_getMousePosition(), 
+				mouseButton, 
+				static_cast<int32_t>(m_Engine->getInput()->_getMouseScroll().y),
 				m_Engine->getWidth(), m_Engine->getHeight());
 
 			scene->update();
 
 #ifdef _ANNILEEN_COMPILER_EDITOR
-			editorUpdate(scene, dt);
+			editorUpdate(scene.get(), dt);
 #else
 			update(dt);
 #endif

@@ -56,21 +56,11 @@ export namespace annileen
         static Engine* s_Instance;
         static bool m_Running;
 
-        int m_Width, m_Height;
-        std::string m_ApplicationName;
-        Time m_Time;
-        uint8_t m_TargetFPS;
-
-        GLFWwindow* m_Window{};
-        Input m_Input{};
-
-        std::unique_ptr<Renderer> m_Renderer{ nullptr };
-        std::unique_ptr<Gui> m_Gui{ nullptr };
-        std::unique_ptr<AssetManager> m_AssetManager{ nullptr };
-        std::unique_ptr<Settings> m_Settings{ nullptr };
-        
         Engine() = default;
+    public:
+        ~Engine();
 
+    private:
         // GLFW Callbacks
         static void glfw_errorCallback(int error, const char* description);
         static void glfw_keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -82,19 +72,19 @@ export namespace annileen
         static void glfw_charCallback(GLFWwindow* window, unsigned int c);
 
     public:
-        Input& getInput();
-        Gui* const getGui();
-        Renderer* const getRenderer();
-        GLFWwindow* const getGLFWWindow();
+        Input* const getInput() const;
+        Gui* const getGui() const;
+        Renderer* const getRenderer() const;
+        GLFWwindow* const getGLFWWindow() const;
 
         uint16_t getWidth() const;
         uint16_t getHeight() const;
+        int getFPS() const;
+        Time getTime() const;
 
         int init(const std::string& assetfile, const std::string& settingsfile, std::string applicationName);
         void setWindowTitle(std::string title);
         void setFPSLock(uint8_t fps);
-        int getFPS() const;
-        Time getTime();
         bool run();
         void terminate();
         void setMouseCapture(bool value);
@@ -103,15 +93,28 @@ export namespace annileen
 
         static Engine* getInstance();
         static void destroy();
-        ~Engine();
+
+    private:
+        int m_Width, m_Height;
+        std::string m_ApplicationName;
+        Time m_Time;
+        uint8_t m_TargetFPS;
+
+        GLFWwindow* m_Window{};
+
+        std::unique_ptr<Input> m_Input{ nullptr };
+        std::unique_ptr<Renderer> m_Renderer{ nullptr };
+        std::unique_ptr<Gui> m_Gui{ nullptr };
+        std::unique_ptr<AssetManager> m_AssetManager{ nullptr };
+        std::unique_ptr<Settings> m_Settings{ nullptr };        
     };
 }
 
 namespace annileen
 {
     // Initialize static variables
-    bool Engine::m_Running = true;
-    Engine* Engine::s_Instance = nullptr;
+    bool Engine::m_Running{ true };
+    Engine* Engine::s_Instance{ nullptr };
 
     void Engine::glfw_errorCallback(int error, const char* description)
     {
@@ -122,14 +125,14 @@ namespace annileen
     {
         if (action == GLFW_PRESS)
         {
-            getInstance()->getInput()._setKeyDown(key, true);
+            getInstance()->getInput()->_setKeyDown(key, true);
         }
         else if (action == GLFW_RELEASE)
         {
-            getInstance()->getInput()._setKeyDown(key, false);
+            getInstance()->getInput()->_setKeyDown(key, false);
         }
 
-        ImGuiIO& io = ImGui::GetIO();
+        ImGuiIO& io{ ImGui::GetIO() };
         if (action == GLFW_PRESS)
             io.AddKeyEvent(ANNI_GLFW_KEY_TO_IMGUI(key), true);
         if (action == GLFW_RELEASE)
@@ -153,24 +156,24 @@ namespace annileen
 
     void Engine::glfw_charCallback(GLFWwindow* window, unsigned int c)
     {
-        ImGuiIO& io = ImGui::GetIO();
+        ImGuiIO& io{ ImGui::GetIO() };
         io.AddInputCharacter(c);
     }
 
     void Engine::glfw_mouseCursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
     {
-        getInstance()->getInput()._setMousePosition(static_cast<float>(xpos), static_cast<float>(ypos));
+        getInstance()->getInput()->_setMousePosition(static_cast<float>(xpos), static_cast<float>(ypos));
     }
 
     void Engine::glfw_mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
     {
         if (action == GLFW_PRESS)
         {
-            getInstance()->getInput()._setMouseButton(button, true);
+            getInstance()->getInput()->_setMouseButton(button, true);
         }
         else if (action == GLFW_RELEASE)
         {
-            getInstance()->getInput()._setMouseButton(button, false);
+            getInstance()->getInput()->_setMouseButton(button, false);
         }
     }
 
@@ -188,7 +191,7 @@ namespace annileen
 
     void Engine::glfw_mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
     {
-        getInstance()->getInput()._setMouseScroll(static_cast<float>(xoffset), static_cast<float>(yoffset));
+        getInstance()->getInput()->_setMouseScroll(static_cast<float>(xoffset), static_cast<float>(yoffset));
     }
 
     void Engine::glfw_joystickCallback(int jid, int event)
@@ -209,6 +212,8 @@ namespace annileen
 
         // Initialize services
         Logger::initialize();
+
+        m_Input = std::make_unique<Input>();
 
         m_AssetManager = std::make_unique<AssetManager>(assetfile);
         ServiceProvider::provideAssetManager(m_AssetManager.get());
@@ -280,22 +285,22 @@ namespace annileen
         return 0;
     }
 
-    Input& Engine::getInput()
+    Input* const Engine::getInput() const
     {
-        return m_Input;
+        return m_Input.get();
     }
 
-    Gui* const Engine::getGui()
+    Gui* const Engine::getGui() const
     {
         return m_Gui.get();
     }
 
-    Renderer* const Engine::getRenderer()
+    Renderer* const Engine::getRenderer() const
     {
         return m_Renderer.get();
     }
 
-    GLFWwindow* const Engine::getGLFWWindow()
+    GLFWwindow* const Engine::getGLFWWindow() const
     {
         return m_Window;
     }
@@ -309,7 +314,6 @@ namespace annileen
     {
         return m_Height;
     }
-
 
     void Engine::setWindowTitle(std::string title)
     {
@@ -326,19 +330,19 @@ namespace annileen
         return static_cast<int> (1.0f / m_Time.deltaTime);
     }
 
-    annileen::Time Engine::getTime()
+    annileen::Time Engine::getTime() const
     {
         return m_Time;
     }
 
     bool Engine::run()
     {
-        double time = glfwGetTime();
+        double time{ glfwGetTime() };
         m_Time.unscaledDeltaTime = static_cast<float>(time - m_Time.time);
         m_Time.deltaTime = m_Time.unscaledDeltaTime * m_Time.timeScale;
         m_Time.time = time;
 
-        static float fpsCount = 0.0;
+        static float fpsCount{ 0.0 };
         fpsCount += m_Time.deltaTime;
         if (fpsCount >= 0.3f)
         {
@@ -367,10 +371,10 @@ namespace annileen
 
     void Engine::checkInputEvents()
     {
-        m_Input.flushEvents();
+        m_Input->flushEvents();
         glfwPollEvents();
-        int oldWidth = m_Width;
-        int oldHeight = m_Height;
+        int oldWidth{ m_Width };
+        int oldHeight{ m_Height };
         glfwGetWindowSize(m_Window, &m_Width, &m_Height);
 
         if (m_Width != oldWidth || m_Height != oldHeight)
@@ -381,7 +385,7 @@ namespace annileen
 
     void Engine::render(Camera* replacementCamera)
     {
-        Scene* scene = SceneManager::getInstance()->getScene();
+        Scene* scene{ SceneManager::getInstance()->getScene() };
         if (scene != nullptr)
         {
             m_Renderer->render(scene, replacementCamera);

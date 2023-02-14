@@ -37,10 +37,9 @@ export namespace annileen
         friend class SceneManager;
         friend class SceneNode;
 
-    protected:
+    public:
         Scene();
         virtual ~Scene();
-    public:
         Fog fog;
 
         virtual void start() {};
@@ -120,7 +119,10 @@ namespace annileen
 
     Scene::~Scene()
     {
-        if (m_Skybox != nullptr) delete m_Skybox;
+        delete m_Skybox;
         delete m_Root;
+
+        // TODO: remove
+        std::cout << "Scene destroyed." << std::endl;
     }
 }
