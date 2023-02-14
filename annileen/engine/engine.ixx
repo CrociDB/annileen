@@ -56,20 +56,11 @@ export namespace annileen
         static Engine* s_Instance;
         static bool m_Running;
 
-        Engine() = default;
     public:
         ~Engine();
 
     private:
-        // GLFW Callbacks
-        static void glfw_errorCallback(int error, const char* description);
-        static void glfw_keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-        static void glfw_mouseCursorPositionCallback(GLFWwindow* window, double xpos, double ypos);
-        static void glfw_mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-        static void glfw_mouseCursorEnterCallback(GLFWwindow* window, int entered);
-        static void glfw_mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
-        static void glfw_joystickCallback(int jid, int event);
-        static void glfw_charCallback(GLFWwindow* window, unsigned int c);
+        Engine() = default;
 
     public:
         Input* const getInput() const;
@@ -93,6 +84,17 @@ export namespace annileen
 
         static Engine* getInstance();
         static void destroy();
+
+    private:
+        // GLFW Callbacks
+        static void glfw_errorCallback(int error, const char* description);
+        static void glfw_keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+        static void glfw_mouseCursorPositionCallback(GLFWwindow* window, double xpos, double ypos);
+        static void glfw_mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+        static void glfw_mouseCursorEnterCallback(GLFWwindow* window, int entered);
+        static void glfw_mouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+        static void glfw_joystickCallback(int jid, int event);
+        static void glfw_charCallback(GLFWwindow* window, unsigned int c);
 
     private:
         int m_Width, m_Height;

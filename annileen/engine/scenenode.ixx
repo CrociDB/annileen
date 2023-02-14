@@ -75,7 +75,11 @@ export namespace annileen
 		std::vector<SceneNodePtr>::iterator findChild(SceneNodePtr node);
 		bool hasChild(SceneNodePtr node);
 
-		~SceneNode() = default;
+		~SceneNode()
+		{
+			// TODO: remove
+			std::cout << "SceneNode " << name << " destroyed" << std::endl;
+		}
 	};
 }
 

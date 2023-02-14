@@ -37,45 +37,51 @@ export namespace annileen
 	class Application
 	{
 	public:
+		// ApplicationEditor has to be able to inject the editor gui stuff
+	#ifdef _ANNILEEN_COMPILER_EDITOR
+		friend class ApplicationEditor;
+	#endif
+
+	public:
 		Application() = default;
 		virtual ~Application();
 
-		Engine* m_Engine{ nullptr };
-		std::string m_ApplicationName{ "" };
-
-		Camera* m_NoCamera{ nullptr };
-		// This is temporary, the scenenode should be activated/deactivated instead.
-		Text* m_NoCameraText{ nullptr };
-
 	// ApplicationEditor has to be able to inject the editor gui stuff
 	#ifdef _ANNILEEN_COMPILER_EDITOR
-		friend class ApplicationEditor;
 		virtual void initializeEditorGui(Scene* scene) = 0;
 		virtual void editorUpdate(Scene* scene, float deltaTime) = 0;
 	#endif
 
 	private:
 		void initAnnileen();
-		
-	public:
-		int run(const std::string& applicationName);
 
 	protected:
 		virtual Scene* init() = 0;
 		virtual void finish() = 0;
 		virtual void update(float deltaTime) = 0;
-
-		inline Engine* const getEngine() const
-		{
-			return m_Engine;
-		}
-
 		virtual void render();
+
+		Engine* const getEngine() const;
+
+	public:
+		int run(const std::string& applicationName);
+
+	private:
+		Engine* m_Engine{ nullptr };
+		std::string m_ApplicationName{ "" };
+		Camera* m_NoCamera{ nullptr };
+		// This is temporary, the scenenode should be activated/deactivated instead.
+		Text* m_NoCameraText{ nullptr };
 	};
 }
 
 namespace annileen
 {
+	Engine* const Application::getEngine() const
+	{
+		return m_Engine;
+	}
+
 	void Application::initAnnileen()
 	{
 		m_Engine = annileen::Engine::getInstance();
@@ -118,7 +124,7 @@ namespace annileen
 		textNode->m_Internal = true;
 		m_NoCameraText = SceneManager::getInstance()->addModule<Text>(scene.get(), textNode);
 		m_NoCameraText->setStatic(true);
-		m_NoCameraText->setScreenPosition(m_Engine->getWidth() / 2.0f - 100.0f, m_Engine->getHeight() / 2.0f);
+		m_NoCameraText->setScreenPosition(getEngine()->getWidth() / 2.0f - 100.0f, getEngine()->getHeight() / 2.0f);
 		m_NoCameraText->setTextColor(glm::vec3(1, 1, 1));
 		m_NoCameraText->setStyle(Text::TextStyle::Normal);
 		m_NoCameraText->setText("No Camera");
@@ -126,20 +132,20 @@ namespace annileen
 
 		cameraNode->setActive(false);
 
-		while (m_Engine->run())
+		while (getEngine()->run())
 		{
-			auto dt = m_Engine->getTime().deltaTime;
-			m_Engine->checkInputEvents();
+			auto dt{ getEngine()->getTime().deltaTime };
+			getEngine()->checkInputEvents();
 
-			uint8_t mouseButton = (m_Engine->getInput()->_getMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) ? IMGUI_MBUT_LEFT : 0)
-				| (m_Engine->getInput()->_getMouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT) ? IMGUI_MBUT_RIGHT : 0)
-				| (m_Engine->getInput()->_getMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE) ? IMGUI_MBUT_MIDDLE : 0);
+			uint8_t mouseButton = (getEngine()->getInput()->_getMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) ? IMGUI_MBUT_LEFT : 0)
+				| (getEngine()->getInput()->_getMouseButtonDown(GLFW_MOUSE_BUTTON_RIGHT) ? IMGUI_MBUT_RIGHT : 0)
+				| (getEngine()->getInput()->_getMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE) ? IMGUI_MBUT_MIDDLE : 0);
 
-			m_Engine->getGui()->beginFrame(
-				m_Engine->getInput()->_getMousePosition(), 
+			getEngine()->getGui()->beginFrame(
+				getEngine()->getInput()->_getMousePosition(),
 				mouseButton, 
-				static_cast<int32_t>(m_Engine->getInput()->_getMouseScroll().y),
-				m_Engine->getWidth(), m_Engine->getHeight());
+				static_cast<int32_t>(getEngine()->getInput()->_getMouseScroll().y),
+				getEngine()->getWidth(), getEngine()->getHeight());
 
 			scene->update();
 
@@ -149,7 +155,7 @@ namespace annileen
 			update(dt);
 #endif
 
-			m_Engine->getGui()->endFrame();
+			getEngine()->getGui()->endFrame();
 
 			render();
 		}
@@ -161,16 +167,16 @@ namespace annileen
 
 	void Application::render()
 	{
-		Camera* camera = SceneManager::getInstance()->getScene()->getCamera();
+		Camera* camera{ SceneManager::getInstance()->getScene()->getCamera() };
 		if (camera == nullptr)
 		{
 			m_NoCamera->getSceneNode()->setActive(true);
-			m_Engine->render(m_NoCamera);
+			getEngine()->render(m_NoCamera);
 			m_NoCamera->getSceneNode()->setActive(false);
 		}
 		else
 		{
-			m_Engine->render(camera);
+			getEngine()->render(camera);
 		}
 	}
 

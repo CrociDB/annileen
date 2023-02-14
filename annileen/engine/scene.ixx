@@ -24,51 +24,53 @@ export namespace annileen
 
     class Scene
     {
-    private:
-        std::list<SceneNodePtr> m_Nodes;
-        SceneNodePtr m_Root;
-        std::list<Light*> m_Lights;
-        std::list<Camera*> m_Cameras;
-        Skybox* m_Skybox = nullptr;
-
-        void addNodeToList(SceneNodePtr node);
-        void removeNodeFromList(SceneNodePtr node);
-
         friend class SceneManager;
         friend class SceneNode;
 
     public:
         Scene();
         virtual ~Scene();
-        Fog fog;
 
         virtual void start() {};
         virtual void update() {};
-
-        SceneNodePtr getRoot();
 
         SceneNodePtr createNode(const std::string& name);       
 
         void setSkybox(Skybox* skybox) { m_Skybox = skybox; }
         Skybox* getSkybox() const { return m_Skybox; }
-
+        
+        SceneNodePtr getRoot() const;
         std::list<SceneNodePtr>& getNodeList();
         std::list<Light*>& getLightList();
         std::list<Camera*>& getCameraList();
-        Camera* getCamera();
+        Camera* getCamera() const;
+
+    private:
+        void addNodeToList(SceneNodePtr node);
+        void removeNodeFromList(SceneNodePtr node);
+
+    public:
+        Fog fog{};
+
+    private:
+        std::list<SceneNodePtr> m_Nodes;
+        std::list<Light*> m_Lights;
+        std::list<Camera*> m_Cameras;
+        SceneNodePtr m_Root{ nullptr };
+        Skybox* m_Skybox{ nullptr };
     };
 }
 
 namespace annileen
 {
-    SceneNodePtr Scene::getRoot()
+    SceneNodePtr Scene::getRoot() const
     {
         return m_Root;
     }
 
     SceneNodePtr Scene::createNode(const std::string& name)
     {
-        auto node = new SceneNode(name);
+        auto node{ new SceneNode(name) };
         m_Nodes.push_back(node);
         node->setParent(getRoot());
         return node;
@@ -99,7 +101,7 @@ namespace annileen
         return m_Cameras;
     }
 
-    Camera* Scene::getCamera()
+    Camera* Scene::getCamera() const
     {
         for (auto camera : m_Cameras)
         {
@@ -111,7 +113,7 @@ namespace annileen
         return nullptr;
     }
 
-    Scene::Scene() : fog()
+    Scene::Scene()
     {
         //m_Camera = new Camera(60.0f, 0.1f, 300.0f);
         m_Root = new SceneNode("Root");
@@ -120,6 +122,12 @@ namespace annileen
     Scene::~Scene()
     {
         delete m_Skybox;
+        
+        for(auto sceneNode : m_Nodes)
+        {
+            delete sceneNode;
+        }
+
         delete m_Root;
 
         // TODO: remove

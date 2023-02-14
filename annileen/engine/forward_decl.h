@@ -17,9 +17,9 @@ namespace annileen
 	class Text;
 	class Material;
 
-	typedef SceneNode* SceneNodePtr;
-	typedef SceneNodeModule* SceneNodeModulePtr;
-	typedef Model* ModelPtr;
-	typedef Camera* CameraPtr;
-	typedef Text* TextPtr;
+	using SceneNodePtr = SceneNode*;
+	using SceneNodeModulePtr = SceneNodeModule*;
+	using ModelPtr = Model*;
+	using CameraPtr = Camera*;
+	using TextPtr = Text*;
 }
