@@ -278,7 +278,7 @@ project "bgfx"
 		path.join(BIMG_DIR, "include"),
 		path.join(BGFX_DIR, "include"),
 		path.join(BGFX_DIR, "3rdparty"),
-		path.join(BGFX_DIR, "3rdparty/dxsdk/include"),
+		path.join(BGFX_DIR, "3rdparty/directx-headers/include/directx"),
 		path.join(BGFX_DIR, "3rdparty/khronos")
 	}
 	filter "configurations:Debug"
@@ -310,15 +310,15 @@ project "bimg"
 		path.join(BIMG_DIR, "src/image_gnf.cpp"),
 		path.join(BIMG_DIR, "src/image_decode.cpp"),
 		path.join(BIMG_DIR, "src/*.cpp"),
-		path.join(BIMG_DIR, "3rdparty/astc-codec/src/decoder/*.cc"),
+		path.join(BIMG_DIR, "3rdparty/astc-encoder/source/*.cpp"),
+		path.join(BIMG_DIR, "3rdparty/astc-encoder/include/*.h"),
 		path.join(BIMG_DIR, "3rdparty/tinyexr/deps/miniz/miniz.c"),
 	}
 	includedirs
 	{
 		path.join(BX_DIR, "include"),
 		path.join(BIMG_DIR, "include"),
-		path.join(BIMG_DIR, "3rdparty/astc-codec"),
-		path.join(BIMG_DIR, "3rdparty/astc-codec/include"),
+		path.join(BIMG_DIR, "3rdparty/astc-encoder/include"),
 		path.join(BIMG_DIR, "3rdparty/iqa/include"),
 		path.join(BIMG_DIR, "3rdparty/"),
 		path.join(BIMG_DIR, "3rdparty/tinyexr/deps/miniz/"),

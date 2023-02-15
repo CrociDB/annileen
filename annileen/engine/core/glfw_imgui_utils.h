@@ -157,6 +157,6 @@ inline ImGuiKey __getImGuiKeyFromGLFW(int glfwkey)
 		return ImGuiKey_F12;
 
 	default:
-		return 0;
+		return ImGuiKey_None;
 	}
 }
