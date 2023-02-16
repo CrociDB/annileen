@@ -26,14 +26,14 @@ export namespace annileen
 
 	class RawMesh
 	{
+	public:		
+		void getMesh(std::shared_ptr<Mesh> mesh, const MeshDescriptor& descriptor);
 	private:
 		void generateNormals();
-
+	
 	public:
-		std::vector<RawVertex> m_Vertices;
-		std::vector<uint32_t> m_Indices;
-
-		void getMesh(Mesh* mesh, const MeshDescriptor& descriptor);
+		std::vector<RawVertex> m_Vertices{};
+		std::vector<uint32_t> m_Indices{};
 	};
 }
 
@@ -64,7 +64,7 @@ namespace annileen
 		}
 	}
 
-	void RawMesh::getMesh(Mesh* mesh, const MeshDescriptor& descriptor)
+	void RawMesh::getMesh(std::shared_ptr<Mesh> mesh, const MeshDescriptor& descriptor)
 	{
 		if (descriptor.m_Normals == MeshDescriptor::Normals::Generate)
 			generateNormals();

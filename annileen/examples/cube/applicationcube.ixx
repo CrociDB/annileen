@@ -43,7 +43,7 @@ std::shared_ptr<Scene> ApplicationCube::init()
 {
     auto scene = SceneManager::getInstance()->createScene<Scene>();
 
-    annileen::Shader* shader = nullptr;
+    std::shared_ptr<annileen::Shader> shader = nullptr;
     if (ServiceProvider::getSettings()->getData()->shadows.enabled)
     {
         shader = ServiceProvider::getAssetManager()->getShader("lit_shadow");

@@ -35,8 +35,8 @@ export namespace annileen
 		static bgfx::UniformHandle getSMat3UniformHandle(const std::string& uniformname);
 		static bgfx::UniformHandle getMat4UniformHandle(const std::string& uniformname);
 
-		static void setCubemapUniform(const std::string& uniformname, const Cubemap* value, uint8_t registerId);
-		static void setTextureUniform(const std::string& uniformname, const Texture* value, uint8_t registerId);
+		static void setCubemapUniform(const std::string& uniformname, std::shared_ptr<const Cubemap> value, uint8_t registerId);
+		static void setTextureUniform(const std::string& uniformname, std::shared_ptr<const Texture> value, uint8_t registerId);
 		static void setColorUniform(const std::string& uniformname, const glm::vec4& value);
 		static void setVec4Uniform(const std::string& uniformname, const glm::vec4& value);
 		static void setVec3Uniform(const std::string& uniformname, const glm::vec3& value);
@@ -100,14 +100,19 @@ namespace annileen
 		return getOrCreateUniform(uniformname, bgfx::UniformType::Mat4);
 	}
 
-	void Uniform::setCubemapUniform(const std::string& uniformname, const Cubemap* value, uint8_t registerId)
+	void Uniform::setCubemapUniform(const std::string& uniformname, std::shared_ptr<const Cubemap> value, uint8_t registerId)
 	{
 		bgfx::setTexture(registerId, getSamplerUniformHandle(uniformname), value->getHandle());
 	}
 
-	void Uniform::setTextureUniform(const std::string& uniformname, const Texture* value, uint8_t registerId)
+	void Uniform::setTextureUniform(const std::string& uniformname, std::shared_ptr<const Texture> value, uint8_t registerId)
 	{
 		bgfx::setTexture(registerId, getSamplerUniformHandle(uniformname), value->getHandle());
+	}
+
+	void Uniform::setColorUniform(const std::string& uniformname, const glm::vec4& value)
+	{
+		setVec4Uniform(uniformname, value);
 	}
 
 	void Uniform::setVec4Uniform(const std::string& uniformname, const glm::vec4& value)
@@ -141,5 +146,7 @@ namespace annileen
 		{
 			bgfx::destroy(v.m_Handle);
 		}
+
+		m_Uniforms.clear();
 	}
 }

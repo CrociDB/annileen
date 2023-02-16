@@ -3,6 +3,7 @@ module;
 #include <memory>
 #include <vector>
 #include <bgfx/defines.h>
+#include <iostream>
 
 export module shaderpass;
 
@@ -12,13 +13,13 @@ export namespace annileen
 {
     class ShaderPass
     {
-        Shader* m_Shader;
+        std::shared_ptr<Shader> m_Shader;
         uint64_t m_State;
 
     public:
-        void init(Shader* shader) noexcept;
+        void init(std::shared_ptr<Shader> shader) noexcept;
 
-        Shader* getShader() const noexcept;
+        std::shared_ptr<Shader> getShader() const noexcept;
 
         inline void setState(uint64_t state) { m_State = state; }
         inline uint64_t getState() { return m_State; }
@@ -27,15 +28,20 @@ export namespace annileen
             return m_Shader->getAvailableShaders();
         }
 
-        ShaderPass();
+        ShaderPass() = default;
         ~ShaderPass();
     };
 };
 
-
 namespace annileen
 {
-    void ShaderPass::init(Shader* shader) noexcept
+    ShaderPass::~ShaderPass()
+    {
+        // TODO: remove
+        std::cout << "ShaderPass destroyed." << std::endl;
+    }
+
+    void ShaderPass::init(std::shared_ptr<Shader> shader) noexcept
     {
         m_Shader = shader;
 
@@ -48,17 +54,9 @@ namespace annileen
             | UINT64_C(0); 
     }
 
-    Shader* ShaderPass::getShader() const noexcept
+    std::shared_ptr<Shader> ShaderPass::getShader() const noexcept
     {
         return m_Shader;
-    }
-
-    ShaderPass::ShaderPass()
-    {
-    }
-
-    ShaderPass::~ShaderPass()
-    {
     }
 }
 

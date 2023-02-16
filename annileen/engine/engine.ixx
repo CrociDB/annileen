@@ -419,6 +419,7 @@ namespace annileen
         ServiceProvider::provideSettings(nullptr);
 
         m_AssetManager.reset();
+        m_Renderer.reset();
 
         //TODO: destroy fonts before font manager
         //Font::destroyFontManager();

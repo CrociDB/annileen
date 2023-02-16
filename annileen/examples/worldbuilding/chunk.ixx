@@ -5,6 +5,7 @@ module;
 #include <PerlinNoise.hpp>
 #include <engine/forward_decl.h>
 #include <tuple>
+#include <iostream>
 #include <time.h>
 #include <glm.hpp>
 #include <bgfx/bgfx.h>
@@ -53,8 +54,8 @@ private:
 
     BlockType* m_Grid;
 
-    std::shared_ptr<Material> m_Material;
-    MeshGroup* m_MeshGroup = nullptr;
+    std::shared_ptr<Material> m_Material{ nullptr };
+    std::shared_ptr<MeshGroup> m_MeshGroup{ nullptr };
     ModelPtr m_Model = nullptr;
     SceneNodePtr m_Node = nullptr;
 
@@ -79,10 +80,9 @@ void Chunk::generateMesh()
     if (m_MeshGroup != nullptr)
     {
         delete m_Node;
-        delete m_MeshGroup;
     }
 
-    m_MeshGroup = new annileen::MeshGroup();
+    m_MeshGroup = std::make_shared<annileen::MeshGroup>();
 
     int meshSize;
     float* meshData = generateMeshData(&meshSize);
@@ -94,7 +94,7 @@ void Chunk::generateMesh()
         .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
         .end();
 
-    auto mesh = new annileen::Mesh();
+    auto mesh = std::make_shared<annileen::Mesh>();
     mesh->init(bgfx::makeRef(meshData, meshSize * sizeof(float), annileen::Allocators::releaseMem), vlayout);
     m_MeshGroup->m_Meshes.push_back(mesh);
 }
@@ -300,6 +300,8 @@ Chunk::Chunk(int wx, int wz)
 
 Chunk::~Chunk()
 {
-    delete m_MeshGroup;
     delete m_Grid;
+
+    // TODO: remove
+    std::cout << "Chunk destroyed." << std::endl;
 }

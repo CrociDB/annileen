@@ -28,14 +28,14 @@ export namespace annileen
 	class AssetManager final
 	{
 	private:
-		std::map<std::string, AssetTableEntry> m_Assets;
+		std::map<std::string, std::shared_ptr<AssetTableEntry>> m_Assets;
 		AssetWatcher* m_Watcher;
 
 		void loadAssetTable(const std::string& assetfile);
 		AssetType getType(const std::string& typetext);
 		ShaderUniformType getUniformType(const std::string& typetext);
-		AssetTableEntry* getAssetEntry(const std::string& assetname);
-		AssetTableEntry* getAssetEntryIfExists(const std::string& assetname);
+		std::shared_ptr<AssetTableEntry> getAssetEntry(const std::string& assetname);
+		std::shared_ptr<AssetTableEntry> getAssetEntryIfExists(const std::string& assetname);
 
 		void unloadAssets();
 
@@ -44,8 +44,8 @@ export namespace annileen
 
 		void assetModified(const std::string& path, AssetFileStatus status);
 
-		void loadAsset(AssetTableEntry* asset);
-		void loadAssetShader(AssetTableEntry* asset);
+		void loadAsset(std::shared_ptr<AssetTableEntry> asset);
+		void loadAssetShader(std::shared_ptr<AssetTableEntry> asset);
 
 
 		friend class Engine;
@@ -57,17 +57,17 @@ export namespace annileen
 		void updateAssetWatcher();
 
 		// Asset loading functions
-		Shader* getShader(const std::string& basename);
-		Texture* getTexture(const std::string& tex);
-		Cubemap* getCubemap(const std::string& name);
-		MeshGroup* getMesh(const std::string& name);
-		Font* getFont(const std::string& name);
+		std::shared_ptr<Shader> getShader(const std::string& basename);
+		std::shared_ptr<Texture> getTexture(const std::string& tex);
+		std::shared_ptr<Cubemap> getCubemap(const std::string& name);
+		std::shared_ptr<MeshGroup> getMesh(const std::string& name);
+		std::shared_ptr<Font> getFont(const std::string& name);
 
 		// Asset descriptor loading functions
-		ShaderDcescritor loadShaderDescriptor(AssetTableEntry* asset);
-		TextureDescriptor loadTextureDescriptor(AssetTableEntry* asset);
-		MeshDescriptor loadMeshDescriptor(AssetTableEntry* asset);
-		CubemapDescriptor loadCubemapDescriptor(AssetTableEntry* asset);
+		ShaderDescriptor loadShaderDescriptor(std::shared_ptr<AssetTableEntry> asset);
+		TextureDescriptor loadTextureDescriptor(std::shared_ptr<AssetTableEntry> asset);
+		MeshDescriptor loadMeshDescriptor(std::shared_ptr<AssetTableEntry> asset);
+		CubemapDescriptor loadCubemapDescriptor(std::shared_ptr<AssetTableEntry> asset);
 	};
 
 	inline bool __anni_check_shader_program(void* handle)
@@ -100,14 +100,14 @@ namespace annileen
 		auto& assettable = toml::find(data, "asset").as_table();
 		for (const auto& [k, v] : assettable)
 		{
-			AssetTableEntry aseet {
+			auto asset = std::make_shared<AssetTableEntry>(
 				toml::find<std::string>(v, "path"),
 				getType(toml::find<std::string>(v, "type")),
 				false,
 				nullptr
-			};
+			);
 
-			m_Assets.insert_or_assign(k.c_str(), aseet);
+			m_Assets.insert_or_assign(k.c_str(), asset);
 		}
 	}
 
@@ -134,31 +134,20 @@ namespace annileen
 		return ShaderUniformType::Vec4;
 	}
 
-	AssetTableEntry* AssetManager::getAssetEntry(const std::string& assetname)
+	std::shared_ptr<AssetTableEntry> AssetManager::getAssetEntry(const std::string& assetname)
 	{
 		assert(m_Assets.count(assetname) != 0 && "Trying to load an asset that does not exist.");
-		return &m_Assets.at(assetname);
+		return m_Assets.at(assetname);
 	}
 
-	AssetTableEntry* AssetManager::getAssetEntryIfExists(const std::string& assetname)
+	std::shared_ptr<AssetTableEntry> AssetManager::getAssetEntryIfExists(const std::string& assetname)
 	{
 		if (m_Assets.count(assetname) == 0) return nullptr;
-		return &m_Assets.at(assetname);
+		return m_Assets.at(assetname);
 	}
 
 	void AssetManager::unloadAssets()
 	{
-		for (const auto& [k, v] : m_Assets)
-		{
-			if (v.m_Loaded)
-			{
-				if (v.m_Type == AssetType::Shader)
-				{
-					delete dynamic_cast<Shader*>(v.m_Asset);
-				}
-			}
-		}
-
 		m_Assets.clear();
 	}
 
@@ -258,7 +247,7 @@ namespace annileen
 		}
 	}
 
-	void AssetManager::loadAsset(AssetTableEntry* asset)
+	void AssetManager::loadAsset(std::shared_ptr<AssetTableEntry> asset)
 	{
 		switch (asset->m_Type)
 		{
@@ -270,7 +259,7 @@ namespace annileen
 		}
 	}
 
-	void AssetManager::loadAssetShader(AssetTableEntry* asset)
+	void AssetManager::loadAssetShader(std::shared_ptr<AssetTableEntry> asset)
 	{
 		auto asset_name = asset->m_Filepath.substr(asset->m_Filepath.find_last_of("/\\") + 1);
 		std::string::size_type const p(asset_name.find_last_of('.'));
@@ -278,8 +267,8 @@ namespace annileen
 		auto extension = asset_name.substr(p, asset_name.length());
 
 		// Need to get both shaders
-		AssetTableEntry* vert = asset;
-		AssetTableEntry* frag = asset;
+		auto vert = asset;
+		auto frag = asset;
 		if (extension.compare(".vs") == 0) frag = getAssetEntry(file_without_extension.append(".fs"));
 		else vert = getAssetEntry(file_without_extension.append(".vs"));
 
@@ -299,16 +288,16 @@ namespace annileen
 		// Let's use only vertex shader to store the final shader
 		if (!vert->m_Loaded)
 		{
-			auto shader = new Shader();
+			auto shader = std::make_shared<Shader>();
 			shader->setHandle(programHandle);
 			shader->setAvailableShaders(descriptor.m_AvailableUniforms);
 
-			vert->m_Asset = dynamic_cast<AssetObject*>(shader);
+			vert->m_Asset = dynamic_pointer_cast<AssetObject>(shader);
 			vert->m_Loaded = true;
 		}
 		else
 		{
-			auto shader = static_cast<Shader*>(vert->m_Asset);
+			auto shader = dynamic_pointer_cast<Shader>(vert->m_Asset);
 			shader->destroy();
 			shader->setHandle(programHandle);
 			shader->setAvailableShaders(descriptor.m_AvailableUniforms);
@@ -339,7 +328,7 @@ namespace annileen
 	}
 
 	// Load functions
-	Shader* AssetManager::getShader(const std::string& basename)
+	std::shared_ptr<Shader> AssetManager::getShader(const std::string& basename)
 	{
 		std::string vertex = basename + ".vs";
 
@@ -349,15 +338,15 @@ namespace annileen
 			loadAssetShader(entry);
 		}
 		
-		return static_cast<Shader*>(entry->m_Asset);
+		return dynamic_pointer_cast<Shader>(entry->m_Asset);
 	}
 
-	Texture* AssetManager::getTexture(const std::string& tex)
+	std::shared_ptr<Texture> AssetManager::getTexture(const std::string& tex)
 	{
 		auto entry = getAssetEntry(tex);
 		if (entry->m_Loaded)
 		{
-			return static_cast<Texture*>(entry->m_Asset);
+			return dynamic_pointer_cast<Texture>(entry->m_Asset);
 		}
 
 		auto descriptor = loadTextureDescriptor(entry);
@@ -367,18 +356,18 @@ namespace annileen
 		bimg::ImageContainer* imageContainer = nullptr;
 		std::tie(handle, info, imageContainer) = loadTextureData(entry->m_Filepath, descriptor);
 
-		Texture* texture = new Texture(handle, info, imageContainer->m_orientation);
-		entry->m_Asset = static_cast<AssetObject*>(texture);
+		auto texture = std::make_shared<Texture>(handle, info, imageContainer->m_orientation);
+		entry->m_Asset = dynamic_pointer_cast<AssetObject>(texture);
 		entry->m_Loaded = true;
 		return texture;
 	}
 
-	Cubemap* AssetManager::getCubemap(const std::string& name)
+	std::shared_ptr<Cubemap> AssetManager::getCubemap(const std::string& name)
 	{
 		auto entry = getAssetEntry(name);
 		if (entry->m_Loaded)
 		{
-			return static_cast<Cubemap*>(entry->m_Asset);
+			return dynamic_pointer_cast<Cubemap>(entry->m_Asset);
 		}
 
 		auto descriptor = loadCubemapDescriptor(entry);
@@ -388,46 +377,46 @@ namespace annileen
 		bimg::ImageContainer* imageContainer = nullptr;
 		std::tie(handle, info, imageContainer) = loadTextureData(descriptor.m_StripFile, {});
 
-		Cubemap* cubemap = new Cubemap(handle, info, imageContainer->m_orientation);
-		entry->m_Asset = static_cast<AssetObject*>(cubemap);
+		auto cubemap = std::make_shared<Cubemap>(handle, info, imageContainer->m_orientation);
+		entry->m_Asset = dynamic_pointer_cast<AssetObject>(cubemap);
 		entry->m_Loaded = true;
 		return cubemap;
 	}
 
-	MeshGroup* AssetManager::getMesh(const std::string& name)
+	std::shared_ptr<MeshGroup> AssetManager::getMesh(const std::string& name)
 	{
 		auto entry = getAssetEntry(name);
 		if (entry->m_Loaded)
 		{
-			return static_cast<MeshGroup*>(entry->m_Asset);
+			return dynamic_pointer_cast<MeshGroup>(entry->m_Asset);
 		}
 
 		const auto descriptor = loadMeshDescriptor(entry);
 
 		ModelLoader loader;
 		auto meshGroup = loader.loadMesh(entry->m_Filepath, descriptor);
-		entry->m_Asset = static_cast<AssetObject*>(meshGroup);
+		entry->m_Asset = dynamic_pointer_cast<AssetObject>(meshGroup);
 		entry->m_Loaded = true;
 		return meshGroup;
 	}
 
-	Font* AssetManager::getFont(const std::string& name)
+	std::shared_ptr<Font> AssetManager::getFont(const std::string& name)
 	{
 		auto entry = getAssetEntry(name);
 		if (entry->m_Loaded)
 		{
-			return static_cast<Font*>(entry->m_Asset);
+			return dynamic_pointer_cast<Font>(entry->m_Asset);
 		}
 
-		Font* font = new Font(entry->m_Filepath);
-		entry->m_Asset = static_cast<AssetObject*>(font);
+		auto font = std::make_shared<Font>(entry->m_Filepath);
+		entry->m_Asset = dynamic_pointer_cast<AssetObject>(font);
 		entry->m_Loaded = true;
 		return font;
 	}
 
-	ShaderDcescritor AssetManager::loadShaderDescriptor(AssetTableEntry* asset)
+	ShaderDescriptor AssetManager::loadShaderDescriptor(std::shared_ptr<AssetTableEntry> asset)
 	{
-		ShaderDcescritor descriptor;
+		ShaderDescriptor descriptor;
 
 		auto shaderdescriptor = asset->m_Filepath.substr(0, asset->m_Filepath.find_last_of(".")) + ".toml";
 		auto data = toml::parse(shaderdescriptor);
@@ -454,7 +443,7 @@ namespace annileen
 		return descriptor;
 	}
 
-	TextureDescriptor AssetManager::loadTextureDescriptor(AssetTableEntry* asset)
+	TextureDescriptor AssetManager::loadTextureDescriptor(std::shared_ptr<AssetTableEntry> asset)
 	{
 		auto assetfile = asset->m_Filepath.substr(0, asset->m_Filepath.find_last_of(".")) + ".toml";
 		auto data = toml::parse(assetfile);
@@ -464,7 +453,7 @@ namespace annileen
 		};
 	}
 
-	MeshDescriptor AssetManager::loadMeshDescriptor(AssetTableEntry* asset)
+	MeshDescriptor AssetManager::loadMeshDescriptor(std::shared_ptr<AssetTableEntry> asset)
 	{
 		auto assetfile = asset->m_Filepath.substr(0, asset->m_Filepath.find_last_of(".")) + ".toml";
 		auto data = toml::parse(assetfile);
@@ -480,7 +469,7 @@ namespace annileen
 		};
 	}
 
-	CubemapDescriptor AssetManager::loadCubemapDescriptor(AssetTableEntry* asset)
+	CubemapDescriptor AssetManager::loadCubemapDescriptor(std::shared_ptr<AssetTableEntry> asset)
 	{
 		auto& assetfile = asset->m_Filepath;
 		auto data = toml::parse(assetfile);

@@ -55,6 +55,9 @@ namespace annileen
     Shader::~Shader()
     {
         destroy();
+
+        // TODO: remove
+        std::cout << "Shader destroyed." << std::endl;
     }
 
     void Shader::setHandle(bgfx::ProgramHandle handle)

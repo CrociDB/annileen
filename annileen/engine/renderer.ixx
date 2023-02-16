@@ -33,22 +33,23 @@ export namespace annileen
 {
     struct Shadow
     {
-        bool useShadowSampler;
-        std::shared_ptr<Material> material;
-        bgfx::FrameBufferHandle frameBuffer;
-        Texture* texture;
-        uint8_t textureRegisterId;
+        bool useShadowSampler{ false };
+        std::shared_ptr<Material> material{ nullptr };
+        bgfx::FrameBufferHandle frameBuffer{ 0 };
+        std::shared_ptr<Texture> texture{ nullptr };
+        uint8_t textureRegisterId{ 0 };
     };
 
     class Renderer
     {
     private:
-        int m_ScreenWidth;
-        int m_ScreenHeight;
         const bgfx::Caps* m_Capabilities{ nullptr };
-        const bgfx::ViewId m_ViewId = 0;
+        const bgfx::ViewId m_ViewId{ 0 };
 
-        Shadow* m_Shadow{ nullptr };
+        int m_ScreenWidth{ 0 };
+        int m_ScreenHeight{ 0 };
+
+        std::unique_ptr<Shadow> m_Shadow{ nullptr };
 
         RenderView* m_SceneRenderView;
         RenderView* m_ShadowRenderView;
@@ -85,7 +86,7 @@ namespace annileen
 {
     void Renderer::initializeShadows()
     {
-        m_Shadow = new Shadow();
+        m_Shadow = std::make_unique<Shadow>();
 
         bgfx::VertexLayout ms_layout;
         ms_layout
@@ -98,8 +99,8 @@ namespace annileen
         // compare less equal feature is supported.
         m_Shadow->useShadowSampler = 0 != (m_Capabilities->supported & BGFX_CAPS_TEXTURE_COMPARE_LEQUAL);;
 
-        Shader* shader = ServiceProvider::getAssetManager()->getShader("sms_shadow");
-        std::shared_ptr<ShaderPass> shaderPass = std::make_shared<ShaderPass>();
+        auto shader = ServiceProvider::getAssetManager()->getShader("sms_shadow");
+        auto shaderPass = std::make_shared<ShaderPass>();
 
         shaderPass->init(shader);
         shaderPass->setState(0
@@ -138,7 +139,7 @@ namespace annileen
             1,
             bgfx::TextureFormat::D16);
 
-        m_Shadow->texture = new Texture(fbtextures[0], textureInfo, bimg::Orientation::R0);
+        m_Shadow->texture = std::make_shared<Texture>(fbtextures[0], textureInfo, bimg::Orientation::R0);
         m_Shadow->textureRegisterId = 1;
     }
 

@@ -40,5 +40,7 @@ namespace annileen
 
 	Cubemap::~Cubemap()
 	{
+		// TODO: remove
+		std::cout << "Cubemap destroyed." << std::endl;
 	}
 }

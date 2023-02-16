@@ -35,14 +35,14 @@ export namespace annileen
 
 		void unload();
 
-		Mesh();
+		Mesh() = default;
 		~Mesh();
 	};
 
 	class MeshGroup : public AssetObject
 	{
 	public:
-		std::vector<Mesh*> m_Meshes;
+		std::vector<std::shared_ptr<Mesh>> m_Meshes;
 		~MeshGroup();
 	};
 }
@@ -76,20 +76,19 @@ namespace annileen
 		}
 	}
 
-	Mesh::Mesh()
-	{
-	}
-
 	Mesh::~Mesh()
 	{
 		unload();
+
+		// TODO: remove
+		std::cout << "Mesh destroyed." << std::endl;
 	}
 
 	MeshGroup::~MeshGroup()
 	{
-		for (auto& m : m_Meshes)
-		{
-			delete m;
-		}
+		m_Meshes.clear();
+
+		// TODO: remove
+		std::cout << "MeshGroup destroyed." << std::endl;
 	}
 }
