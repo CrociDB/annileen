@@ -27,6 +27,7 @@ import transform;
 import camera;
 import scenenode;
 import utils;
+import texture;
 
 export namespace annileen
 {
@@ -62,7 +63,7 @@ export namespace annileen
     public:
         void init(int screenWidth, int screenHeight);
 
-        void render(Scene* scene, Camera* camera);
+        void render(std::shared_ptr<Scene> scene, Camera* camera);
 
         void initFrame(Scene* scene);
 
@@ -163,7 +164,7 @@ namespace annileen
         m_UIRenderView = RenderView::getRenderView(RenderView::UI);
     }
 
-    void Renderer::render(Scene* scene, Camera* camera)
+    void Renderer::render(std::shared_ptr<Scene> scene, Camera* camera)
     {
         Light* mainLightForShadows = nullptr;
         
