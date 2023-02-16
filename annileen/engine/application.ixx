@@ -48,15 +48,15 @@ export namespace annileen
 
 	// ApplicationEditor has to be able to inject the editor gui stuff
 	#ifdef _ANNILEEN_COMPILER_EDITOR
-		virtual void initializeEditorGui(Scene* scene) = 0;
-		virtual void editorUpdate(Scene* scene, float deltaTime) = 0;
+		virtual void initializeEditorGui(std::shared_ptr<Scene> scene) = 0;
+		virtual void editorUpdate(std::shared_ptr<Scene> scene, float deltaTime) = 0;
 	#endif
 
 	private:
 		void initAnnileen();
 
 	protected:
-		virtual Scene* init() = 0;
+		virtual std::shared_ptr<Scene> init() = 0;
 		virtual void finish() = 0;
 		virtual void update(float deltaTime) = 0;
 		virtual void render();
@@ -94,7 +94,7 @@ namespace annileen
 
 		initAnnileen();
 
-		std::unique_ptr<annileen::Scene> scene{ init() };
+		std::shared_ptr<Scene> scene = init();
 
 		// Put assert for scene nullptr once we have our assert class
 		if (scene == nullptr)
@@ -106,7 +106,7 @@ namespace annileen
 		scene->start();
 
 #ifdef _ANNILEEN_COMPILER_EDITOR
-		initializeEditorGui(scene.get());
+		initializeEditorGui(scene);
 #endif
 
 		SceneNodePtr cameraNode = scene->createNode("No camera");
@@ -150,7 +150,7 @@ namespace annileen
 			scene->update();
 
 #ifdef _ANNILEEN_COMPILER_EDITOR
-			editorUpdate(scene.get(), dt);
+			editorUpdate(scene, dt);
 #else
 			update(dt);
 #endif

@@ -22,7 +22,7 @@ private:
 	bool m_CameraActive = false;
 	uint8_t m_DebugActive = 0;
 
-	annileen::Scene* init() override;
+	std::shared_ptr<annileen::Scene> init() override;
 	void update(float deltaTime) override {}	
 	void finish() override {};
 	
@@ -31,9 +31,9 @@ public:
 	~ApplicationWorldBuilding() = default;
 };
 
-annileen::Scene* ApplicationWorldBuilding::init()
+std::shared_ptr<annileen::Scene> ApplicationWorldBuilding::init()
 {
-	GameScene* scene = annileen::SceneManager::getInstance()->createScene<GameScene>();
+	std::shared_ptr<GameScene> scene = annileen::SceneManager::getInstance()->createScene<GameScene>();
 
 	// Initialize Camera
 	m_Speed = 3.0f;

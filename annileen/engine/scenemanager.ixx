@@ -4,6 +4,8 @@ module;
 #include <list>
 #include <engine/forward_decl.h>
 #include <type_traits>
+#include <memory>
+#include <iostream>
 
 export module scenemanager;
 
@@ -17,39 +19,53 @@ export namespace annileen
     class SceneManager
     {
     private:
+        friend class Engine;
+
         static SceneManager* s_Instance;
 
-        Scene* m_Scene{ nullptr };
-        
         SceneManager() = default;
-        ~SceneManager() = default;
+        ~SceneManager();
+
+        static void destroy();
 
     public: 
         static SceneManager* getInstance();
 
-        template<typename T>
-        T* createScene();
-
         //void setScene(Scene* scene);
-        Scene* getScene() const;
+        std::shared_ptr<Scene> getScene() const;
 
-        void setParentScene(Scene* scene, SceneNode* sceneNode);
-        void destroySceneNode(Scene* scene, SceneNode* sceneNode);
+        void setParentScene(std::shared_ptr<Scene> scene, SceneNode* sceneNode);
+        void destroySceneNode(std::shared_ptr<Scene> scene, SceneNode* sceneNode);
 
         void addCameraModule(Scene* scene, Camera* camera);
         void addLightModule(Scene* scene, Light* light);
         void removeCameraModule(Scene* scene, Camera* camera);
         void removeLightModule(Scene* scene, Light* light);
 
+        template <class T> std::shared_ptr<T> createScene();
         template <class T> T* getModule(SceneNode* sceneNode) const;
         template <class T> T* addModule(Scene* scene, SceneNode* sceneNode);
-        template <class T> bool removeModule(Scene* scene, SceneNode* sceneNode);
+        template <class T> bool removeModule(Scene* scene, SceneNode* sceneNode);    
+    
+    private:
+        std::shared_ptr<Scene> m_Scene{ nullptr };
     };
 }
 
 namespace annileen
 {
     SceneManager* SceneManager::s_Instance{ nullptr };
+
+    SceneManager::~SceneManager()
+    {
+        // TODO: remove
+        std::cout << "SceneManager destroyed" << std::endl;
+    }
+
+    void SceneManager::destroy()
+    {
+        delete s_Instance;
+    }
 
     SceneManager* SceneManager::getInstance()
     {
@@ -61,13 +77,12 @@ namespace annileen
         return s_Instance;
     }
 
-    template<typename T>
-    T* SceneManager::createScene()
+    template<class T>
+    std::shared_ptr<T> SceneManager::createScene()
     {
-        static_assert(std::is_base_of<Scene, T>::value, "T must derive from Scene");
-        delete m_Scene;
-        T* newScene = new T();
-        m_Scene = dynamic_cast<Scene*>(newScene);
+        static_assert(std::is_base_of<Scene, T>::value, "T must derive from Scene");        
+        std::shared_ptr<T> newScene = std::make_shared<T>();
+        m_Scene = dynamic_pointer_cast<Scene>(newScene);
         return newScene;
     }
 
@@ -165,12 +180,12 @@ namespace annileen
         m_Scene = scene;
     }*/
 
-    Scene* SceneManager::getScene() const
+    std::shared_ptr<Scene> SceneManager::getScene() const
     {
         return m_Scene;
     }
 
-    void SceneManager::setParentScene(Scene* scene, SceneNode* sceneNode)
+    void SceneManager::setParentScene(std::shared_ptr<Scene> scene, SceneNode* sceneNode)
     {
         //TODO: doesnt make sense because we need to add support to multiple scenes.
         if (scene != nullptr)
@@ -185,7 +200,7 @@ namespace annileen
         }
     }
 
-    void SceneManager::destroySceneNode(Scene* scene, SceneNode* sceneNode)
+    void SceneManager::destroySceneNode(std::shared_ptr<Scene> scene, SceneNode* sceneNode)
     {
         if (scene != nullptr)
         {

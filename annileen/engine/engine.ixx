@@ -387,7 +387,7 @@ namespace annileen
 
     void Engine::render(Camera* replacementCamera)
     {
-        Scene* scene{ SceneManager::getInstance()->getScene() };
+        auto scene{ SceneManager::getInstance()->getScene() };
         if (scene != nullptr)
         {
             m_Renderer->render(scene, replacementCamera);
@@ -427,6 +427,8 @@ namespace annileen
 
         // Force GUI destruction. It has to happen before bgfx shutdown.
         m_Gui.reset();
+
+        SceneManager::destroy();
 
         bgfx::shutdown();
 

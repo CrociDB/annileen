@@ -101,7 +101,7 @@ export namespace annileen
 
 		void initialize(Engine* engine);
 		void processInput(Camera* camera, float deltaTime);
-		void render(Scene* scene, Camera* camera, float deltaTime);
+		void render(std::shared_ptr<Scene> scene, Camera* camera, float deltaTime);
 		void drawMainWindowToolbar();
 		void drawToolsWindow();
 		void drawSceneHierarchyWindow(const std::vector<SceneNodePtr> sceneNodeList);
@@ -134,7 +134,7 @@ export namespace annileen
 		if (newSceneNode != nullptr)
 		{
 			SceneNodeModule* newModule = SceneManager::getInstance()->addModule<T>(
-				SceneManager::getInstance()->getScene(),
+				SceneManager::getInstance()->getScene().get(),
 				newSceneNode);
 		}
 	}
@@ -248,7 +248,7 @@ namespace annileen
 		}
 	}
 
-	void EditorGui::render(Scene* scene, Camera* camera, float deltaTime)
+	void EditorGui::render(std::shared_ptr<Scene> scene, Camera* camera, float deltaTime)
 	{
 		ImGuizmo::BeginFrame();
 		ImGuizmo::Enable(m_Mode == Editor);
@@ -280,7 +280,7 @@ namespace annileen
 
 		if (m_SceneNodeToBeRemoved != nullptr)
 		{
-			Scene* scene = SceneManager::getInstance()->getScene();
+			auto scene = SceneManager::getInstance()->getScene();
 
 			if (scene != nullptr)
 			{
@@ -1043,7 +1043,7 @@ namespace annileen
 
 	SceneNodePtr EditorGui::drawSceneNode(SceneNodePtr const sceneNode, std::string nodeName)
 	{
-		Scene* scene = SceneManager::getInstance()->getScene();
+		auto scene = SceneManager::getInstance()->getScene();
 		SceneNodePtr newSceneNode = nullptr;
 
 		if (ImGui::Selectable("Above"))
