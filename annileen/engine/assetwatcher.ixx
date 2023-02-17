@@ -6,6 +6,7 @@ module;
 #include <functional>
 #include <tuple>
 #include <vector>
+#include <iostream>
 
 export module assetwatcher;
 
@@ -32,6 +33,7 @@ export namespace annileen
 
 	public:
 		AssetWatcher(const std::string& path);
+		~AssetWatcher();
 		void update();
 
 		inline std::unordered_map<std::string, AssetFileStatus>& getModified() { return m_Modified; }
@@ -49,6 +51,12 @@ namespace annileen
 		{
 			m_AssetFiles[file.path().string()] = std::filesystem::last_write_time(file);
 		}
+	}
+
+	AssetWatcher::~AssetWatcher()
+	{
+		// TODO: remove
+		std::cout << "AssetWatcher destroyed." << std::endl;
 	}
 
 	void AssetWatcher::update()

@@ -4,40 +4,35 @@ module;
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include "engine/core/logger.h"
+#include <memory>
 
 export module modelloader;
 
 import rawmesh;
 import mesh;
+import asset;
 
 export namespace annileen
 {
 	class ModelLoader
 	{
-	private:
-		void processNode(aiNode* node, const aiScene* scene, MeshGroup* meshGroup, const MeshDescriptor& descriptor);
-		void convertMesh(Mesh* mesh, aiMesh* aiMesh, const aiScene* scene, const MeshDescriptor& descriptor);
 	public:
-		ModelLoader();
-		~ModelLoader();
+		ModelLoader() = default;
+		~ModelLoader() = default;
 
-		MeshGroup* loadMesh(const std::string& filename, const MeshDescriptor& descriptor);
+		std::shared_ptr<MeshGroup> loadMesh(const std::string& filename, const MeshDescriptor& descriptor);
+	
+	private:
+		void processNode(aiNode* node, const aiScene* scene, std::shared_ptr<MeshGroup> meshGroup, const MeshDescriptor& descriptor);
+		void convertMesh(std::shared_ptr<Mesh> mesh, aiMesh* aiMesh, const aiScene* scene, const MeshDescriptor& descriptor);
 	};
 }
 
 namespace annileen
 {
-	ModelLoader::ModelLoader()
+	std::shared_ptr<MeshGroup> ModelLoader::loadMesh(const std::string& filename, const MeshDescriptor& descriptor)
 	{
-	}
-
-	ModelLoader::~ModelLoader()
-	{
-	}
-
-	MeshGroup* ModelLoader::loadMesh(const std::string& filename, const MeshDescriptor& descriptor)
-	{
-		MeshGroup* meshGroup = new MeshGroup();
+		auto meshGroup = std::make_shared<MeshGroup>();
 
 		Assimp::Importer importer;
 		
@@ -60,12 +55,12 @@ namespace annileen
 		return meshGroup;
 	}
 
-	void ModelLoader::processNode(aiNode* node, const aiScene* scene, MeshGroup* meshGroup, const MeshDescriptor& descriptor)
+	void ModelLoader::processNode(aiNode* node, const aiScene* scene, std::shared_ptr<MeshGroup> meshGroup, const MeshDescriptor& descriptor)
 	{
  		for (uint16_t i = 0; i < node->mNumMeshes; i++)
 		{
-			aiMesh* aiMesh = scene->mMeshes[node->mMeshes[i]];
-			Mesh* mesh = new Mesh();
+			auto aiMesh = scene->mMeshes[node->mMeshes[i]];
+			auto mesh = std::make_shared<Mesh>();
 			convertMesh(mesh, aiMesh, scene, descriptor);
 			meshGroup->m_Meshes.push_back(mesh);
 		}
@@ -76,7 +71,7 @@ namespace annileen
 		}
 	}
 
-	void ModelLoader::convertMesh(Mesh* mesh, aiMesh* aiMesh, const aiScene* scene, const MeshDescriptor& descriptor)
+	void ModelLoader::convertMesh(std::shared_ptr<Mesh> mesh, aiMesh* aiMesh, const aiScene* scene, const MeshDescriptor& descriptor)
 	{
 		RawMesh rawMesh;
 

@@ -63,7 +63,7 @@ void GameScene::buildMap()
 {
     auto texture = ServiceProvider::getAssetManager()->getTexture("blocks.png");
 
-    annileen::Shader* shader = nullptr;
+    std::shared_ptr<annileen::Shader> shader{ nullptr };
     if (ServiceProvider::getSettings()->getData()->shadows.enabled)
     {
         shader = ServiceProvider::getAssetManager()->getShader("lit_shadow");
@@ -73,7 +73,7 @@ void GameScene::buildMap()
         shader = ServiceProvider::getAssetManager()->getShader("lit_noshadow");
     }
 
-    std::shared_ptr<ShaderPass> shaderPass = std::make_shared<ShaderPass>();
+    auto shaderPass = std::make_shared<ShaderPass>();
     shaderPass->init(shader);
     shaderPass->setState(BGFX_STATE_WRITE_RGB
         | BGFX_STATE_WRITE_A

@@ -4,6 +4,7 @@ module;
 #include <bgfx/bgfx.h>
 
 #include <memory>
+#include <iostream>
 
 export module skybox;
 
@@ -47,30 +48,47 @@ export namespace annileen
 {
 	class Skybox
 	{
-	private:
-		std::shared_ptr<Model> m_Model;
-		MeshGroup* m_MeshGroup;
-		Cubemap* m_Cubemap;
-		void createModel();
-
 	public:
-		std::shared_ptr<Model> getModel() const { return m_Model; }
-		Cubemap* getCubemap() const { return m_Cubemap; }
-
-		Skybox(Cubemap* cubemap);
+		Skybox(std::shared_ptr<Cubemap> cubemap);
 		~Skybox();
+
+		std::shared_ptr<Model> getModel() const;
+		std::shared_ptr<Cubemap> getCubemap() const;
+	
+	private:
+		void createModel();
+	
+	private:
+		std::shared_ptr<Model> m_Model{ nullptr };
+		std::shared_ptr<MeshGroup> m_MeshGroup{ nullptr };
+		std::shared_ptr<Cubemap> m_Cubemap{ nullptr };
 	};
 }
 
-
 namespace annileen
 {
+	Skybox::~Skybox()
+	{
+		// TODO: remove
+		std::cout << "Skybox destroyed." << std::endl;
+	}
+
+	std::shared_ptr<Model> Skybox::getModel() const 
+	{ 
+		return m_Model; 
+	}
+
+	std::shared_ptr<Cubemap> Skybox::getCubemap() const 
+	{ 
+		return m_Cubemap; 
+	}
+
 	void Skybox::createModel()
 	{
-		Shader* shader = ServiceProvider::getAssetManager()->getShader("skybox");
-		std::shared_ptr<Material> material = std::make_shared<Material>();
+		auto shader{ ServiceProvider::getAssetManager()->getShader("skybox") };
+		auto material{ std::make_shared<Material>() };
 		
-		std::shared_ptr<ShaderPass> shaderPass = std::make_shared<ShaderPass>();
+		auto shaderPass{ std::make_shared<ShaderPass>() };
 		shaderPass->init(shader);
 		shaderPass->setState(BGFX_STATE_WRITE_RGB
 			| BGFX_STATE_DEPTH_TEST_LEQUAL
@@ -86,11 +104,11 @@ namespace annileen
 			.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
 			.end();
 
-		auto vdata = bgfx::makeRef(s_skyboxCubeVertices, sizeof(s_skyboxCubeVertices));
-		auto idata = bgfx::makeRef(s_skyboxCubeTriList, sizeof(s_skyboxCubeTriList));
+		auto vdata{ bgfx::makeRef(s_skyboxCubeVertices, sizeof(s_skyboxCubeVertices)) };
+		auto idata{ bgfx::makeRef(s_skyboxCubeTriList, sizeof(s_skyboxCubeTriList)) };
 
-		m_MeshGroup = new MeshGroup();
-		auto mesh = new Mesh();
+		m_MeshGroup = std::make_shared<MeshGroup>();
+		auto mesh{ std::make_shared<Mesh>() };
 		mesh->init(vdata, vlayout, idata);
 		m_MeshGroup->m_Meshes.push_back(mesh);
 
@@ -98,13 +116,8 @@ namespace annileen
 		m_Model->init(m_MeshGroup, material);
 	}
 
-	Skybox::Skybox(Cubemap* cubemap) : m_Cubemap(cubemap)
+	Skybox::Skybox(std::shared_ptr<Cubemap> cubemap) : m_Cubemap(cubemap)
 	{
 		createModel();
-	}
-	
-	Skybox::~Skybox()
-	{
-		delete m_MeshGroup;
-	}
+	}	
 }

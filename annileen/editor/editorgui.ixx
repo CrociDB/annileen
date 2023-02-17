@@ -1035,7 +1035,7 @@ namespace annileen
 				for (auto& [k, v] : material->getSerializedUniforms())
 				{
 					ImGui::Spacing();
-					ImGui::Checkbox(k.c_str(), &v.m_Active);
+					ImGui::Checkbox(k.c_str(), &v.active);
 				}
 			}
 		}

@@ -18,24 +18,40 @@ export namespace annileen
 {
     struct MaterialSerializedUniform
     {
-        uint8_t m_RegisterId;
-        bool m_Active;
-        ShaderUniformType m_Type;
+        MaterialSerializedUniform() {}
+        ~MaterialSerializedUniform() {}
+
+        MaterialSerializedUniform& operator=(MaterialSerializedUniform& other)
+        {
+            if (this != &other)
+            {
+                using std::swap;
+
+                swap(registerId, other.registerId);
+                swap(active, other.active);
+                swap(type, other.type);
+                swap(data, other.data);
+            }
+
+            return *this;
+        }
+
+        uint8_t registerId{ 0 };
+        bool active{ false };
+        ShaderUniformType type{ ShaderUniformType::Texture };
         union
         {
-            void* m_Data;
-            Texture* m_Texture;
-            Cubemap* m_Cubemap;
+            std::shared_ptr<void> data{ nullptr };
+            std::shared_ptr<Texture> texture;
+            std::shared_ptr<Cubemap> cubemap;
         };
     };
 
     class Material
     {
-    private:
-        std::string m_Name;
-        std::vector<std::shared_ptr<ShaderPass>> m_ShaderPasses;
-
-        std::map<std::string, MaterialSerializedUniform> m_SerializedUniforms;
+    public:
+        Material() = default;
+        ~Material();
 
     public:
         void addShaderPass(std::shared_ptr<ShaderPass> shaderPass);
@@ -43,36 +59,56 @@ export namespace annileen
         std::shared_ptr<ShaderPass> getShaderPassAt(size_t shaderPassId);
         size_t getNumberOfShaderPasses() const;
 
-        void setName(std::string name) { m_Name = name; }
-        std::string& getName() { return m_Name; }
+        void setName(const std::string& name);
+        const std::string& getName() const;
 
         // Creating Uniforms
-        void addTexture(const char* name, Texture* texture, uint8_t registerId, bool active);
-        void addCubemap(const char* name, Cubemap* cubemap, uint8_t registerId, bool active);
+        void addTexture(const char* name, std::shared_ptr<Texture> texture, uint8_t registerId, bool active);
+        void addCubemap(const char* name, std::shared_ptr<Cubemap> cubemap, uint8_t registerId, bool active);
 
         // Setting Uniforms
-        void setTexture(const char* name, Texture* texture);
-        void setCubemap(const char* name, Cubemap* cubemap);
+        void setTexture(const char* name, std::shared_ptr<Texture> texture);
+        void setCubemap(const char* name, std::shared_ptr<Cubemap> cubemap);
 
-        inline std::map<std::string, MaterialSerializedUniform>& getSerializedUniforms()
-        {
-            return m_SerializedUniforms;
-        }
+        std::map<std::string, MaterialSerializedUniform>& getSerializedUniforms();
 
         void submitUniforms();
-
-        Material();
-        ~Material();
+    
+    private:
+        std::string m_Name{ "MaterialName" };
+        std::vector<std::shared_ptr<ShaderPass>> m_ShaderPasses{};
+        std::map<std::string, MaterialSerializedUniform> m_SerializedUniforms{};
     };
 }
 
 namespace annileen
 {
+    Material::~Material()
+    {
+        // TODO: remove
+        std::cout << "Material " << m_Name <<" destroyed." << std::endl;
+    }
+
+    void Material::setName(const std::string& name) 
+    { 
+        m_Name = name; 
+    }
+
+    const std::string& Material::getName() const 
+    { 
+        return m_Name; 
+    }
+
+    std::map<std::string, MaterialSerializedUniform>& Material::getSerializedUniforms()
+    {
+        return m_SerializedUniforms;
+    }
+
     void Material::addShaderPass(std::shared_ptr<ShaderPass> shaderPass)
     {
         m_ShaderPasses.push_back(shaderPass);
 
-        auto shaderAvailableUniforms = shaderPass->getShaderAvailableUniforms();
+        auto& shaderAvailableUniforms{ shaderPass->getShaderAvailableUniforms() };
         for (const auto& availableUniform : shaderAvailableUniforms)
         {
             addTexture(availableUniform.m_UniformName.c_str(), nullptr, availableUniform.m_Position, false);
@@ -81,7 +117,7 @@ namespace annileen
     
     void Material::removeShaderPass(std::shared_ptr<ShaderPass> shaderPass)
     {
-        auto shaderPassIt = std::find(m_ShaderPasses.begin(), m_ShaderPasses.end(), shaderPass);
+        auto shaderPassIt{ std::find(m_ShaderPasses.begin(), m_ShaderPasses.end(), shaderPass) };
         if (shaderPassIt != m_ShaderPasses.end())
         {
             m_ShaderPasses.erase(shaderPassIt);
@@ -105,56 +141,48 @@ namespace annileen
 
     // Uniforms
 
-    void Material::addTexture(const char* name, Texture* texture, uint8_t registerId, bool active)
+    void Material::addTexture(const char* name, std::shared_ptr<Texture> texture, uint8_t registerId, bool active)
     {
         MaterialSerializedUniform serializedUniform;
-        serializedUniform.m_RegisterId = registerId;
-        serializedUniform.m_Type = ShaderUniformType::Texture;
-        serializedUniform.m_Texture = texture;
-        serializedUniform.m_Active = active;
+        serializedUniform.registerId = registerId;
+        serializedUniform.type = ShaderUniformType::Texture;
+        serializedUniform.texture = texture;
+        serializedUniform.active = active;
         m_SerializedUniforms[name] = serializedUniform;
     }
 
-    void Material::addCubemap(const char* name, Cubemap* cubemap, uint8_t registerId, bool active)
+    void Material::addCubemap(const char* name, std::shared_ptr<Cubemap> cubemap, uint8_t registerId, bool active)
     {
         MaterialSerializedUniform serializedUniform;
-        serializedUniform.m_RegisterId = registerId;
-        serializedUniform.m_Type = ShaderUniformType::Texture;
-        serializedUniform.m_Cubemap = cubemap;
-        serializedUniform.m_Active = active;
+        serializedUniform.registerId = registerId;
+        serializedUniform.type = ShaderUniformType::Texture;
+        serializedUniform.cubemap = cubemap;
+        serializedUniform.active = active;
         m_SerializedUniforms[name] = serializedUniform;
     }
 
-    void Material::setTexture(const char* name, Texture* texture)
+    void Material::setTexture(const char* name, std::shared_ptr<Texture> texture)
     {
-        m_SerializedUniforms[name].m_Texture = texture;
-        m_SerializedUniforms[name].m_Active = true;
+        m_SerializedUniforms[name].texture = texture;
+        m_SerializedUniforms[name].active = true;
     }
 
-    void Material::setCubemap(const char* name, Cubemap* cubemap)
+    void Material::setCubemap(const char* name, std::shared_ptr<Cubemap> cubemap)
     {
-        m_SerializedUniforms[name].m_Cubemap = cubemap;
-        m_SerializedUniforms[name].m_Active = true;
+        m_SerializedUniforms[name].cubemap = cubemap;
+        m_SerializedUniforms[name].active = true;
     }
 
     void Material::submitUniforms()
     {
         for (const auto& [k, v] : m_SerializedUniforms)
         {
-            if (!v.m_Active || v.m_Data == nullptr) continue;
+            if (!v.active || v.data == nullptr) continue;
 
-            if (v.m_Type == ShaderUniformType::Texture)
-                Uniform::setTextureUniform(k, v.m_Texture, v.m_RegisterId);
-            else if (v.m_Type == ShaderUniformType::Cubemap)
-                Uniform::setCubemapUniform(k, v.m_Cubemap, v.m_RegisterId);
+            if (v.type == ShaderUniformType::Texture)
+                Uniform::setTextureUniform(k, v.texture, v.registerId);
+            else if (v.type == ShaderUniformType::Cubemap)
+                Uniform::setCubemapUniform(k, v.cubemap, v.registerId);
         }
-    }
-
-    Material::Material() : m_Name("MaterialName")
-    {
-    }
-
-    Material::~Material()
-    {
     }
 }

@@ -2,6 +2,7 @@ module;
 
 #include <vector>
 #include <string>
+#include <memory>
 
 export module asset;
 
@@ -25,11 +26,11 @@ export namespace annileen
 
 	struct AssetTableEntry
 	{
-		std::string m_Filepath;
-		AssetType m_Type;
+		std::string m_Filepath{""};
+		AssetType m_Type{ AssetType::Undefined };
 
-		bool m_Loaded;
-		AssetObject* m_Asset;
+		bool m_Loaded{ false };
+		std::shared_ptr<AssetObject> m_Asset{ nullptr };
 	};
 
 	enum class ShaderUniformType
@@ -73,7 +74,7 @@ export namespace annileen
 		Normals m_Normals;
 	};
 
-	struct ShaderDcescritor
+	struct ShaderDescriptor
 	{
 		std::vector<ShaderAvailableUniform> m_AvailableUniforms;
 	};
