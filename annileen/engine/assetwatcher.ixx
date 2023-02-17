@@ -21,24 +21,24 @@ export namespace annileen
 
 	class AssetWatcher
 	{
-	private:
-		std::string m_Path;
-		std::unordered_map<std::string, std::filesystem::file_time_type> m_AssetFiles;
-		std::unordered_map<std::string, AssetFileStatus> m_Modified;
+	public:
+		AssetWatcher(const std::string& path);
+		~AssetWatcher();
 
-		inline bool contains(const std::string& filename)
+		void update();
+		inline std::unordered_map<std::string, AssetFileStatus>& getModified() { return m_Modified; }
+		inline bool hasModified() const { return m_Modified.size() > 0; }
+		inline void resetModified() { m_Modified.clear(); }
+
+	private:
+		inline bool contains(const std::string& filename) const
 		{
 			return m_AssetFiles.find(filename) != m_AssetFiles.end();
 		}
 
-	public:
-		AssetWatcher(const std::string& path);
-		~AssetWatcher();
-		void update();
-
-		inline std::unordered_map<std::string, AssetFileStatus>& getModified() { return m_Modified; }
-		inline bool hasModified() { return m_Modified.size() > 0; }
-		inline void resetModified() { m_Modified.clear(); }
+		std::string m_Path{ "" };
+		std::unordered_map<std::string, std::filesystem::file_time_type> m_AssetFiles{};
+		std::unordered_map<std::string, AssetFileStatus> m_Modified{};
 	};
 }
 
@@ -62,12 +62,12 @@ namespace annileen
 	void AssetWatcher::update()
 	{
 		// Lazy frame skipper
-		static int framecounter = 0;
+		static int framecounter{ 0 };
 		if (framecounter++ < 60) return;
 		else framecounter = 0;
 
 		// Check erased files
-		auto it = m_AssetFiles.begin();
+		auto it{ m_AssetFiles.begin() };
 		while (it != m_AssetFiles.end())
 		{
 			if (!std::filesystem::exists(it->first))
@@ -84,8 +84,8 @@ namespace annileen
 		// Check modified and new files
 		for (auto& file : std::filesystem::recursive_directory_iterator(m_Path))
 		{
-			auto last_write_time = std::filesystem::last_write_time(file);
-			auto filename = file.path().string();
+			auto last_write_time{ std::filesystem::last_write_time(file) };
+			auto filename{ file.path().string() };
 
 			if (!contains(filename))
 			{

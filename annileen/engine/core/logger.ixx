@@ -42,9 +42,9 @@ export namespace annileen
 	public:
 		struct Message
 		{
-			std::string m_Message;
-			LoggingLevel m_Level;
-			LoggingChannel m_Channel;
+			std::string message;
+			LoggingLevel level;
+			LoggingChannel channel;
 		};
 
 		// To allow for use ctor/dtor
@@ -197,9 +197,9 @@ namespace annileen
 		composedMessage += message;
 
 		Message newMessage;
-		newMessage.m_Message = std::move(composedMessage);
-		newMessage.m_Channel = channel;
-		newMessage.m_Level = level;
+		newMessage.message = std::move(composedMessage);
+		newMessage.channel = channel;
+		newMessage.level = level;
 
 		if (m_MessagesBuffer.size() == m_MessagesBufferSizeLimit)
 		{
@@ -211,12 +211,12 @@ namespace annileen
 
 		if (static_cast<LoggingMode>(static_cast<loggingModeType>(m_Mode) & static_cast<loggingModeType>(LoggingMode::File)) == LoggingMode::File)
 		{
-			m_File->writeLine(newMessage.m_Message);
+			m_File->writeLine(newMessage.message);
 		}
 
 		if (static_cast<LoggingMode>(static_cast<loggingModeType>(m_Mode) & static_cast<loggingModeType>(LoggingMode::Console)) == LoggingMode::Console)
 		{
-			std::cout << std::format("--- ANNILEEN-LOG --- {0}\n", newMessage.m_Message);			
+			std::cout << std::format("--- ANNILEEN-LOG --- {0}\n", newMessage.message);			
 		}
 	}
 
@@ -225,7 +225,7 @@ namespace annileen
 		std::vector<Logger::Message> messages;
 		for (auto& message : m_MessagesBuffer)
 		{
-			if (message.m_Level == level)
+			if (message.level == level)
 			{
 				messages.push_back(message);
 			}
@@ -238,7 +238,7 @@ namespace annileen
 		std::vector<Logger::Message> messages;
 		for (auto& message : m_MessagesBuffer)
 		{
-			if (message.m_Channel == channel)
+			if (message.channel == channel)
 			{
 				messages.push_back(message);
 			}
@@ -251,7 +251,7 @@ namespace annileen
 		std::vector<Logger::Message> messages;
 		for (auto& message : m_MessagesBuffer)
 		{
-			if (message.m_Level == level && message.m_Channel == channel)
+			if (message.level == level && message.channel == channel)
 			{
 				messages.push_back(message);
 			}

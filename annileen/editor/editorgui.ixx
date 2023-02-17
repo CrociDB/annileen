@@ -814,13 +814,13 @@ namespace annileen
 		{
 			Logger::Message message = messages[messageId];
 
-			switch (message.m_Level)
+			switch (message.level)
 			{
 			case LoggingLevel::Error: ImGui::PushStyleColor(ImGuiCol_Text, errorColor); break;
 			case LoggingLevel::Warning: ImGui::PushStyleColor(ImGuiCol_Text, warningColor); break;
 			case LoggingLevel::Info: ImGui::PushStyleColor(ImGuiCol_Text, infoColor); break;
 			}
-			ImGui::TextUnformatted(message.m_Message.c_str());
+			ImGui::TextUnformatted(message.message.c_str());
 			ImGui::PopStyleColor();
 		}
 
