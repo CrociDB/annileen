@@ -292,12 +292,12 @@ namespace annileen
 			shader->setHandle(programHandle);
 			shader->setAvailableShaders(descriptor.m_AvailableUniforms);
 
-			vert->m_Asset = dynamic_pointer_cast<AssetObject>(shader);
+			vert->m_Asset = static_pointer_cast<AssetObject>(shader);
 			vert->m_Loaded = true;
 		}
 		else
 		{
-			auto shader = dynamic_pointer_cast<Shader>(vert->m_Asset);
+			auto shader = static_pointer_cast<Shader>(vert->m_Asset);
 			shader->destroy();
 			shader->setHandle(programHandle);
 			shader->setAvailableShaders(descriptor.m_AvailableUniforms);
@@ -337,7 +337,7 @@ namespace annileen
 			loadAssetShader(entry);
 		}
 		
-		return dynamic_pointer_cast<Shader>(entry->m_Asset);
+		return static_pointer_cast<Shader>(entry->m_Asset);
 	}
 
 	std::shared_ptr<Texture> AssetManager::getTexture(const std::string& tex)
@@ -345,7 +345,7 @@ namespace annileen
 		auto entry = getAssetEntry(tex);
 		if (entry->m_Loaded)
 		{
-			return dynamic_pointer_cast<Texture>(entry->m_Asset);
+			return static_pointer_cast<Texture>(entry->m_Asset);
 		}
 
 		auto descriptor = loadTextureDescriptor(entry);
@@ -356,7 +356,7 @@ namespace annileen
 		std::tie(handle, info, imageContainer) = loadTextureData(entry->m_Filepath, descriptor);
 
 		auto texture = std::make_shared<Texture>(handle, info, imageContainer->m_orientation);
-		entry->m_Asset = dynamic_pointer_cast<AssetObject>(texture);
+		entry->m_Asset = static_pointer_cast<AssetObject>(texture);
 		entry->m_Loaded = true;
 		return texture;
 	}
@@ -366,7 +366,7 @@ namespace annileen
 		auto entry = getAssetEntry(name);
 		if (entry->m_Loaded)
 		{
-			return dynamic_pointer_cast<Cubemap>(entry->m_Asset);
+			return static_pointer_cast<Cubemap>(entry->m_Asset);
 		}
 
 		auto descriptor = loadCubemapDescriptor(entry);
@@ -377,7 +377,7 @@ namespace annileen
 		std::tie(handle, info, imageContainer) = loadTextureData(descriptor.m_StripFile, {});
 
 		auto cubemap = std::make_shared<Cubemap>(handle, info, imageContainer->m_orientation);
-		entry->m_Asset = dynamic_pointer_cast<AssetObject>(cubemap);
+		entry->m_Asset = static_pointer_cast<AssetObject>(cubemap);
 		entry->m_Loaded = true;
 		return cubemap;
 	}
@@ -387,14 +387,14 @@ namespace annileen
 		auto entry = getAssetEntry(name);
 		if (entry->m_Loaded)
 		{
-			return dynamic_pointer_cast<MeshGroup>(entry->m_Asset);
+			return static_pointer_cast<MeshGroup>(entry->m_Asset);
 		}
 
 		const auto descriptor = loadMeshDescriptor(entry);
 
 		ModelLoader loader;
 		auto meshGroup = loader.loadMesh(entry->m_Filepath, descriptor);
-		entry->m_Asset = dynamic_pointer_cast<AssetObject>(meshGroup);
+		entry->m_Asset = static_pointer_cast<AssetObject>(meshGroup);
 		entry->m_Loaded = true;
 		return meshGroup;
 	}
@@ -404,11 +404,11 @@ namespace annileen
 		auto entry = getAssetEntry(name);
 		if (entry->m_Loaded)
 		{
-			return dynamic_pointer_cast<Font>(entry->m_Asset);
+			return static_pointer_cast<Font>(entry->m_Asset);
 		}
 
 		auto font = std::make_shared<Font>(entry->m_Filepath);
-		entry->m_Asset = dynamic_pointer_cast<AssetObject>(font);
+		entry->m_Asset = static_pointer_cast<AssetObject>(font);
 		entry->m_Loaded = true;
 		return font;
 	}
