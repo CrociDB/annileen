@@ -21,43 +21,43 @@ export namespace annileen
 	class File final
 	{
 	public:
-
+		~File();
+		File(const std::string& name, FileMode mode);
+	
 	public:
-		static File* open(std::string name, FileMode mode);
+		static std::shared_ptr<File> open(const std::string& name, FileMode mode);
 
 		bool isOpen();
 		void close();
 
 		void writeLine(std::string line); // overload << operator?
 
-		~File();
-
 	private:
-		File(std::string name, FileMode mode);
-
-		std::string m_Name;
-		FileMode m_Mode;
-		std::fstream m_File;
+		std::string m_Name{ "" };
+		FileMode m_Mode{ FileMode::Write };
+		std::fstream m_File{};
 	};
 }
 
 namespace annileen
 {
-	File::File(std::string name, FileMode mode)
+	File::File(const std::string& name, FileMode mode) : m_Name{name}, m_Mode{mode}
 	{
-		m_Name = name;
-		m_Mode = mode;
+		close();
 		m_File.open(name, static_cast<std::ios_base::openmode>(mode));
 	}
 
 	File::~File()
 	{
 		close();
+	
+		// TODO: remove
+		std::cout << "File destroyed." << std::endl;
 	}
 
-	File* File::open(std::string name, FileMode mode)
+	std::shared_ptr<File> File::open(const std::string& name, FileMode mode)
 	{
-		return new File(name, mode);
+		return std::make_shared<File>(name, mode);
 	}
 
 	bool File::isOpen()

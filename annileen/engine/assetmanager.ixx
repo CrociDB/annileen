@@ -309,7 +309,7 @@ namespace annileen
 		unloadAssets();
 
 		// TODO: remove
-		std::cout << "AssetManager destroyed." << std::endl;
+		ANNI_LOG("AssetManager destroyed.")
 	}
 
 	void AssetManager::updateAssetWatcher()

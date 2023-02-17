@@ -413,8 +413,6 @@ namespace annileen
 
     Engine::~Engine()
     {
-        Logger::destroy();
-
         ServiceProvider::provideAssetManager(nullptr);
         ServiceProvider::provideSettings(nullptr);
 
@@ -436,6 +434,8 @@ namespace annileen
         glfwTerminate();
 
         // TODO: remove
-        std::cout << "Engine destroyed" << std::endl;
+        ANNI_LOG("Engine destroyed.");
+
+        Logger::destroy();
     }
 }

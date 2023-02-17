@@ -40,64 +40,36 @@ export namespace annileen
 	class Logger final
 	{
 	public:
-		inline static std::string logFileName{ "annileen-log.txt" };
-
-		static void setMode(LoggingMode mode) noexcept;
-		static LoggingMode getMode() noexcept;
-
-		static void log(LoggingChannel channel, LoggingLevel level, std::string message, std::string fileName = "", int line = 0);
-
-		template <typename S, typename... Args>
-		inline static void logFormat(LoggingChannel channel, LoggingLevel level, std::string fileName, int line, const S& format_str, Args&&... args)
-		{
-			std::string message = std::vformat(format_str, std::make_format_args(args...));
-			log(channel, level, message, fileName, line);
-		}
-
 		struct Message
 		{
 			std::string m_Message;
 			LoggingLevel m_Level;
 			LoggingChannel m_Channel;
 		};
+
+		// To allow for use ctor/dtor
+		friend class Engine;
+		// To allow for getting console messages
+		friend class EditorGui;
+
 	private:
+		Logger() = delete;
+		~Logger() = delete;
 
-		static const char* getLoggingLevelString(LoggingLevel level) noexcept
-		{
-			switch (level)
-			{
-			case LoggingLevel::Error: return "Error";
-			case LoggingLevel::Info: return "Info";
-			case LoggingLevel::Warning: return "Warning";
-			default: return "";
-			}
-		}
+	public:
+		static void setMode(LoggingMode mode) noexcept;
+		static LoggingMode getMode() noexcept;
 
-		static const char* getLoggingChannelString(LoggingChannel channel) noexcept
-		{
-			switch (channel)
-			{
-			case LoggingChannel::AI: return "AI";
-			case LoggingChannel::Asset: return "Asset";
-			case LoggingChannel::Core: return "Core";
-			case LoggingChannel::Editor: return "Editor";
-			case LoggingChannel::General: return "General";
-			case LoggingChannel::Input: return "Input";
-			case LoggingChannel::Physics: return "Physics";
-			case LoggingChannel::Renderer: return "Renderer";
-			default: return "";
-			}
-		}
+		static void log(LoggingChannel channel, LoggingLevel level, std::string message, std::string fileName = "", int line = 0);
 
-		static std::vector<LoggingLevel> getLoggingLevelsList() noexcept
-		{
-			return m_LoggingLevelsList;
-		}
+		template <typename S, typename... Args>
+		static void logFormat(LoggingChannel channel, LoggingLevel level, std::string fileName, int line, const S& format_str, Args&&... args);
 
-		static std::vector<LoggingChannel> getLoggingChannelsList() noexcept
-		{
-			return m_LoggingChannelsList;
-		}
+	private:
+		static const char* getLoggingLevelString(LoggingLevel level) noexcept;
+		static const char* getLoggingChannelString(LoggingChannel channel) noexcept;
+		static std::vector<LoggingLevel> getLoggingLevelsList() noexcept;
+		static std::vector<LoggingChannel> getLoggingChannelsList() noexcept;
 
 		// For editor console filtering
 		static std::vector<Message> getMessagesAtLevel(LoggingLevel level) noexcept;
@@ -106,36 +78,47 @@ export namespace annileen
 		static std::vector<Message> getAllMessages() noexcept;
 		static void clearMessages() noexcept;
 
-		Logger() = delete;
-		~Logger() = delete;
-
-		inline static std::vector<LoggingLevel> m_LoggingLevelsList = { LoggingLevel::Error , LoggingLevel::Info, LoggingLevel::Warning };
-		inline static std::vector<LoggingChannel> m_LoggingChannelsList = { LoggingChannel::Core, LoggingChannel::Renderer, LoggingChannel::Physics,
-			LoggingChannel::Input, LoggingChannel::Editor, LoggingChannel::Asset, LoggingChannel::AI, LoggingChannel::General };
-
-		static std::list<Message> m_MessagesBuffer;
-		static size_t m_MessagesBufferSizeLimit;
-		static LoggingMode m_Mode;
-		static File* m_File;
-
 		// will be instantiated by Engine
 		static void initialize();
 		// will be destroyed by Engine
 		static void destroy();
 
-		// To allow for use ctor/dtor
-		friend class Engine;
-		// To allow for getting console messages
-		friend class EditorGui;
+	public:
+		static std::string logFileName;
+
+	private:
+		static std::vector<LoggingLevel> m_LoggingLevelsList;
+		static std::vector<LoggingChannel> m_LoggingChannelsList;
+
+		static std::list<Message> m_MessagesBuffer;
+		static size_t m_MessagesBufferSizeLimit;
+		static LoggingMode m_Mode;
+		static std::shared_ptr<File> m_File;
 	};
 }
 
 namespace annileen
 {
 	std::list<Logger::Message> Logger::m_MessagesBuffer{};
-	size_t Logger::m_MessagesBufferSizeLimit{};
-	LoggingMode Logger::m_Mode{};
-	File* Logger::m_File{};
+	size_t Logger::m_MessagesBufferSizeLimit{ 1000 };
+	LoggingMode Logger::m_Mode{ LoggingMode::Console };
+	std::shared_ptr<File> Logger::m_File{ nullptr };
+	std::string Logger::logFileName{ "annileen-log.txt" };
+	std::vector<LoggingLevel> Logger::m_LoggingLevelsList = { 
+		LoggingLevel::Error , 
+		LoggingLevel::Info, 
+		LoggingLevel::Warning 
+	};
+	std::vector<LoggingChannel> Logger::m_LoggingChannelsList = { 
+		LoggingChannel::Core, 
+		LoggingChannel::Renderer, 
+		LoggingChannel::Physics,
+		LoggingChannel::Input, 
+		LoggingChannel::Editor, 
+		LoggingChannel::Asset, 
+		LoggingChannel::AI, 
+		LoggingChannel::General 
+	};
 
 	void Logger::initialize()
 	{
@@ -144,7 +127,6 @@ namespace annileen
 
 		using fileModeType = typename std::underlying_type<FileMode>::type;
 		m_File = File::open(logFileName, static_cast<FileMode>(static_cast<fileModeType>(FileMode::Append) | static_cast<fileModeType>(FileMode::Write)));
-		m_MessagesBufferSizeLimit = 1000;
 	}
 
 	void Logger::setMode(LoggingMode mode) noexcept
@@ -155,6 +137,50 @@ namespace annileen
 	LoggingMode Logger::getMode() noexcept
 	{
 		return m_Mode;
+	}
+
+	template <typename S, typename... Args>
+	void Logger::logFormat(LoggingChannel channel, LoggingLevel level, std::string fileName, int line, const S& format_str, Args&&... args)
+	{
+		std::string message{ std::vformat(format_str, std::make_format_args(args...)) };
+		log(channel, level, message, fileName, line);
+	}
+
+	const char* Logger::getLoggingLevelString(LoggingLevel level) noexcept
+	{
+		switch (level)
+		{
+		case LoggingLevel::Error: return "Error";
+		case LoggingLevel::Info: return "Info";
+		case LoggingLevel::Warning: return "Warning";
+		default: return "";
+		}
+	}
+
+	const char* Logger::getLoggingChannelString(LoggingChannel channel) noexcept
+	{
+		switch (channel)
+		{
+		case LoggingChannel::AI: return "AI";
+		case LoggingChannel::Asset: return "Asset";
+		case LoggingChannel::Core: return "Core";
+		case LoggingChannel::Editor: return "Editor";
+		case LoggingChannel::General: return "General";
+		case LoggingChannel::Input: return "Input";
+		case LoggingChannel::Physics: return "Physics";
+		case LoggingChannel::Renderer: return "Renderer";
+		default: return "";
+		}
+	}
+
+	std::vector<LoggingLevel> Logger::getLoggingLevelsList() noexcept
+	{
+		return m_LoggingLevelsList;
+	}
+
+	std::vector<LoggingChannel> Logger::getLoggingChannelsList() noexcept
+	{
+		return m_LoggingChannelsList;
 	}
 
 	void Logger::log(LoggingChannel channel, LoggingLevel level, std::string message, std::string fileName, int line)
@@ -251,7 +277,6 @@ namespace annileen
 	void Logger::destroy()
 	{
 		m_File->close();
-		delete m_File;
 		m_File = nullptr;
 	}
 }
