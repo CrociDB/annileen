@@ -29,7 +29,7 @@ export namespace annileen
 	{
 	private:
 		std::map<std::string, std::shared_ptr<AssetTableEntry>> m_Assets;
-		AssetWatcher* m_Watcher;
+		std::unique_ptr<AssetWatcher> m_Watcher;
 
 		void loadAssetTable(const std::string& assetfile);
 		AssetType getType(const std::string& typetext);
@@ -86,7 +86,7 @@ namespace annileen
 
 			size_t pos = assetfile.find_last_of("\\/");
 			auto path = std::string::npos == pos ? "" : assetfile.substr(0, pos);
-			m_Watcher = new AssetWatcher(path);
+			m_Watcher = std::make_unique<AssetWatcher>(path);
 		}
 		catch (const std::runtime_error&)
 		{
@@ -306,7 +306,6 @@ namespace annileen
 
 	AssetManager::~AssetManager()
 	{
-		delete m_Watcher;
 		unloadAssets();
 
 		// TODO: remove
