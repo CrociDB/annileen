@@ -111,7 +111,7 @@ namespace annileen
 
 		auto cameraNode = scene->createNode("No camera");
 		cameraNode->m_Internal = true;
-		m_NoCamera = SceneManager::getInstance()->addModule<Camera>(scene.get(), cameraNode);
+		m_NoCamera = SceneManager::getInstance()->addModule<Camera>(scene, cameraNode);
 		m_NoCamera->fieldOfView = 60.0f;
 		m_NoCamera->nearClip = 0.01f;
 		m_NoCamera->farClip = 0.02f;
@@ -122,7 +122,7 @@ namespace annileen
 
 		auto textNode = scene->createNode("No camera text");
 		textNode->m_Internal = true;
-		m_NoCameraText = SceneManager::getInstance()->addModule<Text>(scene.get(), textNode);
+		m_NoCameraText = SceneManager::getInstance()->addModule<Text>(scene, textNode);
 		m_NoCameraText->setStatic(true);
 		m_NoCameraText->setScreenPosition(getEngine()->getWidth() / 2.0f - 100.0f, getEngine()->getHeight() / 2.0f);
 		m_NoCameraText->setTextColor(glm::vec3(1, 1, 1));

@@ -57,7 +57,7 @@ namespace annileen
 		
 		auto cameraNode = scene->createNode("Editor Camera");
 		cameraNode->m_Internal = true;
-		m_EditorCamera = SceneManager::getInstance()->addModule<Camera>(scene.get(), cameraNode);
+		m_EditorCamera = SceneManager::getInstance()->addModule<Camera>(scene, cameraNode);
 		m_EditorCamera->fieldOfView = 60.0f;
 		m_EditorCamera->nearClip = 0.1f;
 		m_EditorCamera->farClip = 300.0f;

@@ -140,7 +140,7 @@ namespace annileen
 		if (newSceneNode != nullptr)
 		{
 			auto newModule = SceneManager::getInstance()->addModule<T>(
-				SceneManager::getInstance()->getScene().get(),
+				SceneManager::getInstance()->getScene(),
 				newSceneNode);
 		}
 	}

@@ -32,7 +32,7 @@ using namespace annileen;
 export const int GAME_CHUNK_RADIUS = 4;
 export const int GAME_CHUNK_MAX = (GAME_CHUNK_RADIUS * GAME_CHUNK_RADIUS * 4) + (GAME_CHUNK_RADIUS * 10);
 
-export class GameScene : public Scene
+export class GameScene : public Scene, public std::enable_shared_from_this<GameScene>
 {
 private:
     std::shared_ptr<Material> m_BlockMaterial;
@@ -92,8 +92,10 @@ void GameScene::buildMap()
     fog.enabled = 1.0f;
     fog.power = 1.3f;
 
+    auto scene = shared_from_this();
+
     auto lightNode = createNode("Light");
-    auto light = SceneManager::getInstance()->addModule<Light>(this, lightNode);
+    auto light = SceneManager::getInstance()->addModule<Light>(scene, lightNode);
 
     light->color = glm::vec3(1.0f, 1.0f, .8f);
     light->type = LightType::Directional;
@@ -102,13 +104,13 @@ void GameScene::buildMap()
 
     auto cameraNode = createNode("Camera");
 
-    auto camera = SceneManager::getInstance()->addModule<Camera>(this, cameraNode);
+    auto camera = SceneManager::getInstance()->addModule<Camera>(scene, cameraNode);
     camera->fieldOfView = 60.0f;
     camera->nearClip = 0.1f;
     camera->farClip = 300.0f;
 
     auto textNode = createNode("Text");
-    auto text = SceneManager::getInstance()->addModule<Text>(this, textNode);
+    auto text = SceneManager::getInstance()->addModule<Text>(scene, textNode);
     text->setStatic(true);
     text->setSdf(true);
 
@@ -121,7 +123,7 @@ void GameScene::buildMap()
     text->setText("This is a Annileen\nUsing SDF");
 
     auto textNode2 = createNode("Text2");
-    auto text2 = SceneManager::getInstance()->addModule<Text>(this, textNode2);
+    auto text2 = SceneManager::getInstance()->addModule<Text>(scene, textNode2);
 
     text2->setFont(ServiceProvider::getAssetManager()->getFont("bleeding_cowboys.ttf")->getHandle());
     text2->setScreenPosition(screenWidth - 200.0f, 300.0f);
@@ -162,7 +164,7 @@ void GameScene::removeFarthestChunk()
             continue;
         }
 
-        auto d = glm::abs(glm::length(cameraPos - c.second->getSceneNode(this)->getTransform().position()));
+        auto d = glm::abs(glm::length(cameraPos - c.second->getSceneNode(shared_from_this())->getTransform().position()));
         if (dist < d)
         {
             k = true;
@@ -182,7 +184,7 @@ void GameScene::removeFarthestChunk()
 void GameScene::addChunk(Chunk* chunk)
 {
     // Get it, so it gets built
-    chunk->getSceneNode(this);
+    chunk->getSceneNode(shared_from_this());
 }
 
 void GameScene::start()

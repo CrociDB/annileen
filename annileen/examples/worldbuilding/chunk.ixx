@@ -69,7 +69,7 @@ public:
     void setMaterial(std::shared_ptr<Material> material) { m_Material = material; }
 
     void generateGrid();
-    std::shared_ptr<SceneNode> getSceneNode(Scene* scene);
+    std::shared_ptr<SceneNode> getSceneNode(std::shared_ptr<Scene> scene);
 
     Chunk(int wx, int wz);
     ~Chunk();
@@ -269,7 +269,7 @@ void Chunk::generateGrid()
     generateMesh();
 }
 
-std::shared_ptr<SceneNode> Chunk::getSceneNode(Scene* scene)
+std::shared_ptr<SceneNode> Chunk::getSceneNode(std::shared_ptr<Scene> scene)
 {
     if (m_Node == nullptr)
     {
