@@ -109,7 +109,7 @@ namespace annileen
 		initializeEditorGui(scene);
 #endif
 
-		SceneNodePtr cameraNode = scene->createNode("No camera");
+		auto cameraNode = scene->createNode("No camera");
 		cameraNode->m_Internal = true;
 		m_NoCamera = SceneManager::getInstance()->addModule<Camera>(scene.get(), cameraNode);
 		m_NoCamera->fieldOfView = 60.0f;
@@ -120,7 +120,7 @@ namespace annileen
 		m_NoCamera->clearColor = glm::vec3(0, 0, 0);
 		cameraNode->flags = SceneNodeFlags_Hide;
 
-		SceneNodePtr textNode = scene->createNode("No camera text");
+		auto textNode = scene->createNode("No camera text");
 		textNode->m_Internal = true;
 		m_NoCameraText = SceneManager::getInstance()->addModule<Text>(scene.get(), textNode);
 		m_NoCameraText->setStatic(true);

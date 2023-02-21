@@ -56,8 +56,8 @@ private:
 
     std::shared_ptr<Material> m_Material{ nullptr };
     std::shared_ptr<MeshGroup> m_MeshGroup{ nullptr };
-    ModelPtr m_Model = nullptr;
-    SceneNodePtr m_Node = nullptr;
+    ModelPtr m_Model{ nullptr };
+    std::shared_ptr<SceneNode> m_Node{ nullptr };
 
     void generateMesh();
     float* generateMeshData(int* meshSize);
@@ -69,7 +69,7 @@ public:
     void setMaterial(std::shared_ptr<Material> material) { m_Material = material; }
 
     void generateGrid();
-    SceneNodePtr getSceneNode(Scene* scene);
+    std::shared_ptr<SceneNode> getSceneNode(Scene* scene);
 
     Chunk(int wx, int wz);
     ~Chunk();
@@ -77,11 +77,6 @@ public:
 
 void Chunk::generateMesh()
 {
-    if (m_MeshGroup != nullptr)
-    {
-        delete m_Node;
-    }
-
     m_MeshGroup = std::make_shared<annileen::MeshGroup>();
 
     int meshSize;
@@ -274,7 +269,7 @@ void Chunk::generateGrid()
     generateMesh();
 }
 
-annileen::SceneNodePtr Chunk::getSceneNode(Scene* scene)
+std::shared_ptr<SceneNode> Chunk::getSceneNode(Scene* scene)
 {
     if (m_Node == nullptr)
     {

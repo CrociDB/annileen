@@ -7,7 +7,27 @@ module;
 #include <typeindex>
 #include <typeinfo>
 #include <memory>
-#include <engine/forward_decl.h>
+
+namespace annileen
+{
+	class Renderer;
+	class Gui;
+	class Input;
+	class Uniform;
+	class Camera;
+	class Scene;
+	class SceneNodeModule;
+	class Light;
+	class Skybox;
+	class Model;
+	class Text;
+	class Material;
+
+	using SceneNodeModulePtr = SceneNodeModule*;
+	using ModelPtr = Model*;
+	using CameraPtr = Camera*;
+	using TextPtr = Text*;
+}
 
 export module scenenode;
 
@@ -20,13 +40,13 @@ export namespace annileen
 		SceneNodeFlags_Hide = 1
 	};
 
-	class SceneNode final
+	class SceneNode final : public std::enable_shared_from_this<SceneNode>
 	{
 
 	private:
 		Transform m_Transform;
-		std::vector<SceneNodePtr> m_Children;
-		SceneNodePtr m_Parent;
+		std::vector<std::shared_ptr<SceneNode>> m_Children;
+		std::shared_ptr<SceneNode> m_Parent;
 
 		bool m_Active;
 		// Flag used internally to identify system scene nodes.
@@ -40,14 +60,13 @@ export namespace annileen
 
 		void deParent();
 
-		SceneNode(const std::string& name);
-
 		friend class Scene;
 		friend class SceneManager;
 		friend class Application;
 		friend class ApplicationEditor;
 
 	public:
+		SceneNode(const std::string& name);
 		int flags = 0;
 		std::string name = "SceneNode";
 
@@ -55,9 +74,9 @@ export namespace annileen
 		std::string tag = "";
 		//int hashedTag = 0;
 
-		void setParent(SceneNodePtr node);
-		SceneNodePtr getParent();
-		std::vector<SceneNodePtr> getChildren();
+		void setParent(std::shared_ptr<SceneNode> node);
+		std::shared_ptr<SceneNode> getParent();
+		std::vector<std::shared_ptr<SceneNode>> getChildren();
 
 		void setActive(bool active) { m_Active = active; }
 		bool getActive();
@@ -67,25 +86,21 @@ export namespace annileen
 		Transform& getTransform();
 
 		void setSiblingIndex(size_t index);
-		void setSiblingPosition(std::vector<SceneNodePtr>::iterator position);
+		void setSiblingPosition(std::vector<std::shared_ptr<SceneNode>>::iterator position);
 
-		std::vector<SceneNodePtr>::iterator getSiblingIterator();
+		std::vector<std::shared_ptr<SceneNode>>::iterator getSiblingIterator();
 		size_t getSiblingIndex();
 
-		std::vector<SceneNodePtr>::iterator findChild(SceneNodePtr node);
-		bool hasChild(SceneNodePtr node);
+		std::vector<std::shared_ptr<SceneNode>>::iterator findChild(std::shared_ptr<SceneNode> node);
+		bool hasChild(std::shared_ptr<SceneNode> node);
 
-		~SceneNode()
-		{
-			// TODO: remove
-			std::cout << "SceneNode " << name << " destroyed" << std::endl;
-		}
+		~SceneNode();
 	};
 }
 
 namespace annileen
 {
-	size_t SceneNode::m_IdCount = 0;
+	size_t SceneNode::m_IdCount{ 0 };
 
 	SceneNode::SceneNode(const std::string& name) : m_Parent(nullptr), m_Active(true), name(name)
 		, m_Internal(false)
@@ -93,15 +108,21 @@ namespace annileen
 		m_Id = m_IdCount++;
 	}
 
+	SceneNode::~SceneNode()
+	{
+		// TODO: remove
+		std::cout << "SceneNode " << name << " destroyed" << std::endl;
+	}
+
 	void SceneNode::deParent()
 	{
 		if (m_Parent != nullptr)
 			m_Parent->m_Children.erase(
-				std::remove(m_Parent->m_Children.begin(), m_Parent->m_Children.end(), this),
+				std::remove(m_Parent->m_Children.begin(), m_Parent->m_Children.end(), shared_from_this()),
 				m_Parent->m_Children.end());
 	}
 
-	void SceneNode::setParent(SceneNodePtr node)
+	void SceneNode::setParent(std::shared_ptr<SceneNode> node)
 	{
 		if (m_Parent == node) return;
 		if (node == nullptr) return;
@@ -110,15 +131,15 @@ namespace annileen
 
 		m_Parent = node;
 
-		m_Parent->m_Children.push_back(this);
+		m_Parent->m_Children.push_back(shared_from_this());
 	}
 
-	SceneNodePtr SceneNode::getParent()
+	std::shared_ptr<SceneNode> SceneNode::getParent()
 	{
 		return m_Parent;
 	}
 
-	std::vector<SceneNodePtr> SceneNode::getChildren()
+	std::vector<std::shared_ptr<SceneNode>> SceneNode::getChildren()
 	{
 		return m_Children;
 	}
@@ -130,7 +151,7 @@ namespace annileen
 
 	bool SceneNode::getActive()
 	{
-		SceneNode* currentNode = this;
+		std::shared_ptr<SceneNode> currentNode = shared_from_this();
 		while (currentNode != nullptr)
 		{
 			if (currentNode->m_Active == false)
@@ -148,14 +169,14 @@ namespace annileen
 		setSiblingPosition(m_Parent->m_Children.begin() + index);
 	}
 
-	void SceneNode::setSiblingPosition(std::vector<SceneNodePtr>::iterator position)
+	void SceneNode::setSiblingPosition(std::vector<std::shared_ptr<SceneNode>>::iterator position)
 	{
 		std::rotate(position, getSiblingIterator(), m_Parent->m_Children.end());
 	}
 
-	std::vector<SceneNodePtr>::iterator SceneNode::getSiblingIterator()
+	std::vector<std::shared_ptr<SceneNode>>::iterator SceneNode::getSiblingIterator()
 	{
-		auto it = std::find(m_Parent->m_Children.begin(), m_Parent->m_Children.end(), this);
+		auto it = std::find(m_Parent->m_Children.begin(), m_Parent->m_Children.end(), shared_from_this());
 		return it;
 	}
 
@@ -163,15 +184,15 @@ namespace annileen
 	{
 		return std::distance(
 			m_Parent->m_Children.begin(),
-			std::find(m_Parent->m_Children.begin(), m_Parent->m_Children.end(), this));
+			std::find(m_Parent->m_Children.begin(), m_Parent->m_Children.end(), shared_from_this()));
 	}
 
-	std::vector<SceneNodePtr>::iterator SceneNode::findChild(SceneNodePtr node)
+	std::vector<std::shared_ptr<SceneNode>>::iterator SceneNode::findChild(std::shared_ptr<SceneNode> node)
 	{
 		return std::find(m_Children.begin(), m_Children.end(), node);
 	}
 
-	bool SceneNode::hasChild(SceneNodePtr node)
+	bool SceneNode::hasChild(std::shared_ptr<SceneNode> node)
 	{
 		return findChild(node) != m_Children.end();
 	}

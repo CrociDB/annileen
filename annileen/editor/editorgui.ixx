@@ -10,7 +10,6 @@ module;
 #include <dear-imgui/imgui.h>
 #include <imgui-utils/imgui_stdlib.h>
 #include <engine/core/logger.h>
-#include <engine/forward_decl.h>
 
 #include <GLFW/glfw3.h>
 // GLFW will include xserver headers in Linux and it defines macro `None`. So including
@@ -36,6 +35,7 @@ import material;
 import renderer;
 import scene;
 import scenenode;
+import scenenodemodule;
 import input;
 import settings;
 import serviceprovider;
@@ -73,13 +73,41 @@ export namespace annileen
 			float pitch;
 			int debugScreenActive;
 		};
-		InputConfig m_InputConfig{3.0f, 2.8f, 18.0f, 0.0f, 0.0f, 0};
 
-		std::vector<const char*> m_ConsoleLoggingChannelsList;
-		std::vector<const char*> m_ConsoleLoggingLevelsList;
+		friend class ApplicationEditor;
 
 		EditorGui() = default;
 		~EditorGui() = default;
+	
+		void initialize(Engine* engine);
+		void processInput(Camera* camera, float deltaTime);
+		void render(std::shared_ptr<Scene> scene, Camera* camera, float deltaTime);
+		void drawMainWindowToolbar();
+		void drawToolsWindow();
+		void drawSceneHierarchyWindow(const std::vector<std::shared_ptr<SceneNode>> sceneNodeList);
+		void drawSelectedNodePropertiesWindow(Camera* camera);
+		void drawConsoleWindow();
+		void drawSettingsWindow();
+		void _drawTree(std::shared_ptr<SceneNode> sceneNode);
+
+		// Modules
+		void drawModelModuleProperties(Model* model);
+		void drawLightModuleProperties(Light* light);
+		void drawCameraModuleProperties(Camera* camera);
+		void drawTextModuleProperties(Text* text);
+		void drawModelMaterialProperties(std::shared_ptr<Material> material);
+
+		void drawSceneNodeContextMenu(std::shared_ptr<SceneNode> sceneNode);
+
+		std::shared_ptr<SceneNode> drawSceneNode(std::shared_ptr<SceneNode> sceneNode, std::string nodeName);
+
+		template <class T>
+		void drawNewSceneNodeContextMenu(std::shared_ptr<SceneNode> sceneNode, std::string nodeName);
+		
+		InputConfig m_InputConfig{3.0f, 2.8f, 18.0f, 0.0f, 0.0f, 0};
+
+		std::vector<const char*> m_ConsoleLoggingChannelsList{};
+		std::vector<const char*> m_ConsoleLoggingLevelsList{};
 
 		ViewHandleMode m_HandleMode{ ViewHandleMode::Local };
 		ViewHandleOperation m_HandleOperation{ ViewHandleOperation::Move };
@@ -96,52 +124,27 @@ export namespace annileen
 		Mode m_Mode{ Editor };
 
 		// These will probably become a list when we start allowing multiple selection.
-		SceneNode* m_SelectedSceneNode{ nullptr };
-		SceneNode* m_SceneNodeToBeRemoved{ nullptr };
-
-		void initialize(Engine* engine);
-		void processInput(Camera* camera, float deltaTime);
-		void render(std::shared_ptr<Scene> scene, Camera* camera, float deltaTime);
-		void drawMainWindowToolbar();
-		void drawToolsWindow();
-		void drawSceneHierarchyWindow(const std::vector<SceneNodePtr> sceneNodeList);
-		void drawSelectedNodePropertiesWindow(Camera* camera);
-		void drawConsoleWindow();
-		void drawSettingsWindow();
-		void _drawTree(SceneNodePtr const sceneNode);
-
-		// Modules
-		void drawModelModuleProperties(Model* model);
-		void drawLightModuleProperties(Light* light);
-		void drawCameraModuleProperties(Camera* camera);
-		void drawTextModuleProperties(Text* text);
-		void drawModelMaterialProperties(std::shared_ptr<Material> material);
-
-		void drawSceneNodeContextMenu(SceneNodePtr const sceneNode);
-
-		SceneNodePtr drawSceneNode(SceneNodePtr const sceneNode, std::string nodeName);
-
-		template <class T>
-		void drawNewSceneNodeContextMenu(SceneNodePtr const sceneNode, std::string nodeName);
-		friend class ApplicationEditor;
+		std::shared_ptr<SceneNode> m_SelectedSceneNode{ nullptr };
+		std::shared_ptr<SceneNode> m_SceneNodeToBeRemoved{ nullptr };
 	};
 
-	template <class T>
-	void EditorGui::drawNewSceneNodeContextMenu(SceneNodePtr const sceneNode, std::string nodeName)
-	{
-		SceneNodePtr newSceneNode = drawSceneNode(sceneNode, nodeName);
-
-		if (newSceneNode != nullptr)
-		{
-			SceneNodeModule* newModule = SceneManager::getInstance()->addModule<T>(
-				SceneManager::getInstance()->getScene().get(),
-				newSceneNode);
-		}
-	}
 }
 
 namespace annileen
 {
+	template <class T>
+	void EditorGui::drawNewSceneNodeContextMenu(std::shared_ptr<SceneNode> sceneNode, std::string nodeName)
+	{
+		auto newSceneNode = drawSceneNode(sceneNode, nodeName);
+
+		if (newSceneNode != nullptr)
+		{
+			auto newModule = SceneManager::getInstance()->addModule<T>(
+				SceneManager::getInstance()->getScene().get(),
+				newSceneNode);
+		}
+	}
+
 	void EditorGui::initialize(Engine* engine)
 	{
 		m_Engine = engine;
@@ -457,7 +460,7 @@ namespace annileen
 		ImGui::End();
 	}
 
-	void EditorGui::drawSceneHierarchyWindow(const std::vector<SceneNodePtr> sceneNodeList)
+	void EditorGui::drawSceneHierarchyWindow(const std::vector<std::shared_ptr<SceneNode>> sceneNodeList)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 
@@ -596,7 +599,7 @@ namespace annileen
 	}
 
 	// TODO: this will be refactored to use queue or stack
-	void EditorGui::_drawTree(SceneNodePtr const sceneNode)
+	void EditorGui::_drawTree(std::shared_ptr<SceneNode> sceneNode)
 	{
 
 		if (sceneNode == nullptr ||
@@ -609,7 +612,7 @@ namespace annileen
 			ImGuiTreeNodeFlags_OpenOnDoubleClick |
 			ImGuiTreeNodeFlags_SpanAvailWidth;
 
-		std::vector<SceneNodePtr> nodeChildren = sceneNode->getChildren();
+		std::vector<std::shared_ptr<SceneNode>> nodeChildren = sceneNode->getChildren();
 
 		if (nodeChildren.empty())
 		{
@@ -645,7 +648,7 @@ namespace annileen
 		}
 	}
 
-	void EditorGui::drawSceneNodeContextMenu(SceneNodePtr const sceneNode)
+	void EditorGui::drawSceneNodeContextMenu(std::shared_ptr<SceneNode> sceneNode)
 	{
 		if (!ImGui::BeginPopupContextItem())
 		{
@@ -1041,10 +1044,10 @@ namespace annileen
 		}
 	}
 
-	SceneNodePtr EditorGui::drawSceneNode(SceneNodePtr const sceneNode, std::string nodeName)
+	std::shared_ptr<SceneNode> EditorGui::drawSceneNode(std::shared_ptr<SceneNode> sceneNode, std::string nodeName)
 	{
-		auto scene = SceneManager::getInstance()->getScene();
-		SceneNodePtr newSceneNode = nullptr;
+		auto scene{ SceneManager::getInstance()->getScene() };
+		std::shared_ptr<SceneNode> newSceneNode{ nullptr };
 
 		if (ImGui::Selectable("Above"))
 		{

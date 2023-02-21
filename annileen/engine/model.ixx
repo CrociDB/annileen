@@ -2,7 +2,6 @@ module;
 
 #include <iostream>
 #include <vector>
-#include <engine/forward_decl.h>
 
 export module model;
 
@@ -12,7 +11,6 @@ import material;
 
 export namespace annileen
 {
-
 	class Model final : public SceneNodeModule
 	{
 	public:	
