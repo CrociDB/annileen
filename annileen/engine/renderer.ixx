@@ -58,7 +58,7 @@ export namespace annileen
 
         void initializeShadows();
 
-        void renderSkybox(bgfx::ViewId viewId, Camera* camera, Skybox* skybox);
+        void renderSkybox(bgfx::ViewId viewId, Camera* camera, std::shared_ptr<Skybox> skybox);
         void renderSceneNode(bgfx::ViewId viewId, ModelPtr model, std::shared_ptr<Material> material);
 
     public:
@@ -332,7 +332,7 @@ namespace annileen
         scene->getCamera()->updateMatrices(m_ScreenWidth, m_ScreenHeight);
     }
 
-    void Renderer::renderSkybox(bgfx::ViewId viewId, Camera* camera, Skybox* skybox)
+    void Renderer::renderSkybox(bgfx::ViewId viewId, Camera* camera, std::shared_ptr<Skybox> skybox)
     {
         skybox->getModel()->getMaterial()->submitUniforms();
 

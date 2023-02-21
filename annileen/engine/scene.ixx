@@ -36,14 +36,13 @@ export namespace annileen
 
         std::shared_ptr<SceneNode> createNode(const std::string& name);       
 
-        void setSkybox(Skybox* skybox) { m_Skybox = skybox; }
-        Skybox* getSkybox() const { return m_Skybox; }
-        
-        std::shared_ptr<SceneNode> getRoot() const;
-        std::list<std::shared_ptr<SceneNode>>& getNodeList();
-        std::list<Light*>& getLightList();
-        std::list<Camera*>& getCameraList();
-        Camera* getCamera() const;
+        void setSkybox(std::shared_ptr<Skybox> skybox) noexcept;
+        std::shared_ptr<Skybox> getSkybox() const noexcept;        
+        std::shared_ptr<SceneNode> getRoot() const noexcept;
+        std::list<std::shared_ptr<SceneNode>>& getNodeList() noexcept;
+        std::list<Light*>& getLightList() noexcept;
+        std::list<Camera*>& getCameraList() noexcept;
+        Camera* getCamera() const noexcept;
 
     private:
         void addNodeToList(std::shared_ptr<SceneNode> node);
@@ -57,13 +56,23 @@ export namespace annileen
         std::list<Light*> m_Lights;
         std::list<Camera*> m_Cameras;
         std::shared_ptr<SceneNode> m_Root{ nullptr };
-        Skybox* m_Skybox{ nullptr };
+        std::shared_ptr<Skybox> m_Skybox{ nullptr };
     };
 }
 
 namespace annileen
 {
-    std::shared_ptr<SceneNode> Scene::getRoot() const
+    void Scene::setSkybox(std::shared_ptr<Skybox> skybox) noexcept 
+    { 
+        m_Skybox = skybox; 
+    }
+
+    std::shared_ptr<Skybox> Scene::getSkybox() const noexcept 
+    { 
+        return m_Skybox; 
+    }
+
+    std::shared_ptr<SceneNode> Scene::getRoot() const noexcept
     {
         return m_Root;
     }
@@ -86,22 +95,22 @@ namespace annileen
         m_Nodes.remove(node);
     }
 
-    std::list<std::shared_ptr<SceneNode>>& Scene::getNodeList()
+    std::list<std::shared_ptr<SceneNode>>& Scene::getNodeList() noexcept
     {
         return m_Nodes;
     }
 
-    std::list<Light*>& Scene::getLightList()
+    std::list<Light*>& Scene::getLightList() noexcept
     {
         return m_Lights;
     }
 
-    std::list<Camera*>& Scene::getCameraList()
+    std::list<Camera*>& Scene::getCameraList() noexcept
     {
         return m_Cameras;
     }
 
-    Camera* Scene::getCamera() const
+    Camera* Scene::getCamera() const noexcept
     {
         for (auto camera : m_Cameras)
         {
@@ -121,8 +130,6 @@ namespace annileen
 
     Scene::~Scene()
     {
-        delete m_Skybox;
-        
         m_Nodes.clear();
         m_Cameras.clear();
         m_Lights.clear();

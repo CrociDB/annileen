@@ -87,7 +87,7 @@ namespace annileen
 			ServiceProvider::getAssetManager()->updateAssetWatcher();
 		}
 
-		if (m_EditorGui->m_RenderSkybox && scene->getSkybox() != nullptr)
+		if (m_EditorGui->m_RenderSkybox && scene->getSkybox().get() != nullptr)
 			m_EditorCamera->clearType = CameraClearType::CameraClearSkybox;
 		else
 			m_EditorCamera->clearType = CameraClearType::CameraClearColor;

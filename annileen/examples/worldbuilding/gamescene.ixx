@@ -130,7 +130,7 @@ void GameScene::buildMap()
     text2->setText("OH YEAH");
 
     auto cubemap = ServiceProvider::getAssetManager()->getCubemap("skybox.toml");
-    auto skybox = new Skybox(cubemap);
+    auto skybox = std::make_shared<Skybox>(cubemap);
     this->setSkybox(skybox);
 
     getCamera()->clearType = CameraClearType::CameraClearSkybox;
