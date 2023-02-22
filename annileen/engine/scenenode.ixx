@@ -23,64 +23,61 @@ export namespace annileen
 
 	class SceneNode final : public std::enable_shared_from_this<SceneNode>
 	{
-
-	private:
-		Transform m_Transform;
-		std::vector<std::shared_ptr<SceneNode>> m_Children;
-		std::shared_ptr<SceneNode> m_Parent;
-
-		bool m_Active;
-		// Flag used internally to identify system scene nodes.
-		bool m_Internal;
-		size_t m_Id;
-
-		std::unordered_map<std::type_index, std::shared_ptr<SceneNodeModule>> m_Modules;
-
-		// TODO: this is temporary id, not safe, not ideal. Replace someday.
-		static size_t m_IdCount;
-
-		void deParent();
-
 		friend class Scene;
 		friend class SceneManager;
 		friend class Application;
 		friend class ApplicationEditor;
+	
+		// TODO: this is temporary id, not safe, not ideal. Replace someday.
+		static size_t m_IdCount;
 
 	public:
 		SceneNode(const std::string& name);
-		int flags = 0;
-		std::string name = "SceneNode";
-
-		// TODO: change this to use string hash.
-		std::string tag = "";
-		//int hashedTag = 0;
+		~SceneNode();
 
 		void setParent(std::shared_ptr<SceneNode> node);
-		std::shared_ptr<SceneNode> getParent();
-		std::vector<std::shared_ptr<SceneNode>> getChildren();
+		std::shared_ptr<SceneNode>& getParent() noexcept;
+		std::vector<std::shared_ptr<SceneNode>>& getChildren() noexcept;
 
-		void setActive(bool active) { m_Active = active; }
-		bool getActive();
-
-		size_t getId() { return m_Id; };
-
-		Transform& getTransform();
+		void setActive(bool active) noexcept;
+		bool getActive() noexcept;
+		size_t getId() const noexcept;
+		Transform& getTransform() noexcept;
 
 		void setSiblingIndex(size_t index);
-		void setSiblingPosition(std::vector<std::shared_ptr<SceneNode>>::iterator position);
-
+		void setSiblingPosition(const std::vector<std::shared_ptr<SceneNode>>::iterator& position);
 		std::vector<std::shared_ptr<SceneNode>>::iterator getSiblingIterator();
 		size_t getSiblingIndex();
 
-		std::vector<std::shared_ptr<SceneNode>>::iterator findChild(std::shared_ptr<SceneNode> node);
-		bool hasChild(std::shared_ptr<SceneNode> node);
+		std::vector<std::shared_ptr<SceneNode>>::iterator findChild(const std::shared_ptr<SceneNode>& node);
+		bool hasChild(const std::shared_ptr<SceneNode>& node);
 
-		~SceneNode();
+	private:
+		void deParent();
+
+	public:		
+		int flags{ 0 };
+		std::string name{ "SceneNode" };
+
+		// TODO: change this to use string hash.
+		std::string tag{ "" };
+		//int hashedTag = 0;
+
+	private:
+		Transform m_Transform{};
+		std::vector<std::shared_ptr<SceneNode>> m_Children{};
+		std::shared_ptr<SceneNode> m_Parent{};
+
+		bool m_Active{ true };
+		// Flag used internally to identify system scene nodes.
+		bool m_Internal{ false };
+		size_t m_Id{ 0 };
+
+		std::unordered_map<std::type_index, std::shared_ptr<SceneNodeModule>> m_Modules{};
 	};
 
 	class SceneNodeModule
 	{
-	private:
 		friend class SceneManager;
 		friend class SceneNode;
 
@@ -92,12 +89,12 @@ export namespace annileen
 			std::cout << "SceneNodeModule destroyed" << std::endl;
 		};
 
-		Transform& getTransform() const noexcept;
-		std::shared_ptr<SceneNode> getSceneNode() const noexcept;
+		Transform& getTransform() noexcept;
+		std::shared_ptr<SceneNode> getSceneNode() noexcept;
 
 	private:
 		// Reference to scene node where module is attached.
-		std::shared_ptr<SceneNode> m_SceneNode;
+		std::weak_ptr<SceneNode> m_SceneNode{};
 	};
 }
 
@@ -105,8 +102,7 @@ namespace annileen
 {
 	size_t SceneNode::m_IdCount{ 0 };
 
-	SceneNode::SceneNode(const std::string& name) : m_Parent(nullptr), m_Active(true), name(name)
-		, m_Internal(false)
+	SceneNode::SceneNode(const std::string& name) : name(name)
 	{
 		m_Id = m_IdCount++;
 	}
@@ -137,24 +133,24 @@ namespace annileen
 		m_Parent->m_Children.push_back(shared_from_this());
 	}
 
-	std::shared_ptr<SceneNode> SceneNode::getParent()
+	std::shared_ptr<SceneNode>& SceneNode::getParent() noexcept
 	{
 		return m_Parent;
 	}
 
-	std::vector<std::shared_ptr<SceneNode>> SceneNode::getChildren()
+	std::vector<std::shared_ptr<SceneNode>>& SceneNode::getChildren() noexcept
 	{
 		return m_Children;
 	}
 
-	Transform& SceneNode::getTransform()
+	Transform& SceneNode::getTransform() noexcept
 	{
 		return m_Transform;
 	}
 
-	bool SceneNode::getActive()
+	bool SceneNode::getActive() noexcept
 	{
-		std::shared_ptr<SceneNode> currentNode = shared_from_this();
+		auto currentNode{ shared_from_this() };
 		while (currentNode != nullptr)
 		{
 			if (currentNode->m_Active == false)
@@ -166,54 +162,61 @@ namespace annileen
 		return true;
 	}
 
+	void SceneNode::setActive(bool active) noexcept 
+	{ 
+		m_Active = active; 
+	}
+	
+	size_t SceneNode::getId() const noexcept 
+	{ 
+		return m_Id; 
+	};
+
 	void SceneNode::setSiblingIndex(size_t index)
 	{
 		index = std::min(index, m_Parent->m_Children.size() - 1);
 		setSiblingPosition(m_Parent->m_Children.begin() + index);
 	}
 
-	void SceneNode::setSiblingPosition(std::vector<std::shared_ptr<SceneNode>>::iterator position)
+	void SceneNode::setSiblingPosition(const std::vector<std::shared_ptr<SceneNode>>::iterator& position)
 	{
 		std::rotate(position, getSiblingIterator(), m_Parent->m_Children.end());
 	}
 
 	std::vector<std::shared_ptr<SceneNode>>::iterator SceneNode::getSiblingIterator()
 	{
-		auto it = std::find(m_Parent->m_Children.begin(), m_Parent->m_Children.end(), shared_from_this());
-		return it;
+		return std::find(m_Parent->m_Children.begin(), m_Parent->m_Children.end(), shared_from_this());		
 	}
 
 	size_t SceneNode::getSiblingIndex()
 	{
-		return std::distance(
-			m_Parent->m_Children.begin(),
-			std::find(m_Parent->m_Children.begin(), m_Parent->m_Children.end(), shared_from_this()));
+		return std::distance(m_Parent->m_Children.begin(), getSiblingIterator());
 	}
 
-	std::vector<std::shared_ptr<SceneNode>>::iterator SceneNode::findChild(std::shared_ptr<SceneNode> node)
+	std::vector<std::shared_ptr<SceneNode>>::iterator SceneNode::findChild(const std::shared_ptr<SceneNode>& node)
 	{
 		return std::find(m_Children.begin(), m_Children.end(), node);
 	}
 
-	bool SceneNode::hasChild(std::shared_ptr<SceneNode> node)
+	bool SceneNode::hasChild(const std::shared_ptr<SceneNode>& node)
 	{
 		return findChild(node) != m_Children.end();
 	}
 
-	Transform& SceneNodeModule::getTransform() const noexcept
+	Transform& SceneNodeModule::getTransform() noexcept
 	{
-		if (m_SceneNode == nullptr)
+		auto sceneNode{ m_SceneNode.lock() };
+
+		if (sceneNode == nullptr)
 		{
-			// TODO: uncomment after serviceprovider is converted to module;
-			//ANNILEEN_LOG_ERROR(LoggingChannel::General, "Cannot get correct SceneNodeModule transform because it is not attached to a SceneNode.");
 			exit(-1);
 		}
 
-		return m_SceneNode->getTransform();
+		return sceneNode->getTransform();
 	}
 
-	std::shared_ptr<SceneNode> SceneNodeModule::getSceneNode() const noexcept
+	std::shared_ptr<SceneNode> SceneNodeModule::getSceneNode() noexcept
 	{
-		return m_SceneNode;
+		return m_SceneNode.lock();
 	}
 }
