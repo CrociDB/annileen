@@ -5,7 +5,7 @@ module;
 
 export module model;
 
-import scenenodemodule;
+import scenenode;
 import mesh;
 import material;
 

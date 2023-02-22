@@ -10,7 +10,6 @@ export module scenemanager;
 
 import scene;
 import scenenode;
-import scenenodemodule;
 import light;
 import camera;
 

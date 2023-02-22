@@ -8,27 +8,6 @@ module;
 #include <typeinfo>
 #include <memory>
 
-namespace annileen
-{
-	class Renderer;
-	class Gui;
-	class Input;
-	class Uniform;
-	class Camera;
-	class Scene;
-	class SceneNodeModule;
-	class Light;
-	class Skybox;
-	class Model;
-	class Text;
-	class Material;
-
-	using SceneNodeModulePtr = SceneNodeModule*;
-	using ModelPtr = Model*;
-	using CameraPtr = Camera*;
-	using TextPtr = Text*;
-}
-
 export module scenenode;
 
 import transform;
@@ -39,6 +18,8 @@ export namespace annileen
 	{
 		SceneNodeFlags_Hide = 1
 	};
+
+	class SceneNodeModule;
 
 	class SceneNode final : public std::enable_shared_from_this<SceneNode>
 	{
@@ -95,6 +76,28 @@ export namespace annileen
 		bool hasChild(std::shared_ptr<SceneNode> node);
 
 		~SceneNode();
+	};
+
+	class SceneNodeModule
+	{
+	private:
+		friend class SceneManager;
+		friend class SceneNode;
+
+	public:
+		SceneNodeModule() = default;
+		virtual ~SceneNodeModule()
+		{
+			// TODO: remove
+			std::cout << "SceneNodeModule destroyed" << std::endl;
+		};
+
+		Transform& getTransform() const noexcept;
+		std::shared_ptr<SceneNode> getSceneNode() const noexcept;
+
+	private:
+		// Reference to scene node where module is attached.
+		std::shared_ptr<SceneNode> m_SceneNode;
 	};
 }
 
@@ -195,5 +198,22 @@ namespace annileen
 	bool SceneNode::hasChild(std::shared_ptr<SceneNode> node)
 	{
 		return findChild(node) != m_Children.end();
+	}
+
+	Transform& SceneNodeModule::getTransform() const noexcept
+	{
+		if (m_SceneNode == nullptr)
+		{
+			// TODO: uncomment after serviceprovider is converted to module;
+			//ANNILEEN_LOG_ERROR(LoggingChannel::General, "Cannot get correct SceneNodeModule transform because it is not attached to a SceneNode.");
+			exit(-1);
+		}
+
+		return m_SceneNode->getTransform();
+	}
+
+	std::shared_ptr<SceneNode> SceneNodeModule::getSceneNode() const noexcept
+	{
+		return m_SceneNode;
 	}
 }

@@ -7,7 +7,7 @@ module;
 
 export module camera;
 
-import scenenodemodule;
+import scenenode;
 
 export namespace annileen
 {

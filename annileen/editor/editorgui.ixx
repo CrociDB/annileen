@@ -36,7 +36,6 @@ import material;
 import renderer;
 import scene;
 import scenenode;
-import scenenodemodule;
 import input;
 import settings;
 import serviceprovider;
