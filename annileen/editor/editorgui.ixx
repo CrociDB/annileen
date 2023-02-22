@@ -82,29 +82,29 @@ export namespace annileen
 
 	private:
 		void initialize(Engine* engine);
-		void processInput(std::shared_ptr<Camera> camera, float deltaTime);
-		void render(std::shared_ptr<Scene> scene, std::shared_ptr<Camera> camera, float deltaTime);
+		void processInput(const std::shared_ptr<Camera>& camera, float deltaTime);
+		void render(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Camera>& camera, float deltaTime);
 		void drawMainWindowToolbar();
 		void drawToolsWindow();
-		void drawSceneHierarchyWindow(const std::vector<std::shared_ptr<SceneNode>> sceneNodeList);
-		void drawSelectedNodePropertiesWindow(std::shared_ptr<Camera> camera);
+		void drawSceneHierarchyWindow(const std::vector<std::shared_ptr<SceneNode>>& sceneNodeList);
+		void drawSelectedNodePropertiesWindow(const std::shared_ptr<Camera>& camera);
 		void drawConsoleWindow();
 		void drawSettingsWindow();
-		void _drawTree(std::shared_ptr<SceneNode> sceneNode);
+		void _drawTree(const std::shared_ptr<SceneNode>& sceneNode);
 
 		// Modules
-		void drawModelModuleProperties(std::shared_ptr<Model> model);
-		void drawLightModuleProperties(std::shared_ptr<Light> light);
-		void drawCameraModuleProperties(std::shared_ptr<Camera> camera);
-		void drawTextModuleProperties(std::shared_ptr<Text> text);
-		void drawModelMaterialProperties(std::shared_ptr<Material> material);
+		void drawModelModuleProperties(const std::shared_ptr<Model>& model);
+		void drawLightModuleProperties(const std::shared_ptr<Light>& light);
+		void drawCameraModuleProperties(const std::shared_ptr<Camera>& camera);
+		void drawTextModuleProperties(const std::shared_ptr<Text>& text);
+		void drawModelMaterialProperties(const std::shared_ptr<Material>& material);
 
-		void drawSceneNodeContextMenu(std::shared_ptr<SceneNode> sceneNode);
+		void drawSceneNodeContextMenu(const std::shared_ptr<SceneNode>& sceneNode);
 
-		std::shared_ptr<SceneNode> drawSceneNode(std::shared_ptr<SceneNode> sceneNode, std::string nodeName);
+		std::shared_ptr<SceneNode> drawSceneNode(const std::shared_ptr<SceneNode>& sceneNode, const std::string& nodeName);
 
 		template <class T>
-		void drawNewSceneNodeContextMenu(std::shared_ptr<SceneNode> sceneNode, std::string nodeName);
+		void drawNewSceneNodeContextMenu(const std::shared_ptr<SceneNode>& sceneNode, const std::string& nodeName);
 		
 		InputConfig m_InputConfig{3.0f, 2.8f, 18.0f, 0.0f, 0.0f, 0};
 
@@ -126,10 +126,9 @@ export namespace annileen
 		Mode m_Mode{ Editor };
 
 		// These will probably become a list when we start allowing multiple selection.
-		std::shared_ptr<SceneNode> m_SelectedSceneNode{ nullptr };
-		std::shared_ptr<SceneNode> m_SceneNodeToBeRemoved{ nullptr };
+		std::weak_ptr<SceneNode> m_SelectedSceneNode{};
+		std::weak_ptr<SceneNode> m_SceneNodeToBeRemoved{};
 	};
-
 }
 
 namespace annileen
@@ -140,22 +139,22 @@ namespace annileen
 	}
 
 	template <class T>
-	void EditorGui::drawNewSceneNodeContextMenu(std::shared_ptr<SceneNode> sceneNode, std::string nodeName)
+	void EditorGui::drawNewSceneNodeContextMenu(const std::shared_ptr<SceneNode>& sceneNode, const std::string& nodeName)
 	{
-		auto newSceneNode = drawSceneNode(sceneNode, nodeName);
+		auto newSceneNode{ drawSceneNode(sceneNode, nodeName) };
 
 		if (newSceneNode != nullptr)
 		{
-			auto newModule = SceneManager::getInstance()->addModule<T>(
+			auto newModule{ SceneManager::getInstance()->addModule<T>(
 				SceneManager::getInstance()->getScene(),
-				newSceneNode);
+				newSceneNode) };
 		}
 	}
 
 	void EditorGui::initialize(Engine* engine)
 	{
 		m_Engine = engine;
-		/*std::vector<LoggingLevel> loggingLevelsList = Logger::getLoggingLevelsList();
+		std::vector<LoggingLevel> loggingLevelsList = Logger::getLoggingLevelsList();
 
 		m_ConsoleLoggingLevelsList.push_back("All");
 		for (LoggingLevel loggingLevel : loggingLevelsList)
@@ -171,18 +170,18 @@ namespace annileen
 			m_ConsoleLoggingChannelsList.push_back(Logger::getLoggingChannelString(loggingChannel));
 		}
 
-		m_Engine->getInput()->m_Enabled = false;*/
+		//m_Engine->getInput()->m_Enabled = false;
 	}
 
-	void EditorGui::processInput(std::shared_ptr<Camera> camera, float deltaTime)
+	void EditorGui::processInput(const std::shared_ptr<Camera>& camera, float deltaTime)
 	{
-		Input *input = m_Engine->getInput();
+		auto input{ m_Engine->getInput() };
 
 		if (m_Mode == Editor && !m_HasWindowFocused)
 		{
 			if (input->_getMouseButtonDown(1))
 			{
-				float movementSpeed = input->_getKey(GLFW_KEY_LEFT_SHIFT) ? 5.0f * m_InputConfig.mouseSpeed : m_InputConfig.mouseSpeed;
+				float movementSpeed{ input->_getKey(GLFW_KEY_LEFT_SHIFT) ? 5.0f * m_InputConfig.mouseSpeed : m_InputConfig.mouseSpeed };
 
 				if (input->_getKey(GLFW_KEY_S))
 				{
@@ -210,7 +209,7 @@ namespace annileen
 				}
 
 				// Camera mouse control
-				auto mouseDelta = input->_getMouseDelta();
+				auto mouseDelta{ input->_getMouseDelta() };
 
 				m_InputConfig.yaw += mouseDelta.x * m_InputConfig.sensitivity * deltaTime;
 				m_InputConfig.pitch += -mouseDelta.y * m_InputConfig.sensitivity * deltaTime;
@@ -258,7 +257,7 @@ namespace annileen
 		}
 	}
 
-	void EditorGui::render(std::shared_ptr<Scene> scene, std::shared_ptr<Camera> camera, float deltaTime)
+	void EditorGui::render(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Camera>& camera, float deltaTime)
 	{
 		ImGuizmo::BeginFrame();
 		ImGuizmo::Enable(m_Mode == Editor);
@@ -267,7 +266,7 @@ namespace annileen
 
 		if (m_Mode == Editor)
 		{
-			glm::mat4 mat(1.0);
+			glm::mat4 mat{ 1.0 };
 			ImGuizmo::DrawGrid(
 				camera->getViewMatrixFloatArray(),
 				camera->getProjectionMatrixFloatArray(),
@@ -276,10 +275,13 @@ namespace annileen
 
 		if (m_ShowToolsWindow) drawToolsWindow();
 
+		auto selectedSceneNode{ m_SelectedSceneNode.lock() };
+		auto sceneNodeToBeRemoved{ m_SceneNodeToBeRemoved.lock() };
+
 		if (scene != nullptr)
 		{
 			if (m_ShowSceneHierarchyWindow) drawSceneHierarchyWindow(scene->getRoot()->getChildren());
-			if (m_SelectedSceneNode != nullptr)
+			if (selectedSceneNode != nullptr)
 			{
 				if (m_ShowSceneNodePropertiesWindow) drawSelectedNodePropertiesWindow(camera);
 			}
@@ -288,18 +290,18 @@ namespace annileen
 		if (m_ShowConsoleWindow) drawConsoleWindow();
 		if (m_ShowSettingsWindow) drawSettingsWindow();
 
-		if (m_SceneNodeToBeRemoved != nullptr)
+		if (sceneNodeToBeRemoved != nullptr)
 		{
-			auto scene = SceneManager::getInstance()->getScene();
+			auto scene{ SceneManager::getInstance()->getScene() };
 
 			if (scene != nullptr)
 			{
-				m_SelectedSceneNode = nullptr;
+				m_SelectedSceneNode.reset();
 
-				SceneManager::getInstance()->destroySceneNode(scene, m_SceneNodeToBeRemoved);
+				SceneManager::getInstance()->destroySceneNode(scene, sceneNodeToBeRemoved);
 			}
 
-			m_SceneNodeToBeRemoved = nullptr;
+			m_SceneNodeToBeRemoved.reset();
 		}
 
 		ImGuiIO& io = ImGui::GetIO();
@@ -343,9 +345,9 @@ namespace annileen
 				//if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item			
 				//ImGui::Separator();
 
-				bool move = m_HandleOperation == ViewHandleOperation::Move;
-				bool rotate = m_HandleOperation == ViewHandleOperation::Rotate;
-				bool scale = m_HandleOperation == ViewHandleOperation::Scale;
+				bool move{ m_HandleOperation == ViewHandleOperation::Move };
+				bool rotate{ m_HandleOperation == ViewHandleOperation::Rotate };
+				bool scale{ m_HandleOperation == ViewHandleOperation::Scale };
 
 				if (ImGui::MenuItem("Move object", nullptr, &move))
 					m_HandleOperation = ViewHandleOperation::Move;
@@ -467,9 +469,9 @@ namespace annileen
 		ImGui::End();
 	}
 
-	void EditorGui::drawSceneHierarchyWindow(const std::vector<std::shared_ptr<SceneNode>> sceneNodeList)
+	void EditorGui::drawSceneHierarchyWindow(const std::vector<std::shared_ptr<SceneNode>>& sceneNodeList)
 	{
-		ImGuiIO& io = ImGui::GetIO();
+		ImGuiIO& io{ ImGui::GetIO() };
 
 		ImGui::SetNextWindowPos(
 			ImVec2(10.0f, 110.0f)
@@ -493,7 +495,7 @@ namespace annileen
 
 		ImGui::BeginChild("HierarchyScrollingRegion", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
-		for (auto sceneNode : sceneNodeList)
+		for (auto& sceneNode : sceneNodeList)
 		{
 			_drawTree(sceneNode);
 		}
@@ -503,9 +505,9 @@ namespace annileen
 		ImGui::End();
 	}
 
-	void annileen::EditorGui::drawSelectedNodePropertiesWindow(std::shared_ptr<Camera> camera)
+	void annileen::EditorGui::drawSelectedNodePropertiesWindow(const std::shared_ptr<Camera>& camera)
 	{
-		ImGuiIO& io = ImGui::GetIO();
+		ImGuiIO& io{ ImGui::GetIO() };
 
 		ImGui::SetNextWindowPos(
 			ImVec2(io.DisplaySize.x - 310.0f, 35.0f)
@@ -522,16 +524,24 @@ namespace annileen
 			return;
 		}
 
-		bool isNodeActive = m_SelectedSceneNode->getActive();
-		ImGui::Checkbox(m_SelectedSceneNode->name.c_str(), &isNodeActive);
-		m_SelectedSceneNode->setActive(isNodeActive);
+		auto selectedSceneNode{ m_SelectedSceneNode.lock() };
+
+		if (selectedSceneNode == nullptr)
+		{
+			ImGui::End();
+			return;
+		}
+
+		bool isNodeActive{ selectedSceneNode->getActive() };
+		ImGui::Checkbox(selectedSceneNode->name.c_str(), &isNodeActive);
+		selectedSceneNode->setActive(isNodeActive);
 		ImGui::SameLine();
 		if (ImGui::Button("Focus"))
 		{
 			// Focus object: make camera look at the object
 		}
 
-		auto text = SceneManager::getInstance()->getModule<Text>(m_SelectedSceneNode);
+		auto text{ SceneManager::getInstance()->getModule<Text>(selectedSceneNode) };
 
 		if (text != nullptr)
 		{
@@ -543,32 +553,32 @@ namespace annileen
 		// Transform
 		if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			auto position = m_SelectedSceneNode->getTransform().position();
+			auto position{ selectedSceneNode->getTransform().position() };
 			ImGui::DragFloat3("Position", glm::value_ptr(position), 0.01F);
-			m_SelectedSceneNode->getTransform().position(position);
+			selectedSceneNode->getTransform().position(position);
 
-			auto rotationEuler = m_SelectedSceneNode->getTransform().euler();
+			auto rotationEuler{ selectedSceneNode->getTransform().euler() };
 			ImGui::DragFloat3("Rotation", glm::value_ptr(rotationEuler), 0.01F);
-			m_SelectedSceneNode->getTransform().euler(rotationEuler);
+			selectedSceneNode->getTransform().euler(rotationEuler);
 
-			auto scale = m_SelectedSceneNode->getTransform().scale();
+			auto scale{ selectedSceneNode->getTransform().scale() };
 			ImGui::DragFloat3("Scale", glm::value_ptr(scale), 0.01F);
-			m_SelectedSceneNode->getTransform().scale(scale);
+			selectedSceneNode->getTransform().scale(scale);
 		}
 
 		if (m_Mode == Editor)
 		{
 			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 
-			glm::mat4 transformMatrix(1.0f);
+			glm::mat4 transformMatrix{ 1.0f };
 			if (m_HandleMode == ViewHandleMode::Local)
 			{
-				transformMatrix = m_SelectedSceneNode->getTransform().getModelMatrix();
+				transformMatrix = selectedSceneNode->getTransform().getModelMatrix();
 			}
 
-			auto imguizmoOperation = m_HandleOperation == ViewHandleOperation::Move ? ImGuizmo::TRANSLATE :
-				(m_HandleOperation == ViewHandleOperation::Rotate ? ImGuizmo::ROTATE : ImGuizmo::SCALE);
-			auto imguizmoMode = m_HandleMode == ViewHandleMode::Local ? ImGuizmo::LOCAL : ImGuizmo::WORLD;
+			auto imguizmoOperation{ m_HandleOperation == ViewHandleOperation::Move ? ImGuizmo::TRANSLATE :
+				(m_HandleOperation == ViewHandleOperation::Rotate ? ImGuizmo::ROTATE : ImGuizmo::SCALE) };
+			auto imguizmoMode{ m_HandleMode == ViewHandleMode::Local ? ImGuizmo::LOCAL : ImGuizmo::WORLD };
 
 			ImGuizmo::Manipulate(
 				camera->getViewMatrixFloatArray(),
@@ -578,26 +588,26 @@ namespace annileen
 				glm::value_ptr(transformMatrix));
 
 			if (m_HandleMode == ViewHandleMode::Local)
-				m_SelectedSceneNode->getTransform().setModelMatrix(transformMatrix);
+				selectedSceneNode->getTransform().setModelMatrix(transformMatrix);
 			else
-				m_SelectedSceneNode->getTransform().applyModelMatrix(transformMatrix);
+				selectedSceneNode->getTransform().applyModelMatrix(transformMatrix);
 		}
 
 
 		// Modules
-		auto modModel = SceneManager::getInstance()->getModule<Model>(m_SelectedSceneNode);
+		auto modModel{ SceneManager::getInstance()->getModule<Model>(selectedSceneNode) };
 		if (modModel != nullptr)
 		{
 			drawModelModuleProperties(modModel);
 		}
 
-		auto modCamera = SceneManager::getInstance()->getModule<Camera>(m_SelectedSceneNode);
+		auto modCamera{ SceneManager::getInstance()->getModule<Camera>(selectedSceneNode) };
 		if (modCamera != nullptr)
 		{
 			drawCameraModuleProperties(modCamera);
 		}
 
-		auto modLight = SceneManager::getInstance()->getModule<Light>(m_SelectedSceneNode);
+		auto modLight{ SceneManager::getInstance()->getModule<Light>(selectedSceneNode) };
 		if (modLight != nullptr)
 		{
 			drawLightModuleProperties(modLight);
@@ -606,26 +616,29 @@ namespace annileen
 	}
 
 	// TODO: this will be refactored to use queue or stack
-	void EditorGui::_drawTree(std::shared_ptr<SceneNode> sceneNode)
+	void EditorGui::_drawTree(const std::shared_ptr<SceneNode>& sceneNode)
 	{
-
 		if (sceneNode == nullptr ||
 			((sceneNode->flags & SceneNodeFlags_Hide) == SceneNodeFlags_Hide))
 		{
 			return;
 		}
 
-		static ImGuiTreeNodeFlags node_flags = ImGuiTreeNodeFlags_OpenOnArrow |
+		static ImGuiTreeNodeFlags node_flags{ 
+			ImGuiTreeNodeFlags_OpenOnArrow |
 			ImGuiTreeNodeFlags_OpenOnDoubleClick |
-			ImGuiTreeNodeFlags_SpanAvailWidth;
+			ImGuiTreeNodeFlags_SpanAvailWidth 
+		};
 
-		std::vector<std::shared_ptr<SceneNode>> nodeChildren = sceneNode->getChildren();
+		std::vector<std::shared_ptr<SceneNode>> nodeChildren{ sceneNode->getChildren() };
+
+		auto selectedSceneNode{ m_SelectedSceneNode.lock() };
 
 		if (nodeChildren.empty())
 		{
 			ImGui::Indent(ImGui::GetTreeNodeToLabelSpacing());
 			ImGui::PushID(static_cast<int>(sceneNode->getId()));
-			if (ImGui::Selectable(sceneNode->name.c_str(), sceneNode == m_SelectedSceneNode))
+			if (ImGui::Selectable(sceneNode->name.c_str(), sceneNode == selectedSceneNode))
 			{
 				m_SelectedSceneNode = sceneNode;
 			}
@@ -636,7 +649,7 @@ namespace annileen
 		else
 		{
 			ImGui::PushID(static_cast<int>(sceneNode->getId()));
-			bool nodeOpen = ImGui::TreeNodeEx(sceneNode->name.c_str(), node_flags);
+			bool nodeOpen{ ImGui::TreeNodeEx(sceneNode->name.c_str(), node_flags) };
 			if (ImGui::IsItemClicked())
 			{
 				m_SelectedSceneNode = sceneNode;
@@ -646,7 +659,7 @@ namespace annileen
 			{
 				drawSceneNodeContextMenu(sceneNode);
 
-				for (auto childNode : nodeChildren)
+				for (auto& childNode : nodeChildren)
 				{
 					_drawTree(childNode);
 				}
@@ -655,7 +668,7 @@ namespace annileen
 		}
 	}
 
-	void EditorGui::drawSceneNodeContextMenu(std::shared_ptr<SceneNode> sceneNode)
+	void EditorGui::drawSceneNodeContextMenu(const std::shared_ptr<SceneNode>& sceneNode)
 	{
 		if (!ImGui::BeginPopupContextItem())
 		{
@@ -716,7 +729,7 @@ namespace annileen
 
 	void EditorGui::drawConsoleWindow()
 	{
-		ImGuiIO& io = ImGui::GetIO();
+		ImGuiIO& io{ ImGui::GetIO() };
 
 		ImGui::SetNextWindowPos(
 			ImVec2(10.0f, io.DisplaySize.y - 200.0f)
@@ -740,14 +753,14 @@ namespace annileen
 		ImGui::SameLine();
 
 		ImGui::PushItemWidth(150);
-		static const char* levelOption = nullptr;
-		static int levelOptionId = 0;
+		static const char* levelOption{ nullptr };
+		static int levelOptionId{ 0 };
 		if (ImGui::BeginCombo("Message Level", levelOption))
 		{
-			for (int n = 0; n < m_ConsoleLoggingLevelsList.size(); ++n)
+			for (int n{ 0 }; n < m_ConsoleLoggingLevelsList.size(); ++n)
 			{
-				const char* selectedOption = m_ConsoleLoggingLevelsList[n];
-				bool isSelected = (levelOption == selectedOption);
+				const char* selectedOption{ m_ConsoleLoggingLevelsList[n] };
+				bool isSelected{ (levelOption == selectedOption) };
 				if (ImGui::Selectable(selectedOption, isSelected))
 				{
 					levelOption = selectedOption;
@@ -762,14 +775,14 @@ namespace annileen
 		}
 
 		ImGui::SameLine();
-		static const char* channelOption = nullptr;
-		static int channelOptionId = 0;
+		static const char* channelOption{ nullptr };
+		static int channelOptionId{ 0 };
 		if (ImGui::BeginCombo("Message Channel", channelOption))
 		{
-			for (int n = 0; n < m_ConsoleLoggingChannelsList.size(); ++n)
+			for (int n{ 0 }; n < m_ConsoleLoggingChannelsList.size(); ++n)
 			{
-				const char* selectedOption = m_ConsoleLoggingChannelsList[n];
-				bool isSelected = (channelOption == selectedOption);
+				const char* selectedOption{ m_ConsoleLoggingChannelsList[n] };
+				bool isSelected{ channelOption == selectedOption };
 				if (ImGui::Selectable(selectedOption, isSelected))
 				{
 					channelOption = selectedOption;
@@ -790,7 +803,6 @@ namespace annileen
 
 		std::vector<Logger::Message> messages;
 
-
 		if (levelOptionId != 0 && channelOptionId == 0)
 		{
 			messages = Logger::getMessagesAtLevel(Logger::getLoggingLevelsList()[(size_t)levelOptionId - 1]);
@@ -808,11 +820,11 @@ namespace annileen
 			messages = Logger::getAllMessages();
 		}
 
-		ImVec4 infoColor = ImVec4(1, 1, 1, 1);
-		ImVec4 errorColor = ImVec4(1, 0, 0, 1);
-		ImVec4 warningColor = ImVec4(1, 1, 0, 1);
+		ImVec4 infoColor{ 1, 1, 1, 1 };
+		ImVec4 errorColor{ 1, 0, 0, 1 };
+		ImVec4 warningColor{ 1, 1, 0, 1 };
 
-		const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
+		const float footer_height_to_reserve{ ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing() };
 		ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footer_height_to_reserve), false, ImGuiWindowFlags_HorizontalScrollbar);
 		//if (ImGui::BeginPopupContextWindow())
 		//{
@@ -820,9 +832,9 @@ namespace annileen
 		//	ImGui::EndPopup();
 		//}
 
-		for (int messageId = static_cast<int>(messages.size()) - 1; messageId >= 0; --messageId)
+		for (int messageId{ static_cast<int>(messages.size()) - 1 }; messageId >= 0; --messageId)
 		{
-			Logger::Message message = messages[messageId];
+			Logger::Message message{ messages[messageId] };
 
 			switch (message.level)
 			{
@@ -863,7 +875,7 @@ namespace annileen
 			return;
 		}
 
-		Settings* settings = ServiceProvider::getSettings();
+		auto settings{ ServiceProvider::getSettings() };
 
 		if (ImGui::CollapsingHeader("Shadows", ImGuiTreeNodeFlags_DefaultOpen))
 		{
@@ -873,7 +885,7 @@ namespace annileen
 		ImGui::End();
 	}
 
-	void EditorGui::drawModelModuleProperties(std::shared_ptr<Model> model)
+	void EditorGui::drawModelModuleProperties(const std::shared_ptr<Model>& model)
 	{
 		if (ImGui::CollapsingHeader("Model", ImGuiTreeNodeFlags_DefaultOpen))
 		{
@@ -886,7 +898,7 @@ namespace annileen
 		drawModelMaterialProperties(model->getMaterial());
 	}
 
-	void EditorGui::drawLightModuleProperties(std::shared_ptr<Light> light)
+	void EditorGui::drawLightModuleProperties(const std::shared_ptr<Light>& light)
 	{
 		if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen))
 		{
@@ -898,7 +910,7 @@ namespace annileen
 		}
 	}
 
-	void EditorGui::drawCameraModuleProperties(std::shared_ptr<Camera> camera)
+	void EditorGui::drawCameraModuleProperties(const std::shared_ptr<Camera>& camera)
 	{
 		if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen))
 		{
@@ -912,21 +924,21 @@ namespace annileen
 		}
 	}
 
-	void EditorGui::drawTextModuleProperties(std::shared_ptr<Text> text)
+	void EditorGui::drawTextModuleProperties(const std::shared_ptr<Text>& text)
 	{
-		bool staticText = text->isStatic();
+		bool staticText{ text->isStatic() };
 
 		if (staticText)
 		{
-			ImDrawList* draw_list = ImGui::GetWindowDrawList();
+			auto draw_list{ ImGui::GetWindowDrawList() };
 
-			ImVec2 buttonSize = ImGui::GetWindowSize();
+			auto buttonSize{ ImGui::GetWindowSize() };
 			buttonSize.x -= 25;
 			buttonSize.y = 100;
 
-			ImVec2 pos = ImGui::GetCursorScreenPos();
-			ImVec2 marker_min = ImVec2(pos.x + buttonSize.x, pos.y);
-			ImVec2 marker_max = ImVec2(pos.x + buttonSize.x + 10, pos.y + ImGui::GetTextLineHeight());
+			auto pos{ ImGui::GetCursorScreenPos() };
+			ImVec2 marker_min{ pos.x + buttonSize.x, pos.y };
+			ImVec2 marker_max{ pos.x + buttonSize.x + 10, pos.y + ImGui::GetTextLineHeight() };
 			ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + buttonSize.x);
 			ImGui::Text("Properties cannot be changed because this text is static", buttonSize.x);
 			// Draw actual text bounding box, following by marker of our expected limit (should not overlap!)
@@ -938,7 +950,7 @@ namespace annileen
 
 		if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			glm::vec2 screenPosition = text->getScreenPosition();
+			auto screenPosition{ text->getScreenPosition() };
 			ImGui::DragFloat2("Screen Position", glm::value_ptr(screenPosition));
 			if (!staticText && screenPosition != text->getScreenPosition())
 			{
@@ -953,45 +965,45 @@ namespace annileen
 			{
 				text->setStatic(staticText);
 			}
-			bool sdf = text->isSdf();
+			bool sdf{ text->isSdf() };
 			ImGui::Checkbox("SDF", &sdf);
 			if (sdf != text->isSdf())
 			{
 				text->setSdf(sdf);
 			}
 
-			Text::TextStyle textStyle = text->getStyle();
+			Text::TextStyle textStyle{ text->getStyle() };
 
-			bool background = textStyle & Text::TextStyle::Background;
+			bool background{ static_cast<bool>(textStyle & Text::TextStyle::Background) };
 			ImGui::Checkbox("Background", &background);
-			glm::vec3 backgroundColor = text->getBackgroundColor();
+			glm::vec3 backgroundColor{ text->getBackgroundColor() };
 			ImGui::ColorEdit3("Background Color", glm::value_ptr(backgroundColor));
 			if (!staticText && backgroundColor != text->getBackgroundColor())
 			{
 				text->setBackgroundColor(backgroundColor);
 			}
 
-			bool overline = textStyle & Text::TextStyle::Overline;
+			bool overline{ static_cast<bool>(textStyle & Text::TextStyle::Overline) };
 			ImGui::Checkbox("Overline", &overline);
-			glm::vec3 overlineColor = text->getOverlineColor();
+			glm::vec3 overlineColor{ text->getOverlineColor() };
 			ImGui::ColorEdit3("Overline Color", glm::value_ptr(overlineColor));
 			if (!staticText && overlineColor != text->getOverlineColor())
 			{
 				text->setOverlineColor(overlineColor);
 			}
 
-			bool underline = textStyle & Text::TextStyle::Underline;
+			bool underline{ static_cast<bool>(textStyle & Text::TextStyle::Underline) };
 			ImGui::Checkbox("Underline", &underline);
-			glm::vec3 underlineColor = text->getUnderlineColor();
+			glm::vec3 underlineColor{ text->getUnderlineColor() };
 			ImGui::ColorEdit3("Underline Color", glm::value_ptr(underlineColor));
 			if (!staticText && underlineColor != text->getUnderlineColor())
 			{
 				text->setUnderlineColor(underlineColor);
 			}
 
-			bool strikethrough = textStyle & Text::TextStyle::StrikeThrough;
+			bool strikethrough{ static_cast<bool>(textStyle & Text::TextStyle::StrikeThrough) };
 			ImGui::Checkbox("StrikeThrough", &strikethrough);
-			glm::vec3 strikeThroughColor = text->getStrikeThroughColor();
+			glm::vec3 strikeThroughColor{ text->getStrikeThroughColor() };
 			ImGui::ColorEdit3("StrikeThrough Color", glm::value_ptr(strikeThroughColor));
 			if (!staticText && strikeThroughColor != text->getStrikeThroughColor())
 			{
@@ -1008,21 +1020,21 @@ namespace annileen
 				text->setStyle(textStyle);
 			}
 
-			glm::vec3 textColor = text->getTextColor();
+			glm::vec3 textColor{ text->getTextColor() };
 			ImGui::ColorEdit3("Text Color", glm::value_ptr(textColor));
 			if (!staticText && textColor != text->getTextColor())
 			{
 				text->setTextColor(textColor);
 			}
 
-			int pixelSize = static_cast<int>(text->getPixelSize());
+			int pixelSize{ static_cast<int>(text->getPixelSize()) };
 			ImGui::SliderInt("Text Size", &pixelSize, 5, 127);
 			if (!staticText && pixelSize != static_cast<int>(text->getPixelSize()))
 			{
 				text->setPixelSize(static_cast<uint32_t>(pixelSize));
 			}
 
-			std::string textContent = text->getText();
+			std::string textContent{ text->getText() };
 
 			ImGui::InputTextMultiline("Text content", &textContent);
 			if (!staticText)
@@ -1032,7 +1044,7 @@ namespace annileen
 		}
 	}
 
-	void EditorGui::drawModelMaterialProperties(std::shared_ptr<Material> material)
+	void EditorGui::drawModelMaterialProperties(const std::shared_ptr<Material>& material)
 	{
 		if (!material) return;
 
@@ -1051,7 +1063,7 @@ namespace annileen
 		}
 	}
 
-	std::shared_ptr<SceneNode> EditorGui::drawSceneNode(std::shared_ptr<SceneNode> sceneNode, std::string nodeName)
+	std::shared_ptr<SceneNode> EditorGui::drawSceneNode(const std::shared_ptr<SceneNode>& sceneNode, const std::string& nodeName)
 	{
 		auto scene{ SceneManager::getInstance()->getScene() };
 		std::shared_ptr<SceneNode> newSceneNode{ nullptr };

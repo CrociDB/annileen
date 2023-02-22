@@ -23,7 +23,6 @@ module;
 #include <GLFW/glfw3native.h>
 
 #include <memory>
-#include <engine/forward_decl.h>
 #include <sstream>
 #include <iostream>
 #include <engine/core/logger.h>
