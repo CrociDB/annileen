@@ -58,13 +58,13 @@ export namespace annileen
 
         void initializeShadows();
 
-        void renderSkybox(bgfx::ViewId viewId, Camera* camera, std::shared_ptr<Skybox> skybox);
-        void renderSceneNode(bgfx::ViewId viewId, ModelPtr model, std::shared_ptr<Material> material);
+        void renderSkybox(bgfx::ViewId viewId, std::shared_ptr<Camera> camera, std::shared_ptr<Skybox> skybox);
+        void renderSceneNode(bgfx::ViewId viewId, std::shared_ptr<Model> model, std::shared_ptr<Material> material);
 
     public:
         void init(int screenWidth, int screenHeight);
 
-        void render(std::shared_ptr<Scene> scene, Camera* camera);
+        void render(std::shared_ptr<Scene> scene, std::shared_ptr<Camera> camera);
 
         void initFrame(Scene* scene);
 
@@ -165,9 +165,9 @@ namespace annileen
         m_UIRenderView = RenderView::getRenderView(RenderView::UI);
     }
 
-    void Renderer::render(std::shared_ptr<Scene> scene, Camera* camera)
+    void Renderer::render(std::shared_ptr<Scene> scene, std::shared_ptr<Camera> camera)
     {
-        Light* mainLightForShadows = nullptr;
+        std::shared_ptr<Light> mainLightForShadows{ nullptr };
         
         // Set light properties and get first light that generate shadows to be main light for shadows.
         for (const auto& light : scene->getLightList())
@@ -232,7 +232,7 @@ namespace annileen
 
             for (auto sceneNode : scene->getNodeList())
             {
-                ModelPtr model = SceneManager::getInstance()->getModule<Model>(sceneNode);
+                auto model = SceneManager::getInstance()->getModule<Model>(sceneNode);
 
                 if (model == nullptr || !sceneNode->getActive() || !model->enabled) continue;
 
@@ -266,7 +266,7 @@ namespace annileen
 
         for (auto sceneNode : scene->getNodeList())
         {
-            ModelPtr model = SceneManager::getInstance()->getModule<Model>(sceneNode);
+            auto model = SceneManager::getInstance()->getModule<Model>(sceneNode);
 
             if (model == nullptr || model->getMeshGroup() == nullptr || !sceneNode->getActive() || !model->enabled) continue;
 
@@ -305,7 +305,7 @@ namespace annileen
         
         for (auto sceneNode : scene->getNodeList())
         {
-            TextPtr text = SceneManager::getInstance()->getModule<Text>(sceneNode);
+            auto text = SceneManager::getInstance()->getModule<Text>(sceneNode);
 
             if (!sceneNode->getActive() || text == nullptr || !text->enabled ) continue;
 
@@ -332,7 +332,7 @@ namespace annileen
         scene->getCamera()->updateMatrices(m_ScreenWidth, m_ScreenHeight);
     }
 
-    void Renderer::renderSkybox(bgfx::ViewId viewId, Camera* camera, std::shared_ptr<Skybox> skybox)
+    void Renderer::renderSkybox(bgfx::ViewId viewId, std::shared_ptr<Camera> camera, std::shared_ptr<Skybox> skybox)
     {
         skybox->getModel()->getMaterial()->submitUniforms();
 
@@ -354,7 +354,7 @@ namespace annileen
         }
     }
 
-    void Renderer::renderSceneNode(bgfx::ViewId viewId, ModelPtr model, std::shared_ptr<Material> material)
+    void Renderer::renderSceneNode(bgfx::ViewId viewId, std::shared_ptr<Model> model, std::shared_ptr<Material> material)
     {
         material->submitUniforms();
 

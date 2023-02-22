@@ -53,7 +53,7 @@ export namespace annileen
 		bool m_Internal;
 		size_t m_Id;
 
-		std::unordered_map<std::type_index, SceneNodeModule*> m_Modules;
+		std::unordered_map<std::type_index, std::shared_ptr<SceneNodeModule>> m_Modules;
 
 		// TODO: this is temporary id, not safe, not ideal. Replace someday.
 		static size_t m_IdCount;

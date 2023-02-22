@@ -80,7 +80,7 @@ export namespace annileen
         void terminate();
         void setMouseCapture(bool value);
         void checkInputEvents();
-        void render(Camera* replacementCamera);
+        void render(std::shared_ptr<Camera> replacementCamera);
 
         static Engine* getInstance();
         static void destroy();
@@ -385,7 +385,7 @@ namespace annileen
         }
     }
 
-    void Engine::render(Camera* replacementCamera)
+    void Engine::render(std::shared_ptr<Camera> replacementCamera)
     {
         auto scene{ SceneManager::getInstance()->getScene() };
         if (scene != nullptr)

@@ -56,7 +56,7 @@ private:
 
     std::shared_ptr<Material> m_Material{ nullptr };
     std::shared_ptr<MeshGroup> m_MeshGroup{ nullptr };
-    ModelPtr m_Model{ nullptr };
+    std::shared_ptr<Model> m_Model{ nullptr };
     std::shared_ptr<SceneNode> m_Node{ nullptr };
 
     void generateMesh();

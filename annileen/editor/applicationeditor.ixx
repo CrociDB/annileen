@@ -19,7 +19,7 @@ export namespace annileen
 	{
 	private:
 		EditorGui* m_EditorGui;
-		Camera* m_EditorCamera;
+		std::shared_ptr<Camera> m_EditorCamera;
 
 		virtual void initializeEditorGui(std::shared_ptr<Scene> scene);
 		virtual void editorUpdate(std::shared_ptr<Scene> scene, float deltaTime);

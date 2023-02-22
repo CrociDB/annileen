@@ -80,21 +80,21 @@ export namespace annileen
 		~EditorGui() = default;
 	
 		void initialize(Engine* engine);
-		void processInput(Camera* camera, float deltaTime);
-		void render(std::shared_ptr<Scene> scene, Camera* camera, float deltaTime);
+		void processInput(std::shared_ptr<Camera> camera, float deltaTime);
+		void render(std::shared_ptr<Scene> scene, std::shared_ptr<Camera> camera, float deltaTime);
 		void drawMainWindowToolbar();
 		void drawToolsWindow();
 		void drawSceneHierarchyWindow(const std::vector<std::shared_ptr<SceneNode>> sceneNodeList);
-		void drawSelectedNodePropertiesWindow(Camera* camera);
+		void drawSelectedNodePropertiesWindow(std::shared_ptr<Camera> camera);
 		void drawConsoleWindow();
 		void drawSettingsWindow();
 		void _drawTree(std::shared_ptr<SceneNode> sceneNode);
 
 		// Modules
-		void drawModelModuleProperties(Model* model);
-		void drawLightModuleProperties(Light* light);
-		void drawCameraModuleProperties(Camera* camera);
-		void drawTextModuleProperties(Text* text);
+		void drawModelModuleProperties(std::shared_ptr<Model> model);
+		void drawLightModuleProperties(std::shared_ptr<Light> light);
+		void drawCameraModuleProperties(std::shared_ptr<Camera> camera);
+		void drawTextModuleProperties(std::shared_ptr<Text> text);
 		void drawModelMaterialProperties(std::shared_ptr<Material> material);
 
 		void drawSceneNodeContextMenu(std::shared_ptr<SceneNode> sceneNode);
@@ -167,7 +167,7 @@ namespace annileen
 		m_Engine->getInput()->m_Enabled = false;*/
 	}
 
-	void EditorGui::processInput(Camera* camera, float deltaTime)
+	void EditorGui::processInput(std::shared_ptr<Camera> camera, float deltaTime)
 	{
 		Input *input = m_Engine->getInput();
 
@@ -251,7 +251,7 @@ namespace annileen
 		}
 	}
 
-	void EditorGui::render(std::shared_ptr<Scene> scene, Camera* camera, float deltaTime)
+	void EditorGui::render(std::shared_ptr<Scene> scene, std::shared_ptr<Camera> camera, float deltaTime)
 	{
 		ImGuizmo::BeginFrame();
 		ImGuizmo::Enable(m_Mode == Editor);
@@ -496,7 +496,7 @@ namespace annileen
 		ImGui::End();
 	}
 
-	void annileen::EditorGui::drawSelectedNodePropertiesWindow(Camera* camera)
+	void annileen::EditorGui::drawSelectedNodePropertiesWindow(std::shared_ptr<Camera> camera)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 
@@ -524,7 +524,7 @@ namespace annileen
 			// Focus object: make camera look at the object
 		}
 
-		Text* text = SceneManager::getInstance()->getModule<Text>(m_SelectedSceneNode);
+		auto text = SceneManager::getInstance()->getModule<Text>(m_SelectedSceneNode);
 
 		if (text != nullptr)
 		{
@@ -578,19 +578,19 @@ namespace annileen
 
 
 		// Modules
-		Model* modModel = SceneManager::getInstance()->getModule<Model>(m_SelectedSceneNode);
+		auto modModel = SceneManager::getInstance()->getModule<Model>(m_SelectedSceneNode);
 		if (modModel != nullptr)
 		{
 			drawModelModuleProperties(modModel);
 		}
 
-		Camera* modCamera = SceneManager::getInstance()->getModule<Camera>(m_SelectedSceneNode);
+		auto modCamera = SceneManager::getInstance()->getModule<Camera>(m_SelectedSceneNode);
 		if (modCamera != nullptr)
 		{
 			drawCameraModuleProperties(modCamera);
 		}
 
-		Light* modLight = SceneManager::getInstance()->getModule<Light>(m_SelectedSceneNode);
+		auto modLight = SceneManager::getInstance()->getModule<Light>(m_SelectedSceneNode);
 		if (modLight != nullptr)
 		{
 			drawLightModuleProperties(modLight);
@@ -866,7 +866,7 @@ namespace annileen
 		ImGui::End();
 	}
 
-	void EditorGui::drawModelModuleProperties(Model* model)
+	void EditorGui::drawModelModuleProperties(std::shared_ptr<Model> model)
 	{
 		if (ImGui::CollapsingHeader("Model", ImGuiTreeNodeFlags_DefaultOpen))
 		{
@@ -879,7 +879,7 @@ namespace annileen
 		drawModelMaterialProperties(model->getMaterial());
 	}
 
-	void EditorGui::drawLightModuleProperties(Light* light)
+	void EditorGui::drawLightModuleProperties(std::shared_ptr<Light> light)
 	{
 		if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen))
 		{
@@ -891,7 +891,7 @@ namespace annileen
 		}
 	}
 
-	void EditorGui::drawCameraModuleProperties(Camera* camera)
+	void EditorGui::drawCameraModuleProperties(std::shared_ptr<Camera> camera)
 	{
 		if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen))
 		{
@@ -905,7 +905,7 @@ namespace annileen
 		}
 	}
 
-	void EditorGui::drawTextModuleProperties(Text* text)
+	void EditorGui::drawTextModuleProperties(std::shared_ptr<Text> text)
 	{
 		bool staticText = text->isStatic();
 

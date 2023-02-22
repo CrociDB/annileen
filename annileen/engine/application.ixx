@@ -69,9 +69,9 @@ export namespace annileen
 	private:
 		Engine* m_Engine{ nullptr };
 		std::string m_ApplicationName{ "" };
-		Camera* m_NoCamera{ nullptr };
+		std::shared_ptr<Camera> m_NoCamera{ nullptr };
 		// This is temporary, the scenenode should be activated/deactivated instead.
-		Text* m_NoCameraText{ nullptr };
+		std::shared_ptr<Text> m_NoCameraText{ nullptr };
 	};
 }
 
@@ -167,7 +167,7 @@ namespace annileen
 
 	void Application::render()
 	{
-		Camera* camera{ SceneManager::getInstance()->getScene()->getCamera() };
+		auto camera{ SceneManager::getInstance()->getScene()->getCamera() };
 		if (camera == nullptr)
 		{
 			m_NoCamera->getSceneNode()->setActive(true);

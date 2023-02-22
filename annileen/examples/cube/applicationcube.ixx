@@ -88,7 +88,7 @@ std::shared_ptr<Scene> ApplicationCube::init()
     material1->setTexture("s_mainNormal", normalmap1);
 
     auto node1 = scene->createNode("AngelStatue");
-    ModelPtr model1 = SceneManager::getInstance()->addModule<Model>(scene, node1);
+    auto model1 = SceneManager::getInstance()->addModule<Model>(scene, node1);
     model1->init(ServiceProvider::getAssetManager()->getMesh("statue.obj"), material1);
     node1->getTransform().translate(glm::vec3(-15.0, -1.0, -1.0));
     node1->getTransform().scale(glm::vec3(.07, .07, .07));
