@@ -1,6 +1,7 @@
 module;
 
 #include <tuple>
+#include <iostream>
 #include <unordered_map>
 #include <glm.hpp>
 #include <bgfx/bgfx.h>
@@ -27,16 +28,19 @@ using namespace annileen;
 
 export ANNILEEN_APP_CLASS_DECLARATION(ApplicationCube)
 {
-private:
-    SceneNodePtr m_ModelNode = nullptr;
+public:
+    ApplicationCube() = default;
+    ~ApplicationCube()
+    {
+        std::cout << "ApplicationCube destroyed." << std::endl;
+    };
 
+private:
     std::shared_ptr<Scene> init() override;
     void update(float deltaTime) override;
     void finish() override {}
 
-public:
-    ApplicationCube() {}
-    ~ApplicationCube() {}
+    std::shared_ptr<SceneNode> m_ModelNode{ nullptr };
 };
 
 std::shared_ptr<Scene> ApplicationCube::init()
@@ -74,13 +78,13 @@ std::shared_ptr<Scene> ApplicationCube::init()
     material->setTexture("s_mainNormal", normalmap);
 
     m_ModelNode = scene->createNode("Statue");
-    ModelPtr model = SceneManager::getInstance()->addModule<Model>(scene.get(), m_ModelNode);
+    auto model = SceneManager::getInstance()->addModule<Model>(scene, m_ModelNode);
     model->init(ServiceProvider::getAssetManager()->getMesh("statue_decoration.obj"), material);
     m_ModelNode->getTransform().translate(glm::vec3(-1.0, -1.0, -1.0));
     m_ModelNode->getTransform().scale(glm::vec3(.1, .1, .1));
 
     // Angel Statue
-    std::shared_ptr<Material> material1 = std::make_shared<Material>();
+    auto material1 = std::make_shared<Material>();
     material1->addShaderPass(shaderPass);
     material1->setName("ModelMaterial1");
 
@@ -88,20 +92,20 @@ std::shared_ptr<Scene> ApplicationCube::init()
     material1->setTexture("s_mainNormal", normalmap1);
 
     auto node1 = scene->createNode("AngelStatue");
-    ModelPtr model1 = SceneManager::getInstance()->addModule<Model>(scene.get(), node1);
+    auto model1 = SceneManager::getInstance()->addModule<Model>(scene, node1);
     model1->init(ServiceProvider::getAssetManager()->getMesh("statue.obj"), material1);
     node1->getTransform().translate(glm::vec3(-15.0, -1.0, -1.0));
     node1->getTransform().scale(glm::vec3(.07, .07, .07));
 
-    SceneNodePtr cameraNode = scene->createNode("Camera");
-    Camera* camera = SceneManager::getInstance()->addModule<Camera>(scene.get(), cameraNode);
+    auto cameraNode = scene->createNode("Camera");
+    auto camera = SceneManager::getInstance()->addModule<Camera>(scene, cameraNode);
     camera->fieldOfView = 60.0f;
     camera->nearClip = 0.1f;
     camera->farClip = 300.0f;
     camera->getTransform().translate(glm::vec3(-5.0f, 0.0f, -5.0f));
     camera->setForward(m_ModelNode->getTransform().position() - camera->getTransform().position());
-    SceneNodePtr lightNode = scene->createNode("Light");
-    Light* light = SceneManager::getInstance()->addModule<Light>(scene.get(), lightNode);
+    auto lightNode = scene->createNode("Light");
+    auto light = SceneManager::getInstance()->addModule<Light>(scene, lightNode);
 
     light->color = glm::vec3(1.0f, 1.0f, .8f);
     light->type = LightType::Directional;

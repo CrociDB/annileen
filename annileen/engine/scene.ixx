@@ -4,12 +4,12 @@ module;
 #include <list>
 #include <memory>
 #include <glm.hpp>
-#include <engine/forward_decl.h>
 
 export module scene;
 
 import scenenode;
 import camera;
+import light;
 import skybox;
 
 export namespace annileen
@@ -24,84 +24,93 @@ export namespace annileen
 
     class Scene
     {
+    public:
         friend class SceneManager;
         friend class SceneNode;
 
-    public:
         Scene();
         virtual ~Scene();
 
         virtual void start() {};
         virtual void update() {};
 
-        SceneNodePtr createNode(const std::string& name);       
+        std::shared_ptr<SceneNode> createNode(const std::string& name);       
 
-        void setSkybox(Skybox* skybox) { m_Skybox = skybox; }
-        Skybox* getSkybox() const { return m_Skybox; }
-        
-        SceneNodePtr getRoot() const;
-        std::list<SceneNodePtr>& getNodeList();
-        std::list<Light*>& getLightList();
-        std::list<Camera*>& getCameraList();
-        Camera* getCamera() const;
+        void setSkybox(std::shared_ptr<Skybox> skybox) noexcept;
+        std::shared_ptr<Skybox> getSkybox() const noexcept;        
+        std::shared_ptr<SceneNode> getRoot() const noexcept;
+        std::list<std::shared_ptr<SceneNode>>& getNodeList() noexcept;
+        std::list<std::shared_ptr<Light>>& getLightList() noexcept;
+        std::list<std::shared_ptr<Camera>>& getCameraList() noexcept;
+        std::shared_ptr<Camera> getCamera() const noexcept;
 
     private:
-        void addNodeToList(SceneNodePtr node);
-        void removeNodeFromList(SceneNodePtr node);
+        void addNodeToList(std::shared_ptr<SceneNode> node);
+        void removeNodeFromList(std::shared_ptr<SceneNode> node);
 
     public:
         Fog fog{};
 
     private:
-        std::list<SceneNodePtr> m_Nodes;
-        std::list<Light*> m_Lights;
-        std::list<Camera*> m_Cameras;
-        SceneNodePtr m_Root{ nullptr };
-        Skybox* m_Skybox{ nullptr };
+        std::list<std::shared_ptr<SceneNode>> m_Nodes;
+        std::list<std::shared_ptr<Light>> m_Lights;
+        std::list<std::shared_ptr<Camera>> m_Cameras;
+        std::shared_ptr<SceneNode> m_Root{ nullptr };
+        std::shared_ptr<Skybox> m_Skybox{ nullptr };
     };
 }
 
 namespace annileen
 {
-    SceneNodePtr Scene::getRoot() const
+    void Scene::setSkybox(std::shared_ptr<Skybox> skybox) noexcept 
+    { 
+        m_Skybox = skybox; 
+    }
+
+    std::shared_ptr<Skybox> Scene::getSkybox() const noexcept 
+    { 
+        return m_Skybox; 
+    }
+
+    std::shared_ptr<SceneNode> Scene::getRoot() const noexcept
     {
         return m_Root;
     }
 
-    SceneNodePtr Scene::createNode(const std::string& name)
+    std::shared_ptr<SceneNode> Scene::createNode(const std::string& name)
     {
-        auto node{ new SceneNode(name) };
+        auto node{ std::make_shared<SceneNode>(name) };
         m_Nodes.push_back(node);
         node->setParent(getRoot());
         return node;
     }
 
-    void Scene::addNodeToList(SceneNodePtr node)
+    void Scene::addNodeToList(std::shared_ptr<SceneNode> node)
     {
         m_Nodes.push_back(node);
     }
 
-    void Scene::removeNodeFromList(SceneNodePtr node)
+    void Scene::removeNodeFromList(std::shared_ptr<SceneNode> node)
     {
         m_Nodes.remove(node);
     }
 
-    std::list<SceneNodePtr>& Scene::getNodeList()
+    std::list<std::shared_ptr<SceneNode>>& Scene::getNodeList() noexcept
     {
         return m_Nodes;
     }
 
-    std::list<Light*>& Scene::getLightList()
+    std::list<std::shared_ptr<Light>>& Scene::getLightList() noexcept
     {
         return m_Lights;
     }
 
-    std::list<Camera*>& Scene::getCameraList()
+    std::list<std::shared_ptr<Camera>>& Scene::getCameraList() noexcept
     {
         return m_Cameras;
     }
 
-    Camera* Scene::getCamera() const
+    std::shared_ptr<Camera> Scene::getCamera() const noexcept
     {
         for (auto camera : m_Cameras)
         {
@@ -116,19 +125,14 @@ namespace annileen
     Scene::Scene()
     {
         //m_Camera = new Camera(60.0f, 0.1f, 300.0f);
-        m_Root = new SceneNode("Root");
+        m_Root = std::make_shared<SceneNode>("Root");
     }
 
     Scene::~Scene()
     {
-        delete m_Skybox;
-        
-        for(auto sceneNode : m_Nodes)
-        {
-            delete sceneNode;
-        }
-
-        delete m_Root;
+        m_Nodes.clear();
+        m_Cameras.clear();
+        m_Lights.clear();
 
         // TODO: remove
         std::cout << "Scene destroyed." << std::endl;

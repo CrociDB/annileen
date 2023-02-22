@@ -2,7 +2,6 @@ module;
 
 #include <unordered_map>
 #include <list>
-#include <engine/forward_decl.h>
 #include <type_traits>
 #include <memory>
 #include <iostream>
@@ -32,20 +31,20 @@ export namespace annileen
         static SceneManager* getInstance();
 
         //void setScene(Scene* scene);
-        std::shared_ptr<Scene> getScene() const;
+        std::shared_ptr<Scene> getScene() const noexcept;
 
-        void setParentScene(std::shared_ptr<Scene> scene, SceneNode* sceneNode);
-        void destroySceneNode(std::shared_ptr<Scene> scene, SceneNode* sceneNode);
+        void setParentScene(std::shared_ptr<Scene> scene, std::shared_ptr<SceneNode> sceneNode);
+        void destroySceneNode(std::shared_ptr<Scene> scene, std::shared_ptr<SceneNode> sceneNode);
 
-        void addCameraModule(Scene* scene, Camera* camera);
-        void addLightModule(Scene* scene, Light* light);
-        void removeCameraModule(Scene* scene, Camera* camera);
-        void removeLightModule(Scene* scene, Light* light);
+        void addCameraModule(std::shared_ptr<Scene> scene, std::shared_ptr<Camera> camera);
+        void addLightModule(std::shared_ptr<Scene> scene, std::shared_ptr<Light> light);
+        void removeCameraModule(std::shared_ptr<Scene> scene, std::shared_ptr<Camera> camera);
+        void removeLightModule(std::shared_ptr<Scene> scene, std::shared_ptr<Light> light);
 
         template <class T> std::shared_ptr<T> createScene();
-        template <class T> T* getModule(SceneNode* sceneNode) const;
-        template <class T> T* addModule(Scene* scene, SceneNode* sceneNode);
-        template <class T> bool removeModule(Scene* scene, SceneNode* sceneNode);    
+        template <class T> std::shared_ptr<T> getModule(std::shared_ptr<SceneNode> sceneNode) const;
+        template <class T> std::shared_ptr<T> addModule(std::shared_ptr<Scene> scene, std::shared_ptr<SceneNode> sceneNode);
+        template <class T> bool removeModule(std::shared_ptr<Scene> scene, std::shared_ptr<SceneNode> sceneNode);    
     
     private:
         std::shared_ptr<Scene> m_Scene{ nullptr };
@@ -58,6 +57,12 @@ namespace annileen
 
     SceneManager::~SceneManager()
     {
+        auto sceneNodes = m_Scene->getNodeList();
+        for (auto& sceneNode : sceneNodes)
+        {
+            destroySceneNode(m_Scene, sceneNode);
+        }
+
         // TODO: remove
         std::cout << "SceneManager destroyed" << std::endl;
     }
@@ -81,26 +86,26 @@ namespace annileen
     std::shared_ptr<T> SceneManager::createScene()
     {
         static_assert(std::is_base_of<Scene, T>::value, "T must derive from Scene");        
-        std::shared_ptr<T> newScene = std::make_shared<T>();
+        auto newScene{ std::make_shared<T>() };
         m_Scene = dynamic_pointer_cast<Scene>(newScene);
         return newScene;
     }
 
     template <class T>
-    T* SceneManager::getModule(SceneNode* sceneNode) const
+    std::shared_ptr<T> SceneManager::getModule(std::shared_ptr<SceneNode> sceneNode) const
     {
-        auto moduleIt = sceneNode->m_Modules.find(typeid(T));
+        auto moduleIt{ sceneNode->m_Modules.find(typeid(T)) };
 
         if (moduleIt != sceneNode->m_Modules.end())
         {
-            return static_cast<T*>(moduleIt->second);
+            return static_pointer_cast<T>(moduleIt->second);
         }
 
         return nullptr;
     }
 
     template <class T>
-    T* SceneManager::addModule(Scene* scene, SceneNode* sceneNode)
+    std::shared_ptr<T> SceneManager::addModule(std::shared_ptr<Scene> scene, std::shared_ptr<SceneNode> sceneNode)
     {
         if (!std::is_base_of<SceneNodeModule, T>::value)
         {
@@ -108,7 +113,7 @@ namespace annileen
             return nullptr;
         }
 
-        auto moduleIt = sceneNode->m_Modules.find(typeid(T));
+        auto moduleIt{ sceneNode->m_Modules.find(typeid(T)) };
 
         if (moduleIt != sceneNode->m_Modules.end())
         {
@@ -116,9 +121,9 @@ namespace annileen
             return nullptr;
         }
 
-        T* sceneNodeModule = new T();
+        auto sceneNodeModule{ std::make_shared<T>() };
 
-        sceneNode->m_Modules[typeid(T)] = static_cast<SceneNodeModulePtr>(sceneNodeModule);
+        sceneNode->m_Modules[typeid(T)] = std::static_pointer_cast<SceneNodeModule>(sceneNodeModule);
 
         sceneNodeModule->m_SceneNode = sceneNode;
 
@@ -138,9 +143,9 @@ namespace annileen
     }
 
     template <class T>
-    bool SceneManager::removeModule(Scene* scene, SceneNode* sceneNode)
+    bool SceneManager::removeModule(std::shared_ptr<Scene> scene, std::shared_ptr<SceneNode> sceneNode)
     {
-        auto moduleIt = sceneNode->m_Modules.find(typeid(T));
+        auto moduleIt{ sceneNode->m_Modules.find(typeid(T)) };
 
         if (moduleIt == sceneNode->m_Modules.end())
         {
@@ -148,7 +153,7 @@ namespace annileen
             return false;
         }
 
-        T* sceneNodeModule = static_cast<T*>(moduleIt->second);
+        auto sceneNodeModule{ std::static_pointer_cast<T>(moduleIt->second) };
 
         if (sceneNodeModule != nullptr)
         {
@@ -165,9 +170,6 @@ namespace annileen
                     removeLightModule(scene, sceneNodeModule);
                 }
             }
-
-            delete sceneNodeModule;
-            sceneNodeModule = nullptr;
         }
 
         sceneNode->m_Modules.erase(moduleIt);
@@ -180,12 +182,12 @@ namespace annileen
         m_Scene = scene;
     }*/
 
-    std::shared_ptr<Scene> SceneManager::getScene() const
+    std::shared_ptr<Scene> SceneManager::getScene() const noexcept
     {
         return m_Scene;
     }
 
-    void SceneManager::setParentScene(std::shared_ptr<Scene> scene, SceneNode* sceneNode)
+    void SceneManager::setParentScene(std::shared_ptr<Scene> scene, std::shared_ptr<SceneNode> sceneNode)
     {
         //TODO: doesnt make sense because we need to add support to multiple scenes.
         if (scene != nullptr)
@@ -200,7 +202,7 @@ namespace annileen
         }
     }
 
-    void SceneManager::destroySceneNode(std::shared_ptr<Scene> scene, SceneNode* sceneNode)
+    void SceneManager::destroySceneNode(std::shared_ptr<Scene> scene, std::shared_ptr<SceneNode> sceneNode)
     {
         if (scene != nullptr)
         {
@@ -219,7 +221,7 @@ namespace annileen
 
         for (auto moduleIt : sceneNode->m_Modules)
         {
-            SceneNodeModulePtr sceneNodeModule = moduleIt.second;
+            auto sceneNodeModule{ moduleIt.second };
 
             if (sceneNodeModule != nullptr)
             {
@@ -227,47 +229,39 @@ namespace annileen
                 {
                     if (moduleIt.first == typeid(Camera))
                     {
-                        Camera* camera = static_cast<Camera*>(sceneNodeModule);
+                        auto camera{ static_pointer_cast<Camera>(sceneNodeModule) };
                         scene->m_Cameras.remove(camera);
-                        camera = nullptr;
                     }
                     else if (moduleIt.first == typeid(Light))
                     {
-                        Light* light = static_cast<Light*>(sceneNodeModule);
+                        auto light{ static_pointer_cast<Light>(sceneNodeModule) };
                         scene->m_Lights.remove(light);
-                        light = nullptr;
                     }
                 }
-
-                delete sceneNodeModule;
-                sceneNodeModule = nullptr;
             }
         }
 
         sceneNode->deParent();
         sceneNode->m_Modules.clear();
         sceneNode->m_Parent = nullptr;
-
-        delete sceneNode;
-        sceneNode = nullptr;
     }
 
-    void SceneManager::addCameraModule(Scene* scene, Camera* camera)
+    void SceneManager::addCameraModule(std::shared_ptr<Scene> scene, std::shared_ptr<Camera> camera)
     {
         scene->m_Cameras.push_back(camera);
     }
 
-    void SceneManager::addLightModule(Scene* scene, Light* light)
+    void SceneManager::addLightModule(std::shared_ptr<Scene> scene, std::shared_ptr<Light> light)
     {
         scene->m_Lights.push_back(light);
     }
 
-    void SceneManager::removeCameraModule(Scene* scene, Camera* camera)
+    void SceneManager::removeCameraModule(std::shared_ptr<Scene> scene, std::shared_ptr<Camera> camera)
     {
         scene->m_Cameras.remove(camera);
     }
 
-    void SceneManager::removeLightModule(Scene* scene, Light* light)
+    void SceneManager::removeLightModule(std::shared_ptr<Scene> scene, std::shared_ptr<Light> light)
     {
         scene->m_Lights.remove(light);
     }

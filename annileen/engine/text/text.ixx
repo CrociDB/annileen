@@ -11,7 +11,7 @@ export module text;
 
 import serviceprovider;
 import utils;
-import scenenodemodule;
+import scenenode;
 
 export namespace annileen
 {

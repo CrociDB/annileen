@@ -1,7 +1,7 @@
 module;
 
 #include <tuple>
-#include <engine/forward_decl.h>
+#include <memory>
 #include <engine/core/logger.h>
 #include <glm.hpp>
 
@@ -18,11 +18,11 @@ export namespace annileen
 	class ApplicationEditor : public Application
 	{
 	private:
-		EditorGui* m_EditorGui;
-		Camera* m_EditorCamera;
+		std::unique_ptr<EditorGui> m_EditorGui;
+		std::shared_ptr<Camera> m_EditorCamera;
 
-		virtual void initializeEditorGui(std::shared_ptr<Scene> scene);
-		virtual void editorUpdate(std::shared_ptr<Scene> scene, float deltaTime);
+		virtual void initializeEditorGui(const std::shared_ptr<Scene>& scene);
+		virtual void editorUpdate(const std::shared_ptr<Scene>& scene, float deltaTime);
 
 	protected:
 		void render() override;
@@ -40,24 +40,20 @@ namespace annileen
 {
 	ApplicationEditor::ApplicationEditor() : showEditorGui(true), m_EditorCamera(nullptr)
 	{
-		m_EditorGui = new EditorGui();
+		m_EditorGui = std::make_unique<EditorGui>();
 	}
 
 	ApplicationEditor::~ApplicationEditor()
 	{
-		if (m_EditorGui != nullptr)
-		{
-			delete m_EditorGui;
-		}
 	}
 
-	void ApplicationEditor::initializeEditorGui(std::shared_ptr<Scene> scene)
+	void ApplicationEditor::initializeEditorGui(const std::shared_ptr<Scene>& scene)
 	{
 		m_EditorGui->initialize(m_Engine);
 		
-		SceneNodePtr cameraNode = scene->createNode("Editor Camera");
+		auto cameraNode = scene->createNode("Editor Camera");
 		cameraNode->m_Internal = true;
-		m_EditorCamera = SceneManager::getInstance()->addModule<Camera>(scene.get(), cameraNode);
+		m_EditorCamera = SceneManager::getInstance()->addModule<Camera>(scene, cameraNode);
 		m_EditorCamera->fieldOfView = 60.0f;
 		m_EditorCamera->nearClip = 0.1f;
 		m_EditorCamera->farClip = 300.0f;
@@ -68,7 +64,7 @@ namespace annileen
 		ANNILEEN_LOG_INFO(LoggingChannel::General, "Initialized Editor GUI");	 	
 	}
 
-	void ApplicationEditor::editorUpdate(std::shared_ptr<Scene> scene, float deltaTime)
+	void ApplicationEditor::editorUpdate(const std::shared_ptr<Scene>& scene, float deltaTime)
 	{
 		if (m_EditorGui->m_Mode == EditorGui::Mode::Game)
 		{
@@ -87,7 +83,7 @@ namespace annileen
 			ServiceProvider::getAssetManager()->updateAssetWatcher();
 		}
 
-		if (m_EditorGui->m_RenderSkybox && scene->getSkybox() != nullptr)
+		if (m_EditorGui->m_RenderSkybox && scene->getSkybox().get() != nullptr)
 			m_EditorCamera->clearType = CameraClearType::CameraClearSkybox;
 		else
 			m_EditorCamera->clearType = CameraClearType::CameraClearColor;

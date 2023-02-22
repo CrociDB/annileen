@@ -5,7 +5,7 @@ module;
 export module light;
 
 import transform;
-import scenenodemodule;
+import scenenode;
 
 export namespace annileen
 {
@@ -28,6 +28,4 @@ export namespace annileen
         LightType type;
         float intensity;
     };
-
-    typedef Light* LightPtr;
 }

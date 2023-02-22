@@ -2,22 +2,20 @@ module;
 
 #include <iostream>
 #include <vector>
-#include <engine/forward_decl.h>
 
 export module model;
 
-import scenenodemodule;
+import scenenode;
 import mesh;
 import material;
 
 export namespace annileen
 {
-
 	class Model final : public SceneNodeModule
 	{
 	public:	
 		Model();
-		~Model();
+		virtual ~Model();
 
 		void init(std::shared_ptr<MeshGroup> meshGroup, std::shared_ptr<Material> material);
 		void setMeshGroup(std::shared_ptr<MeshGroup> meshGroup);

@@ -1,13 +1,14 @@
 module;
 
 #include <iostream>
+#include <memory>
 #include <bx/math.h>
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 #include <bgfx/bgfx.h>
+#include <bimg/bimg.h>
 
-#include <engine/forward_decl.h>
 #include <engine/core/logger.h>
 
 export module renderer;
@@ -28,6 +29,7 @@ import camera;
 import scenenode;
 import utils;
 import texture;
+import model;
 
 export namespace annileen
 {
@@ -46,41 +48,41 @@ export namespace annileen
         const bgfx::Caps* m_Capabilities{ nullptr };
         const bgfx::ViewId m_ViewId{ 0 };
 
-        int m_ScreenWidth{ 0 };
-        int m_ScreenHeight{ 0 };
-
-        std::unique_ptr<Shadow> m_Shadow{ nullptr };
-
-        RenderView* m_SceneRenderView;
-        RenderView* m_ShadowRenderView;
-        RenderView* m_SkyboxRenderView;
-        RenderView* m_UIRenderView;
-
-        void initializeShadows();
-
-        void renderSkybox(bgfx::ViewId viewId, Camera* camera, Skybox* skybox);
-        void renderSceneNode(bgfx::ViewId viewId, ModelPtr model, std::shared_ptr<Material> material);
-
     public:
-        void init(int screenWidth, int screenHeight);
-
-        void render(std::shared_ptr<Scene> scene, Camera* camera);
-
-        void initFrame(Scene* scene);
-
-        const bgfx::Caps* getCapabilities() const;
-
-        bool useShadows{ false };
-
         Renderer() = default;
         ~Renderer()
         {
             //TODO: remove
             std::cout << "Renderer destroyed." << std::endl;
         };
+
+    public:
+        void init(int screenWidth, int screenHeight);
+        void render(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Camera>& camera);
+        void initFrame(const std::shared_ptr<Scene>& scene);
+        const bgfx::Caps* getCapabilities() const noexcept;
+
+    private:
+        void initializeShadows();
+
+        void renderSkybox(bgfx::ViewId viewId, const std::shared_ptr<Camera>& camera, const std::shared_ptr<Skybox>& skybox);
+        void renderSceneNode(bgfx::ViewId viewId, const std::shared_ptr<Model>& model, const std::shared_ptr<Material>& material);
+   
+    public:
+        bool useShadows{ false };
+
+    private:
+        int m_ScreenWidth{ 0 };
+        int m_ScreenHeight{ 0 };
+
+        std::unique_ptr<Shadow> m_Shadow{ nullptr };
+
+        RenderView* m_SceneRenderView{ nullptr };
+        RenderView* m_ShadowRenderView{ nullptr };
+        RenderView* m_SkyboxRenderView{ nullptr };
+        RenderView* m_UIRenderView{ nullptr };
     };
 }
-
 
 namespace annileen
 {
@@ -99,8 +101,8 @@ namespace annileen
         // compare less equal feature is supported.
         m_Shadow->useShadowSampler = 0 != (m_Capabilities->supported & BGFX_CAPS_TEXTURE_COMPARE_LEQUAL);;
 
-        auto shader = ServiceProvider::getAssetManager()->getShader("sms_shadow");
-        auto shaderPass = std::make_shared<ShaderPass>();
+        auto shader{ ServiceProvider::getAssetManager()->getShader("sms_shadow") };
+        auto shaderPass{ std::make_shared<ShaderPass>() };
 
         shaderPass->init(shader);
         shaderPass->setState(0
@@ -114,11 +116,11 @@ namespace annileen
         m_Shadow->material->setName("ShadowMaterial");
         m_Shadow->material->addShaderPass(shaderPass);
 
-        bgfx::TextureHandle fbtextures[] =
+        bgfx::TextureHandle fbtextures[]
         {
             bgfx::createTexture2D(
-                  uint16_t(ServiceProvider::getSettings()->getData()->shadows.shadowMapSize)
-                , uint16_t(ServiceProvider::getSettings()->getData()->shadows.shadowMapSize)
+                  static_cast<uint16_t>(ServiceProvider::getSettings()->getData()->shadows.shadowMapSize)
+                , static_cast<uint16_t>(ServiceProvider::getSettings()->getData()->shadows.shadowMapSize)
                 , false
                 , 1
                 , bgfx::TextureFormat::D16
@@ -131,8 +133,8 @@ namespace annileen
         bgfx::TextureInfo textureInfo;
         bgfx::calcTextureSize(
             textureInfo,
-            uint16_t(ServiceProvider::getSettings()->getData()->shadows.shadowMapSize),
-            uint16_t(ServiceProvider::getSettings()->getData()->shadows.shadowMapSize),
+            static_cast<uint16_t>(ServiceProvider::getSettings()->getData()->shadows.shadowMapSize),
+            static_cast<uint16_t>(ServiceProvider::getSettings()->getData()->shadows.shadowMapSize),
             1,
             false,
             false,
@@ -165,9 +167,9 @@ namespace annileen
         m_UIRenderView = RenderView::getRenderView(RenderView::UI);
     }
 
-    void Renderer::render(std::shared_ptr<Scene> scene, Camera* camera)
+    void Renderer::render(const std::shared_ptr<Scene>& scene, const std::shared_ptr<Camera>& camera)
     {
-        Light* mainLightForShadows = nullptr;
+        std::shared_ptr<Light> mainLightForShadows{ nullptr };
         
         // Set light properties and get first light that generate shadows to be main light for shadows.
         for (const auto& light : scene->getLightList())
@@ -200,12 +202,12 @@ namespace annileen
             else
             {
                 //TODO: This has to be tested as soon as we get other type of lights
-                glm::vec3 at = mainLightForShadows->getTransform().position() + mainLightForShadows->getTransform().getForward();
+                auto at{ mainLightForShadows->getTransform().position() + mainLightForShadows->getTransform().getForward() };
                 lightView = glm::lookAt(mainLightForShadows->getTransform().position(), at, mainLightForShadows->getTransform().getUp());
             }
             
-            const float area = 50.0f;
-            glm::mat4 lightProj = glm::ortho(-area, area, -area, area, -100.0f, 100.0f);
+            const float area{ 50.0f };
+            auto lightProj{ glm::ortho(-area, area, -area, area, -100.0f, 100.0f) };
 
             // Setup shadow
             bgfx::setViewRect(m_ShadowRenderView->getViewId(), 0, 0, 
@@ -217,10 +219,10 @@ namespace annileen
             // Clear backbuffer and shadowmap framebuffer at beginning.
             bgfx::setViewClear(m_ShadowRenderView->getViewId(), BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
 
-            const float sy = m_Capabilities->originBottomLeft ? 0.5f : -0.5f;
-            const float sz = m_Capabilities->homogeneousDepth ? 0.5f : 1.0f;
-            const float tz = m_Capabilities->homogeneousDepth ? 0.5f : 0.0f;
-            const glm::mat4 mtxCrop =
+            const float sy{ m_Capabilities->originBottomLeft ? 0.5f : -0.5f };
+            const float sz{ m_Capabilities->homogeneousDepth ? 0.5f : 1.0f };
+            const float tz{ m_Capabilities->homogeneousDepth ? 0.5f : 0.0f };
+            const glm::mat4 mtxCrop
             {
                 0.5f, 0.0f, 0.0f, 0.0f,
                 0.0f,   sy, 0.0f, 0.0f,
@@ -230,9 +232,9 @@ namespace annileen
 
             mtxShadow = mtxCrop * lightProj * lightView;
 
-            for (auto sceneNode : scene->getNodeList())
+            for (auto& sceneNode : scene->getNodeList())
             {
-                ModelPtr model = SceneManager::getInstance()->getModule<Model>(sceneNode);
+                auto model{ SceneManager::getInstance()->getModule<Model>(sceneNode) };
 
                 if (model == nullptr || !sceneNode->getActive() || !model->enabled) continue;
 
@@ -264,9 +266,9 @@ namespace annileen
 
         Uniform::setVec3Uniform("u_viewPos", camera->getTransform().position());
 
-        for (auto sceneNode : scene->getNodeList())
+        for (auto& sceneNode : scene->getNodeList())
         {
-            ModelPtr model = SceneManager::getInstance()->getModule<Model>(sceneNode);
+            auto model{ SceneManager::getInstance()->getModule<Model>(sceneNode) };
 
             if (model == nullptr || model->getMeshGroup() == nullptr || !sceneNode->getActive() || !model->enabled) continue;
 
@@ -280,13 +282,13 @@ namespace annileen
             renderSceneNode(m_SceneRenderView->getViewId(), model, model->getMaterial());
         }
 
-        const bx::Vec3 at = { 0.0f, 0.0f,  0.0f };
-        const bx::Vec3 eye = { 0.0f, 0.0f, -1.0f };
+        const bx::Vec3 at { 0.0f, 0.0f,  0.0f };
+        const bx::Vec3 eye { 0.0f, 0.0f, -1.0f };
 
         float view[16];
         bx::mtxLookAt(view, eye, at);
 
-        const float centering = 0.5f;
+        const float centering{ 0.5f };
         
         float ortho[16];
         bx::mtxOrtho(
@@ -303,9 +305,9 @@ namespace annileen
         bgfx::setViewTransform(m_UIRenderView->getViewId(), view, ortho);
         bgfx::setViewRect(m_UIRenderView->getViewId(), 0, 0, m_ScreenWidth, m_ScreenHeight);
         
-        for (auto sceneNode : scene->getNodeList())
+        for (auto& sceneNode : scene->getNodeList())
         {
-            TextPtr text = SceneManager::getInstance()->getModule<Text>(sceneNode);
+            auto text{ SceneManager::getInstance()->getModule<Text>(sceneNode) };
 
             if (!sceneNode->getActive() || text == nullptr || !text->enabled ) continue;
 
@@ -327,26 +329,26 @@ namespace annileen
         }
     }
 
-    void Renderer::initFrame(Scene* scene)
+    void Renderer::initFrame(const std::shared_ptr<Scene>& scene)
     {
         scene->getCamera()->updateMatrices(m_ScreenWidth, m_ScreenHeight);
     }
 
-    void Renderer::renderSkybox(bgfx::ViewId viewId, Camera* camera, Skybox* skybox)
+    void Renderer::renderSkybox(bgfx::ViewId viewId, const std::shared_ptr<Camera>& camera, const std::shared_ptr<Skybox>& skybox)
     {
         skybox->getModel()->getMaterial()->submitUniforms();
 
-        auto meshGroup = skybox->getModel()->getMeshGroup();
+        auto meshGroup{ skybox->getModel()->getMeshGroup() };
         for (auto& mesh : meshGroup->m_Meshes)
         {
             bgfx::setVertexBuffer(0, mesh->getVertexBuffer());
             bgfx::setIndexBuffer(mesh->getIndexBuffer());
       
-            std::shared_ptr<Material> material = skybox->getModel()->getMaterial();
+            auto material{ skybox->getModel()->getMaterial() };
 
-            for (int shaderPassId = 0; shaderPassId < material->getNumberOfShaderPasses(); ++shaderPassId)
+            for (int shaderPassId{ 0 }; shaderPassId < material->getNumberOfShaderPasses(); ++shaderPassId)
             {
-                std::shared_ptr<ShaderPass> shaderPass = material->getShaderPassAt(shaderPassId);
+                auto shaderPass{ material->getShaderPassAt(shaderPassId) };
             
                 bgfx::setState(shaderPass->getState());
                 bgfx::submit(viewId, shaderPass->getShader()->getProgram());
@@ -354,11 +356,11 @@ namespace annileen
         }
     }
 
-    void Renderer::renderSceneNode(bgfx::ViewId viewId, ModelPtr model, std::shared_ptr<Material> material)
+    void Renderer::renderSceneNode(bgfx::ViewId viewId, const std::shared_ptr<Model>& model, const std::shared_ptr<Material>& material)
     {
         material->submitUniforms();
 
-        auto meshGroup = model->getMeshGroup();
+        auto meshGroup{ model->getMeshGroup() };
 
         if (meshGroup == nullptr)
         {
@@ -372,9 +374,9 @@ namespace annileen
             if (mesh->hasIndices())
                 bgfx::setIndexBuffer(mesh->getIndexBuffer());
         
-            for (int shaderPassId = 0; shaderPassId < material->getNumberOfShaderPasses(); ++shaderPassId)
+            for (int shaderPassId{ 0 }; shaderPassId < material->getNumberOfShaderPasses(); ++shaderPassId)
             {
-                std::shared_ptr<ShaderPass> shaderPass = material->getShaderPassAt(shaderPassId);
+                auto shaderPass{ material->getShaderPassAt(shaderPassId) };
 
                 bgfx::setState(shaderPass->getState());
                 bgfx::submit(viewId, shaderPass->getShader()->getProgram());
@@ -382,7 +384,7 @@ namespace annileen
         }
     }
 
-    const bgfx::Caps* Renderer::getCapabilities() const
+    const bgfx::Caps* Renderer::getCapabilities() const noexcept
     {
         return m_Capabilities;
     } 

@@ -10,7 +10,6 @@ module;
 #include <memory>
 #include <bgfx/bgfx.h>
 #include <glm.hpp>
-#include <engine/forward_decl.h>
 #include <PerlinNoise.hpp>
 
 export module gamescene;
@@ -33,21 +32,20 @@ using namespace annileen;
 export const int GAME_CHUNK_RADIUS = 4;
 export const int GAME_CHUNK_MAX = (GAME_CHUNK_RADIUS * GAME_CHUNK_RADIUS * 4) + (GAME_CHUNK_RADIUS * 10);
 
-export class GameScene : public Scene
+export class GameScene : public Scene, public std::enable_shared_from_this<GameScene>
 {
 private:
     std::shared_ptr<Material> m_BlockMaterial;
-	std::vector<Chunk*> m_Chunks;
+	std::vector<std::shared_ptr<Chunk>> m_Chunks;
 	std::deque<uint64_t> m_ChunksToCreate;
-    std::unordered_map<uint64_t, Chunk*> m_AvailableChunks;
+    std::unordered_map<uint64_t, std::shared_ptr<Chunk>> m_AvailableChunks;
 
     siv::PerlinNoise* m_Noise;
 
     void createChunkAt(int x, int z);
     void removeFarthestChunk();
 
-    void addChunk(Chunk* chunk);
-    void removeChunk(Chunk* chunk);
+    void addChunk(std::shared_ptr<Chunk> chunk);
     
 public:
     void buildMap();
@@ -94,23 +92,25 @@ void GameScene::buildMap()
     fog.enabled = 1.0f;
     fog.power = 1.3f;
 
-    SceneNodePtr lightNode = createNode("Light");
-    Light* light = SceneManager::getInstance()->addModule<Light>(this, lightNode);
+    auto scene = shared_from_this();
+
+    auto lightNode = createNode("Light");
+    auto light = SceneManager::getInstance()->addModule<Light>(scene, lightNode);
 
     light->color = glm::vec3(1.0f, 1.0f, .8f);
     light->type = LightType::Directional;
     light->intensity = 0.8f;
     light->getTransform().rotate(glm::vec3(-40.0f, 0.0f, -40.0f));
 
-    SceneNodePtr cameraNode = createNode("Camera");
+    auto cameraNode = createNode("Camera");
 
-    Camera* camera = SceneManager::getInstance()->addModule<Camera>(this, cameraNode);
+    auto camera = SceneManager::getInstance()->addModule<Camera>(scene, cameraNode);
     camera->fieldOfView = 60.0f;
     camera->nearClip = 0.1f;
     camera->farClip = 300.0f;
 
-    SceneNodePtr textNode = createNode("Text");
-    Text* text = SceneManager::getInstance()->addModule<Text>(this, textNode);
+    auto textNode = createNode("Text");
+    auto text = SceneManager::getInstance()->addModule<Text>(scene, textNode);
     text->setStatic(true);
     text->setSdf(true);
 
@@ -122,8 +122,8 @@ void GameScene::buildMap()
     text->setStyle(Text::TextStyle::Background);
     text->setText("This is a Annileen\nUsing SDF");
 
-    SceneNodePtr textNode2 = createNode("Text2");
-    Text* text2 = SceneManager::getInstance()->addModule<Text>(this, textNode2);
+    auto textNode2 = createNode("Text2");
+    auto text2 = SceneManager::getInstance()->addModule<Text>(scene, textNode2);
 
     text2->setFont(ServiceProvider::getAssetManager()->getFont("bleeding_cowboys.ttf")->getHandle());
     text2->setScreenPosition(screenWidth - 200.0f, 300.0f);
@@ -132,7 +132,7 @@ void GameScene::buildMap()
     text2->setText("OH YEAH");
 
     auto cubemap = ServiceProvider::getAssetManager()->getCubemap("skybox.toml");
-    auto skybox = new Skybox(cubemap);
+    auto skybox = std::make_shared<Skybox>(cubemap);
     this->setSkybox(skybox);
 
     getCamera()->clearType = CameraClearType::CameraClearSkybox;
@@ -142,11 +142,11 @@ void GameScene::buildMap()
 
 void GameScene::createChunkAt(int x, int z)
 {
-    Chunk* chunk = new Chunk(x, z);
+    auto chunk = std::make_shared<Chunk>(x, z);
     chunk->setMaterial(m_BlockMaterial);
     chunk->setNoise(m_Noise);
     chunk->generateGrid();
-    m_AvailableChunks.insert(std::pair<uint64_t, Chunk*>((uint32_t)x | (((uint64_t)z) << 32), chunk));
+    m_AvailableChunks.insert(std::pair<uint64_t, std::shared_ptr<Chunk>>((uint32_t)x | (((uint64_t)z) << 32), chunk));
 }
 
 void GameScene::removeFarthestChunk()
@@ -164,7 +164,7 @@ void GameScene::removeFarthestChunk()
             continue;
         }
 
-        auto d = glm::abs(glm::length(cameraPos - c.second->getSceneNode(this)->getTransform().position()));
+        auto d = glm::abs(glm::length(cameraPos - c.second->getSceneNode(shared_from_this())->getTransform().position()));
         if (dist < d)
         {
             k = true;
@@ -177,24 +177,13 @@ void GameScene::removeFarthestChunk()
     {
         auto chunk = m_AvailableChunks.at(ikill);
         m_AvailableChunks.erase(ikill);
-        removeChunk(chunk);
-        delete chunk;
     }
 }
 
-void GameScene::addChunk(Chunk* chunk)
+void GameScene::addChunk(std::shared_ptr<Chunk> chunk)
 {
     // Get it, so it gets built
-    chunk->getSceneNode(this);
-}
-
-void GameScene::removeChunk(Chunk* chunk)
-{
-    SceneNode* node = chunk->getSceneNode(this);
-    if (node != nullptr)
-    {
-        delete node;
-    }
+    chunk->getSceneNode(shared_from_this());
 }
 
 void GameScene::start()

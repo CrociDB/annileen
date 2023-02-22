@@ -4,12 +4,10 @@ module;
 #include <gtc/matrix_transform.hpp>
 #include <gtc/quaternion.hpp>
 #include <glm.hpp>
-#include <engine/forward_decl.h>
 
 export module camera;
 
-import transform;
-import scenenodemodule;
+import scenenode;
 
 export namespace annileen
 {
@@ -61,7 +59,7 @@ export namespace annileen
         float* getViewProjectionMatrixFloatArray();
 
         Camera();
-        ~Camera();
+        virtual ~Camera();
     };
 
 }

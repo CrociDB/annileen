@@ -19,8 +19,6 @@ module;
 #endif
 #include <GLFW/glfw3native.h>
 
-#include "engine/forward_decl.h"
-
 export module application;
 
 import text;
@@ -38,18 +36,16 @@ export namespace annileen
 	{
 	public:
 		// ApplicationEditor has to be able to inject the editor gui stuff
-	#ifdef _ANNILEEN_COMPILER_EDITOR
 		friend class ApplicationEditor;
-	#endif
-
+	
 	public:
 		Application() = default;
 		virtual ~Application();
 
 	// ApplicationEditor has to be able to inject the editor gui stuff
 	#ifdef _ANNILEEN_COMPILER_EDITOR
-		virtual void initializeEditorGui(std::shared_ptr<Scene> scene) = 0;
-		virtual void editorUpdate(std::shared_ptr<Scene> scene, float deltaTime) = 0;
+		virtual void initializeEditorGui(const std::shared_ptr<Scene>& scene) = 0;
+		virtual void editorUpdate(const std::shared_ptr<Scene>& scene, float deltaTime) = 0;
 	#endif
 
 	private:
@@ -69,9 +65,9 @@ export namespace annileen
 	private:
 		Engine* m_Engine{ nullptr };
 		std::string m_ApplicationName{ "" };
-		Camera* m_NoCamera{ nullptr };
+		std::weak_ptr<Camera> m_NoCamera{};
 		// This is temporary, the scenenode should be activated/deactivated instead.
-		Text* m_NoCameraText{ nullptr };
+		std::weak_ptr<Text> m_NoCameraText{};
 	};
 }
 
@@ -109,25 +105,34 @@ namespace annileen
 		initializeEditorGui(scene);
 #endif
 
-		SceneNodePtr cameraNode = scene->createNode("No camera");
+		auto cameraNode = scene->createNode("No camera");
 		cameraNode->m_Internal = true;
-		m_NoCamera = SceneManager::getInstance()->addModule<Camera>(scene.get(), cameraNode);
-		m_NoCamera->fieldOfView = 60.0f;
-		m_NoCamera->nearClip = 0.01f;
-		m_NoCamera->farClip = 0.02f;
-		m_NoCamera->getTransform().translate(glm::vec3(-5.0f, 0.0f, -5.0f));
-		m_NoCamera->setForward(glm::vec3(0, 0, 1));
-		m_NoCamera->clearColor = glm::vec3(0, 0, 0);
+		m_NoCamera = SceneManager::getInstance()->addModule<Camera>(scene, cameraNode);
+		auto noCamera = m_NoCamera.lock();
+		if (noCamera != nullptr)
+		{
+			noCamera->fieldOfView = 60.0f;
+			noCamera->nearClip = 0.01f;
+			noCamera->farClip = 0.02f;
+			noCamera->getTransform().translate(glm::vec3(-5.0f, 0.0f, -5.0f));
+			noCamera->setForward(glm::vec3(0, 0, 1));
+			noCamera->clearColor = glm::vec3(0, 0, 0);
+		}
 		cameraNode->flags = SceneNodeFlags_Hide;
 
-		SceneNodePtr textNode = scene->createNode("No camera text");
+		auto textNode = scene->createNode("No camera text");
 		textNode->m_Internal = true;
-		m_NoCameraText = SceneManager::getInstance()->addModule<Text>(scene.get(), textNode);
-		m_NoCameraText->setStatic(true);
-		m_NoCameraText->setScreenPosition(getEngine()->getWidth() / 2.0f - 100.0f, getEngine()->getHeight() / 2.0f);
-		m_NoCameraText->setTextColor(glm::vec3(1, 1, 1));
-		m_NoCameraText->setStyle(Text::TextStyle::Normal);
-		m_NoCameraText->setText("No Camera");
+		m_NoCameraText = SceneManager::getInstance()->addModule<Text>(scene, textNode);
+		auto noCameraText = m_NoCameraText.lock();
+		
+		if (noCameraText != nullptr)
+		{
+			noCameraText->setStatic(true);
+			noCameraText->setScreenPosition(getEngine()->getWidth() / 2.0f - 100.0f, getEngine()->getHeight() / 2.0f);
+			noCameraText->setTextColor(glm::vec3(1, 1, 1));
+			noCameraText->setStyle(Text::TextStyle::Normal);
+			noCameraText->setText("No Camera");
+		}
 		textNode->setParent(cameraNode);
 
 		cameraNode->setActive(false);
@@ -167,12 +172,13 @@ namespace annileen
 
 	void Application::render()
 	{
-		Camera* camera{ SceneManager::getInstance()->getScene()->getCamera() };
-		if (camera == nullptr)
+		auto camera{ SceneManager::getInstance()->getScene()->getCamera() };
+		auto noCamera = m_NoCamera.lock();
+		if (camera == nullptr && noCamera != nullptr)
 		{
-			m_NoCamera->getSceneNode()->setActive(true);
-			getEngine()->render(m_NoCamera);
-			m_NoCamera->getSceneNode()->setActive(false);
+			noCamera->getSceneNode()->setActive(true);
+			getEngine()->render(noCamera);
+			noCamera->getSceneNode()->setActive(false);
 		}
 		else
 		{
