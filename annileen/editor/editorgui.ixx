@@ -7,6 +7,7 @@ module;
 #include <list>
 #include <vector>
 #include <memory>
+#include <iostream>
 #include <dear-imgui/imgui.h>
 #include <imgui-utils/imgui_stdlib.h>
 #include <engine/core/logger.h>
@@ -76,9 +77,11 @@ export namespace annileen
 
 		friend class ApplicationEditor;
 
+	public:
 		EditorGui() = default;
-		~EditorGui() = default;
-	
+		~EditorGui();
+
+	private:
 		void initialize(Engine* engine);
 		void processInput(std::shared_ptr<Camera> camera, float deltaTime);
 		void render(std::shared_ptr<Scene> scene, std::shared_ptr<Camera> camera, float deltaTime);
@@ -132,6 +135,11 @@ export namespace annileen
 
 namespace annileen
 {
+	EditorGui::~EditorGui()
+	{
+		std::cout << "EditorGUI destroyed." << std::endl;
+	}
+
 	template <class T>
 	void EditorGui::drawNewSceneNodeContextMenu(std::shared_ptr<SceneNode> sceneNode, std::string nodeName)
 	{

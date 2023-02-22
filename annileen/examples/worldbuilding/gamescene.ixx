@@ -36,16 +36,16 @@ export class GameScene : public Scene, public std::enable_shared_from_this<GameS
 {
 private:
     std::shared_ptr<Material> m_BlockMaterial;
-	std::vector<Chunk*> m_Chunks;
+	std::vector<std::shared_ptr<Chunk>> m_Chunks;
 	std::deque<uint64_t> m_ChunksToCreate;
-    std::unordered_map<uint64_t, Chunk*> m_AvailableChunks;
+    std::unordered_map<uint64_t, std::shared_ptr<Chunk>> m_AvailableChunks;
 
     siv::PerlinNoise* m_Noise;
 
     void createChunkAt(int x, int z);
     void removeFarthestChunk();
 
-    void addChunk(Chunk* chunk);
+    void addChunk(std::shared_ptr<Chunk> chunk);
     
 public:
     void buildMap();
@@ -142,11 +142,11 @@ void GameScene::buildMap()
 
 void GameScene::createChunkAt(int x, int z)
 {
-    Chunk* chunk = new Chunk(x, z);
+    auto chunk = std::make_shared<Chunk>(x, z);
     chunk->setMaterial(m_BlockMaterial);
     chunk->setNoise(m_Noise);
     chunk->generateGrid();
-    m_AvailableChunks.insert(std::pair<uint64_t, Chunk*>((uint32_t)x | (((uint64_t)z) << 32), chunk));
+    m_AvailableChunks.insert(std::pair<uint64_t, std::shared_ptr<Chunk>>((uint32_t)x | (((uint64_t)z) << 32), chunk));
 }
 
 void GameScene::removeFarthestChunk()
@@ -177,11 +177,10 @@ void GameScene::removeFarthestChunk()
     {
         auto chunk = m_AvailableChunks.at(ikill);
         m_AvailableChunks.erase(ikill);
-        delete chunk;
     }
 }
 
-void GameScene::addChunk(Chunk* chunk)
+void GameScene::addChunk(std::shared_ptr<Chunk> chunk)
 {
     // Get it, so it gets built
     chunk->getSceneNode(shared_from_this());

@@ -1,7 +1,7 @@
 module;
 
 #include <tuple>
-#include <engine/forward_decl.h>
+#include <memory>
 #include <engine/core/logger.h>
 #include <glm.hpp>
 
@@ -18,7 +18,7 @@ export namespace annileen
 	class ApplicationEditor : public Application
 	{
 	private:
-		EditorGui* m_EditorGui;
+		std::unique_ptr<EditorGui> m_EditorGui;
 		std::shared_ptr<Camera> m_EditorCamera;
 
 		virtual void initializeEditorGui(std::shared_ptr<Scene> scene);
@@ -40,15 +40,11 @@ namespace annileen
 {
 	ApplicationEditor::ApplicationEditor() : showEditorGui(true), m_EditorCamera(nullptr)
 	{
-		m_EditorGui = new EditorGui();
+		m_EditorGui = std::make_unique<EditorGui>();
 	}
 
 	ApplicationEditor::~ApplicationEditor()
 	{
-		if (m_EditorGui != nullptr)
-		{
-			delete m_EditorGui;
-		}
 	}
 
 	void ApplicationEditor::initializeEditorGui(std::shared_ptr<Scene> scene)

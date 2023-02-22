@@ -59,7 +59,7 @@ export namespace annileen
         float* getViewProjectionMatrixFloatArray();
 
         Camera();
-        ~Camera();
+        virtual ~Camera();
     };
 
 }

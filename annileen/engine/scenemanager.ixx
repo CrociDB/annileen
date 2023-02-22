@@ -58,6 +58,12 @@ namespace annileen
 
     SceneManager::~SceneManager()
     {
+        auto sceneNodes = m_Scene->getNodeList();
+        for (auto& sceneNode : sceneNodes)
+        {
+            destroySceneNode(m_Scene, sceneNode);
+        }
+
         // TODO: remove
         std::cout << "SceneManager destroyed" << std::endl;
     }

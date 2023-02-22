@@ -28,6 +28,4 @@ export namespace annileen
         LightType type;
         float intensity;
     };
-
-    typedef Light* LightPtr;
 }

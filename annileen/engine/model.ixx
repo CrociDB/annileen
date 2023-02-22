@@ -15,7 +15,7 @@ export namespace annileen
 	{
 	public:	
 		Model();
-		~Model();
+		virtual ~Model();
 
 		void init(std::shared_ptr<MeshGroup> meshGroup, std::shared_ptr<Material> material);
 		void setMeshGroup(std::shared_ptr<MeshGroup> meshGroup);

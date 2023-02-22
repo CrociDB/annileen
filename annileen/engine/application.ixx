@@ -38,10 +38,8 @@ export namespace annileen
 	{
 	public:
 		// ApplicationEditor has to be able to inject the editor gui stuff
-	#ifdef _ANNILEEN_COMPILER_EDITOR
 		friend class ApplicationEditor;
-	#endif
-
+	
 	public:
 		Application() = default;
 		virtual ~Application();

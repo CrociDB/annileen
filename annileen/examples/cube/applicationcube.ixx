@@ -1,6 +1,7 @@
 module;
 
 #include <tuple>
+#include <iostream>
 #include <unordered_map>
 #include <glm.hpp>
 #include <bgfx/bgfx.h>
@@ -29,7 +30,10 @@ export ANNILEEN_APP_CLASS_DECLARATION(ApplicationCube)
 {
 public:
     ApplicationCube() = default;
-    ~ApplicationCube() = default;
+    ~ApplicationCube()
+    {
+        std::cout << "ApplicationCube destroyed." << std::endl;
+    };
 
 private:
     std::shared_ptr<Scene> init() override;
