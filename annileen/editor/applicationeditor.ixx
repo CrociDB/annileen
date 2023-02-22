@@ -21,8 +21,8 @@ export namespace annileen
 		std::unique_ptr<EditorGui> m_EditorGui;
 		std::shared_ptr<Camera> m_EditorCamera;
 
-		virtual void initializeEditorGui(std::shared_ptr<Scene> scene);
-		virtual void editorUpdate(std::shared_ptr<Scene> scene, float deltaTime);
+		virtual void initializeEditorGui(const std::shared_ptr<Scene>& scene);
+		virtual void editorUpdate(const std::shared_ptr<Scene>& scene, float deltaTime);
 
 	protected:
 		void render() override;
@@ -47,7 +47,7 @@ namespace annileen
 	{
 	}
 
-	void ApplicationEditor::initializeEditorGui(std::shared_ptr<Scene> scene)
+	void ApplicationEditor::initializeEditorGui(const std::shared_ptr<Scene>& scene)
 	{
 		m_EditorGui->initialize(m_Engine);
 		
@@ -64,7 +64,7 @@ namespace annileen
 		ANNILEEN_LOG_INFO(LoggingChannel::General, "Initialized Editor GUI");	 	
 	}
 
-	void ApplicationEditor::editorUpdate(std::shared_ptr<Scene> scene, float deltaTime)
+	void ApplicationEditor::editorUpdate(const std::shared_ptr<Scene>& scene, float deltaTime)
 	{
 		if (m_EditorGui->m_Mode == EditorGui::Mode::Game)
 		{
