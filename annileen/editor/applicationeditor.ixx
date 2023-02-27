@@ -36,6 +36,8 @@ export namespace annileen
 	};
 }
 
+module :private;
+
 namespace annileen
 {
 	ApplicationEditor::ApplicationEditor() : showEditorGui(true), m_EditorCamera(nullptr)

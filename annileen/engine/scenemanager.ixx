@@ -51,41 +51,13 @@ export namespace annileen
     };
 }
 
+// Template implementations
 namespace annileen
 {
-    SceneManager* SceneManager::s_Instance{ nullptr };
-
-    SceneManager::~SceneManager()
-    {
-        auto sceneNodes = m_Scene->getNodeList();
-        for (auto& sceneNode : sceneNodes)
-        {
-            destroySceneNode(m_Scene, sceneNode);
-        }
-
-        // TODO: remove
-        std::cout << "SceneManager destroyed" << std::endl;
-    }
-
-    void SceneManager::destroy()
-    {
-        delete s_Instance;
-    }
-
-    SceneManager* SceneManager::getInstance()
-    {
-        if (s_Instance == nullptr)
-        {
-            s_Instance = new SceneManager();
-        }
-
-        return s_Instance;
-    }
-
     template<class T>
     std::shared_ptr<T> SceneManager::createScene()
     {
-        static_assert(std::is_base_of<Scene, T>::value, "T must derive from Scene");        
+        static_assert(std::is_base_of<Scene, T>::value, "T must derive from Scene");
         auto newScene{ std::make_shared<T>() };
         m_Scene = dynamic_pointer_cast<Scene>(newScene);
         return newScene;
@@ -176,6 +148,42 @@ namespace annileen
 
         return true;
     }
+}
+
+module :private;
+
+namespace annileen
+{
+    SceneManager* SceneManager::s_Instance{ nullptr };
+
+    SceneManager::~SceneManager()
+    {
+        auto sceneNodes = m_Scene->getNodeList();
+        for (auto& sceneNode : sceneNodes)
+        {
+            destroySceneNode(m_Scene, sceneNode);
+        }
+
+        // TODO: remove
+        std::cout << "SceneManager destroyed" << std::endl;
+    }
+
+    void SceneManager::destroy()
+    {
+        delete s_Instance;
+    }
+
+    SceneManager* SceneManager::getInstance()
+    {
+        if (s_Instance == nullptr)
+        {
+            s_Instance = new SceneManager();
+        }
+
+        return s_Instance;
+    }
+
+    
 
     /*void SceneManager::setScene(Scene* scene)
     {

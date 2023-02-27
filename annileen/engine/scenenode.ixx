@@ -98,6 +98,8 @@ export namespace annileen
 	};
 }
 
+module :private;
+
 namespace annileen
 {
 	size_t SceneNode::m_IdCount{ 0 };

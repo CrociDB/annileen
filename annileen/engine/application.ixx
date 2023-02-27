@@ -71,6 +71,8 @@ export namespace annileen
 	};
 }
 
+module :private;
+
 namespace annileen
 {
 	Engine* const Application::getEngine() const

@@ -76,6 +76,8 @@ export namespace annileen
 	}
 }
 
+module :private;
+
 namespace annileen
 {
 	AssetManager::AssetManager(const std::string& assetfile)

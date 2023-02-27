@@ -61,8 +61,9 @@ export namespace annileen
         Camera();
         virtual ~Camera();
     };
-
 }
+
+module :private;
 
 namespace annileen
 {

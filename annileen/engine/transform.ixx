@@ -58,6 +58,8 @@ export namespace annileen
     };
 }
 
+module :private;
+
 namespace annileen
 {
     glm::mat4 Transform::getModelMatrix()

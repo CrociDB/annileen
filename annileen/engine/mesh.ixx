@@ -47,6 +47,8 @@ export namespace annileen
 	};
 }
 
+module :private;
+
 namespace annileen
 {
 	void Mesh::init(const bgfx::Memory* vertexData, bgfx::VertexLayout vertexLayout, const bgfx::Memory* indexData)

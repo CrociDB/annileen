@@ -42,6 +42,8 @@ export namespace annileen
 	};
 }
 
+module :private;
+
 namespace annileen
 {
 	AssetWatcher::AssetWatcher(const std::string& path) :

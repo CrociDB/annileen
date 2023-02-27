@@ -111,6 +111,8 @@ export namespace annileen
     };
 }
 
+module :private;
+
 namespace annileen
 {
     // Initialize static variables

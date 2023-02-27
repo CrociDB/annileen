@@ -37,6 +37,8 @@ export namespace annileen
 	};
 }
 
+module :private;
+
 namespace annileen
 {
 	AssetManager* ServiceProvider::s_AssetManagerService = nullptr;
