@@ -15,3 +15,16 @@
 *.PDF	 diff=astextplain
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
+
+*.sc linguist-language=GLSL
+*.def.sc linguist-language=GLSL
+*.fs linguist-language=GLSL
+*.vs linguist-language=GLSL
+*.sh linguist-language=GLSL
+
+*.bin.h linguist-generated
+*.ttf.h linguist-generated
+
+annileen/engine/core/glfw_imgui_utils.h linguist-generated
+annileen/engine/text/utf8.h linguist-generated
+annileen/examples/worldbuilding/data.h linguist-generated
