@@ -39,6 +39,8 @@ export namespace annileen
 	};
 }
 
+module :private;
+
 namespace annileen
 {
 	File::File(const std::string& name, FileMode mode) : m_Name{name}, m_Mode{mode}

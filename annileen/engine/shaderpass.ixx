@@ -33,6 +33,8 @@ export namespace annileen
     };
 };
 
+module :private;
+
 namespace annileen
 {
     ShaderPass::~ShaderPass()

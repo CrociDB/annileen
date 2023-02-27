@@ -33,6 +33,8 @@ export namespace annileen
 	};
 }
 
+module :private;
+
 namespace annileen
 {
 	Texture::Texture(bgfx::TextureHandle handle, bgfx::TextureInfo info, bimg::Orientation::Enum orientation)

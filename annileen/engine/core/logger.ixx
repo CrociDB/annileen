@@ -97,6 +97,19 @@ export namespace annileen
 	};
 }
 
+// Template implementations
+namespace annileen
+{
+	template <typename S, typename... Args>
+	void Logger::logFormat(LoggingChannel channel, LoggingLevel level, std::string fileName, int line, const S& format_str, Args&&... args)
+	{
+		std::string message{ std::vformat(format_str, std::make_format_args(args...)) };
+		log(channel, level, message, fileName, line);
+	}
+}
+
+module :private;
+
 namespace annileen
 {
 	std::list<Logger::Message> Logger::m_MessagesBuffer{};
@@ -137,13 +150,6 @@ namespace annileen
 	LoggingMode Logger::getMode() noexcept
 	{
 		return m_Mode;
-	}
-
-	template <typename S, typename... Args>
-	void Logger::logFormat(LoggingChannel channel, LoggingLevel level, std::string fileName, int line, const S& format_str, Args&&... args)
-	{
-		std::string message{ std::vformat(format_str, std::make_format_args(args...)) };
-		log(channel, level, message, fileName, line);
 	}
 
 	const char* Logger::getLoggingLevelString(LoggingLevel level) noexcept

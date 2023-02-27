@@ -81,6 +81,8 @@ export namespace annileen
     };
 }
 
+module :private;
+
 namespace annileen
 {
     Material::~Material()

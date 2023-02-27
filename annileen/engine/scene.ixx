@@ -60,6 +60,8 @@ export namespace annileen
     };
 }
 
+module :private;
+
 namespace annileen
 {
     void Scene::setSkybox(std::shared_ptr<Skybox> skybox) noexcept 

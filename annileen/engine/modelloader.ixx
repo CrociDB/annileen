@@ -28,6 +28,8 @@ export namespace annileen
 	};
 }
 
+module :private;
+
 namespace annileen
 {
 	std::shared_ptr<MeshGroup> ModelLoader::loadMesh(const std::string& filename, const MeshDescriptor& descriptor)

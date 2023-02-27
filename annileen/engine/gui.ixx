@@ -27,6 +27,8 @@ export namespace annileen
 	};
 }
 
+module :private;
+
 namespace annileen
 {
 	void Gui::beginFrame(glm::vec2 mousePos, uint8_t mouseButton, int32_t mouseScroll, uint16_t width, uint16_t height)

@@ -51,6 +51,8 @@ export namespace annileen
 	};
 }
 
+module :private;
+
 namespace annileen
 {
 	std::map<std::string, UniformData> Uniform::m_Uniforms{};

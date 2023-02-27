@@ -36,6 +36,8 @@ export namespace annileen
 	};
 }
 
+module :private;
+
 namespace annileen
 {
 	Model::~Model()

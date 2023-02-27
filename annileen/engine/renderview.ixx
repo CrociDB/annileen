@@ -9,7 +9,6 @@ module;
 
 export module renderview;
 
-
 export namespace annileen
 {
     class RenderView
@@ -54,6 +53,8 @@ export namespace annileen
 
     };
 };
+
+module :private;
 
 namespace annileen
 {

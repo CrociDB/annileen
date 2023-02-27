@@ -34,6 +34,8 @@ export namespace annileen
 	};
 }
 
+module :private;
+
 namespace annileen
 {
 	FontManager* Font::s_FontManager = nullptr;
