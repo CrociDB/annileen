@@ -33,10 +33,10 @@ python -m pip install -r tools/requirements.txt
 Generate the Visual Studio solution:
 
 ```
-premake5 vs2019
+premake5 vs2022
 ```
 
-Open the solution located at `.\build\vs2019\annileen-engine.sln` and build.
+Open the solution located at `.\build\vs2022\annileen-engine.sln` and build.
 
 Now, generate the assets:
 
