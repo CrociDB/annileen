@@ -50,11 +50,7 @@ export namespace annileen
 
     public:
         Renderer() = default;
-        ~Renderer()
-        {
-            //TODO: remove
-            std::cout << "Renderer destroyed." << std::endl;
-        };
+        ~Renderer();
 
     public:
         void init(int screenWidth, int screenHeight);
@@ -88,6 +84,12 @@ module :private;
 
 namespace annileen
 {
+    Renderer::~Renderer()
+    {
+        //TODO: remove
+        std::cout << "Renderer destroyed." << std::endl;
+    }
+
     void Renderer::initializeShadows()
     {
         m_Shadow = std::make_unique<Shadow>();
@@ -98,7 +100,6 @@ namespace annileen
             .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::Normal, 4, bgfx::AttribType::Uint8, true, true)
             .end();
-
         // Shadow samplers are supported at least partially supported if texture
         // compare less equal feature is supported.
         m_Shadow->useShadowSampler = 0 != (m_Capabilities->supported & BGFX_CAPS_TEXTURE_COMPARE_LEQUAL);;

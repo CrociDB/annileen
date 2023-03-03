@@ -83,11 +83,7 @@ export namespace annileen
 
 	public:
 		SceneNodeModule() = default;
-		virtual ~SceneNodeModule()
-		{
-			// TODO: remove
-			std::cout << "SceneNodeModule destroyed" << std::endl;
-		};
+		virtual ~SceneNodeModule();
 
 		Transform& getTransform() noexcept;
 		std::shared_ptr<SceneNode> getSceneNode() noexcept;
@@ -221,4 +217,11 @@ namespace annileen
 	{
 		return m_SceneNode.lock();
 	}
+
+	SceneNodeModule::~SceneNodeModule()
+	{
+		// TODO: remove
+		std::cout << "SceneNodeModule destroyed" << std::endl;
+	};
+
 }
