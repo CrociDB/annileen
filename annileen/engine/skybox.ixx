@@ -6,15 +6,15 @@ module;
 #include <memory>
 #include <iostream>
 
-export module skybox;
+export module anni.skybox;
 
-import cubemap;
-import serviceprovider;
-import shaderpass;
-import material;
-import mesh;
-import shader;
-import model;
+import anni.cubemap;
+import anni.serviceprovider;
+import anni.shaderpass;
+import anni.material;
+import anni.mesh;
+import anni.shader;
+import anni.model;
 
 const float s_skyboxCubeVertices[8][3] =
 {

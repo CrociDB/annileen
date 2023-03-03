@@ -8,7 +8,7 @@ module;
 #include <vector>
 #include <iostream>
 
-export module assetwatcher;
+export module anni.assetwatcher;
 
 export namespace annileen
 {

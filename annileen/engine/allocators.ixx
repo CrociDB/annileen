@@ -2,7 +2,7 @@ module;
 
 #include <bx/allocator.h>
 
-export module allocators;
+export module anni.allocators;
 
 export namespace annileen
 {

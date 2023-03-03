@@ -5,7 +5,7 @@ module;
 #include <bgfx/bgfx.h>
 #include <glm.hpp>
 
-export module settings;
+export module anni.settings;
 
 export namespace annileen
 {

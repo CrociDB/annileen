@@ -10,12 +10,12 @@
 
 #ifdef _ANNILEEN_COMPILER_EDITOR
 #ifdef ANNILEEN_APPLICATION
-    import applicationeditor;
+    import anni.applicationeditor;
 #endif
 #define ANNILEEN_APP_CLASS_DECLARATION(__ApplicationClassName) class __ApplicationClassName : public annileen::ApplicationEditor
 #else
 #ifdef ANNILEEN_APPLICATION
-    import application;
+    import anni.application;
 #endif
     #define ANNILEEN_APP_CLASS_DECLARATION(__ApplicationClassName) class __ApplicationClassName : public annileen::Application
 #endif // _ANNILEEN_COMPILER_EDITOR

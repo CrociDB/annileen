@@ -11,25 +11,25 @@ module;
 
 #include <engine/core/logger.h>
 
-export module renderer;
+export module anni.renderer;
 
-import serviceprovider;
-import shaderpass;
-import material;
-import mesh;
-import text;
-import renderview;
-import uniform;
-import skybox;
-import light;
-import scenemanager;
-import scene;
-import transform;
-import camera;
-import scenenode;
-import utils;
-import texture;
-import model;
+import anni.serviceprovider;
+import anni.shaderpass;
+import anni.material;
+import anni.mesh;
+import anni.text;
+import anni.renderview;
+import anni.uniform;
+import anni.skybox;
+import anni.light;
+import anni.scenemanager;
+import anni.scene;
+import anni.transform;
+import anni.camera;
+import anni.scenenode;
+import anni.utils;
+import anni.texture;
+import anni.model;
 
 export namespace annileen
 {

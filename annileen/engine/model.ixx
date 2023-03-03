@@ -3,11 +3,11 @@ module;
 #include <iostream>
 #include <vector>
 
-export module model;
+export module anni.model;
 
-import scenenode;
-import mesh;
-import material;
+import anni.scenenode;
+import anni.mesh;
+import anni.material;
 
 export namespace annileen
 {

@@ -2,10 +2,10 @@ module;
 
 #include <glm.hpp>
 
-export module light;
+export module anni.light;
 
-import transform;
-import scenenode;
+import anni.transform;
+import anni.scenenode;
 
 export namespace annileen
 {

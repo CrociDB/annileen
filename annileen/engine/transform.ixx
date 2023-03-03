@@ -6,7 +6,7 @@ module;
 #include <gtc/matrix_transform.hpp>
 #include <gtc/quaternion.hpp>
 
-export module transform;
+export module anni.transform;
 
 export namespace annileen
 {

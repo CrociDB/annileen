@@ -7,9 +7,9 @@ module;
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 
-export module mesh;
+export module anni.mesh;
 
-import asset;
+import anni.asset;
 
 export namespace annileen
 {

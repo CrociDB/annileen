@@ -6,10 +6,10 @@ module;
 #include <bgfx/bgfx.h>
 #include <glm.hpp>
 
-export module uniform;
+export module anni.uniform;
 
-import texture;
-import cubemap;
+import anni.texture;
+import anni.cubemap;
 
 export namespace annileen
 {

@@ -7,9 +7,9 @@ module;
 #include "engine/text/fontmanager.h"
 #include "engine/text/textbuffermanager.h"
 
-export module font;
+export module anni.font;
 
-import asset;
+import anni.asset;
 
 export namespace annileen
 {

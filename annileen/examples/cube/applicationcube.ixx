@@ -12,17 +12,17 @@ module;
 
 export module applicationcube;
 
-import scenemanager;
-import scene;
-import scenenode;
-import shaderpass;
-import serviceprovider;
-import material;
-import mesh;
-import shader;
-import camera;
-import model;
-import light;
+import anni.scenemanager;
+import anni.scene;
+import anni.scenenode;
+import anni.shaderpass;
+import anni.serviceprovider;
+import anni.material;
+import anni.mesh;
+import anni.shader;
+import anni.camera;
+import anni.model;
+import anni.light;
 
 using namespace annileen;
 

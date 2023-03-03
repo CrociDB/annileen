@@ -27,17 +27,17 @@ module;
 #include <iostream>
 #include <engine/core/logger.h>
 
-export module engine;
+export module anni.engine;
 
-import input;
-import font;
-import assetmanager;
-import serviceprovider;
-import renderer;
-import uniform;
-import gui;
-import scenemanager;
-import settings;
+import anni.input;
+import anni.font;
+import anni.assetmanager;
+import anni.serviceprovider;
+import anni.renderer;
+import anni.uniform;
+import anni.gui;
+import anni.scenemanager;
+import anni.settings;
 
 export namespace annileen
 {

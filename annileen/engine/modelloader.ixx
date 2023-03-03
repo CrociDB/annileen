@@ -6,11 +6,11 @@ module;
 #include "engine/core/logger.h"
 #include <memory>
 
-export module modelloader;
+export module anni.modelloader;
 
-import rawmesh;
-import mesh;
-import asset;
+import anni.rawmesh;
+import anni.mesh;
+import anni.asset;
 
 export namespace annileen
 {

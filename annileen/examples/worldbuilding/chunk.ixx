@@ -13,14 +13,14 @@ module;
 
 export module chunk;
 
-import engine;
-import mesh;
-import allocators;
-import scenemanager;
-import scene;
-import scenenode;
-import model;
-import material;
+import anni.engine;
+import anni.mesh;
+import anni.allocators;
+import anni.scenemanager;
+import anni.scene;
+import anni.scenenode;
+import anni.model;
+import anni.material;
 
 using namespace annileen;
 

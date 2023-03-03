@@ -5,9 +5,9 @@ module;
 #include <gtc/quaternion.hpp>
 #include <glm.hpp>
 
-export module camera;
+export module anni.camera;
 
-import scenenode;
+import anni.scenenode;
 
 export namespace annileen
 {

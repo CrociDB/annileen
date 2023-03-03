@@ -25,21 +25,21 @@ module;
 #endif
 #include <GLFW/glfw3native.h>
 
-export module editorgui;
+export module anni.editorgui;
 
-import engine;
-import model;
-import camera;
-import light;
-import text;
-import material;
-import renderer;
-import scene;
-import scenenode;
-import input;
-import settings;
-import serviceprovider;
-import scenemanager;
+import anni.engine;
+import anni.model;
+import anni.camera;
+import anni.light;
+import anni.text;
+import anni.material;
+import anni.renderer;
+import anni.scene;
+import anni.scenenode;
+import anni.input;
+import anni.settings;
+import anni.serviceprovider;
+import anni.scenemanager;
 
 export namespace annileen
 {

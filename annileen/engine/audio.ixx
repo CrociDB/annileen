@@ -1,6 +1,6 @@
 module;
 
-export module audio;
+export module anni.audio;
 
 export namespace annileen
 {

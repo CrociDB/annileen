@@ -1,10 +1,10 @@
 module;
 
-export module serviceprovider;
+export module anni.serviceprovider;
 
 //import audio;
-import assetmanager;
-import settings;
+import anni.assetmanager;
+import anni.settings;
 
 export namespace annileen
 {

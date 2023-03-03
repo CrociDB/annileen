@@ -5,7 +5,7 @@ module;
 #include <glm.hpp>
 #include <iostream>
 
-export module input;
+export module anni.input;
 
 export namespace annileen
 {

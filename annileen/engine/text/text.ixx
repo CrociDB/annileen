@@ -7,12 +7,12 @@ module;
 #include <string>
 #include <iostream>
 
-export module text;
+export module anni.text;
 
-import serviceprovider;
-import utils;
-import scenenode;
-import font;
+import anni.serviceprovider;
+import anni.utils;
+import anni.scenenode;
+import anni.font;
 
 export namespace annileen
 {

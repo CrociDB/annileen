@@ -5,9 +5,9 @@ module;
 #include <bgfx/bgfx.h>
 #include <bimg/bimg.h>
 
-export module cubemap;
+export module anni.cubemap;
 
-import asset;
+import anni.asset;
 
 export namespace annileen
 {
