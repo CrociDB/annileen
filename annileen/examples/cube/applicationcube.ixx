@@ -30,10 +30,7 @@ export ANNILEEN_APP_CLASS_DECLARATION(ApplicationCube)
 {
 public:
     ApplicationCube() = default;
-    ~ApplicationCube()
-    {
-        std::cout << "ApplicationCube destroyed." << std::endl;
-    };
+    ~ApplicationCube();
 
 private:
     std::shared_ptr<Scene> init() override;
@@ -118,4 +115,9 @@ std::shared_ptr<Scene> ApplicationCube::init()
 void ApplicationCube::update(float deltaTime)
 {
     m_ModelNode->getTransform().rotate(glm::vec3(0.0, 15.0 * deltaTime, 0.0));
+}
+
+ApplicationCube::~ApplicationCube()
+{
+    std::cout << "ApplicationCube destroyed." << std::endl;
 }
