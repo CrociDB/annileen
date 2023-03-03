@@ -6,13 +6,13 @@ module;
 #include <vector>
 #include <map>
 
-export module material;
+export module anni.material;
 
-import shaderpass;
-import asset;
-import uniform;
-import cubemap;
-import texture;
+import anni.shaderpass;
+import anni.asset;
+import anni.uniform;
+import anni.cubemap;
+import anni.texture;
 
 export namespace annileen
 {

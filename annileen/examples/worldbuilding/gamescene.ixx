@@ -14,18 +14,18 @@ module;
 
 export module gamescene;
 
-import engine;
-import skybox;
-import serviceprovider;
-import shaderpass;
-import text;
-import scenenode;
-import light;
-import camera;
-import scene;
-import material;
+import anni.engine;
+import anni.skybox;
+import anni.serviceprovider;
+import anni.shaderpass;
+import anni.text;
+import anni.scenenode;
+import anni.light;
+import anni.camera;
+import anni.scene;
+import anni.material;
 import chunk;
-import scenemanager;
+import anni.scenemanager;
 
 using namespace annileen;
 

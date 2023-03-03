@@ -10,7 +10,7 @@ module;
 export module applicationworldbuilding;
 
 import gamescene;
-import scenemanager;
+import anni.scenemanager;
 
 export ANNILEEN_APP_CLASS_DECLARATION(ApplicationWorldBuilding)
 {

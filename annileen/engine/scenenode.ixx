@@ -8,9 +8,9 @@ module;
 #include <typeinfo>
 #include <memory>
 
-export module scenenode;
+export module anni.scenenode;
 
-import transform;
+import anni.transform;
 
 export namespace annileen
 {

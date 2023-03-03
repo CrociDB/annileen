@@ -2,7 +2,7 @@ module;
 
 #include <glm.hpp>
 
-export module utils;
+export module anni.utils;
 
 export uint32_t convert_color_vec3_uint32(glm::vec3 col)
 {

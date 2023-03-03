@@ -10,18 +10,18 @@ module;
 #include <toml.hpp>
 #include "engine/core/logger.h"
 
-export module assetmanager;
+export module anni.assetmanager;
 
-import allocators;
-import asset;
-import assetwatcher;
-import shader;
-import texture;
-import cubemap;
-import logger;
-import mesh;
-import font;
-import modelloader;
+import anni.allocators;
+import anni.asset;
+import anni.assetwatcher;
+import anni.shader;
+import anni.texture;
+import anni.cubemap;
+import anni.logger;
+import anni.mesh;
+import anni.font;
+import anni.modelloader;
 
 export namespace annileen
 {

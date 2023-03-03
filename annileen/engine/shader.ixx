@@ -9,9 +9,9 @@ module;
 #include <gtc/type_ptr.hpp>
 #include <bgfx/bgfx.h>
 
-export module shader;
+export module anni.shader;
 
-import asset;
+import anni.asset;
 
 export namespace annileen
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-import logger;
+import anni.logger;
 
 #define ANNILEEN_LOG(_log_level, _log_channel, _log_message) \
 	Logger::log(_log_channel, _log_level, _log_message, __FILE__, __LINE__);

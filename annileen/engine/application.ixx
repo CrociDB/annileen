@@ -19,16 +19,16 @@ module;
 #endif
 #include <GLFW/glfw3native.h>
 
-export module application;
+export module anni.application;
 
-import text;
-import engine;
-import camera;
-import scenemanager;
-import scene;
-import scenenode;
-import input;
-import gui;
+import anni.text;
+import anni.engine;
+import anni.camera;
+import anni.scenemanager;
+import anni.scene;
+import anni.scenenode;
+import anni.input;
+import anni.gui;
 
 export namespace annileen
 {

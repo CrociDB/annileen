@@ -5,11 +5,11 @@ module;
 #include <glm.hpp>
 #include <bgfx/bgfx.h>
 
-export module rawmesh;
+export module anni.rawmesh;
 
-import mesh;
-import asset;
-import allocators;
+import anni.mesh;
+import anni.asset;
+import anni.allocators;
 
 export namespace annileen
 {

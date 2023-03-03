@@ -9,7 +9,7 @@ module;
 #include <glm.hpp>
 #include <iostream>
 
-export module gui;
+export module anni.gui;
 
 export namespace annileen
 {

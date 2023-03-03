@@ -4,7 +4,7 @@ module;
 #include <string>
 #include <memory>
 
-export module asset;
+export module anni.asset;
 
 export namespace annileen
 {

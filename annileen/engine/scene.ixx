@@ -5,12 +5,12 @@ module;
 #include <memory>
 #include <glm.hpp>
 
-export module scene;
+export module anni.scene;
 
-import scenenode;
-import camera;
-import light;
-import skybox;
+import anni.scenenode;
+import anni.camera;
+import anni.light;
+import anni.skybox;
 
 export namespace annileen
 {

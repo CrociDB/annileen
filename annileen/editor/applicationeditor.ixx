@@ -5,13 +5,13 @@ module;
 #include <engine/core/logger.h>
 #include <glm.hpp>
 
-export module applicationeditor;
+export module anni.applicationeditor;
 
-import editorgui;
-import application;
-import scenemanager;
-import scenenode;
-import serviceprovider;
+import anni.editorgui;
+import anni.application;
+import anni.scenemanager;
+import anni.scenenode;
+import anni.serviceprovider;
 
 export namespace annileen
 {

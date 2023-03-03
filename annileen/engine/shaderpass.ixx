@@ -5,9 +5,9 @@ module;
 #include <bgfx/defines.h>
 #include <iostream>
 
-export module shaderpass;
+export module anni.shaderpass;
 
-import shader;
+import anni.shader;
 
 export namespace annileen
 {

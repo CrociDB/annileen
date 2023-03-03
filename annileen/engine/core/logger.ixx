@@ -6,9 +6,9 @@ module;
 #include <string>
 #include <vector>
 
-export module logger;
+export module anni.logger;
 
-import file;
+import anni.file;
 
 export namespace annileen
 {

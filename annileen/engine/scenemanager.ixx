@@ -6,12 +6,12 @@ module;
 #include <memory>
 #include <iostream>
 
-export module scenemanager;
+export module anni.scenemanager;
 
-import scene;
-import scenenode;
-import light;
-import camera;
+import anni.scene;
+import anni.scenenode;
+import anni.light;
+import anni.camera;
 
 export namespace annileen
 {
