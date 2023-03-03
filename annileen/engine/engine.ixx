@@ -420,8 +420,6 @@ namespace annileen
         m_AssetManager.reset();
         m_Renderer.reset();
 
-        //TODO: destroy fonts before font manager
-        //Font::destroyFontManager();
 
         Uniform::destroy();
 
@@ -429,6 +427,8 @@ namespace annileen
         m_Gui.reset();
 
         SceneManager::destroy();
+
+        Font::destroyFontManager();
 
         bgfx::shutdown();
 

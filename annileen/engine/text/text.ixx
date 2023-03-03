@@ -3,22 +3,22 @@ module;
 #include <engine/text/fontmanager.h>
 #include <engine/text/textbuffermanager.h>
 #include <engine/core/logger.h>
-#include <engine/forward_decl.h>
 #include <glm.hpp>
 #include <string>
+#include <iostream>
 
 export module text;
 
 import serviceprovider;
 import utils;
 import scenenode;
+import font;
 
 export namespace annileen
 {
 	class Text final : public SceneNodeModule
 	{
 	public:
-
 		enum TextStyle
 		{
 			Normal = STYLE_NORMAL,
@@ -28,71 +28,72 @@ export namespace annileen
 			StrikeThrough = STYLE_STRIKE_THROUGH
 		};
 
-	private:
-		TrueTypeHandle m_Font;
-		uint32_t m_PixelSize = 32;
-		FontHandle m_FontHandle;
-		TextBufferHandle m_TextBufferHandle;
-		glm::vec2 m_ScreenPosition;
-		std::string m_Text;
-		bool m_Sdf;
+		Text();
+		~Text();
 
 		void createFont();
-
-		bool m_IsStatic;
-		bool m_HasSubmittedOnce;
-
-		glm::vec3 m_BackgroundColor;
-		glm::vec3 m_TextColor;
-		glm::vec3 m_UnderlineColor;
-		glm::vec3 m_OverlineColor;
-		glm::vec3 m_StrikeThroughColor;
-
-		TextStyle m_TextStyle;
-	public:
-		bool enabled;
 
 		void init(bool isStatic, bool sdf = false);
 		void applyProperties();
 		
 		void render(bgfx::ViewId viewId);
 
+		void setFont(const TrueTypeHandle& font);
+		
 		void setStatic(bool isStatic);
+		bool isStatic() const noexcept;		
+		
 		void setSdf(bool isSdf);
+		bool isSdf() const noexcept;
 
-		bool isSdf() { return m_Sdf; }
-		bool isStatic() { return m_IsStatic; }
-
-		void setFont(TrueTypeHandle font);
 		void setPixelSize(uint32_t pixelSize);
-		uint32_t getPixelSize() { return m_PixelSize; }
+		uint32_t getPixelSize() const noexcept;
 
-		void setText(const std::string text);
-		std::string getText() { return m_Text; }
+		void setText(const std::string& text);
+		const std::string& getText() const noexcept;
 
 		void setScreenPosition(float x, float y);
-		glm::vec2 getScreenPosition() { return m_ScreenPosition; }
+		const glm::vec2& getScreenPosition() const noexcept;
 
-		void setBackgroundColor(glm::vec3 backgroundColor);
-		glm::vec3 getBackgroundColor() { return m_BackgroundColor; }
+		void setBackgroundColor(const glm::vec3& backgroundColor);
+		const glm::vec3& getBackgroundColor() const noexcept;
 
-		void setTextColor(glm::vec3 textColor);
-		glm::vec3 getTextColor() { return m_TextColor; }
+		void setTextColor(const glm::vec3& textColor);
+		const glm::vec3& getTextColor() const noexcept;
 
-		void setUnderlineColor(glm::vec3 underlineColor);
-		glm::vec3 getUnderlineColor() { return m_UnderlineColor; }
+		void setUnderlineColor(const glm::vec3& underlineColor);
+		const glm::vec3& getUnderlineColor() const noexcept;
 
-		void setOverlineColor(glm::vec3 overlineColor);
-		glm::vec3 getOverlineColor() { return m_OverlineColor; }
+		void setOverlineColor(const glm::vec3& overlineColor);
+		const glm::vec3& getOverlineColor() const noexcept;
 
-		void setStrikeThroughColor(glm::vec3 strikeThroughColor);
-		glm::vec3 getStrikeThroughColor() { return m_StrikeThroughColor; }
+		void setStrikeThroughColor(const glm::vec3& strikeThroughColor);
+		const glm::vec3& getStrikeThroughColor() const noexcept;
 
-		void setStyle(TextStyle textStyle);
-		TextStyle getStyle() { return m_TextStyle; }
+		void setStyle(const TextStyle& textStyle);
+		const TextStyle& getStyle() const noexcept;
 
-		Text();
-		~Text();
+	public:
+		bool enabled{ true };
+
+	private:
+		uint32_t m_PixelSize{ 32 };
+		TrueTypeHandle m_Font{ BGFX_INVALID_HANDLE };
+		FontHandle m_FontHandle{ BGFX_INVALID_HANDLE };
+		TextBufferHandle m_TextBufferHandle{ BGFX_INVALID_HANDLE };
+		std::string m_Text{""};
+		bool m_Sdf{ false };
+		bool m_IsStatic{ false };
+		bool m_HasSubmittedOnce{ false };
+
+		glm::vec2 m_ScreenPosition{ glm::vec2(0.0f) };
+		glm::vec3 m_BackgroundColor{ glm::vec3(1.0f) };
+		glm::vec3 m_TextColor{ glm::vec3(1.0f) };
+		glm::vec3 m_UnderlineColor{ glm::vec3(1.0f) };
+		glm::vec3 m_OverlineColor{ glm::vec3(1.0f) };
+		glm::vec3 m_StrikeThroughColor{ glm::vec3(1.0f) };
+
+		TextStyle m_TextStyle{ TextStyle::Normal };
 	};
 }
 
@@ -100,6 +101,29 @@ module :private;
 
 namespace annileen
 {
+	Text::Text()
+	{
+		init(false);
+		setFont(ServiceProvider::getAssetManager()->getFont(
+			ServiceProvider::getSettings()->getData()->defaultFont)->getHandle());
+	}
+
+	Text::~Text()
+	{
+		if (isValid(m_FontHandle))
+		{
+			Font::getFontManager()->destroyFont(m_FontHandle);
+		}
+
+		if (isValid(m_TextBufferHandle))
+		{
+			Font::getTextBufferManager()->destroyTextBuffer(m_TextBufferHandle);
+		}
+
+		// TODO: remove
+		std::cout << "Text destroyed." << std::endl;
+	}
+
 	void Text::createFont()
 	{
 		// If font is not defined or valid, use font default.
@@ -127,7 +151,7 @@ namespace annileen
 		//fontManager->preloadGlyph(m_FontHandle, L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ. \n");
 	}
 
-	void Text::setFont(TrueTypeHandle font)
+	void Text::setFont(const TrueTypeHandle& font)
 	{
 		m_Font = font;
 
@@ -144,7 +168,12 @@ namespace annileen
 		}
 	}
 
-	void Text::setText(const std::string text)
+	uint32_t Text::getPixelSize() const noexcept 
+	{ 
+		return m_PixelSize; 
+	}
+
+	void Text::setText(const std::string& text)
 	{
 		if (!isValid(m_TextBufferHandle))
 		{
@@ -170,6 +199,11 @@ namespace annileen
 		Font::getTextBufferManager()->appendText(m_TextBufferHandle, m_FontHandle, text.c_str());
 	}
 
+	const std::string& Text::getText() const noexcept 
+	{ 
+		return m_Text; 
+	}
+
 	void Text::setScreenPosition(float x, float y)
 	{
 		if (!isValid(m_TextBufferHandle))
@@ -188,7 +222,12 @@ namespace annileen
 		Font::getTextBufferManager()->setPenPosition(m_TextBufferHandle, x, y);
 	}
 
-	void Text::setBackgroundColor(glm::vec3 backgroundColor)
+	const glm::vec2& Text::getScreenPosition() const noexcept 
+	{ 
+		return m_ScreenPosition; 
+	}
+
+	void Text::setBackgroundColor(const glm::vec3& backgroundColor)
 	{
 		if (!isValid(m_TextBufferHandle))
 		{
@@ -206,7 +245,12 @@ namespace annileen
 		Font::getTextBufferManager()->setBackgroundColor(m_TextBufferHandle, convert_color_vec3_uint32(backgroundColor));
 	}
 
-	void Text::setTextColor(glm::vec3 textColor)
+	const glm::vec3& Text::getBackgroundColor() const noexcept 
+	{ 
+		return m_BackgroundColor; 
+	}
+
+	void Text::setTextColor(const glm::vec3& textColor)
 	{
 		if (!isValid(m_TextBufferHandle))
 		{
@@ -224,7 +268,12 @@ namespace annileen
 		Font::getTextBufferManager()->setTextColor(m_TextBufferHandle, convert_color_vec3_uint32(textColor));
 	}
 
-	void Text::setUnderlineColor(glm::vec3 underlineColor)
+	const glm::vec3& Text::getTextColor() const noexcept 
+	{ 
+		return m_TextColor; 
+	}
+
+	void Text::setUnderlineColor(const glm::vec3& underlineColor)
 	{
 		if (!isValid(m_TextBufferHandle))
 		{
@@ -242,7 +291,12 @@ namespace annileen
 		Font::getTextBufferManager()->setUnderlineColor(m_TextBufferHandle, convert_color_vec3_uint32(underlineColor));
 	}
 
-	void Text::setOverlineColor(glm::vec3 overlineColor)
+	const glm::vec3& Text::getUnderlineColor() const noexcept
+	{
+		return m_UnderlineColor;
+	}
+
+	void Text::setOverlineColor(const glm::vec3& overlineColor)
 	{
 		if (!isValid(m_TextBufferHandle))
 		{
@@ -260,7 +314,12 @@ namespace annileen
 		Font::getTextBufferManager()->setOverlineColor(m_TextBufferHandle, convert_color_vec3_uint32(overlineColor));
 	}
 
-	void Text::setStrikeThroughColor(glm::vec3 strikeThroughColor)
+	const glm::vec3& Text::getOverlineColor() const noexcept
+	{
+		return m_OverlineColor;
+	}
+
+	void Text::setStrikeThroughColor(const glm::vec3& strikeThroughColor)
 	{
 		if (!isValid(m_TextBufferHandle))
 		{
@@ -278,11 +337,16 @@ namespace annileen
 		Font::getTextBufferManager()->setStrikeThroughColor(m_TextBufferHandle, convert_color_vec3_uint32(strikeThroughColor));
 	}
 
+	const glm::vec3& Text::getStrikeThroughColor() const noexcept 
+	{ 
+		return m_StrikeThroughColor; 
+	}
+
 #if _MSC_VER && !__INTEL_COMPILER
 #pragma warning(push)
 #pragma warning(disable : 26812) 
 #endif
-	void Text::setStyle(TextStyle textStyle)
+	void Text::setStyle(const Text::TextStyle& textStyle)
 	{
 		if (!isValid(m_TextBufferHandle))
 		{
@@ -303,15 +367,20 @@ namespace annileen
 #pragma warning(pop)
 #endif
 
+	const Text::TextStyle& Text::getStyle() const noexcept 
+	{ 
+		return m_TextStyle; 
+	}
+
 	void Text::init(bool isStatic, bool sdf)
 	{
-		FontManager* fontManager = Font::getFontManager();
-		TextBufferManager* textBufferManager = Font::getTextBufferManager();
+		auto fontManager{ Font::getFontManager() };
+		auto textBufferManager{ Font::getTextBufferManager() };
 
 		m_IsStatic = isStatic;
 		m_Sdf = sdf;
 
-		uint32_t fontType = FONT_TYPE_ALPHA;
+		uint32_t fontType{ FONT_TYPE_ALPHA };
 		if (m_Sdf)
 		{
 			fontType = FONT_TYPE_DISTANCE;
@@ -336,7 +405,7 @@ namespace annileen
 
 	void Text::applyProperties()
 	{
-		TextBufferManager* textBufferManager = Font::getTextBufferManager();
+		auto textBufferManager{ Font::getTextBufferManager() };
 
 		if (textBufferManager == nullptr || !isValid(m_TextBufferHandle) || !isValid(m_FontHandle))
 		{
@@ -358,7 +427,7 @@ namespace annileen
 
 	void Text::render(bgfx::ViewId viewId)
 	{
-		TextBufferManager* textBufferManager = Font::getTextBufferManager();
+		auto textBufferManager{ Font::getTextBufferManager() };
 
 		if (!m_IsStatic)
 		{
@@ -385,6 +454,11 @@ namespace annileen
 		}
 	}
 
+	bool Text::isStatic() const noexcept
+	{
+		return m_IsStatic;
+	}
+
 	void Text::setSdf(bool isSdf)
 	{
 		if (isSdf != m_Sdf)
@@ -395,27 +469,8 @@ namespace annileen
 		}
 	}
 
-
-	Text::Text() : m_IsStatic(false), enabled(true), m_HasSubmittedOnce(false), m_BackgroundColor(glm::vec3(1.0f)),
-		m_UnderlineColor(glm::vec3(1.0f)), m_TextColor(glm::vec3(1.0f)), m_OverlineColor(glm::vec3(1.0f)),
-		m_StrikeThroughColor(glm::vec3(1.0f)), m_TextStyle(TextStyle::Normal), m_FontHandle(BGFX_INVALID_HANDLE),
-		m_TextBufferHandle(BGFX_INVALID_HANDLE), m_Font(BGFX_INVALID_HANDLE), m_Sdf(false), m_ScreenPosition(glm::vec2(0.0f))
+	bool Text::isSdf() const noexcept
 	{
-		init(false);
-		setFont(ServiceProvider::getAssetManager()->getFont(
-			ServiceProvider::getSettings()->getData()->defaultFont)->getHandle());
-	}
-
-	Text::~Text()
-	{
-		if (isValid(m_FontHandle))
-		{
-			Font::getFontManager()->destroyFont(m_FontHandle);
-		}
-
-		if (isValid(m_TextBufferHandle))
-		{
-			Font::getTextBufferManager()->destroyTextBuffer(m_TextBufferHandle);
-		}
+		return m_Sdf;
 	}
 }
