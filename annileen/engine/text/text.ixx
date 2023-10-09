@@ -2,13 +2,13 @@ module;
 
 #include <engine/text/fontmanager.h>
 #include <engine/text/textbuffermanager.h>
-#include <engine/core/logger.h>
 #include <glm.hpp>
 #include <string>
 #include <iostream>
 
 export module anni.text;
 
+import anni.logger;
 import anni.serviceprovider;
 import anni.utils;
 import anni.scenenode;

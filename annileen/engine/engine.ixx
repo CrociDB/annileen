@@ -25,10 +25,10 @@ module;
 #include <memory>
 #include <sstream>
 #include <iostream>
-#include <engine/core/logger.h>
 
 export module anni.engine;
 
+import anni.logger;
 import anni.input;
 import anni.font;
 import anni.assetmanager;

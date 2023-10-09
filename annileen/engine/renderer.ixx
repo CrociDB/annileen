@@ -9,10 +9,9 @@ module;
 #include <bgfx/bgfx.h>
 #include <bimg/bimg.h>
 
-#include <engine/core/logger.h>
-
 export module anni.renderer;
 
+import anni.logger;
 import anni.serviceprovider;
 import anni.shaderpass;
 import anni.material;

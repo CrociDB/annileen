@@ -10,7 +10,6 @@ module;
 #include <iostream>
 #include <dear-imgui/imgui.h>
 #include <imgui-utils/imgui_stdlib.h>
-#include <engine/core/logger.h>
 
 #include <GLFW/glfw3.h>
 // GLFW will include xserver headers in Linux and it defines macro `None`. So including
@@ -27,6 +26,7 @@ module;
 
 export module anni.editorgui;
 
+import anni.logger;
 import anni.engine;
 import anni.model;
 import anni.camera;

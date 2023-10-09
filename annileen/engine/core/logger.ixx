@@ -108,6 +108,81 @@ namespace annileen
 	}
 }
 
+using anniLL = annileen::LoggingLevel;
+using anniLC = annileen::LoggingChannel;
+using anniL = annileen::Logger;
+
+export
+{
+	void ANNILEEN_LOG(const anniLL& log_level,
+		const anniLC& log_channel,
+		std::string log_message)
+	{
+		anniL::log(log_channel, log_level, log_message, __FILE__, __LINE__);
+	}
+
+	void ANNILEEN_LOG_WARNING(const anniLC& log_channel, std::string log_message)
+	{
+		ANNILEEN_LOG(anniLL::Warning, log_channel, log_message);
+	}
+
+	void ANNILEEN_LOG_INFO(const anniLC& log_channel, std::string log_message)
+	{
+		ANNILEEN_LOG(anniLL::Info, log_channel, log_message);
+	}
+
+	void ANNILEEN_LOG_ERROR(const anniLC& log_channel, std::string log_message)
+	{
+		ANNILEEN_LOG(anniLL::Error, log_channel, log_message);
+	}
+
+	template <typename... Args>
+	void ANNILEEN_LOGF(const anniLL& log_level,
+		const anniLC& log_channel,
+		std::string log_message, 
+		Args&&... args)
+	{
+		anniL::logFormat(log_channel, log_level, __FILE__, __LINE__, log_message, args...);
+	}
+
+	template <typename... Args>
+	void ANNILEEN_LOGF_WARNING(const anniLC& log_channel, std::string log_message, Args&&... args)
+	{
+		ANNILEEN_LOGF(anniLL::Warning, log_channel, log_message, args...);
+	}
+
+	template <typename... Args>
+	void ANNILEEN_LOGF_INFO(const anniLC& log_channel, std::string log_message, Args&&... args)
+	{
+		ANNILEEN_LOGF(anniLL::Info, log_channel, log_message, args...);
+	}
+
+	template <typename... Args>
+	void ANNILEEN_LOGF_ERROR(const anniLC& log_channel, std::string log_message, Args&&... args)
+	{
+		ANNILEEN_LOGF(anniLL::Error, log_channel, log_message, args...);
+	}
+
+	void ANNI_LOG(std::string log_message)
+	{
+		ANNILEEN_LOG(anniLL::Info, anniLC::General, log_message);
+	}
+
+	void ANNI_ERROR(std::string log_message)
+	{
+		ANNILEEN_LOG(annileen::LoggingLevel::Error, annileen::LoggingChannel::General, log_message);
+	}
+
+	void ANNI_ASSERT(bool condition, std::string log_message)
+	{
+		if (!condition) 
+		{ 
+			ANNI_ERROR(log_message); 
+			exit(-1); 
+		}
+	}
+}
+
 module :private;
 
 namespace annileen

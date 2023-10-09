@@ -8,10 +8,10 @@ module;
 #include <bimg/decode.h>
 #include <bgfx/bgfx.h>
 #include <toml.hpp>
-#include "engine/core/logger.h"
 
 export module anni.assetmanager;
 
+import anni.logger;
 import anni.allocators;
 import anni.asset;
 import anni.assetwatcher;
@@ -311,7 +311,7 @@ namespace annileen
 		unloadAssets();
 
 		// TODO: remove
-		ANNI_LOG("AssetManager destroyed.")
+		ANNI_LOG("AssetManager destroyed.");
 	}
 
 	void AssetManager::updateAssetWatcher()

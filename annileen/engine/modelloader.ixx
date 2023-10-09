@@ -3,7 +3,6 @@ module;
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include "engine/core/logger.h"
 #include <memory>
 
 export module anni.modelloader;
@@ -11,6 +10,7 @@ export module anni.modelloader;
 import anni.rawmesh;
 import anni.mesh;
 import anni.asset;
+import anni.logger;
 
 export namespace annileen
 {

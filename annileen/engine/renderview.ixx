@@ -5,9 +5,10 @@ module;
 #include<unordered_map>
 #include<string_view>
 #include<list>
-#include"engine/core/logger.h"
 
 export module anni.renderview;
+
+import anni.logger;
 
 export namespace annileen
 {

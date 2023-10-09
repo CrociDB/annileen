@@ -2,11 +2,11 @@ module;
 
 #include <tuple>
 #include <memory>
-#include <engine/core/logger.h>
 #include <glm.hpp>
 
 export module anni.applicationeditor;
 
+import anni.logger;
 import anni.editorgui;
 import anni.application;
 import anni.scenemanager;
