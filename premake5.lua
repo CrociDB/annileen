@@ -9,23 +9,9 @@ local BX_DIR = "bx"
 local GLFW_DIR = "glfw"
 local GLM_DIR = "glm"
 local PERLINNOISE_DIR = "PerlinNoise"
-local TOML11_DIR = "toml11/include"
+local TOML11_DIR = "toml11"
 local FMT_DIR = "fmt"
 local ASSIMP_DIR = "assimp"
-
-newoption {
-	trigger     = "python",
-	value       = "python3",
-	description = "Choose python version",
-	allowed = {
-	   { "python3",    "Python3 - whatever one installed in the system" },
-	   { "python3.6",  "force Python3.6" },
-	   { "python3.7",  "force Python3.7" },
-	   { "python3.8",  "force Python3.8" },
-	   { "python3.9",  "force Python3.9" },
-	   { "python3.10",  "force Python3.10" },
-	}
- }
 
 solution "annileen-engine"
 	location(BUILD_DIR)
@@ -106,7 +92,7 @@ project "annileen-editor"
 		path.join(FMT_DIR, "include"),
 		path.join(ASSIMP_DIR, "include"),
 		path.join(BGFX_DIR, "3rdparty/dear-imgui/widgets"),
-		TOML11_DIR,
+		path.join(TOML11_DIR, "include"),
 		PERLINNOISE_DIR
 	}	
 	filter "action:vs*"
@@ -145,15 +131,9 @@ project "annileen"
 		path.join(ANNILEEN_DIR, "resources/imgui"),
 		path.join(FMT_DIR, "include"),
 		path.join(ASSIMP_DIR, "include"),
-		TOML11_DIR,
+		path.join(TOML11_DIR, "include"),
 		PERLINNOISE_DIR
 	}
-	filter "system:windows"
-		prebuildcommands { "%{os.getcwd()}/tools/win-tools/run_asset_tools.bat" }
-	filter "system:not windows"
-		if _OPTIONS['python'] then
-			prebuildcommands { "%{_OPTIONS[\"python\"]} %{os.getcwd()}/tools/asset_tools.py" }
-		end
 	setBxCompat()
 
 project "example-worldbuilding"
@@ -180,7 +160,7 @@ project "example-worldbuilding"
 		path.join(ANNILEEN_DIR, "resources/imgui"),
 		path.join(FMT_DIR, "include"),
 		path.join(ASSIMP_DIR, "include"),
-		TOML11_DIR,
+		path.join(TOML11_DIR, "include"),
 		PERLINNOISE_DIR
 	}
 	debugdir "."
@@ -231,7 +211,7 @@ project "example-cube"
 		path.join(ANNILEEN_DIR, "resources/imgui"),
 		path.join(FMT_DIR, "include"),
 		path.join(ASSIMP_DIR, "include"),
-		TOML11_DIR,
+		path.join(TOML11_DIR, "include"),
 		PERLINNOISE_DIR
 	}
 	debugdir "."
