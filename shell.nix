@@ -8,7 +8,8 @@ pkgs.mkShell {
     libGLU
     freeglut
     glew
-    
+    libglvnd
+
     # X11
     xorg.libX11
     xorg.libXrandr
@@ -18,6 +19,13 @@ pkgs.mkShell {
     xorg.libXi
     xorg.libXrender
     xorg.libXfixes
+    xorg.libXext
+    xorg.libXScrnSaver
+
+    # Wayland
+    wayland
+    wayland-protocols
+    libxkbcommon
 
     # Python
     python3
