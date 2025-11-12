@@ -9,7 +9,7 @@ local BX_DIR = "bx"
 local GLFW_DIR = "glfw"
 local GLM_DIR = "glm"
 local PERLINNOISE_DIR = "PerlinNoise"
-local TOML11_DIR = "toml11"
+local TOML11_DIR = "toml11/include"
 local FMT_DIR = "fmt"
 local ASSIMP_DIR = "assimp"
 
