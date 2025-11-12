@@ -1,0 +1,42 @@
+{ pkgs ? import <nixpkgs> {} }:
+
+pkgs.mkShell {
+  name = "annileen-dev";
+
+  buildInputs = with pkgs; [
+    # OpenGL
+    libGLU
+    freeglut
+    glew
+    
+    # X11
+    xorg.libX11
+    xorg.libXrandr
+    xorg.libXcursor
+    xorg.libXinerama
+    xorg.xinput
+    xorg.libXi
+    xorg.libXrender
+    xorg.libXfixes
+
+    # Python
+    python3
+    uv
+
+    # Build tools
+    premake5
+  ];
+
+  shellHook = ''
+    export ANNILEEN_ROOT=$(pwd)
+
+    if [ ! -d ".venv" ]; then
+      uv venv .venv
+    fi
+
+    source .venv/bin/activate
+    uv pip install -e tools
+
+    echo "Welcome to annileen development shell"
+  '';
+}

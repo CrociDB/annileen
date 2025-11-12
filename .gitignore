@@ -4,3 +4,4 @@ tools/__pycache__
 .vscode/
 temp/
 annileen-log.txt
+*.egg-info

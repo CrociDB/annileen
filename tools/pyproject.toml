@@ -1,0 +1,8 @@
+[project]
+name = "annileen-tools"
+version = "0.1.0"
+dependencies = [
+    "toml>=0.10.1",
+    "Pillow>=6.2.2",
+    "watchdog>=2.1.6",
+]
