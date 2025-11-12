@@ -31,11 +31,15 @@ solution "annileen-engine"
 	location(BUILD_DIR)
 	startproject "example-worldbuilding"
 	configurations { "Release", "ReleaseEditor", "Debug" }
+
 	if os.is64bit() and not os.istarget("windows") then
 		platforms "x86_64"
 	else
 		platforms { "x86", "x86_64" }
 	end
+
+  defines "GLM_ENABLE_EXPERIMENTAL"
+
 	filter "system:windows"
 		defines "BGFX_CONFIG_RENDERER_DIRECT3D11"
 		defines "BGFX_CONFIG_RENDERER_DIRECT3D12"
