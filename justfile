@@ -5,7 +5,9 @@ setup:
     podman build -t {{image}} -f Containerfile .
 
 build config="release":
-    {{podman_run}} bash -c "premake5 gmake2 && make -C build/gmake2 config={{config}}_x86_64"
+    {{podman_run}} bash -c "premake5 gmake2 && make -C build/gmake2 clean && bear --output build/gmake2/compile_commands.json -- make -C build/gmake2 config={{config}}_x86_64"
+    sed -i "s|/workspace|$(pwd)|g" build/gmake2/compile_commands.json
+    ln -sf build/gmake2/compile_commands.json compile_commands.json
 
 example name:
     #!/usr/bin/env bash

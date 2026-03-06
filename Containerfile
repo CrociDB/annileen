@@ -34,6 +34,8 @@ RUN apt-get update && apt-get install -y \
     # Python
     python3 \
     python3-pip \
+    # LSP / compile_commands.json generation
+    bear \
     && rm -rf /var/lib/apt/lists/*
 
 # Install premake5 from upstream binary (not in Ubuntu 24.04 repos)
