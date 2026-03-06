@@ -78,7 +78,7 @@ namespace annileen
 		template <typename S, typename... Args>
 		inline void logFormat(LoggingChannel channel, LoggingLevel level, std::string fileName, int line, const S& format_str, Args&&... args)
 		{
-			std::string message = fmt::format(format_str, args...);
+			std::string message = fmt::vformat(fmt::string_view(format_str), fmt::make_format_args(args...));
 			log(channel, level, message, fileName, line);
 		}
 	
