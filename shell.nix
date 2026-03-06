@@ -9,6 +9,8 @@ pkgs.mkShell {
     freeglut
     glew
     libglvnd
+    mesa
+    mesa.drivers
 
     # X11
     xorg.libX11
@@ -33,6 +35,7 @@ pkgs.mkShell {
 
     # Build tools
     premake5
+    gdb
   ];
 
   shellHook = ''
